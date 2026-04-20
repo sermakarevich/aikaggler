@@ -21,6 +21,7 @@ from aikaggler.plugins.solution_analysis.config import (
 )
 from aikaggler.plugins.solution_analysis.structure import (
     AGGREGATED_SCHEMA,
+    COMPETITION_CLASSIFICATION_SCHEMA,
     FILTER_SCHEMA,
     GITHUB_URL_RE,
     NON_REPO_OWNERS,
@@ -123,7 +124,9 @@ def _ollama_call(
             r = httpx.post(url, json=body, timeout=timeout)
             r.raise_for_status()
             content = r.json()["message"]["content"]
-            return json.loads(content)
+            out = json.loads(content)
+            return out
+        
         except (json.JSONDecodeError, httpx.HTTPError) as e:
             last_err = e
             if attempt < retries:
@@ -148,6 +151,32 @@ def ask_ollama_to_filter(
         prompt, FILTER_SCHEMA, ANALYZE_TIMEOUT, model=model, url=url
     )
     return result.get("solutions", [])
+
+
+def classify_competition_with_ollama(
+    comp: dict,
+    solution_titles: list[str],
+    model: str = OLLAMA_MODEL,
+    url: str = OLLAMA_URL,
+) -> dict:
+    slim_keys = [
+        "title", "briefDescription", "evaluationAlgorithm", "categories",
+        "hostName", "organization", "totalCompetitors", "totalTeams",
+        "maxDailySubmissions", "license",
+    ]
+    slim = {k: comp.get(k) for k in slim_keys if comp.get(k) is not None}
+    prompt = load_prompt(
+        "classify_competition",
+        competition_json=json.dumps(slim, indent=2)[:MAX_SOLUTION_BODY_CHARS],
+        solution_titles_json=json.dumps(solution_titles, indent=2),
+    )
+    return _ollama_call(
+        prompt,
+        COMPETITION_CLASSIFICATION_SCHEMA,
+        ANALYZE_TIMEOUT,
+        model=model,
+        url=url,
+    )
 
 
 def analyze_solution_with_ollama(
@@ -269,7 +298,6 @@ def _write_solution_files(
         f"{links_md}\n---\n\n"
     )
     (solution_dir / "solution.md").write_text(header + body)
-    (solution_dir / "solution.raw.json").write_text(json.dumps(detail, indent=2))
     (solution_dir / "analysis.json").write_text(json.dumps(analysis, indent=2))
 
     link_entries = [{"topic_id": topic_id, "title": title, **l} for l in links]
@@ -282,9 +310,36 @@ def _render_aggregated_markdown(
     agg: dict,
     analyses: list[dict],
     all_links: list[dict],
+    classification: dict | None = None,
 ) -> str:
     lines = [f"# {slug}: cross-solution summary", ""]
     lines += [agg.get("competition_tldr", ""), ""]
+
+    if classification and "error" not in classification:
+        lines.append("## Competition profile")
+        lines.append(
+            f"- **Modality / task:** {classification.get('data_modality', '?')} / "
+            f"{classification.get('task_type', '?')}"
+        )
+        lines.append(f"- **Domain:** {classification.get('domain', '?')}")
+        lines.append(f"- **Metric:** {classification.get('metric', '?')}")
+        lines.append(
+            f"- **Labels:** {classification.get('label_structure', '?')}"
+        )
+        lines.append(
+            f"- **Test split:** {classification.get('test_split', '?')}"
+        )
+        lines.append(f"- **Format:** {classification.get('format', '?')}")
+        lines.append(
+            f"- **Dataset scale:** {classification.get('dataset_scale', '?')}"
+        )
+        challenges = classification.get("data_challenges") or []
+        if challenges:
+            lines.append(f"- **Data challenges:** {', '.join(challenges)}")
+        constraints = classification.get("constraints") or []
+        if constraints:
+            lines.append(f"- **Constraints:** {', '.join(constraints)}")
+        lines.append("")
 
     def _section(title: str, items: list[str]) -> None:
         if not items:
@@ -380,6 +435,24 @@ def cmd_solutions(args: argparse.Namespace) -> int:
         selected = ask_ollama_to_filter(unique[: args.limit], model=args.model)
         print(f"Ollama ({args.model}) selected {len(selected)} solution threads")
 
+        try:
+            classification = classify_competition_with_ollama(
+                comp, [s["title"] for s in selected], model=args.model
+            )
+        except Exception as e:
+            classification = {"error": f"{type(e).__name__}: {e}"}
+        (out / "competition.classification.json").write_text(
+            json.dumps(classification, indent=2)
+        )
+        if "error" not in classification:
+            print(
+                f"Classified: {classification.get('data_modality')}/"
+                f"{classification.get('task_type')} "
+                f"({classification.get('domain')})"
+            )
+        else:
+            print(f"Classification failed: {classification['error']}")
+
         all_links: list[dict] = []
         all_analyses: list[dict] = []
         for i, s in enumerate(selected, 1):
@@ -405,7 +478,7 @@ def cmd_solutions(args: argparse.Namespace) -> int:
         (out / "aggregated_analysis.json").write_text(json.dumps(agg, indent=2))
         if "error" not in agg:
             md = _render_aggregated_markdown(
-                args.slug, agg, all_analyses, all_links
+                args.slug, agg, all_analyses, all_links, classification
             )
             (out / "aggregated_summary.md").write_text(md)
             print(f"Wrote aggregated summary to {out}/aggregated_summary.md")

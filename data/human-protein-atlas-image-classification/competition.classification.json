@@ -1,0 +1,14 @@
+{
+  "data_modality": "image",
+  "task_type": "classification",
+  "label_structure": "multi_label",
+  "metric": "F-Score (Macro)",
+  "test_split": "unknown",
+  "format": "standard",
+  "dataset_scale": "unknown",
+  "domain": "medical_imaging",
+  "data_challenges": [
+    "class_imbalance"
+  ],
+  "constraints": []
+}

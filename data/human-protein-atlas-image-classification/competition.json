@@ -54,9 +54,9 @@
       "id": 13302,
       "name": "classification",
       "fullPath": "task > classification",
-      "datasetCount": 58556,
+      "datasetCount": 58557,
       "competitionCount": 221,
-      "scriptCount": 21222,
+      "scriptCount": 21223,
       "slug": "classification",
       "displayName": "Classification"
     },

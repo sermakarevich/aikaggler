@@ -2,6 +2,16 @@
 
 This competition focused on multi-label image classification of protein locations using CNN ensembles. Winning approaches typically combined diverse architectures (ResNet, DenseNet, Inception, SE-ResNeXt) with external HPA data, heavy deduplication of test/train sets, and careful threshold optimization to handle extreme class imbalance.
 
+## Competition profile
+- **Modality / task:** image / classification
+- **Domain:** medical_imaging
+- **Metric:** F-Score (Macro)
+- **Labels:** multi_label
+- **Test split:** unknown
+- **Format:** standard
+- **Dataset scale:** unknown
+- **Data challenges:** class_imbalance
+
 ## Key challenges
 - extreme class imbalance
 - test-set duplicates

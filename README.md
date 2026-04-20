@@ -1,3 +1,7 @@
+<p align="center">
+  <img src="assets/image.png" alt="aikaggler" width="480">
+</p>
+
 # aikaggler
 
 Toolkit for competing in Kaggle competitions.
@@ -29,7 +33,6 @@ data/<slug>/
 └── solutions/
     └── rank_NN/
         ├── solution.md           # cleaned writeup
-        ├── solution.raw.json     # raw Kaggle RPC payload
         └── analysis.json         # per-solution structured fields
 ```
 
