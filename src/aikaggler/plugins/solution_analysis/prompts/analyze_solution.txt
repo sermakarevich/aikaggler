@@ -5,7 +5,7 @@ Rules:
 - 'tldr': one sentence describing the core approach. Do NOT copy the title. Example: 'DenseNet-121 with focal loss + ArcFace metric learning for rare-class label refinement.'
 - 'summary': 3-5 sentences covering models, validation strategy, key technique(s), and anything that drove the score. Do NOT repeat the title.
 - 'extensive_summary': a compressed rewrite of the full solution (several paragraphs of markdown). Preserve ALL technical detail — architecture specifics, hyperparameters, training schedule, loss choices, validation scheme, augmentations, ensemble recipe, post-processing, what worked / didn't. Drop only repetition, greetings, and fluff. Write as cohesive narrative with section headers (##) where helpful. Aim for ~40-60% the length of the source markdown. Preserve author's terminology verbatim for model/technique names.
-- 'rank': integer position. Parse from the title ('1st Place', '8 place solution', '3rd place') or from the body, else null.
+- 'rank': integer position. Typically can be found in title: '1st Place', '1st Place Solut', '8 place solution', '3rd place' or from the body. In critical case when can't found, return null.
 - 'models': architecture names mentioned (e.g. 'DenseNet-121').
 - 'cv_strategy': how validation was done (folds, holdout, splits, adversarial validation).
 - 'preprocessing': normalization, cleaning, duplicate handling, external data, image resizing, tokenization.
@@ -21,6 +21,7 @@ Leave empty ONLY for pure computer-vision or NLP competitions where no hand-craf
 - 'augmentations': train-time and test-time augmentations.
 - 'ensemble': one sentence describing the ensembling recipe.
 - 'what_worked' / 'what_did_not_work': extract ONLY if the author explicitly lists them in the writeup.
+- 'critical_findings': counterintuitive observations, data quirks, or score-moving insights the author explicitly calls out as lessons/discoveries — NOT techniques (those go in what_worked). Examples: 'test set had near-duplicate images — dedup dropped LB but raised CV', 'label noise on class X was ~30%, manual relabeling added 2 bps', 'public LB stratification differed from private, CV was more trustworthy'. One sentence each. Leave empty if none.
 - 'github_repos': classify role as 'solution' (author's own code for THIS competition), 'library' (third-party dependency), or 'reference' (mentioned for context, not a dep).
 - 'papers': include title and URL (both REQUIRED). Prefer arxiv URLs of form 'https://arxiv.org/abs/XXXX.XXXXX'. Set 'arxiv_id' ONLY if an explicit arxiv number appears in the writeup. Copy the title verbatim from the writeup text — NEVER invent one from the URL alone. If only a URL is present, omit the paper entirely.
 - 'other_solution_refs': links to OTHER kaggle kernels/discussions. Only include if an actual URL appears in the writeup — do NOT promote mere @user credits into solution refs.

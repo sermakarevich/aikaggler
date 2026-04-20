@@ -1,0 +1,52 @@
+{
+  "tldr": "Ensemble of multiple CNN architectures including ResNet, Inception, and Xception trained on HPA external data with NAdam optimizer.",
+  "summary": "The solution employs an ensemble of various CNN models (ResNet18, ResNet34, BNInception, InceptionV3, Xception, and SE-ResNeXt50) trained using binary cross-entropy loss. The approach utilizes external HPA data in Gray format and various image augmentations. The final result was achieved by ensembling models from two different experimental stages and incorporating a teammate's specific method.",
+  "extensive_summary": "## Model Architectures\nThe team experimented with several CNN architectures to build their ensemble, including ResNet18, ResNet34, BNInception, BNInception, InceptionV3, Xception, and SE-ResNeXt50. Each model was used with specific batch sizes ranging from 24 to 64 depending on the architecture and the architecture's capacity.\n\n## Training and Optimization\nThe models were trained using the NAdam optimizer with different learning rates applied to different layers. The binary cross-entropy (BCE) loss function was used for the same.\n\n## Data and Augmentation\nThe team utilized external HPA data in Gray format (512 size) in the first stage and modified the format of this external data in the second stage. Training augmentations included adding, multiplying, and cropping, as well as affine transformations, horizontal and vertical flips. For inference, 12-fold Test Time Augmentation (TTA) was used.\n\n## Post-processing\nThey attempted to search for an optimal threshold for the final predictions, but found it did not work, eventually settling on a threshold of 0.205.\n\n## Ensemble Strategy\nThe final solution was an ensemble of models from the first and second experimental stages, along with a method developed by teammate shisu.",
+  "rank": 11,
+  "models": [
+    "res18",
+    "res34",
+    "bninception",
+    "inceptionv3",
+    "xception",
+    "Se-resnext50"
+  ],
+  "cv_strategy": "",
+  "preprocessing": [
+    "external HPA data in Gray format (512 size)"
+  ],
+  "feature_engineering": [],
+  "augmentations": [
+    "Add",
+    "Multiply",
+    "Crop",
+    "Affine",
+    "Filplr",
+    "Filpub",
+    "12 TTA"
+  ],
+  "loss_functions": [
+    "bce"
+  ],
+  "ensemble": "Ensemble of models from the first and second experimental stages and a teammate's method.",
+  "post_processing": "Used a threshold of 0.205.",
+  "what_worked": [],
+  "what_did_not_work": [
+    "searching for the threshold"
+  ],
+  "critical_findings": [],
+  "github_repos": [
+    {
+      "url": "https://github.com/Gary-Deeplearning/Human_Protein",
+      "role": "solution"
+    }
+  ],
+  "papers": [],
+  "other_solution_refs": [
+    {
+      "description": "shisu's method",
+      "url": "https://www.kaggle.com/c/human-protein-atlas-image-classification/discussion/77289"
+    }
+  ],
+  "source_url": "https://www.kaggle.com/competitions/human-protein-atlas-image-classification/discussion/77282"
+}

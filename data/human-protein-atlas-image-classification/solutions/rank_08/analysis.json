@@ -1,0 +1,91 @@
+{
+  "tldr": "Ensemble of 14 models including Se-ResNext-50, InceptionV4, BN-Inception, and Xception using focal and LSEP loss.",
+  "summary": "The solution uses an ensemble of 14 models, primarily trained on 512x512 RGB images. The validation strategy involves a custom holdout set created via adversarial validation to mimic the test set. Key techniques include differential learning rates, focal and LSEP loss, and a stacking ensemble using LightGBM for most classes and linear models/voting for rare classes.",
+  "extensive_summary": "## Model Architecture\nThe solution employs an ensemble of 14 models. The primary architectures used are Se-ResNext-50 (trained at resolutions of 256x256, 512x512, and 768x768), InceptionV4, BN-Inception, and Xception (all trained at 512x512). The models utilize a simple one-layer network head.\n\n## Training and Loss\nTraining was conducted using the fast.ai framework. The authors used a learning rate finder and cyclic learning rates (long cycles initially, short cycles at the end). Differential learning rates with gradual reduction were used to preserve ImageNet weights. The loss functions employed were Focal loss (default gamma) and LSEP loss.\n\n## Data and Augmentations\nImages were trained on RGB channels. The authors avoided training on crops to ensure organelles occurring once per image were not missed. Augmentations included brightness adjustments, D4 transforms, and wrap transforms. Test-time augmentation (TTA) consisted of the average of 32 augmentations, using the same transforms as during training.\n\n## External Data\nExternal data was sourced from the Human Protein Atlas website. The authors performed label cleaning, noting that labels from `subcellular_location.tsv` and XML files were incorrect; they instead used labels directly from the website and merged rare labels to match the competition task.\n\n## Validation Strategy\nValidation was performed using a form of Adversarial Validation. A simple neural network was used to arrange the training set by similarity to the test set, resulting in an 8K sample holdout set. This holdout was used to fit thresholds for single models and check scores. All leaked images from HPA were added to the validation set.\n\n## Ensembling and Stacking\nFor most classes, the models were stacked using a LightGBM model. To avoid leakage, a \"folds-inside-folds\" scheme was adopted. For \"small\" classes with few positive cases, the authors used an ensemble of linear models and voting.\n\n## Resources\nTraining was performed on 4x1080ti GPUs over approximately two weeks.",
+  "rank": 8,
+  "models": [
+    "Se-ResNext-50",
+    "InceptionV4",
+    "BN-Inception",
+    "Xception"
+  ],
+  "cv_strategy": "Adversarial Validation (8K sample holdout set created by arranging train by similarity to test using a simple NN)",
+  "preprocessing": [
+    "Resizing to 256x256, 512x512, and 768x768",
+    "RGB channel selection",
+    "External data from Human Protein Atlas website with manual label correction/merging"
+  ],
+  "feature_engineering": [],
+  "augmentations": [
+    "Brightness augmentations",
+    ""
+  ],
+  "loss_functions": [
+    "Focal loss",
+    "LSEP loss"
+  ],
+  "ensemble": "Ensemble of 14 models stacked with LightGBM for most classes and linear models/voting for rare classes.",
+  "post_processing": "Fitting thresholds for single models using the adversarial holdout set.",
+  "what_worked": [
+    "Learning rate finder and cyclic learning rate",
+    "Differential learning rate with gradual reducing",
+    "Focal loss",
+    "LSEP loss",
+    "Simple one-layer network head",
+    "Brightness augmentations",
+    "D4 transforms",
+    "Wrap transforms",
+    "Average of 32 TTAs"
+  ],
+  "what_did_not_work": [
+    "Training on RGBY",
+    "Training with sample pairing",
+    "Mixup",
+    "Complex network head",
+    "Large architectures (Nasnet, Senet-154)",
+    "Training one-vs-all models",
+    "Training on subsets of similar classes",
+    "Classifier over bottleneck features"
+  ],
+  "critical_findings": [
+    "Yellow channel was not very helpful",
+    "Labeling was likely noisy (contradictions between HPAv18 and competition data)",
+    "Some classes (e.g., lysosomes and endosomes) are visually extremely similar and difficult to distinguish"
+  ],
+  "github_repos": [
+    {
+      "url": "https://github.com/Cadene/pretrained-models.pytorch",
+      "role": "library"
+    }
+  ],
+  "papers": [
+    {
+      "title": "LSEP loss",
+      "url": "https://arxiv.org/pdf/1704.03135.pdf",
+      "arxiv_id": "1704.03135"
+    }
+  ],
+  "other_solution_refs": [
+    {
+      "description": "Differential learning rates blog post",
+      "url": "https://blog.slavv.com/differential-learning-rates-59eff5209a4f"
+    },
+    {
+      "description": "Sample pairing paper",
+      "url": "https://arxiv.org/abs/1801.02929"
+    },
+    {
+      "description": "Mixup paper",
+      "url": "https://arxiv.org/abs/1710.09412"
+    },
+    {
+      "description": "https://www.kaggle.com/c/human-protein-atlas-image-classification/discussion/75768",
+      "url": "https://www.kaggle.com/c/human-protein-atlas-image-classification/discussion the 75768"
+    },
+    {
+      "description": "Strategy C from Kaggle general discussion",
+      "url": "https://www.kaggle.com/general/18793"
+    }
+  ],
+  "source_url": "https://www.kaggle.com/competitions/human-protein-atlas-image-classification/discussion/77251"
+}

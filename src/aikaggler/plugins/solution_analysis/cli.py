@@ -7,18 +7,19 @@ from pathlib import Path
 
 import httpx
 
-from kaggler.plugins.solution_analysis.config import (
+from aikaggler.plugins.solution_analysis.config import (
     AGGREGATE_TIMEOUT,
     ANALYZE_TIMEOUT,
     DEFAULT_OUTPUT_ROOT,
     KAGGLE_API,
     MAX_SOLUTION_BODY_CHARS,
     OLLAMA_MODEL,
+    OLLAMA_RETRIES,
     OLLAMA_URL,
     PROMPTS_DIR,
     USER_AGENT,
 )
-from kaggler.plugins.solution_analysis.structure import (
+from aikaggler.plugins.solution_analysis.structure import (
     AGGREGATED_SCHEMA,
     FILTER_SCHEMA,
     GITHUB_URL_RE,
@@ -101,6 +102,38 @@ class KaggleRPC:
         )
 
 
+def _ollama_call(
+    prompt: str,
+    schema: dict,
+    timeout: int,
+    model: str = OLLAMA_MODEL,
+    url: str = OLLAMA_URL,
+    retries: int = OLLAMA_RETRIES,
+) -> dict:
+    body = {
+        "model": model,
+        "messages": [{"role": "user", "content": prompt}],
+        "stream": False,
+        "options": {"temperature": 0},
+        "format": schema,
+    }
+    last_err: Exception | None = None
+    for attempt in range(1, retries + 1):
+        try:
+            r = httpx.post(url, json=body, timeout=timeout)
+            r.raise_for_status()
+            content = r.json()["message"]["content"]
+            return json.loads(content)
+        except (json.JSONDecodeError, httpx.HTTPError) as e:
+            last_err = e
+            if attempt < retries:
+                print(
+                    f"  ollama call failed ({type(e).__name__}: {e}), "
+                    f"retrying {attempt}/{retries - 1}..."
+                )
+    raise last_err  # type: ignore[misc]
+
+
 def ask_ollama_to_filter(
     topics: list[dict], model: str = OLLAMA_MODEL, url: str = OLLAMA_URL
 ) -> list[dict]:
@@ -111,17 +144,10 @@ def ask_ollama_to_filter(
     prompt = load_prompt(
         "filter_topics", topics_json=json.dumps(slim, indent=2)
     )
-    body = {
-        "model": model,
-        "messages": [{"role": "user", "content": prompt}],
-        "stream": False,
-        "options": {"temperature": 0},
-        "format": FILTER_SCHEMA,
-    }
-    r = httpx.post(url, json=body, timeout=ANALYZE_TIMEOUT)
-    r.raise_for_status()
-    content = r.json()["message"]["content"]
-    return json.loads(content).get("solutions", [])
+    result = _ollama_call(
+        prompt, FILTER_SCHEMA, ANALYZE_TIMEOUT, model=model, url=url
+    )
+    return result.get("solutions", [])
 
 
 def analyze_solution_with_ollama(
@@ -137,17 +163,9 @@ def analyze_solution_with_ollama(
         regex_urls_json=json.dumps([l["url"] for l in regex_links]),
         body_excerpt=body[:MAX_SOLUTION_BODY_CHARS],
     )
-    body_req = {
-        "model": model,
-        "messages": [{"role": "user", "content": prompt}],
-        "stream": False,
-        "options": {"temperature": 0},
-        "format": SOLUTION_SCHEMA,
-    }
-    r = httpx.post(url, json=body_req, timeout=ANALYZE_TIMEOUT)
-    r.raise_for_status()
-    content = r.json()["message"]["content"]
-    return json.loads(content)
+    return _ollama_call(
+        prompt, SOLUTION_SCHEMA, ANALYZE_TIMEOUT, model=model, url=url
+    )
 
 
 def aggregate_analyses_with_ollama(
@@ -171,6 +189,7 @@ def aggregate_analyses_with_ollama(
             "post_processing": a["analysis"].get("post_processing", ""),
             "what_worked": a["analysis"].get("what_worked", []),
             "what_did_not_work": a["analysis"].get("what_did_not_work", []),
+            "critical_findings": a["analysis"].get("critical_findings", []),
         }
         for a in analyses
         if "error" not in a.get("analysis", {})
@@ -178,17 +197,9 @@ def aggregate_analyses_with_ollama(
     prompt = load_prompt(
         "aggregate_analyses", payload_json=json.dumps(payload, indent=2)
     )
-    body_req = {
-        "model": model,
-        "messages": [{"role": "user", "content": prompt}],
-        "stream": False,
-        "options": {"temperature": 0},
-        "format": AGGREGATED_SCHEMA,
-    }
-    r = httpx.post(url, json=body_req, timeout=AGGREGATE_TIMEOUT)
-    r.raise_for_status()
-    content = r.json()["message"]["content"]
-    return json.loads(content)
+    return _ollama_call(
+        prompt, AGGREGATED_SCHEMA, AGGREGATE_TIMEOUT, model=model, url=url
+    )
 
 
 def extract_github_links(detail: dict) -> list[dict]:
@@ -210,6 +221,10 @@ def extract_github_links(detail: dict) -> list[dict]:
             "url": f"https://github.com/{owner}/{repo}",
         })
     return found
+
+
+def _rank_stem(rank: int | None, topic_id: int) -> str:
+    return f"rank_{rank:02d}" if isinstance(rank, int) else f"rank_xx_{topic_id}"
 
 
 def _write_solution_files(
@@ -236,11 +251,7 @@ def _write_solution_files(
         analysis = {"error": f"{type(e).__name__}: {e}"}
     analysis["source_url"] = url
 
-    rank = analysis.get("rank")
-    stem = (
-        f"rank_{rank:02d}" if isinstance(rank, int)
-        else f"rank_xx_{topic_id}"
-    )
+    stem = _rank_stem(analysis.get("rank"), topic_id)
     solution_dir = out_dir / "solutions" / stem
     solution_dir.mkdir(parents=True, exist_ok=True)
 
@@ -293,6 +304,7 @@ def _render_aggregated_markdown(
     _section("Post-processing", agg.get("all_post_processing", []))
     _section("What worked", agg.get("all_what_worked", []))
     _section("What did not work", agg.get("all_what_did_not_work", []))
+    _section("Critical findings", agg.get("all_critical_findings", []))
     _section(
         "Notable individual insights",
         agg.get("notable_individual_insights", []),
@@ -302,23 +314,30 @@ def _render_aggregated_markdown(
     for a in sorted(analyses, key=lambda x: x["analysis"].get("rank") or 999):
         rank = a["analysis"].get("rank")
         rank_str = f"#{rank}" if rank else "?"
+        stem = _rank_stem(rank, a["topic_id"])
         lines.append(
-            f"- {rank_str} [{a['title']}]({a['analysis'].get('source_url', '')})"
+            f"- {rank_str} [[solutions/{stem}/solution|{a['title']}]]"
         )
     lines.append("")
 
-    solution_repos = [
-        l for l in all_links
-        if any(
-            r.get("url") == l["url"] and r.get("role") == "solution"
-            for a in analyses for r in a["analysis"].get("github_repos", [])
-        )
-    ]
-    if solution_repos:
-        lines.append("## Solution GitHub repos")
-        for l in solution_repos:
+    if all_links:
+        role_by_key = {
+            (a["topic_id"], r.get("url")): r.get("role")
+            for a in analyses
+            for r in a["analysis"].get("github_repos", [])
+        }
+        stem_by_topic = {
+            a["topic_id"]: _rank_stem(a["analysis"].get("rank"), a["topic_id"])
+            for a in analyses
+        }
+        lines.append("## GitHub links")
+        for l in all_links:
+            stem = stem_by_topic.get(l["topic_id"], "")
+            role = role_by_key.get((l["topic_id"], l["url"]))
+            role_str = f" _({role})_" if role else ""
             lines.append(
-                f"- [{l['owner']}/{l['repo']}]({l['url']}) — from: {l['title']}"
+                f"- [{l['owner']}/{l['repo']}]({l['url']}){role_str}"
+                f" — from [[solutions/{stem}/solution|{l['title']}]]"
             )
         lines.append("")
 

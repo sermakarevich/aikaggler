@@ -1,0 +1,50 @@
+{
+  "tldr": "Ensemble of ResNet-34, InceptionV3, and SE-ResNeXt-50 using image-specific normalization and custom weighted average logits for high-resolution inputs.",
+  "summary": "The solution employs an ensemble of ResNet-34, InceptionV3, and InceptionV3, and SE-ResNeXt-50 trained on official and external data. Validation is handled via a 1/10 holdout set and 5-fold CV, with phash/ahash to prevent leakage. Key techniques include image-specific normalization, Focal Loss, and a custom output layer for 1024x1024 images that replaces global average pooling with weighted average logits. Thresholds are optimized by matching predicted positive proportions to validation set proportions.",
+  "extensive_summary": "## Dataset Preparation\nThe author used a combination of official and external data from the Protein Atlas. To prevent duplicate images across splits, phash and ahash were employed. The dataset was split into a 1/10 holdout set for ensembling and 5-fold cross-validation using the remaining 9/10 of the data. In cases of label conflicts between official and external data, official labels were prioritized.\n\n## Input Preprocessing\nDue to differences in image mean and stddev between official and external datasets, the author used the mean and stddev of individual images for normalization instead of global dataset statistics.\n\n## Training and Loss\nModels were trained using Focal Loss (gamma=2) and the Adam optimizer with a learning rate of 0.0005. No learning rate scheduling was used. For 1024x1024 resolution models, gradient accumulation was used to update weights every 32 examples. Early stopping was based on the F1 score of class 0, as relying on the macro F1 score was found to be risky due to the volatility of rare classes.\n\n## Model Architectures\nModels were trained at two resolutions:\n- **512x512**: ResNet-34 (5-fold ensemble with TTA).\n- **1024x1024**: InceptionV3 and SE-ResNeXt-50 (single fold with TTA).\n\nFor the 1024x1024 models, the author found that global average pooling (GAP) performed poorly. They replaced GAP with a custom layer: 1x1 convolution to compute MxM logits, followed by another 1x1 convolution and softmax to create weight maps, which were then used to compute weighted averaged logits.\n\n## Inference and Post-processing\nInference involved averaging the weights of the last 10 checkpoints and applying 8-fold test-time augmentation (TTA). The final submission was a weighted averaging ensemble of the three models. Thresholds for each class were determined by ensuring the proportion of positive predictions in the validation set closely matched the proportion of positive examples.\n\n## Validation\nThe author noted that creating a stable CV was difficult and expressed that they could not be certain if all methods were effective due to this instability.",
+  "rank": 3,
+  "models": [
+    "resnet34",
+    "inceptionv3",
+    "se_resnext50"
+  ],
+  "cv_strategy": "1/10 holdout set for ensemble, 5-fold cross validation on the remaining 9/10; phash and ahash used to prevent duplicate images in different splits.",
+  "preprocessing": [
+    "official + external data",
+    "image-specific mean and stddev normalization",
+    "phash and ahash for deduplication"
+  ],
+  "feature_engineering": [],
+  "augmentations": [
+    "AutoAugment (random search instead of RL)"
+  ],
+  "loss_functions": [
+    "Focal loss (gamma 2)"
+  ],
+  "ensemble": "Weighted averaging ensemble of ResNet-34, InceptionV3, and SE-ResNeXt-50.",
+  "post_processing": "Thresholds chosen so that the proportion of positive predictions in the validation set match the proportion of positive examples.",
+  "what_worked": [],
+  "what_did_not_work": [
+    "global average pooling for 1024x1024 input"
+  ],
+  "critical_findings": [
+    "distributions of image mean and stddev are very difference between official and external data",
+    "macro F1 score is very sensitive to thresholds",
+    "relying on rare class score for early stopping is risky"
+  ],
+  "github_repos": [
+    {
+      "url": "https://github.com/pudae/kaggle-hpa",
+      "role": "solution"
+    }
+  ],
+  "papers": [
+    {
+      "title": "AutoAugment: Learning Augmentation Policies",
+      "url": "https://arxiv.org/pdf/1805.09501.pdf",
+      "arxiv_id": "1805.09501"
+    }
+  ],
+  "other_solution_refs": [],
+  "source_url": "https://www.kaggle.com/competitions/human-protein-atlas-image-classification/discussion/77320"
+}

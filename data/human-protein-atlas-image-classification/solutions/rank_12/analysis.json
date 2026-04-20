@@ -1,0 +1,43 @@
+{
+  "tldr": "Ensemble of ResNet50 and DenseNet121 models with custom gamma correction layers and class-specific expert model selection.",
+  "summary": "The solution uses an ensemble of 11 models, primarily ResNet50 and DenseNet121, trained with float16 precision and multi-scale resolution. A key technique was the implementation of a learnable gamma correction layer per channel to handle dark exposure in images. Validation involved removing duplicates using imagehash and analyzing F1-curves to detect overfitting. The final ensemble combined 'expert models' for specific classes with a one-vote ensemble of top predictions from other models.",
+  "extensive_summary": "## Model Architecture and Training\nThe author trained 11 models in total: 9 ResNet50 and 2 DenseNet121. The base ResNet50 was trained using PyTorch with float16 precision, RGB images at 1024x1024 resolution, and multi-scale resolution images. Training hyperparameters included SGD, weight decay, gradient clipping, and BCE loss.\n\n## Preprocessing and Augmentation\nTo ensure a reliable validation set and accurate class thresholds, the author removed duplicates by comparing image channels using the `imagehash` library. Extensive data augmentation was used during training.\n\n## Gamma Correction\nTo address dark exposure in some images, half of the models included an initial layer to learn independent gammas (y_1, y_2, y_3) per channel. This layer used a single parameter initialized at 1 without an activation function. This approach reduced global validation loss and improved the F1-score for certain classes, with learned gammas typically falling in the range [0.6-0.65].\n\n## Validation and Overfitting\nTo detect overfitting, the author analyzed F1-curves, specifically looking for cases where Precision dominated Recall. The hypothesis was that such models were learning training-set-specific features rather than generalizable patterns. In these cases, the author either lowered thresholds or discarded the model.\n\n## Ensembling Strategy\nAfter experimenting with Logistic Regression, Averaging, Stacking, and XGBoosting (which were found to overfit on rare classes), the author adopted a two-pronged approach:\n1. **Expert Models**: Specific models were chosen as 'experts' for certain classes based on HPA web info, F1-curves, validation data, and the public leaderboard (e.g., Yellow image model for classes 6 and 7).\n2. **One-Vote Ensembling**: For non-expert models, the author increased the recall by including top predictions. Thresholds for these models were adjusted using the formula $T_{opt} = T_{opt} + (1 - T_{opt}) * 0.3$, and a prediction was made if any model in the ensemble voted for the class.\n\n## Experiments and Results\n- **What worked**: Learnable gamma correction and removing duplicates via imagehash.\n- **What did not work**: Training a Multi Head Attention Module (Transformer) on crop predictions, using a GapNet style/Feature Pyramid with ResNet18, and training with 2048x2048 images due to small batch sizes.",
+  "rank": 12,
+  "models": [
+    "ResNet50",
+    "DenseNet121",
+    "ResNet18"
+  ],
+  "cv_strategy": "Removing duplicates using imagehash to improve validation set and find class thresholds.",
+  "preprocessing": [
+    "Removing duplicates using imagehash library",
+    "RGB",
+    "1024x1024 resizing"
+  ],
+  "feature_engineering": [],
+  "augmentations": [
+    "multi-scale resolution images",
+    "lots of data augmentation"
+  ],
+  "loss_functions": [
+    "BCE loss"
+  ],
+  "ensemble": "Combination of class-specific expert models and a one-vote ensemble of top predictions from other models with adjusted thresholds.",
+  "post_processing": "Finding class thresholds and adjusting non-expert model thresholds using T_opt = T_opt + (1 - T_opt) * 0.3.",
+  "what_worked": [
+    "Removing duplicates using imagehash",
+    "Learnable gamma correction layer per channel"
+  ],
+  "what_did_not_work": [
+    "Multi Head Attention Module (Transformer) on crop predictions",
+    "GapNet style/Feature Pyramid with ResNet18",
+    "Training with 2048x2048 images"
+  ],
+  "critical_findings": [
+    "Models that overfit showed a pattern where Precision extremely dominated Recall in F1-curves."
+  ],
+  "github_repos": [],
+  "papers": [],
+  "other_solution_refs": [],
+  "source_url": "https://www.kaggle.com/competitions/human-protein-atlas-image-classification/discussion/77325"
+}

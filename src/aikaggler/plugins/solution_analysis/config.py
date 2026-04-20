@@ -10,10 +10,11 @@ USER_AGENT = (
 )
 KAGGLE_API = "https://www.kaggle.com/api/i"
 OLLAMA_URL = "http://localhost:11434/api/chat"
-OLLAMA_MODEL = "gemma4:latest"
+OLLAMA_MODEL = "gemma4:31b"
 
 PROMPTS_DIR = Path(__file__).parent / "prompts"
 
 MAX_SOLUTION_BODY_CHARS = 20000
 ANALYZE_TIMEOUT = 600
 AGGREGATE_TIMEOUT = 900
+OLLAMA_RETRIES = 3

@@ -1,0 +1,41 @@
+{
+  "tldr": "Ensemble of GAPNet with ResNet18 backbone and ResNet34 with a dual classification-segmentation loss.",
+  "summary": "The solution utilizes a diverse ensemble of approximately 25 models, specifically focusing on GAPNet and a dual-loss ResNet34. GAPNet was implemented using a ResNet18 backbone with SE-Blocks and trained on 512x512 RGB images. The ResNet34 model employed a dual loss consisting of a standard classification loss and a segmentation loss derived from the green channel of the image to act as a regularizer. Validation was performed using 5-fold cross-validation.",
+  "extensive_summary": "## Architecture and Strategy\n\nThe core strategy focused on model diversity to improve ensemble performance. The author utilized Keras for implementation and employed various cross-validation schemes. Initial experimentation was conducted using 256x256 RGB images to accelerate iteration speed.\n\n## GAPNet Implementation\n\nThe author adapted the GAPNet architecture by replacing the original structure with a pretrained backbone, specifically ResNet18. To enhance performance, SE-Blocks were added before the Average Pooling layers. The model was trained on 512x512 RGB images using a weighted BCE and F1 loss with a cosine annealing learning rate schedule over 20 epochs. The author also incorporated HPA external data. A single 5-fold GAPNet model achieved a 0.602 Public LB, while an ensemble of four 5-fold GAPNet models (experimenting with different internal/external data proportions and cropping) achieved 0.609.\n\n## Dual Loss ResNet\n\nThe author implemented a ResNet34 model featuring a dual loss mechanism. In addition to the standard classification loss, a segmentation loss was used as a regularizer. This was achieved by taking the output of the last 32x32x128 layer, applying a Conv2D to reach 32x32x28, and using a downsampled version of the green channel with corresponding labels as the ground truth mask. This supervised attention mechanism provided significant regularization benefits. Two 5-fold variants of this ResNet34 were trained, scoring 0.603 on the Public LB. When added to the GAPNet ensemble, the overall score improved to 0.618.",
+  "rank": 4,
+  "models": [
+    "GAPNet",
+    "ResNet18",
+    "ResNet34",
+    "SE-Blocks"
+  ],
+  "cv_strategy": "5-fold cross-validation",
+  "preprocessing": [
+    "256x256 RGB images (initial)",
+    "512x512 RGB images (final)",
+    "512 cropping from 1024 images",
+    "HPA external data"
+  ],
+  "feature_engineering": [],
+  "augmentations": [],
+  "loss_functions": [
+    "weighted bce",
+    "f1 loss",
+    "segmentation loss"
+  ],
+  "ensemble": "Ensemble of four 5-fold GAPNet models and two 5-fold dual-loss ResNet34 models.",
+  "post_processing": "thresholding method",
+  "what_worked": [
+    "SE-Blocks before Average Pooling layers",
+    "supervised attention via segmentation loss as a regularizer",
+    "model diversity"
+  ],
+  "what_did_not_work": [
+    "RGBY images"
+  ],
+  "critical_findings": [],
+  "github_repos": [],
+  "papers": [],
+  "other_solution_refs": [],
+  "source_url": "https://www.kaggle.com/competitions/human-protein-atlas-image-classification/discussion/77300"
+}

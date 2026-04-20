@@ -1,4 +1,4 @@
-# kaggler
+# aikaggler
 
 Toolkit for competing in Kaggle competitions.
 

@@ -46,6 +46,7 @@ SOLUTION_SCHEMA = {
         "post_processing": {"type": "string"},
         "what_worked": {"type": "array", "items": {"type": "string"}},
         "what_did_not_work": {"type": "array", "items": {"type": "string"}},
+        "critical_findings": {"type": "array", "items": {"type": "string"}},
         "github_repos": {
             "type": "array",
             "items": {
@@ -88,7 +89,8 @@ SOLUTION_SCHEMA = {
         "tldr", "summary", "extensive_summary", "rank", "models",
         "cv_strategy", "preprocessing", "feature_engineering", "augmentations",
         "loss_functions", "ensemble", "post_processing", "what_worked",
-        "what_did_not_work", "github_repos", "papers", "other_solution_refs",
+        "what_did_not_work", "critical_findings", "github_repos", "papers",
+        "other_solution_refs",
     ],
 }
 
@@ -107,6 +109,9 @@ AGGREGATED_SCHEMA = {
         "all_post_processing": {"type": "array", "items": {"type": "string"}},
         "all_what_worked": {"type": "array", "items": {"type": "string"}},
         "all_what_did_not_work": {"type": "array", "items": {"type": "string"}},
+        "all_critical_findings": {
+            "type": "array", "items": {"type": "string"}
+        },
         "notable_individual_insights": {
             "type": "array", "items": {"type": "string"}
         },
@@ -116,6 +121,6 @@ AGGREGATED_SCHEMA = {
         "all_cv_strategies", "all_preprocessing", "all_feature_engineering",
         "all_augmentations", "all_loss_functions", "all_ensemble_patterns",
         "all_post_processing", "all_what_worked", "all_what_did_not_work",
-        "notable_individual_insights",
+        "all_critical_findings", "notable_individual_insights",
     ],
 }

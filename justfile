@@ -4,5 +4,5 @@ default:
 install:
     uv sync
 
-solutions slug:
+solutions slug="human-protein-atlas-image-classification":
     uv run akc solutions {{slug}}

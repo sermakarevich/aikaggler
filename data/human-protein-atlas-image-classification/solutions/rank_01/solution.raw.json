@@ -1,0 +1,3298 @@
+{
+  "forumTopic": {
+    "authorId": 708283,
+    "authorThumbnailName": "708283-kg.jpg",
+    "authorUserDisplayName": "bestfitting",
+    "authorUserName": "bestfitting",
+    "comments": [
+      {
+        "id": 459759,
+        "postDate": "2019-01-22T10:06:31.650Z",
+        "rawMarkdown": "Thanks for sharing, this shows that a rather simple, but well thought solution overcomes more complex ensembles.  \n\n&gt; I feel kaggle competitions are becoming harder and harder.\n\nI guess many of us can relate to this!",
+        "content": "<p>Thanks for sharing, this shows that a rather simple, but well thought solution overcomes more complex ensembles.  </p>\n\n<blockquote>\n  <p>I feel kaggle competitions are becoming harder and harder.</p>\n</blockquote>\n\n<p>I guess many of us can relate to this!</p>",
+        "parent": {},
+        "author": {
+          "displayName": "CPMP",
+          "thumbnailUrl": "https://storage.googleapis.com/kaggle-avatars/thumbnails/75976-gr.jpg",
+          "url": "/cpmpml",
+          "tier": "GRANDMASTER",
+          "id": 75976,
+          "progressionOptOut": false
+        },
+        "authorType": "COMMENT",
+        "votes": {
+          "totalVotes": 17,
+          "canUpvote": true,
+          "totalUpvotes": 17
+        },
+        "kernelVersion": 0,
+        "feedbackTrackingData": {},
+        "isThankYou": false
+      },
+      {
+        "id": 538844,
+        "postDate": "2019-05-29T07:14:57.777Z",
+        "rawMarkdown": "Congratulations on currently being first on Kaggle, your work is inspiring an entire Generation. Keep up the good work \ud83d\udcaf ",
+        "content": "<p>Congratulations on currently being first on Kaggle, your work is inspiring an entire Generation. Keep up the good work \ud83d\udcaf </p>",
+        "parent": {},
+        "author": {
+          "displayName": "Bhavesh Kamble",
+          "thumbnailUrl": "https://storage.googleapis.com/kaggle-avatars/thumbnails/default-thumb.png",
+          "url": "/bhaveshsk",
+          "tier": "CONTRIBUTOR",
+          "id": 3225397,
+          "progressionOptOut": false
+        },
+        "authorType": "COMMENT",
+        "votes": {
+          "totalVotes": 4,
+          "canUpvote": true,
+          "totalUpvotes": 5
+        },
+        "kernelVersion": 0,
+        "feedbackTrackingData": {},
+        "isThankYou": false
+      },
+      {
+        "id": 458547,
+        "postDate": "2019-01-19T22:32:19.530Z",
+        "rawMarkdown": "Congratulations not only on the impressive result but on having the courage to try a new technique and then find a way to have it work so well! \n\nAppreciating that you are very busy, I wonder if you could take a minute to post a link towards any useful article you found to get started with understanding the metric learning approach?",
+        "content": "<p>Congratulations not only on the impressive result but on having the courage to try a new technique and then find a way to have it work so well! </p>\n\n<p>Appreciating that you are very busy, I wonder if you could take a minute to post a link towards any useful article you found to get started with understanding the metric learning approach?</p>",
+        "replies": [
+          {
+            "id": 458904,
+            "postDate": "2019-01-20T19:25:37.107Z",
+            "rawMarkdown": "Hi,Tim,thank you!\nAndrew Ng's Deep Learning  Course on Coursera introduces Siamese network and Triplet Loss,I remember it's Part 4.2-4.5,it's a good start,although these can not ensure a good position in a competition related.\nSince you are interested in the metric learning,I invite you to the Whale identification challenge,you will find some kernels useful https://www.kaggle.com/c/humpback-whale-identification/kernels. As I am busy recently,I did not read them carefully,but most upvoted ones are always useful.\nWhale competition is a suitable competition with not so many images,I think you can  get a very good understanding of  metric learning after a month and use it in a lot of scenarios.<br>\n",
+            "content": "<p>Hi,Tim,thank you!\nAndrew Ng's Deep Learning  Course on Coursera introduces Siamese network and Triplet Loss,I remember it's Part 4.2-4.5,it's a good start,although these can not ensure a good position in a competition related.\nSince you are interested in the metric learning,I invite you to the Whale identification challenge,you will find some kernels useful <a href=\"https://www.kaggle.com/c/humpback-whale-identification/kernels\">https://www.kaggle.com/c/humpback-whale-identification/kernels</a>. As I am busy recently,I did not read them carefully,but most upvoted ones are always useful.\nWhale competition is a suitable competition with not so many images,I think you can  get a very good understanding of  metric learning after a month and use it in a lot of scenarios.<br></p>",
+            "parent": {},
+            "author": {
+              "displayName": "bestfitting",
+              "thumbnailUrl": "https://storage.googleapis.com/kaggle-avatars/thumbnails/708283-kg.jpg",
+              "url": "/bestfitting",
+              "tier": "GRANDMASTER",
+              "id": 708283,
+              "progressionOptOut": false
+            },
+            "authorType": "TOPIC",
+            "votes": {
+              "totalVotes": 16,
+              "canUpvote": true,
+              "totalUpvotes": 16
+            },
+            "kernelVersion": 0,
+            "competitionRanking": 1,
+            "feedbackTrackingData": {},
+            "isThankYou": false,
+            "teamUpInfo": {
+              "teamLeader": {
+                "displayName": "bestfitting",
+                "thumbnailUrl": "https://storage.googleapis.com/kaggle-avatars/thumbnails/708283-kg.jpg",
+                "url": "/bestfitting",
+                "userName": "bestfitting",
+                "tier": "GRANDMASTER",
+                "id": 708283,
+                "profileUrl": "/bestfitting",
+                "performanceTier": "GRANDMASTER",
+                "userId": 708283,
+                "progressionOptOut": false
+              },
+              "intro": ""
+            }
+          },
+          {
+            "id": 458978,
+            "postDate": "2019-01-21T00:00:28.233Z",
+            "rawMarkdown": "Thank you. You've refreshed my memory on Andrew Ng's excellent course.  \n\nI am just starting to look at the earthquake prediction challenge but might take your advice and look at the whale competition as well.",
+            "content": "<p>Thank you. You've refreshed my memory on Andrew Ng's excellent course.  </p>\n\n<p>I am just starting to look at the earthquake prediction challenge but might take your advice and look at the whale competition as well.</p>",
+            "parent": {},
+            "author": {
+              "displayName": "Tim H",
+              "thumbnailUrl": "https://storage.googleapis.com/kaggle-avatars/thumbnails/2076638-kg.jpg",
+              "url": "/timhartill",
+              "tier": "EXPERT",
+              "id": 2076638,
+              "progressionOptOut": false
+            },
+            "authorType": "COMMENT",
+            "votes": {
+              "canUpvote": true
+            },
+            "kernelVersion": 0,
+            "competitionRanking": 95,
+            "feedbackTrackingData": {},
+            "isThankYou": false,
+            "teamUpInfo": {
+              "teamLeader": {
+                "displayName": "Tim H",
+                "thumbnailUrl": "https://storage.googleapis.com/kaggle-avatars/thumbnails/2076638-kg.jpg",
+                "url": "/timhartill",
+                "userName": "timhartill",
+                "tier": "EXPERT",
+                "id": 2076638,
+                "profileUrl": "/timhartill",
+                "performanceTier": "EXPERT",
+                "userId": 2076638,
+                "progressionOptOut": false
+              },
+              "intro": ""
+            }
+          },
+          {
+            "id": 468346,
+            "postDate": "2019-02-08T17:51:56.180Z",
+            "rawMarkdown": "@bestfitting Is it possible that you can share your data generator for metric learning? ",
+            "content": "<p><a href=\"/bestfitting\">@bestfitting</a> Is it possible that you can share your data generator for metric learning? </p>",
+            "parent": {},
+            "author": {
+              "displayName": "William Green",
+              "thumbnailUrl": "https://storage.googleapis.com/kaggle-avatars/thumbnails/756494-kg.png",
+              "url": "/dskswu",
+              "tier": "EXPERT",
+              "id": 756494,
+              "progressionOptOut": false
+            },
+            "authorType": "COMMENT",
+            "votes": {
+              "canUpvote": true
+            },
+            "kernelVersion": 0,
+            "competitionRanking": 220,
+            "feedbackTrackingData": {},
+            "isThankYou": false,
+            "teamUpInfo": {
+              "teamLeader": {
+                "displayName": "Kevin Garda",
+                "thumbnailUrl": "https://storage.googleapis.com/kaggle-avatars/thumbnails/833438-fb.jpg",
+                "url": "/kevingarda7",
+                "userName": "kevingarda7",
+                "tier": "CONTRIBUTOR",
+                "id": 833438,
+                "profileUrl": "/kevingarda7",
+                "performanceTier": "CONTRIBUTOR",
+                "userId": 833438,
+                "progressionOptOut": false
+              },
+              "intro": ""
+            }
+          }
+        ],
+        "parent": {},
+        "author": {
+          "displayName": "Tim H",
+          "thumbnailUrl": "https://storage.googleapis.com/kaggle-avatars/thumbnails/2076638-kg.jpg",
+          "url": "/timhartill",
+          "tier": "EXPERT",
+          "id": 2076638,
+          "progressionOptOut": false
+        },
+        "authorType": "COMMENT",
+        "votes": {
+          "totalVotes": 5,
+          "canUpvote": true,
+          "totalUpvotes": 5
+        },
+        "kernelVersion": 0,
+        "competitionRanking": 95,
+        "feedbackTrackingData": {},
+        "isThankYou": false,
+        "teamUpInfo": {
+          "teamLeader": {
+            "displayName": "Tim H",
+            "thumbnailUrl": "https://storage.googleapis.com/kaggle-avatars/thumbnails/2076638-kg.jpg",
+            "url": "/timhartill",
+            "userName": "timhartill",
+            "tier": "EXPERT",
+            "id": 2076638,
+            "profileUrl": "/timhartill",
+            "performanceTier": "EXPERT",
+            "userId": 2076638,
+            "progressionOptOut": false
+          },
+          "intro": ""
+        }
+      },
+      {
+        "id": 820135,
+        "postDate": "2020-04-25T07:09:20.013Z",
+        "rawMarkdown": "Thanks. This is a very helpful piece with good learning material for beginners.",
+        "content": "<p>Thanks. This is a very helpful piece with good learning material for beginners.</p>",
+        "parent": {},
+        "author": {
+          "displayName": "Sushrut Shitoot",
+          "thumbnailUrl": "https://storage.googleapis.com/kaggle-avatars/thumbnails/1088437-kg.jpg",
+          "url": "/sushrutshitoot",
+          "tier": "CONTRIBUTOR",
+          "id": 1088437,
+          "progressionOptOut": false
+        },
+        "authorType": "COMMENT",
+        "votes": {
+          "totalVotes": 1,
+          "canUpvote": true,
+          "totalUpvotes": 1
+        },
+        "kernelVersion": 0,
+        "feedbackTrackingData": {},
+        "isThankYou": false
+      },
+      {
+        "id": 792253,
+        "postDate": "2020-03-31T02:59:46.177Z",
+        "rawMarkdown": "Really amazing",
+        "content": "<p>Really amazing</p>",
+        "parent": {},
+        "author": {
+          "displayName": "Prawachan Dhungana",
+          "thumbnailUrl": "https://storage.googleapis.com/kaggle-avatars/thumbnails/default-thumb.png",
+          "url": "/prawachandhungana",
+          "tier": "CONTRIBUTOR",
+          "id": 4771008,
+          "progressionOptOut": false
+        },
+        "authorType": "COMMENT",
+        "votes": {
+          "totalVotes": 1,
+          "canUpvote": true,
+          "totalUpvotes": 1
+        },
+        "kernelVersion": 0,
+        "feedbackTrackingData": {},
+        "isThankYou": false
+      },
+      {
+        "id": 539913,
+        "postDate": "2019-05-30T17:42:27.343Z",
+        "rawMarkdown": "Excellent report, would be very helpful if top solution got reports with this quality, congrats!",
+        "content": "<p>Excellent report, would be very helpful if top solution got reports with this quality, congrats!</p>",
+        "parent": {},
+        "author": {
+          "displayName": "DimitreOliveira",
+          "thumbnailUrl": "https://storage.googleapis.com/kaggle-avatars/thumbnails/1182060-kg.jpg",
+          "url": "/dimitreoliveira",
+          "tier": "GRANDMASTER",
+          "id": 1182060,
+          "progressionOptOut": false
+        },
+        "authorType": "COMMENT",
+        "votes": {
+          "totalVotes": 3,
+          "canUpvote": true,
+          "totalUpvotes": 3
+        },
+        "kernelVersion": 0,
+        "feedbackTrackingData": {},
+        "isThankYou": false
+      },
+      {
+        "id": 508855,
+        "postDate": "2019-04-06T22:09:52.123Z",
+        "rawMarkdown": "Hi Bestfitting, how did you do lovasz loss on label predictions instead of mask predictions? Thanks!",
+        "content": "<p>Hi Bestfitting, how did you do lovasz loss on label predictions instead of mask predictions? Thanks!</p>",
+        "replies": [
+          {
+            "id": 509028,
+            "postDate": "2019-04-07T08:17:35.797Z",
+            "rawMarkdown": " I used lovasz loss to let the network balance the precision and recall.Since we use sigmoid and binary classification on every pixel on mask prediction tasks, we can treat 28 labels as 28 pixels and then we can use lovasz loss on it. ",
+            "content": "<p>I used lovasz loss to let the network balance the precision and recall.Since we use sigmoid and binary classification on every pixel on mask prediction tasks, we can treat 28 labels as 28 pixels and then we can use lovasz loss on it. </p>",
+            "parent": {},
+            "author": {
+              "displayName": "bestfitting",
+              "thumbnailUrl": "https://storage.googleapis.com/kaggle-avatars/thumbnails/708283-kg.jpg",
+              "url": "/bestfitting",
+              "tier": "GRANDMASTER",
+              "id": 708283,
+              "progressionOptOut": false
+            },
+            "authorType": "TOPIC",
+            "votes": {
+              "totalVotes": 9,
+              "canUpvote": true,
+              "totalUpvotes": 9
+            },
+            "kernelVersion": 0,
+            "competitionRanking": 1,
+            "feedbackTrackingData": {},
+            "isThankYou": false,
+            "teamUpInfo": {
+              "teamLeader": {
+                "displayName": "bestfitting",
+                "thumbnailUrl": "https://storage.googleapis.com/kaggle-avatars/thumbnails/708283-kg.jpg",
+                "url": "/bestfitting",
+                "userName": "bestfitting",
+                "tier": "GRANDMASTER",
+                "id": 708283,
+                "profileUrl": "/bestfitting",
+                "performanceTier": "GRANDMASTER",
+                "userId": 708283,
+                "progressionOptOut": false
+              },
+              "intro": ""
+            }
+          },
+          {
+            "id": 510937,
+            "postDate": "2019-04-09T16:13:39.530Z",
+            "rawMarkdown": "Thanks, it's amazing how this can work too!",
+            "content": "<p>Thanks, it's amazing how this can work too!</p>",
+            "parent": {},
+            "author": {
+              "displayName": "Liao",
+              "thumbnailUrl": "https://storage.googleapis.com/kaggle-avatars/thumbnails/1330987-kg.png?t=2025-08-06-01-50-32",
+              "url": "/alexanderliao",
+              "tier": "GRANDMASTER",
+              "id": 1330987,
+              "progressionOptOut": false
+            },
+            "authorType": "COMMENT",
+            "votes": {
+              "canUpvote": true
+            },
+            "kernelVersion": 0,
+            "competitionRanking": 37,
+            "feedbackTrackingData": {},
+            "isThankYou": false,
+            "teamUpInfo": {
+              "teamLeader": {
+                "displayName": "Zhijian Li",
+                "thumbnailUrl": "https://storage.googleapis.com/kaggle-avatars/thumbnails/642483-kg.jpg?t=2023-09-13-23-05-37",
+                "url": "/zhijianli",
+                "userName": "zhijianli",
+                "tier": "EXPERT",
+                "id": 642483,
+                "profileUrl": "/zhijianli",
+                "performanceTier": "EXPERT",
+                "userId": 642483,
+                "progressionOptOut": false
+              },
+              "intro": ""
+            }
+          }
+        ],
+        "parent": {},
+        "author": {
+          "displayName": "Liao",
+          "thumbnailUrl": "https://storage.googleapis.com/kaggle-avatars/thumbnails/1330987-kg.png?t=2025-08-06-01-50-32",
+          "url": "/alexanderliao",
+          "tier": "GRANDMASTER",
+          "id": 1330987,
+          "progressionOptOut": false
+        },
+        "authorType": "COMMENT",
+        "votes": {
+          "totalVotes": 3,
+          "canUpvote": true,
+          "totalUpvotes": 3
+        },
+        "kernelVersion": 0,
+        "competitionRanking": 37,
+        "feedbackTrackingData": {},
+        "isThankYou": false,
+        "teamUpInfo": {
+          "teamLeader": {
+            "displayName": "Zhijian Li",
+            "thumbnailUrl": "https://storage.googleapis.com/kaggle-avatars/thumbnails/642483-kg.jpg?t=2023-09-13-23-05-37",
+            "url": "/zhijianli",
+            "userName": "zhijianli",
+            "tier": "EXPERT",
+            "id": 642483,
+            "profileUrl": "/zhijianli",
+            "performanceTier": "EXPERT",
+            "userId": 642483,
+            "progressionOptOut": false
+          },
+          "intro": ""
+        }
+      },
+      {
+        "id": 459954,
+        "postDate": "2019-01-22T17:35:02.670Z",
+        "rawMarkdown": "Congratulations! Thank you for writing your solution. If I may ask you a few questions:\n\n1. I did not use oversample -- it did not improve the score or you did not go for it as the score was good enough?\n\n2. For metric learning:  did you use siamese or triple-net (like anchor-positive-negative) for this set?\n\n3. ```So I set a threshold and replace the labels with found sample\u2019s. Fortunately, the threshold is not sensitive to the threshold.``` -- This one I did not quite understand... could you please add more comments about setting threshold, and what you mean by threshold is not sensitive to the threshold?\n\nI am a newbie, sorry if some questions are stupid :)))",
+        "content": "<p>Congratulations! Thank you for writing your solution. If I may ask you a few questions:</p>\n\n<ol>\n<li><p>I did not use oversample -- it did not improve the score or you did not go for it as the score was good enough?</p></li>\n<li><p>For metric learning:  did you use siamese or triple-net (like anchor-positive-negative) for this set?</p></li>\n<li><p><code>So I set a threshold and replace the labels with found sample\u2019s. Fortunately, the threshold is not sensitive to the threshold.</code> -- This one I did not quite understand... could you please add more comments about setting threshold, and what you mean by threshold is not sensitive to the threshold?</p></li>\n</ol>\n\n<p>I am a newbie, sorry if some questions are stupid :)))</p>",
+        "replies": [
+          {
+            "id": 459980,
+            "postDate": "2019-01-22T18:46:10.803Z",
+            "rawMarkdown": "1.According to my experiences, oversample by adding samples will change the probabilities of some classes, but will not change the model's capability a lot, the real problem is not the probabilities of a class in this competition, the problem is the order of them instead.But,I must say, I did not do experiments to verify it.  Perhaps I will use oversample in other competitions, for example, there is only one image of many categories in whale competition.And, oversample is time consuming.Competition is a series of decision in limited time and resources, we must try to select most promising methods.\n2.To keep whale challenge not be disturbed by my post,I think you can understand I can not say too much, there are so many clever kagglers here, it's unfair to those leading teams.(Perhaps I had said too much already)\n3.I must decide which samples be replaced, so I should set a distance, to say,0.35, if the distance&lt;0.35, then I replace the labels with found sample in V18. If I set the the threshold to 0.3, the score on LB does not change too much, we can say, it's not sensitive to the threshold.As I did not try to overfit to public LB when select the thresholds of CNN model, so I can say, my solution is not sensitive to thresholds in a whole.\n\n",
+            "content": "<p>1.According to my experiences, oversample by adding samples will change the probabilities of some classes, but will not change the model's capability a lot, the real problem is not the probabilities of a class in this competition, the problem is the order of them instead.But,I must say, I did not do experiments to verify it.  Perhaps I will use oversample in other competitions, for example, there is only one image of many categories in whale competition.And, oversample is time consuming.Competition is a series of decision in limited time and resources, we must try to select most promising methods.\n2.To keep whale challenge not be disturbed by my post,I think you can understand I can not say too much, there are so many clever kagglers here, it's unfair to those leading teams.(Perhaps I had said too much already)\n3.I must decide which samples be replaced, so I should set a distance, to say,0.35, if the distance&lt;0.35, then I replace the labels with found sample in V18. If I set the the threshold to 0.3, the score on LB does not change too much, we can say, it's not sensitive to the threshold.As I did not try to overfit to public LB when select the thresholds of CNN model, so I can say, my solution is not sensitive to thresholds in a whole.</p>",
+            "parent": {},
+            "author": {
+              "displayName": "bestfitting",
+              "thumbnailUrl": "https://storage.googleapis.com/kaggle-avatars/thumbnails/708283-kg.jpg",
+              "url": "/bestfitting",
+              "tier": "GRANDMASTER",
+              "id": 708283,
+              "progressionOptOut": false
+            },
+            "authorType": "TOPIC",
+            "votes": {
+              "totalVotes": 7,
+              "canUpvote": true,
+              "totalUpvotes": 7
+            },
+            "kernelVersion": 0,
+            "competitionRanking": 1,
+            "feedbackTrackingData": {},
+            "isThankYou": false,
+            "teamUpInfo": {
+              "teamLeader": {
+                "displayName": "bestfitting",
+                "thumbnailUrl": "https://storage.googleapis.com/kaggle-avatars/thumbnails/708283-kg.jpg",
+                "url": "/bestfitting",
+                "userName": "bestfitting",
+                "tier": "GRANDMASTER",
+                "id": 708283,
+                "profileUrl": "/bestfitting",
+                "performanceTier": "GRANDMASTER",
+                "userId": 708283,
+                "progressionOptOut": false
+              },
+              "intro": ""
+            }
+          },
+          {
+            "id": 460113,
+            "postDate": "2019-01-23T02:48:07.673Z",
+            "rawMarkdown": "i am so  proud of you @bestfitting, learned too much from your open solution. Thanks .",
+            "content": "<p>i am so  proud of you <a href=\"/bestfitting\">@bestfitting</a>, learned too much from your open solution. Thanks .</p>",
+            "parent": {},
+            "author": {
+              "displayName": "yunhai",
+              "thumbnailUrl": "https://storage.googleapis.com/kaggle-avatars/thumbnails/1307326-kg.jpeg",
+              "url": "/yunhaia",
+              "tier": "CONTRIBUTOR",
+              "id": 1307326,
+              "progressionOptOut": false
+            },
+            "authorType": "COMMENT",
+            "votes": {
+              "canUpvote": true
+            },
+            "kernelVersion": 0,
+            "competitionRanking": 339,
+            "feedbackTrackingData": {},
+            "isThankYou": false,
+            "isCollapsed": true,
+            "teamUpInfo": {
+              "teamLeader": {
+                "displayName": "yunhai",
+                "thumbnailUrl": "https://storage.googleapis.com/kaggle-avatars/thumbnails/1307326-kg.jpeg",
+                "url": "/yunhaia",
+                "userName": "yunhaia",
+                "tier": "CONTRIBUTOR",
+                "id": 1307326,
+                "profileUrl": "/yunhaia",
+                "performanceTier": "CONTRIBUTOR",
+                "userId": 1307326,
+                "progressionOptOut": false
+              },
+              "intro": ""
+            }
+          },
+          {
+            "id": 483206,
+            "postDate": "2019-03-04T10:08:12.597Z",
+            "rawMarkdown": "Hi, @bestfitting, whales now are over. Would you mind to give full details now, please?",
+            "content": "<p>Hi, <a href=\"/bestfitting\">@bestfitting</a>, whales now are over. Would you mind to give full details now, please?</p>",
+            "parent": {},
+            "author": {
+              "displayName": "old-ufo",
+              "thumbnailUrl": "https://storage.googleapis.com/kaggle-avatars/thumbnails/210302-gr.jpg",
+              "url": "/oldufo",
+              "tier": "MASTER",
+              "id": 210302,
+              "progressionOptOut": false
+            },
+            "authorType": "COMMENT",
+            "votes": {
+              "totalVotes": 1,
+              "canUpvote": true,
+              "totalUpvotes": 1
+            },
+            "kernelVersion": 0,
+            "feedbackTrackingData": {},
+            "isThankYou": false,
+            "isCollapsed": true
+          },
+          {
+            "id": 483217,
+            "postDate": "2019-03-04T10:25:36.800Z",
+            "rawMarkdown": "Please please... ",
+            "content": "<p>Please please... </p>",
+            "parent": {},
+            "author": {
+              "displayName": "Moshel",
+              "thumbnailUrl": "https://storage.googleapis.com/kaggle-avatars/thumbnails/1928848-gp.jpg",
+              "url": "/moshel",
+              "tier": "EXPERT",
+              "id": 1928848,
+              "progressionOptOut": false
+            },
+            "authorType": "COMMENT",
+            "votes": {
+              "canUpvote": true
+            },
+            "kernelVersion": 0,
+            "competitionRanking": 220,
+            "feedbackTrackingData": {},
+            "isThankYou": false,
+            "isCollapsed": true,
+            "teamUpInfo": {
+              "teamLeader": {
+                "displayName": "Kevin Garda",
+                "thumbnailUrl": "https://storage.googleapis.com/kaggle-avatars/thumbnails/833438-fb.jpg",
+                "url": "/kevingarda7",
+                "userName": "kevingarda7",
+                "tier": "CONTRIBUTOR",
+                "id": 833438,
+                "profileUrl": "/kevingarda7",
+                "performanceTier": "CONTRIBUTOR",
+                "userId": 833438,
+                "progressionOptOut": false
+              },
+              "intro": ""
+            }
+          },
+          {
+            "id": 483419,
+            "postDate": "2019-03-04T15:35:52.343Z",
+            "rawMarkdown": "Hi oldufo,moshel,\nThe quickest way to get details of my metric learning is read the [3rd place solution ](https://www.kaggle.com/c/humpback-whale-identification/discussion/82484) from @pudae81 of Whale competition, I am happy to find that it is quite similar to mine, but I missed the flip whale tricks.  I have been very busy with my everyday job recently,   I just used the same model structure, hyper-parameters, training  methods...in both competitions\uff08This is not an excuse, I may not find those good tricks either, even if I had a lot of time) , I also found that many others' solutions are very good, I suggest you refer to those beautiful ones, when I have time, I will learn and experiment some of their great ideas, for example,  [The first place solution]( https://www.kaggle.com/c/humpback-whale-identification/discussion/82366 ) from @qiaojian is very creative on make full use of the data and design on loss function.\n\n\n",
+            "content": "<p>Hi oldufo,moshel,\nThe quickest way to get details of my metric learning is read the <a href=\"https://www.kaggle.com/c/humpback-whale-identification/discussion/82484\">3rd place solution </a> from <a href=\"/pudae81\">@pudae81</a> of Whale competition, I am happy to find that it is quite similar to mine, but I missed the flip whale tricks.  I have been very busy with my everyday job recently,   I just used the same model structure, hyper-parameters, training  methods...in both competitions\uff08This is not an excuse, I may not find those good tricks either, even if I had a lot of time) , I also found that many others' solutions are very good, I suggest you refer to those beautiful ones, when I have time, I will learn and experiment some of their great ideas, for example,  <a href=\"https://www.kaggle.com/c/humpback-whale-identification/discussion/82366\">The first place solution</a> from <a href=\"/qiaojian\">@qiaojian</a> is very creative on make full use of the data and design on loss function.</p>",
+            "parent": {},
+            "author": {
+              "displayName": "bestfitting",
+              "thumbnailUrl": "https://storage.googleapis.com/kaggle-avatars/thumbnails/708283-kg.jpg",
+              "url": "/bestfitting",
+              "tier": "GRANDMASTER",
+              "id": 708283,
+              "progressionOptOut": false
+            },
+            "authorType": "TOPIC",
+            "votes": {
+              "totalVotes": 4,
+              "canUpvote": true,
+              "totalUpvotes": 4
+            },
+            "kernelVersion": 0,
+            "competitionRanking": 1,
+            "feedbackTrackingData": {},
+            "isThankYou": false,
+            "isCollapsed": true,
+            "teamUpInfo": {
+              "teamLeader": {
+                "displayName": "bestfitting",
+                "thumbnailUrl": "https://storage.googleapis.com/kaggle-avatars/thumbnails/708283-kg.jpg",
+                "url": "/bestfitting",
+                "userName": "bestfitting",
+                "tier": "GRANDMASTER",
+                "id": 708283,
+                "profileUrl": "/bestfitting",
+                "performanceTier": "GRANDMASTER",
+                "userId": 708283,
+                "progressionOptOut": false
+              },
+              "intro": ""
+            }
+          }
+        ],
+        "parent": {},
+        "author": {
+          "displayName": "Blonde",
+          "thumbnailUrl": "https://storage.googleapis.com/kaggle-avatars/thumbnails/1962718-kg.JPG?t=2025-08-06-06-44-46",
+          "url": "/blondinka",
+          "tier": "MASTER",
+          "id": 1962718,
+          "progressionOptOut": false
+        },
+        "authorType": "COMMENT",
+        "votes": {
+          "totalVotes": 3,
+          "canUpvote": true,
+          "totalUpvotes": 3
+        },
+        "kernelVersion": 0,
+        "competitionRanking": 342,
+        "feedbackTrackingData": {},
+        "isThankYou": false,
+        "teamUpInfo": {
+          "teamLeader": {
+            "displayName": "Blonde",
+            "thumbnailUrl": "https://storage.googleapis.com/kaggle-avatars/thumbnails/1962718-kg.JPG?t=2025-08-06-06-44-46",
+            "url": "/blondinka",
+            "userName": "blondinka",
+            "tier": "MASTER",
+            "id": 1962718,
+            "profileUrl": "/blondinka",
+            "performanceTier": "MASTER",
+            "userId": 1962718,
+            "progressionOptOut": false
+          },
+          "intro": ""
+        }
+      },
+      {
+        "id": 459542,
+        "postDate": "2019-01-22T00:37:11.080Z",
+        "rawMarkdown": "Congratulations on your win and thanks for sharing the solution. It's simple and elegant. Surely knowledge is more valuable than competition skills, and you have proved it many times. ",
+        "content": "<p>Congratulations on your win and thanks for sharing the solution. It's simple and elegant. Surely knowledge is more valuable than competition skills, and you have proved it many times. </p>",
+        "parent": {},
+        "author": {
+          "displayName": "Shai",
+          "thumbnailUrl": "https://storage.googleapis.com/kaggle-avatars/thumbnails/795565-kg.gif",
+          "url": "/sgalib",
+          "tier": "GRANDMASTER",
+          "id": 795565,
+          "progressionOptOut": false
+        },
+        "authorType": "COMMENT",
+        "votes": {
+          "totalVotes": 3,
+          "canUpvote": true,
+          "totalUpvotes": 3
+        },
+        "kernelVersion": 0,
+        "competitionRanking": 4,
+        "feedbackTrackingData": {},
+        "isThankYou": false,
+        "teamUpInfo": {
+          "teamLeader": {
+            "displayName": "Bojan Tunguz",
+            "thumbnailUrl": "https://storage.googleapis.com/kaggle-avatars/thumbnails/417337-fb.jpg",
+            "url": "/tunguz",
+            "userName": "tunguz",
+            "tier": "GRANDMASTER",
+            "id": 417337,
+            "profileUrl": "/tunguz",
+            "performanceTier": "GRANDMASTER",
+            "userId": 417337,
+            "progressionOptOut": false
+          },
+          "intro": ""
+        }
+      },
+      {
+        "id": 458586,
+        "postDate": "2019-01-20T01:47:05.757Z",
+        "rawMarkdown": "Congratulations! This is a large margin win.\nI'v started working on the Whale competition too and hope to catch up with you.",
+        "content": "<p>Congratulations! This is a large margin win.\nI'v started working on the Whale competition too and hope to catch up with you.</p>",
+        "parent": {},
+        "author": {
+          "displayName": "Guanshuo Xu",
+          "thumbnailUrl": "https://storage.googleapis.com/kaggle-avatars/thumbnails/478989-kg.jpeg",
+          "url": "/wowfattie",
+          "tier": "GRANDMASTER",
+          "id": 478989,
+          "progressionOptOut": false
+        },
+        "authorType": "COMMENT",
+        "votes": {
+          "totalVotes": 3,
+          "canUpvote": true,
+          "totalUpvotes": 3
+        },
+        "kernelVersion": 0,
+        "competitionRanking": 7,
+        "feedbackTrackingData": {},
+        "isThankYou": false,
+        "teamUpInfo": {
+          "teamLeader": {
+            "displayName": "Guanshuo Xu",
+            "thumbnailUrl": "https://storage.googleapis.com/kaggle-avatars/thumbnails/478989-kg.jpeg",
+            "url": "/wowfattie",
+            "userName": "wowfattie",
+            "tier": "GRANDMASTER",
+            "id": 478989,
+            "profileUrl": "/wowfattie",
+            "performanceTier": "GRANDMASTER",
+            "userId": 478989,
+            "progressionOptOut": false
+          },
+          "intro": ""
+        }
+      },
+      {
+        "id": 459151,
+        "postDate": "2019-01-21T09:30:46.737Z",
+        "rawMarkdown": "Congrats Bestfitting for your consistent winning while being solo in many of competitions. Truly inspirational. \n\nAnd I praise your philosophy : learn and try to push things forward by testing new and efficient approaches, instead of solely competing for winning. ",
+        "content": "<p>Congrats Bestfitting for your consistent winning while being solo in many of competitions. Truly inspirational. </p>\n\n<p>And I praise your philosophy : learn and try to push things forward by testing new and efficient approaches, instead of solely competing for winning. </p>",
+        "parent": {},
+        "author": {
+          "displayName": "Serigne ",
+          "thumbnailUrl": "https://storage.googleapis.com/kaggle-avatars/thumbnails/974295-kg.jpg",
+          "url": "/serigne",
+          "tier": "GRANDMASTER",
+          "id": 974295,
+          "progressionOptOut": false
+        },
+        "authorType": "COMMENT",
+        "votes": {
+          "totalVotes": 4,
+          "canUpvote": true,
+          "totalUpvotes": 4
+        },
+        "kernelVersion": 0,
+        "feedbackTrackingData": {},
+        "isThankYou": false,
+        "teamUpInfo": {
+          "teamLeader": {
+            "displayName": "Serigne ",
+            "thumbnailUrl": "https://storage.googleapis.com/kaggle-avatars/thumbnails/974295-kg.jpg",
+            "url": "/serigne",
+            "userName": "serigne",
+            "tier": "GRANDMASTER",
+            "id": 974295,
+            "profileUrl": "/serigne",
+            "performanceTier": "GRANDMASTER",
+            "userId": 974295,
+            "progressionOptOut": false
+          },
+          "intro": ""
+        }
+      },
+      {
+        "id": 458919,
+        "postDate": "2019-01-20T20:04:59.113Z",
+        "rawMarkdown": "**if we compete only for win,we may loss,if we compete for learning and providing useful solution to the host,nothing to loss.** I have not edited this but these are great words put together. Congratulations!!! ",
+        "content": "<p><strong>if we compete only for win,we may loss,if we compete for learning and providing useful solution to the host,nothing to loss.</strong> I have not edited this but these are great words put together. Congratulations!!! </p>",
+        "parent": {},
+        "author": {
+          "displayName": "Karthik Chowdary Tsaliki",
+          "thumbnailUrl": "https://storage.googleapis.com/kaggle-avatars/thumbnails/1094413-kg.jpg",
+          "url": "/karthik7395",
+          "tier": "EXPERT",
+          "id": 1094413,
+          "progressionOptOut": false
+        },
+        "authorType": "COMMENT",
+        "votes": {
+          "totalVotes": 4,
+          "canUpvote": true,
+          "totalUpvotes": 4
+        },
+        "kernelVersion": 0,
+        "feedbackTrackingData": {},
+        "isThankYou": false
+      },
+      {
+        "id": 474197,
+        "postDate": "2019-02-19T04:10:36.100Z",
+        "rawMarkdown": "This is inspirational to many",
+        "content": "<p>This is inspirational to many</p>",
+        "parent": {},
+        "author": {
+          "displayName": "Sudheer Kangala",
+          "thumbnailUrl": "https://storage.googleapis.com/kaggle-avatars/thumbnails/2834209-kg.jpg",
+          "url": "/sudheerkangala",
+          "tier": "CONTRIBUTOR",
+          "id": 2834209,
+          "progressionOptOut": false
+        },
+        "authorType": "COMMENT",
+        "votes": {
+          "totalVotes": 1,
+          "canUpvote": true,
+          "totalUpvotes": 1
+        },
+        "kernelVersion": 0,
+        "feedbackTrackingData": {},
+        "isThankYou": false
+      },
+      {
+        "id": 471694,
+        "postDate": "2019-02-14T19:03:01.797Z",
+        "rawMarkdown": "Thanks for the great writeup of an impressive solution! If you don't mind sharing, roughly  how many hours did you spend on this competition?",
+        "content": "<p>Thanks for the great writeup of an impressive solution! If you don't mind sharing, roughly  how many hours did you spend on this competition?</p>",
+        "replies": [
+          {
+            "id": 472761,
+            "postDate": "2019-02-16T16:18:43.207Z",
+            "rawMarkdown": "I usually spend more time after I entered a competition,then do all kinds of experiments on server as automatically as possible,and then work hard in the last week of the competition,so my GPU server work all the time ,and I can finish other jobs or go out to run at the same time,and  I think if we want to get top 10, we all want to have as much time as possible :)  ",
+            "content": "<p>I usually spend more time after I entered a competition,then do all kinds of experiments on server as automatically as possible,and then work hard in the last week of the competition,so my GPU server work all the time ,and I can finish other jobs or go out to run at the same time,and  I think if we want to get top 10, we all want to have as much time as possible :)  </p>",
+            "parent": {},
+            "author": {
+              "displayName": "bestfitting",
+              "thumbnailUrl": "https://storage.googleapis.com/kaggle-avatars/thumbnails/708283-kg.jpg",
+              "url": "/bestfitting",
+              "tier": "GRANDMASTER",
+              "id": 708283,
+              "progressionOptOut": false
+            },
+            "authorType": "TOPIC",
+            "votes": {
+              "totalVotes": 3,
+              "canUpvote": true,
+              "totalUpvotes": 3
+            },
+            "kernelVersion": 0,
+            "competitionRanking": 1,
+            "feedbackTrackingData": {},
+            "isThankYou": false,
+            "teamUpInfo": {
+              "teamLeader": {
+                "displayName": "bestfitting",
+                "thumbnailUrl": "https://storage.googleapis.com/kaggle-avatars/thumbnails/708283-kg.jpg",
+                "url": "/bestfitting",
+                "userName": "bestfitting",
+                "tier": "GRANDMASTER",
+                "id": 708283,
+                "profileUrl": "/bestfitting",
+                "performanceTier": "GRANDMASTER",
+                "userId": 708283,
+                "progressionOptOut": false
+              },
+              "intro": ""
+            }
+          }
+        ],
+        "parent": {},
+        "author": {
+          "displayName": "Eugene M",
+          "thumbnailUrl": "https://storage.googleapis.com/kaggle-avatars/thumbnails/2818100-kg.png",
+          "url": "/eugenemil",
+          "tier": "CONTRIBUTOR",
+          "id": 2818100,
+          "progressionOptOut": false
+        },
+        "authorType": "COMMENT",
+        "votes": {
+          "totalVotes": 1,
+          "canUpvote": true,
+          "totalUpvotes": 1
+        },
+        "kernelVersion": 0,
+        "feedbackTrackingData": {},
+        "isThankYou": false
+      },
+      {
+        "id": 470744,
+        "postDate": "2019-02-13T13:45:20.670Z",
+        "rawMarkdown": "Great work, Thanks for sharing @bestfitting",
+        "content": "<p>Great work, Thanks for sharing <a href=\"/bestfitting\">@bestfitting</a></p>",
+        "parent": {},
+        "author": {
+          "displayName": "Karan Jakhar",
+          "thumbnailUrl": "https://storage.googleapis.com/kaggle-avatars/thumbnails/1930321-kg.jpg",
+          "url": "/karanjakhar",
+          "tier": "EXPERT",
+          "id": 1930321,
+          "progressionOptOut": false
+        },
+        "authorType": "COMMENT",
+        "votes": {
+          "totalVotes": 1,
+          "canUpvote": true,
+          "totalUpvotes": 1
+        },
+        "kernelVersion": 0,
+        "feedbackTrackingData": {},
+        "isThankYou": false
+      },
+      {
+        "id": 466124,
+        "postDate": "2019-02-04T18:11:49.873Z",
+        "rawMarkdown": "This is so amazing and many thanks for sharing.  Could you let me know whether you will be interested in consulting/mentoring? Please send me a message if you do.  Thanks again!!",
+        "content": "<p>This is so amazing and many thanks for sharing.  Could you let me know whether you will be interested in consulting/mentoring? Please send me a message if you do.  Thanks again!!</p>",
+        "parent": {},
+        "author": {
+          "displayName": "PKPD",
+          "thumbnailUrl": "https://storage.googleapis.com/kaggle-avatars/thumbnails/default-thumb.png",
+          "url": "/dmpkadme",
+          "tier": "CONTRIBUTOR",
+          "id": 2779779,
+          "progressionOptOut": false
+        },
+        "authorType": "COMMENT",
+        "votes": {
+          "totalVotes": 1,
+          "canUpvote": true,
+          "totalUpvotes": 1
+        },
+        "kernelVersion": 0,
+        "feedbackTrackingData": {},
+        "isThankYou": false
+      },
+      {
+        "id": 465962,
+        "postDate": "2019-02-04T12:14:41.663Z",
+        "rawMarkdown": "Thank you for sharing this clear but enough detail solution.",
+        "content": "<p>Thank you for sharing this clear but enough detail solution.</p>",
+        "parent": {},
+        "author": {
+          "displayName": "Kun-Lin Lee",
+          "thumbnailUrl": "https://storage.googleapis.com/kaggle-avatars/thumbnails/640392-kg.jpg",
+          "url": "/leekltw1",
+          "tier": "CONTRIBUTOR",
+          "id": 640392,
+          "progressionOptOut": false
+        },
+        "authorType": "COMMENT",
+        "votes": {
+          "totalVotes": 1,
+          "canUpvote": true,
+          "totalUpvotes": 1
+        },
+        "kernelVersion": 0,
+        "feedbackTrackingData": {},
+        "isThankYou": false
+      },
+      {
+        "id": 465833,
+        "postDate": "2019-02-04T05:17:15.987Z",
+        "rawMarkdown": "Amazing read!!",
+        "content": "<p>Amazing read!!</p>",
+        "parent": {},
+        "author": {
+          "displayName": "N!K8",
+          "thumbnailUrl": "https://storage.googleapis.com/kaggle-avatars/thumbnails/925901-kg.jpg",
+          "url": "/nick1digit",
+          "tier": "CONTRIBUTOR",
+          "id": 925901,
+          "progressionOptOut": false
+        },
+        "authorType": "COMMENT",
+        "votes": {
+          "totalVotes": 1,
+          "canUpvote": true,
+          "totalUpvotes": 1
+        },
+        "kernelVersion": 0,
+        "feedbackTrackingData": {},
+        "isThankYou": false
+      },
+      {
+        "id": 464438,
+        "postDate": "2019-01-31T21:51:43.220Z",
+        "rawMarkdown": "Thank you for the approach! It really minds me.",
+        "content": "<p>Thank you for the approach! It really minds me.</p>",
+        "parent": {},
+        "author": {
+          "displayName": "Sergey Korolev",
+          "thumbnailUrl": "https://storage.googleapis.com/kaggle-avatars/thumbnails/2416298-kg.jpg",
+          "url": "/orelkor",
+          "tier": "CONTRIBUTOR",
+          "id": 2416298,
+          "progressionOptOut": false
+        },
+        "authorType": "COMMENT",
+        "votes": {
+          "totalVotes": 1,
+          "canUpvote": true,
+          "totalUpvotes": 1
+        },
+        "kernelVersion": 0,
+        "feedbackTrackingData": {},
+        "isThankYou": false
+      },
+      {
+        "id": 464174,
+        "postDate": "2019-01-31T09:47:36.213Z",
+        "rawMarkdown": "Nice",
+        "content": "<p>Nice</p>",
+        "parent": {},
+        "author": {
+          "displayName": "Hashi",
+          "thumbnailUrl": "https://storage.googleapis.com/kaggle-avatars/thumbnails/1706612-kg.png",
+          "url": "/tironaka",
+          "tier": "CONTRIBUTOR",
+          "id": 1706612,
+          "progressionOptOut": false
+        },
+        "authorType": "COMMENT",
+        "votes": {
+          "totalVotes": 1,
+          "canUpvote": true,
+          "totalUpvotes": 1
+        },
+        "kernelVersion": 0,
+        "feedbackTrackingData": {},
+        "isThankYou": false
+      },
+      {
+        "id": 463982,
+        "postDate": "2019-01-31T02:08:18.190Z",
+        "rawMarkdown": "Wonderful!!",
+        "content": "<p>Wonderful!!</p>",
+        "parent": {},
+        "author": {
+          "displayName": "WinterMaster",
+          "thumbnailUrl": "https://storage.googleapis.com/kaggle-avatars/thumbnails/default-thumb.png",
+          "url": "/harusatonaka",
+          "tier": "CONTRIBUTOR",
+          "id": 2541224,
+          "progressionOptOut": false
+        },
+        "authorType": "COMMENT",
+        "votes": {
+          "totalVotes": 1,
+          "canUpvote": true,
+          "totalUpvotes": 1
+        },
+        "kernelVersion": 0,
+        "feedbackTrackingData": {},
+        "isThankYou": false
+      },
+      {
+        "id": 463290,
+        "postDate": "2019-01-29T18:45:22.340Z",
+        "rawMarkdown": "Congratulations and thank your for sharing your approach!",
+        "content": "<p>Congratulations and thank your for sharing your approach!</p>",
+        "parent": {},
+        "author": {
+          "displayName": "Laura Fink",
+          "thumbnailUrl": "https://storage.googleapis.com/kaggle-avatars/thumbnails/458815-kg.JPG?t=2023-11-22-09-52-33",
+          "url": "/allunia",
+          "tier": "GRANDMASTER",
+          "id": 458815,
+          "progressionOptOut": false
+        },
+        "authorType": "COMMENT",
+        "votes": {
+          "totalVotes": 1,
+          "canUpvote": true,
+          "totalUpvotes": 1
+        },
+        "kernelVersion": 0,
+        "competitionRanking": 2055,
+        "feedbackTrackingData": {},
+        "isThankYou": false,
+        "teamUpInfo": {
+          "teamLeader": {
+            "displayName": "Laura Fink",
+            "thumbnailUrl": "https://storage.googleapis.com/kaggle-avatars/thumbnails/458815-kg.JPG?t=2023-11-22-09-52-33",
+            "url": "/allunia",
+            "userName": "allunia",
+            "tier": "GRANDMASTER",
+            "id": 458815,
+            "profileUrl": "/allunia",
+            "performanceTier": "GRANDMASTER",
+            "userId": 458815,
+            "progressionOptOut": false
+          },
+          "intro": ""
+        }
+      },
+      {
+        "id": 463247,
+        "postDate": "2019-01-29T17:07:49.480Z",
+        "rawMarkdown": "erudite! _/\\_",
+        "content": "<p>erudite! _/_</p>",
+        "parent": {},
+        "author": {
+          "displayName": "Aditya  Chandak",
+          "thumbnailUrl": "https://storage.googleapis.com/kaggle-avatars/thumbnails/2732240-kg.jpg",
+          "url": "/mathslover",
+          "tier": "CONTRIBUTOR",
+          "id": 2732240,
+          "progressionOptOut": false
+        },
+        "authorType": "COMMENT",
+        "votes": {
+          "totalVotes": 1,
+          "canUpvote": true,
+          "totalUpvotes": 1
+        },
+        "kernelVersion": 0,
+        "feedbackTrackingData": {},
+        "isThankYou": false
+      },
+      {
+        "id": 463131,
+        "postDate": "2019-01-29T13:38:05.290Z",
+        "rawMarkdown": "hi best you are indeed the best..\nmay i request you  you to let me know how u download the tiff images from gcp  ,if you can post the script would be great. https://console.cloud.google.com/storage/browser/kaggle-human-protein-atlas\n",
+        "content": "<p>hi best you are indeed the best..\nmay i request you  you to let me know how u download the tiff images from gcp  ,if you can post the script would be great. <a href=\"https://console.cloud.google.com/storage/browser/kaggle-human-protein-atlas\">https://console.cloud.google.com/storage/browser/kaggle-human-protein-atlas</a></p>",
+        "parent": {},
+        "author": {
+          "displayName": "Jaideep",
+          "thumbnailUrl": "https://storage.googleapis.com/kaggle-avatars/thumbnails/2033538-kg.PNG",
+          "url": "/jaideepvalani",
+          "tier": "MASTER",
+          "id": 2033538,
+          "progressionOptOut": false
+        },
+        "authorType": "COMMENT",
+        "votes": {
+          "totalVotes": 1,
+          "canUpvote": true,
+          "totalUpvotes": 1
+        },
+        "kernelVersion": 0,
+        "competitionRanking": 465,
+        "feedbackTrackingData": {},
+        "isThankYou": false,
+        "teamUpInfo": {
+          "teamLeader": {
+            "displayName": "Jaideep",
+            "thumbnailUrl": "https://storage.googleapis.com/kaggle-avatars/thumbnails/2033538-kg.PNG",
+            "url": "/jaideepvalani",
+            "userName": "jaideepvalani",
+            "tier": "MASTER",
+            "id": 2033538,
+            "profileUrl": "/jaideepvalani",
+            "performanceTier": "MASTER",
+            "userId": 2033538,
+            "progressionOptOut": false
+          },
+          "intro": ""
+        }
+      },
+      {
+        "id": 463037,
+        "postDate": "2019-01-29T09:42:29.563Z",
+        "rawMarkdown": "Thanks for sharing your experience with us!!!",
+        "content": "<p>Thanks for sharing your experience with us!!!</p>",
+        "parent": {},
+        "author": {
+          "displayName": "Rohit Phadke",
+          "thumbnailUrl": "https://storage.googleapis.com/kaggle-avatars/thumbnails/2713497-fb.jpg",
+          "url": "/rohitphadke",
+          "tier": "CONTRIBUTOR",
+          "id": 2713497,
+          "progressionOptOut": false
+        },
+        "authorType": "COMMENT",
+        "votes": {
+          "totalVotes": 1,
+          "canUpvote": true,
+          "totalUpvotes": 1
+        },
+        "kernelVersion": 0,
+        "feedbackTrackingData": {},
+        "isThankYou": false,
+        "teamUpInfo": {
+          "teamLeader": {
+            "displayName": "Rohit Phadke",
+            "thumbnailUrl": "https://storage.googleapis.com/kaggle-avatars/thumbnails/2713497-fb.jpg",
+            "url": "/rohitphadke",
+            "userName": "rohitphadke",
+            "tier": "CONTRIBUTOR",
+            "id": 2713497,
+            "profileUrl": "/rohitphadke",
+            "performanceTier": "CONTRIBUTOR",
+            "userId": 2713497,
+            "progressionOptOut": false
+          },
+          "intro": ""
+        }
+      },
+      {
+        "id": 462711,
+        "postDate": "2019-01-28T18:48:33.807Z",
+        "rawMarkdown": "cool! :D",
+        "content": "<p>cool! :D</p>",
+        "parent": {},
+        "author": {
+          "displayName": "Carlos Nebulous",
+          "thumbnailUrl": "https://storage.googleapis.com/kaggle-avatars/thumbnails/2749213-kg.jpg",
+          "url": "/nebulosito",
+          "tier": "CONTRIBUTOR",
+          "id": 2749213,
+          "progressionOptOut": false
+        },
+        "authorType": "COMMENT",
+        "votes": {
+          "totalVotes": 1,
+          "canUpvote": true,
+          "totalUpvotes": 1
+        },
+        "kernelVersion": 0,
+        "feedbackTrackingData": {},
+        "isThankYou": false
+      },
+      {
+        "id": 462692,
+        "postDate": "2019-01-28T18:17:31.517Z",
+        "rawMarkdown": "Amazing! Tnx for sharing!!!",
+        "content": "<p>Amazing! Tnx for sharing!!!</p>",
+        "parent": {},
+        "author": {
+          "displayName": "Flavio Bravin",
+          "thumbnailUrl": "https://storage.googleapis.com/kaggle-avatars/thumbnails/2152727-kg.jpg",
+          "url": "/flbravin",
+          "tier": "CONTRIBUTOR",
+          "id": 2152727,
+          "progressionOptOut": false
+        },
+        "authorType": "COMMENT",
+        "votes": {
+          "totalVotes": 1,
+          "canUpvote": true,
+          "totalUpvotes": 1
+        },
+        "kernelVersion": 0,
+        "feedbackTrackingData": {},
+        "isThankYou": false
+      },
+      {
+        "id": 462683,
+        "postDate": "2019-01-28T18:13:37.857Z",
+        "rawMarkdown": "Congratulations and thank you for writing this - as someone newish to kaggle and ML competitions it's great to see what people doing well are doing. Even if you may not realise it, I learnt a lot from this and have plenty to go away and read!\n\nAlso, thank you for the words at the end - it's good to know everyone finds it hard!! :)",
+        "content": "<p>Congratulations and thank you for writing this - as someone newish to kaggle and ML competitions it's great to see what people doing well are doing. Even if you may not realise it, I learnt a lot from this and have plenty to go away and read!</p>\n\n<p>Also, thank you for the words at the end - it's good to know everyone finds it hard!! :)</p>",
+        "parent": {},
+        "author": {
+          "displayName": "Hamish",
+          "thumbnailUrl": "https://storage.googleapis.com/kaggle-avatars/thumbnails/1281858-kg.png",
+          "url": "/hamishdickson",
+          "tier": "MASTER",
+          "id": 1281858,
+          "progressionOptOut": false
+        },
+        "authorType": "COMMENT",
+        "votes": {
+          "totalVotes": 1,
+          "canUpvote": true,
+          "totalUpvotes": 1
+        },
+        "kernelVersion": 0,
+        "feedbackTrackingData": {},
+        "isThankYou": false
+      },
+      {
+        "id": 462595,
+        "postDate": "2019-01-28T15:09:58.640Z",
+        "rawMarkdown": "Nice",
+        "content": "<p>Nice</p>",
+        "parent": {},
+        "author": {
+          "displayName": "Sammed Kagi",
+          "thumbnailUrl": "https://storage.googleapis.com/kaggle-avatars/thumbnails/default-thumb.png",
+          "url": "/sammed1998",
+          "tier": "CONTRIBUTOR",
+          "id": 2721224,
+          "progressionOptOut": false
+        },
+        "authorType": "COMMENT",
+        "votes": {
+          "totalVotes": 1,
+          "canUpvote": true,
+          "totalUpvotes": 1
+        },
+        "kernelVersion": 0,
+        "feedbackTrackingData": {},
+        "isThankYou": false
+      },
+      {
+        "id": 462421,
+        "postDate": "2019-01-28T09:17:49.357Z",
+        "votes": {
+          "totalVotes": 1,
+          "totalUpvotes": 1
+        },
+        "isThankYou": false,
+        "isPartial": true
+      },
+      {
+        "id": 462316,
+        "postDate": "2019-01-28T05:06:29.037Z",
+        "votes": {
+          "totalVotes": 1,
+          "totalUpvotes": 1
+        },
+        "isThankYou": false,
+        "isPartial": true
+      },
+      {
+        "id": 462129,
+        "postDate": "2019-01-27T18:31:25.383Z",
+        "votes": {
+          "totalVotes": 1,
+          "totalUpvotes": 1
+        },
+        "isThankYou": false,
+        "isPartial": true
+      },
+      {
+        "id": 462034,
+        "postDate": "2019-01-27T14:24:16.980Z",
+        "votes": {
+          "totalVotes": 1,
+          "totalUpvotes": 1
+        },
+        "isThankYou": false,
+        "isPartial": true
+      },
+      {
+        "id": 462005,
+        "postDate": "2019-01-27T12:48:35.050Z",
+        "votes": {
+          "totalVotes": 1,
+          "totalUpvotes": 1
+        },
+        "isThankYou": false,
+        "isPartial": true
+      },
+      {
+        "id": 461797,
+        "postDate": "2019-01-27T02:48:37.460Z",
+        "votes": {
+          "totalVotes": 1,
+          "totalUpvotes": 1
+        },
+        "isThankYou": false,
+        "isPartial": true
+      },
+      {
+        "id": 461657,
+        "postDate": "2019-01-26T16:41:31.117Z",
+        "votes": {
+          "totalVotes": 1,
+          "totalUpvotes": 1
+        },
+        "isThankYou": false,
+        "isPartial": true
+      },
+      {
+        "id": 461548,
+        "postDate": "2019-01-26T10:13:00.017Z",
+        "votes": {
+          "totalVotes": 1,
+          "totalUpvotes": 1
+        },
+        "isThankYou": false,
+        "isPartial": true
+      },
+      {
+        "id": 461426,
+        "postDate": "2019-01-26T01:44:22.957Z",
+        "votes": {
+          "totalVotes": 1,
+          "totalUpvotes": 1
+        },
+        "isThankYou": false,
+        "isPartial": true
+      },
+      {
+        "id": 461392,
+        "postDate": "2019-01-25T22:32:29.417Z",
+        "votes": {
+          "totalVotes": 1,
+          "totalUpvotes": 1
+        },
+        "isThankYou": false,
+        "isPartial": true
+      },
+      {
+        "id": 461075,
+        "postDate": "2019-01-25T06:56:11.387Z",
+        "votes": {
+          "totalVotes": 1,
+          "totalUpvotes": 1
+        },
+        "isThankYou": false,
+        "isPartial": true
+      },
+      {
+        "id": 460794,
+        "postDate": "2019-01-24T12:43:06.987Z",
+        "votes": {
+          "totalVotes": 1,
+          "totalUpvotes": 1
+        },
+        "isThankYou": false,
+        "isPartial": true
+      },
+      {
+        "id": 460729,
+        "postDate": "2019-01-24T10:06:29.860Z",
+        "votes": {
+          "totalVotes": 1,
+          "totalUpvotes": 1
+        },
+        "isThankYou": false,
+        "isPartial": true
+      },
+      {
+        "id": 460716,
+        "postDate": "2019-01-24T09:48:24.747Z",
+        "votes": {
+          "totalVotes": 1,
+          "totalUpvotes": 1
+        },
+        "isThankYou": false,
+        "isPartial": true
+      },
+      {
+        "id": 460582,
+        "postDate": "2019-01-24T02:44:54.827Z",
+        "votes": {
+          "totalVotes": 1,
+          "totalUpvotes": 1
+        },
+        "isThankYou": false,
+        "isPartial": true
+      },
+      {
+        "id": 460380,
+        "postDate": "2019-01-23T15:30:40.347Z",
+        "votes": {
+          "totalVotes": 1,
+          "totalUpvotes": 1
+        },
+        "isThankYou": false,
+        "isPartial": true
+      },
+      {
+        "id": 460323,
+        "postDate": "2019-01-23T13:12:02.323Z",
+        "votes": {
+          "totalVotes": 1,
+          "totalUpvotes": 1
+        },
+        "isThankYou": false,
+        "isPartial": true
+      },
+      {
+        "id": 460322,
+        "postDate": "2019-01-23T13:11:30.607Z",
+        "votes": {
+          "totalVotes": 1,
+          "totalUpvotes": 1
+        },
+        "isThankYou": false,
+        "isPartial": true
+      },
+      {
+        "id": 460320,
+        "postDate": "2019-01-23T13:09:05.950Z",
+        "votes": {
+          "totalVotes": 1,
+          "totalUpvotes": 1
+        },
+        "isThankYou": false,
+        "isPartial": true
+      },
+      {
+        "id": 460248,
+        "postDate": "2019-01-23T09:34:26.843Z",
+        "replies": [
+          {
+            "id": 460491,
+            "postDate": "2019-01-23T20:39:56.217Z",
+            "votes": {
+              "totalVotes": 3,
+              "totalUpvotes": 3
+            },
+            "isThankYou": false,
+            "isPartial": true
+          }
+        ],
+        "votes": {
+          "totalVotes": 1,
+          "totalUpvotes": 1
+        },
+        "isThankYou": false,
+        "isPartial": true
+      },
+      {
+        "id": 460145,
+        "postDate": "2019-01-23T04:46:39.597Z",
+        "votes": {
+          "totalVotes": 1,
+          "totalUpvotes": 1
+        },
+        "isThankYou": false,
+        "isPartial": true
+      },
+      {
+        "id": 460139,
+        "postDate": "2019-01-23T04:23:48.537Z",
+        "replies": [
+          {
+            "id": 460494,
+            "postDate": "2019-01-23T20:48:42.767Z",
+            "votes": {
+              "totalVotes": 11,
+              "totalUpvotes": 11
+            },
+            "isThankYou": false,
+            "isPartial": true
+          },
+          {
+            "id": 460657,
+            "postDate": "2019-01-24T07:08:16.993Z",
+            "votes": {},
+            "isThankYou": false,
+            "isPartial": true
+          }
+        ],
+        "votes": {
+          "totalVotes": 1,
+          "totalUpvotes": 1
+        },
+        "isThankYou": false,
+        "isPartial": true
+      },
+      {
+        "id": 459862,
+        "postDate": "2019-01-22T14:04:30.517Z",
+        "replies": [
+          {
+            "id": 459971,
+            "postDate": "2019-01-22T18:15:47.037Z",
+            "votes": {
+              "totalVotes": 1,
+              "totalUpvotes": 1
+            },
+            "isThankYou": false,
+            "isPartial": true
+          }
+        ],
+        "votes": {
+          "totalVotes": 1,
+          "totalUpvotes": 1
+        },
+        "isThankYou": false,
+        "isPartial": true
+      },
+      {
+        "id": 459764,
+        "postDate": "2019-01-22T10:22:59.523Z",
+        "replies": [
+          {
+            "id": 459973,
+            "postDate": "2019-01-22T18:20:39.823Z",
+            "votes": {
+              "totalVotes": 2,
+              "totalUpvotes": 2
+            },
+            "isThankYou": false,
+            "isPartial": true
+          },
+          {
+            "id": 460758,
+            "postDate": "2019-01-24T11:25:35.443Z",
+            "votes": {},
+            "isThankYou": false,
+            "isPartial": true
+          },
+          {
+            "id": 460860,
+            "postDate": "2019-01-24T15:00:41.807Z",
+            "votes": {},
+            "isThankYou": false,
+            "isPartial": true
+          }
+        ],
+        "votes": {
+          "totalVotes": 1,
+          "totalUpvotes": 1
+        },
+        "isThankYou": false,
+        "isPartial": true
+      },
+      {
+        "id": 459703,
+        "postDate": "2019-01-22T07:55:30.520Z",
+        "votes": {
+          "totalVotes": 1,
+          "totalUpvotes": 1
+        },
+        "isThankYou": false,
+        "isPartial": true
+      },
+      {
+        "id": 459668,
+        "postDate": "2019-01-22T06:42:42.433Z",
+        "votes": {
+          "totalVotes": 1,
+          "totalUpvotes": 1
+        },
+        "isThankYou": false,
+        "isPartial": true
+      },
+      {
+        "id": 459289,
+        "postDate": "2019-01-21T14:04:15.793Z",
+        "votes": {
+          "totalVotes": 1,
+          "totalUpvotes": 1
+        },
+        "isThankYou": false,
+        "isPartial": true
+      },
+      {
+        "id": 459246,
+        "postDate": "2019-01-21T12:51:25.337Z",
+        "votes": {
+          "totalVotes": 1,
+          "totalUpvotes": 1
+        },
+        "isThankYou": false,
+        "isPartial": true
+      },
+      {
+        "id": 459108,
+        "postDate": "2019-01-21T07:37:26.433Z",
+        "votes": {
+          "totalVotes": 1,
+          "totalUpvotes": 1
+        },
+        "isThankYou": false,
+        "isPartial": true
+      },
+      {
+        "id": 459091,
+        "postDate": "2019-01-21T06:40:31Z",
+        "votes": {
+          "totalVotes": 1,
+          "totalUpvotes": 1
+        },
+        "isThankYou": false,
+        "isPartial": true
+      },
+      {
+        "id": 458887,
+        "postDate": "2019-01-20T18:23:11.680Z",
+        "votes": {
+          "totalVotes": 1,
+          "totalUpvotes": 1
+        },
+        "isThankYou": false,
+        "isPartial": true
+      },
+      {
+        "id": 458825,
+        "postDate": "2019-01-20T14:53:22.190Z",
+        "votes": {
+          "totalVotes": 1,
+          "totalUpvotes": 1
+        },
+        "isThankYou": false,
+        "isPartial": true
+      },
+      {
+        "id": 458792,
+        "postDate": "2019-01-20T13:58:09.300Z",
+        "votes": {
+          "totalVotes": 1,
+          "totalUpvotes": 1
+        },
+        "isThankYou": false,
+        "isPartial": true
+      },
+      {
+        "id": 458597,
+        "postDate": "2019-01-20T02:49:09.387Z",
+        "votes": {
+          "totalVotes": 1,
+          "totalUpvotes": 1
+        },
+        "isThankYou": false,
+        "isPartial": true
+      },
+      {
+        "id": 458560,
+        "postDate": "2019-01-19T23:35:02.410Z",
+        "votes": {
+          "totalVotes": 1,
+          "totalUpvotes": 1
+        },
+        "isThankYou": false,
+        "isPartial": true
+      },
+      {
+        "id": 458541,
+        "postDate": "2019-01-19T22:20:29.380Z",
+        "votes": {
+          "totalVotes": 1,
+          "totalUpvotes": 1
+        },
+        "isThankYou": false,
+        "isPartial": true
+      },
+      {
+        "id": 458533,
+        "postDate": "2019-01-19T21:30:05.400Z",
+        "votes": {
+          "totalVotes": 1,
+          "totalUpvotes": 1
+        },
+        "isThankYou": false,
+        "isPartial": true
+      },
+      {
+        "id": 524144,
+        "postDate": "2019-04-28T04:13:07.283Z",
+        "votes": {
+          "totalVotes": 2,
+          "totalUpvotes": 2
+        },
+        "isThankYou": false,
+        "isPartial": true
+      },
+      {
+        "id": 486393,
+        "postDate": "2019-03-08T17:56:23.203Z",
+        "votes": {
+          "totalVotes": 2,
+          "totalUpvotes": 2
+        },
+        "isThankYou": false,
+        "isPartial": true
+      },
+      {
+        "id": 484869,
+        "postDate": "2019-03-06T15:42:25.607Z",
+        "replies": [
+          {
+            "id": 485181,
+            "postDate": "2019-03-07T03:22:59.580Z",
+            "votes": {
+              "totalVotes": 10,
+              "totalUpvotes": 10
+            },
+            "isThankYou": false,
+            "isPartial": true
+          }
+        ],
+        "votes": {
+          "totalVotes": 2,
+          "totalUpvotes": 2
+        },
+        "isThankYou": false,
+        "isPartial": true
+      },
+      {
+        "id": 478033,
+        "postDate": "2019-02-25T16:26:22.520Z",
+        "votes": {
+          "totalVotes": 2,
+          "totalUpvotes": 2
+        },
+        "isThankYou": false,
+        "isPartial": true
+      },
+      {
+        "id": 474899,
+        "postDate": "2019-02-20T00:46:43.713Z",
+        "replies": [
+          {
+            "id": 475031,
+            "postDate": "2019-02-20T06:34:55.307Z",
+            "votes": {
+              "totalVotes": 3,
+              "totalUpvotes": 3
+            },
+            "isThankYou": false,
+            "isPartial": true
+          },
+          {
+            "id": 475047,
+            "postDate": "2019-02-20T06:50:28.180Z",
+            "votes": {},
+            "isThankYou": false,
+            "isCollapsed": true,
+            "isPartial": true
+          },
+          {
+            "id": 476189,
+            "postDate": "2019-02-21T18:23:43.300Z",
+            "votes": {
+              "totalVotes": 1,
+              "totalUpvotes": 1
+            },
+            "isThankYou": false,
+            "isCollapsed": true,
+            "isPartial": true
+          },
+          {
+            "id": 476402,
+            "postDate": "2019-02-22T04:43:47.927Z",
+            "votes": {},
+            "isThankYou": false,
+            "isCollapsed": true,
+            "isPartial": true
+          },
+          {
+            "id": 476496,
+            "postDate": "2019-02-22T08:44:44.217Z",
+            "votes": {},
+            "isThankYou": false,
+            "isCollapsed": true,
+            "isPartial": true
+          },
+          {
+            "id": 476567,
+            "postDate": "2019-02-22T10:49:20.117Z",
+            "votes": {
+              "totalVotes": 2,
+              "totalUpvotes": 2
+            },
+            "isThankYou": false,
+            "isCollapsed": true,
+            "isPartial": true
+          }
+        ],
+        "votes": {
+          "totalVotes": 2,
+          "totalUpvotes": 2
+        },
+        "isThankYou": false,
+        "isPartial": true
+      },
+      {
+        "id": 470628,
+        "postDate": "2019-02-13T09:25:40.863Z",
+        "votes": {
+          "totalVotes": 2,
+          "totalUpvotes": 2
+        },
+        "isThankYou": false,
+        "isPartial": true
+      },
+      {
+        "id": 465709,
+        "postDate": "2019-02-03T20:36:54.800Z",
+        "replies": [
+          {
+            "id": 465903,
+            "postDate": "2019-02-04T09:44:13.093Z",
+            "votes": {
+              "totalVotes": 1,
+              "totalUpvotes": 1
+            },
+            "isThankYou": false,
+            "isPartial": true
+          }
+        ],
+        "votes": {
+          "totalVotes": 2,
+          "totalUpvotes": 2
+        },
+        "isThankYou": false,
+        "isPartial": true
+      },
+      {
+        "id": 465516,
+        "postDate": "2019-02-03T10:34:26.057Z",
+        "votes": {
+          "totalVotes": 2,
+          "totalUpvotes": 2
+        },
+        "isThankYou": false,
+        "isPartial": true
+      },
+      {
+        "id": 465232,
+        "postDate": "2019-02-02T17:09:42.910Z",
+        "replies": [
+          {
+            "id": 465904,
+            "postDate": "2019-02-04T09:49:49.770Z",
+            "votes": {
+              "totalVotes": 2,
+              "totalUpvotes": 2
+            },
+            "isThankYou": false,
+            "isPartial": true
+          },
+          {
+            "id": 467396,
+            "postDate": "2019-02-07T02:40:23.683Z",
+            "votes": {},
+            "isDeleted": true,
+            "isThankYou": false,
+            "isCollapsed": true,
+            "isPartial": true
+          },
+          {
+            "id": 467599,
+            "postDate": "2019-02-07T11:57:43.027Z",
+            "votes": {},
+            "isThankYou": false,
+            "isCollapsed": true,
+            "isPartial": true
+          },
+          {
+            "id": 467910,
+            "postDate": "2019-02-08T00:07:36.363Z",
+            "votes": {},
+            "isDeleted": true,
+            "isThankYou": false,
+            "isCollapsed": true,
+            "isPartial": true
+          }
+        ],
+        "votes": {
+          "totalVotes": 2,
+          "totalUpvotes": 2
+        },
+        "isThankYou": false,
+        "isPartial": true
+      },
+      {
+        "id": 462548,
+        "postDate": "2019-01-28T13:38:08.280Z",
+        "votes": {
+          "totalVotes": 2,
+          "totalUpvotes": 2
+        },
+        "isThankYou": false,
+        "isPartial": true
+      },
+      {
+        "id": 462287,
+        "postDate": "2019-01-28T03:49:35.410Z",
+        "votes": {
+          "totalVotes": 2,
+          "totalUpvotes": 2
+        },
+        "isThankYou": false,
+        "isPartial": true
+      },
+      {
+        "id": 462218,
+        "postDate": "2019-01-27T22:23:16.250Z",
+        "votes": {
+          "totalVotes": 2,
+          "totalUpvotes": 2
+        },
+        "isThankYou": false,
+        "isPartial": true
+      },
+      {
+        "id": 458959,
+        "postDate": "2019-01-20T22:28:56.313Z",
+        "votes": {
+          "totalVotes": 2,
+          "totalUpvotes": 2
+        },
+        "isThankYou": false,
+        "isPartial": true
+      },
+      {
+        "id": 458750,
+        "postDate": "2019-01-20T12:38:15.480Z",
+        "votes": {
+          "totalVotes": 2,
+          "totalUpvotes": 2
+        },
+        "isThankYou": false,
+        "isPartial": true
+      },
+      {
+        "id": 458630,
+        "postDate": "2019-01-20T05:11:10.797Z",
+        "votes": {
+          "totalVotes": 2,
+          "totalUpvotes": 2
+        },
+        "isThankYou": false,
+        "isPartial": true
+      },
+      {
+        "id": 458610,
+        "postDate": "2019-01-20T03:31:56.603Z",
+        "votes": {
+          "totalVotes": 2,
+          "totalUpvotes": 2
+        },
+        "isThankYou": false,
+        "isPartial": true
+      },
+      {
+        "id": 592537,
+        "postDate": "2019-08-05T12:57:29.330Z",
+        "votes": {
+          "totalVotes": -2,
+          "totalUpvotes": 1
+        },
+        "isThankYou": false,
+        "isPartial": true
+      },
+      {
+        "id": 2562544,
+        "postDate": "2023-12-15T14:04:14.190Z",
+        "votes": {},
+        "isThankYou": false,
+        "isPartial": true
+      },
+      {
+        "id": 2241693,
+        "postDate": "2023-05-01T18:02:46.873Z",
+        "votes": {},
+        "isThankYou": false,
+        "isPartial": true
+      },
+      {
+        "id": 2238665,
+        "postDate": "2023-04-28T17:56:25.897Z",
+        "votes": {},
+        "isThankYou": false,
+        "isPartial": true
+      },
+      {
+        "id": 1910181,
+        "postDate": "2022-08-23T08:25:56.857Z",
+        "votes": {},
+        "isThankYou": false,
+        "isPartial": true
+      },
+      {
+        "id": 1367632,
+        "postDate": "2021-06-28T01:16:21.030Z",
+        "replies": [
+          {
+            "id": 1368926,
+            "postDate": "2021-06-29T03:10:04.807Z",
+            "replies": [
+              {
+                "id": 1398556,
+                "postDate": "2021-07-24T09:26:11.267Z",
+                "votes": {},
+                "isThankYou": false,
+                "isPartial": true
+              }
+            ],
+            "votes": {
+              "totalVotes": 1,
+              "totalUpvotes": 1
+            },
+            "isThankYou": false,
+            "isPartial": true
+          },
+          {
+            "id": 1398612,
+            "postDate": "2021-07-24T10:29:17.897Z",
+            "votes": {},
+            "isThankYou": false,
+            "isCollapsed": true,
+            "isPartial": true
+          },
+          {
+            "id": 1398638,
+            "postDate": "2021-07-24T10:59:30.643Z",
+            "votes": {},
+            "isThankYou": false,
+            "isCollapsed": true,
+            "isPartial": true
+          },
+          {
+            "id": 1398699,
+            "postDate": "2021-07-24T12:09:09.253Z",
+            "votes": {
+              "totalVotes": 1,
+              "totalUpvotes": 1
+            },
+            "isThankYou": false,
+            "isCollapsed": true,
+            "isPartial": true
+          },
+          {
+            "id": 1399541,
+            "postDate": "2021-07-25T12:26:50.780Z",
+            "votes": {},
+            "isThankYou": false,
+            "isCollapsed": true,
+            "isPartial": true
+          }
+        ],
+        "votes": {},
+        "isThankYou": false,
+        "isPartial": true
+      },
+      {
+        "id": 1330670,
+        "postDate": "2021-06-01T03:40:56.650Z",
+        "votes": {},
+        "isThankYou": false,
+        "isPartial": true
+      },
+      {
+        "id": 1330668,
+        "postDate": "2021-06-01T03:40:44.843Z",
+        "votes": {},
+        "isThankYou": false,
+        "isPartial": true
+      },
+      {
+        "id": 1316943,
+        "postDate": "2021-05-21T03:43:42.740Z",
+        "votes": {},
+        "isThankYou": false,
+        "isPartial": true
+      },
+      {
+        "id": 1201902,
+        "postDate": "2021-02-15T18:19:59.523Z",
+        "votes": {},
+        "isThankYou": false,
+        "isPartial": true
+      },
+      {
+        "id": 1200453,
+        "postDate": "2021-02-14T17:18:56.280Z",
+        "votes": {},
+        "isThankYou": false,
+        "isPartial": true
+      },
+      {
+        "id": 964060,
+        "postDate": "2020-08-09T14:59:09.060Z",
+        "replies": [
+          {
+            "id": 1013877,
+            "postDate": "2020-09-17T03:24:08.687Z",
+            "votes": {},
+            "isThankYou": false,
+            "isPartial": true
+          }
+        ],
+        "votes": {},
+        "isThankYou": false,
+        "isPartial": true
+      },
+      {
+        "id": 919055,
+        "postDate": "2020-07-07T17:23:11.233Z",
+        "votes": {},
+        "isThankYou": false,
+        "isPartial": true
+      },
+      {
+        "id": 896340,
+        "postDate": "2020-06-22T05:06:49.850Z",
+        "votes": {},
+        "isThankYou": false,
+        "isPartial": true
+      },
+      {
+        "id": 863943,
+        "postDate": "2020-05-27T16:56:28.410Z",
+        "votes": {},
+        "isThankYou": false,
+        "isPartial": true
+      },
+      {
+        "id": 741340,
+        "postDate": "2020-02-10T14:02:37.317Z",
+        "votes": {},
+        "isThankYou": false,
+        "isPartial": true
+      },
+      {
+        "id": 676029,
+        "postDate": "2019-11-18T22:58:35.167Z",
+        "replies": [
+          {
+            "id": 691496,
+            "postDate": "2019-12-10T07:51:57.043Z",
+            "votes": {
+              "totalVotes": 1,
+              "totalUpvotes": 1
+            },
+            "isThankYou": false,
+            "isPartial": true
+          }
+        ],
+        "votes": {},
+        "isThankYou": false,
+        "isPartial": true
+      },
+      {
+        "id": 632983,
+        "postDate": "2019-09-24T09:33:50.123Z",
+        "votes": {},
+        "isThankYou": false,
+        "isPartial": true
+      },
+      {
+        "id": 589339,
+        "postDate": "2019-07-31T19:11:50.150Z",
+        "votes": {},
+        "isThankYou": false,
+        "isPartial": true
+      },
+      {
+        "id": 560973,
+        "postDate": "2019-06-26T02:09:04.477Z",
+        "votes": {},
+        "isThankYou": false,
+        "isPartial": true
+      },
+      {
+        "id": 491113,
+        "postDate": "2019-03-15T08:02:27.763Z",
+        "replies": [
+          {
+            "id": 494881,
+            "postDate": "2019-03-20T10:54:02.333Z",
+            "votes": {
+              "totalVotes": 1,
+              "totalUpvotes": 1
+            },
+            "isThankYou": false,
+            "isPartial": true
+          }
+        ],
+        "votes": {},
+        "isThankYou": false,
+        "isPartial": true
+      },
+      {
+        "id": 490869,
+        "postDate": "2019-03-14T23:46:14.727Z",
+        "replies": [
+          {
+            "id": 494433,
+            "postDate": "2019-03-19T20:31:10.357Z",
+            "votes": {},
+            "isThankYou": false,
+            "isPartial": true
+          },
+          {
+            "id": 494583,
+            "postDate": "2019-03-20T02:47:52.637Z",
+            "votes": {
+              "totalVotes": 1,
+              "totalUpvotes": 1
+            },
+            "isThankYou": false,
+            "isCollapsed": true,
+            "isPartial": true
+          },
+          {
+            "id": 494671,
+            "postDate": "2019-03-20T05:24:01.430Z",
+            "votes": {},
+            "isThankYou": false,
+            "isCollapsed": true,
+            "isPartial": true
+          },
+          {
+            "id": 494678,
+            "postDate": "2019-03-20T05:39:51.680Z",
+            "votes": {},
+            "isThankYou": false,
+            "isCollapsed": true,
+            "isPartial": true
+          },
+          {
+            "id": 494778,
+            "postDate": "2019-03-20T08:55:54.290Z",
+            "votes": {},
+            "isThankYou": false,
+            "isCollapsed": true,
+            "isPartial": true
+          },
+          {
+            "id": 505430,
+            "postDate": "2019-04-02T02:19:02.437Z",
+            "votes": {},
+            "isThankYou": false,
+            "isCollapsed": true,
+            "isPartial": true
+          },
+          {
+            "id": 509650,
+            "postDate": "2019-04-08T05:00:48.843Z",
+            "votes": {},
+            "isThankYou": false,
+            "isCollapsed": true,
+            "isPartial": true
+          },
+          {
+            "id": 510577,
+            "postDate": "2019-04-09T08:43:15.927Z",
+            "votes": {},
+            "isThankYou": false,
+            "isCollapsed": true,
+            "isPartial": true
+          }
+        ],
+        "votes": {},
+        "isThankYou": false,
+        "isPartial": true
+      },
+      {
+        "id": 461807,
+        "postDate": "2019-01-27T03:21:08.397Z",
+        "replies": [
+          {
+            "id": 462058,
+            "postDate": "2019-01-27T15:15:10.447Z",
+            "votes": {
+              "totalVotes": 6,
+              "totalUpvotes": 6
+            },
+            "isThankYou": false,
+            "isPartial": true
+          },
+          {
+            "id": 462185,
+            "postDate": "2019-01-27T20:33:10.613Z",
+            "votes": {
+              "totalVotes": 1,
+              "totalUpvotes": 1
+            },
+            "isThankYou": false,
+            "isCollapsed": true,
+            "isPartial": true
+          },
+          {
+            "id": 463063,
+            "postDate": "2019-01-29T10:40:18.230Z",
+            "votes": {
+              "totalVotes": 2,
+              "totalUpvotes": 2
+            },
+            "isThankYou": false,
+            "isCollapsed": true,
+            "isPartial": true
+          },
+          {
+            "id": 463135,
+            "postDate": "2019-01-29T13:43:19.400Z",
+            "votes": {},
+            "isThankYou": false,
+            "isCollapsed": true,
+            "isPartial": true
+          },
+          {
+            "id": 463315,
+            "postDate": "2019-01-29T19:43:30.167Z",
+            "votes": {},
+            "isThankYou": false,
+            "isCollapsed": true,
+            "isPartial": true
+          },
+          {
+            "id": 463648,
+            "postDate": "2019-01-30T11:15:39.467Z",
+            "votes": {},
+            "isThankYou": false,
+            "isCollapsed": true,
+            "isPartial": true
+          },
+          {
+            "id": 465906,
+            "postDate": "2019-02-04T09:51:35.937Z",
+            "votes": {
+              "totalVotes": 1,
+              "totalUpvotes": 1
+            },
+            "isThankYou": false,
+            "isCollapsed": true,
+            "isPartial": true
+          },
+          {
+            "id": 469669,
+            "postDate": "2019-02-11T16:28:35.453Z",
+            "votes": {},
+            "isThankYou": false,
+            "isCollapsed": true,
+            "isPartial": true
+          },
+          {
+            "id": 469699,
+            "postDate": "2019-02-11T17:29:21.803Z",
+            "votes": {},
+            "isThankYou": false,
+            "isCollapsed": true,
+            "isPartial": true
+          },
+          {
+            "id": 486633,
+            "postDate": "2019-03-09T06:20:22.700Z",
+            "votes": {},
+            "isThankYou": false,
+            "isCollapsed": true,
+            "isPartial": true
+          },
+          {
+            "id": 486638,
+            "postDate": "2019-03-09T06:30:03.403Z",
+            "votes": {},
+            "isThankYou": false,
+            "isCollapsed": true,
+            "isPartial": true
+          },
+          {
+            "id": 487053,
+            "postDate": "2019-03-10T02:40:17.393Z",
+            "votes": {},
+            "isThankYou": false,
+            "isCollapsed": true,
+            "isPartial": true
+          },
+          {
+            "id": 487122,
+            "postDate": "2019-03-10T07:11:30.817Z",
+            "votes": {},
+            "isThankYou": false,
+            "isCollapsed": true,
+            "isPartial": true
+          },
+          {
+            "id": 487163,
+            "postDate": "2019-03-10T08:38:24.137Z",
+            "votes": {},
+            "isThankYou": false,
+            "isCollapsed": true,
+            "isPartial": true
+          },
+          {
+            "id": 487898,
+            "postDate": "2019-03-11T16:09:44.853Z",
+            "votes": {},
+            "isThankYou": false,
+            "isCollapsed": true,
+            "isPartial": true
+          }
+        ],
+        "votes": {},
+        "isThankYou": false,
+        "isPartial": true
+      },
+      {
+        "id": 1297783,
+        "postDate": "2021-05-08T10:01:13.497Z",
+        "votes": {},
+        "isDeleted": true,
+        "isThankYou": false,
+        "isPartial": true
+      },
+      {
+        "id": 820208,
+        "postDate": "2020-04-25T08:32:07.637Z",
+        "votes": {
+          "totalVotes": 1,
+          "totalUpvotes": 1
+        },
+        "isDeleted": true,
+        "isThankYou": false,
+        "isPartial": true
+      },
+      {
+        "id": 551905,
+        "postDate": "2019-06-13T09:12:56.900Z",
+        "votes": {
+          "totalVotes": 4,
+          "totalUpvotes": 4
+        },
+        "isDeleted": true,
+        "isThankYou": false,
+        "isPartial": true
+      },
+      {
+        "id": 531051,
+        "postDate": "2019-05-14T07:41:08.600Z",
+        "replies": [
+          {
+            "id": 539189,
+            "postDate": "2019-05-29T16:54:23.153Z",
+            "votes": {},
+            "isThankYou": false,
+            "isPartial": true
+          }
+        ],
+        "votes": {},
+        "isDeleted": true,
+        "isThankYou": false,
+        "isPartial": true
+      },
+      {
+        "id": 527869,
+        "postDate": "2019-05-06T13:43:02.120Z",
+        "votes": {},
+        "isDeleted": true,
+        "isThankYou": false,
+        "isPartial": true
+      },
+      {
+        "id": 517369,
+        "postDate": "2019-04-16T00:35:31.237Z",
+        "replies": [
+          {
+            "id": 523162,
+            "postDate": "2019-04-25T17:00:33.440Z",
+            "votes": {
+              "totalVotes": 2,
+              "totalUpvotes": 2
+            },
+            "isThankYou": false,
+            "isPartial": true
+          },
+          {
+            "id": 524763,
+            "postDate": "2019-04-29T13:33:18.367Z",
+            "votes": {},
+            "isDeleted": true,
+            "isThankYou": false,
+            "isCollapsed": true,
+            "isPartial": true
+          },
+          {
+            "id": 524879,
+            "postDate": "2019-04-29T17:29:04.333Z",
+            "votes": {},
+            "isThankYou": false,
+            "isCollapsed": true,
+            "isPartial": true
+          },
+          {
+            "id": 524978,
+            "postDate": "2019-04-29T22:38:54.190Z",
+            "votes": {},
+            "isDeleted": true,
+            "isThankYou": false,
+            "isCollapsed": true,
+            "isPartial": true
+          }
+        ],
+        "votes": {},
+        "isDeleted": true,
+        "isThankYou": false,
+        "isPartial": true
+      },
+      {
+        "id": 509134,
+        "postDate": "2019-04-07T11:33:46.603Z",
+        "replies": [
+          {
+            "id": 510575,
+            "postDate": "2019-04-09T08:41:08.023Z",
+            "votes": {
+              "totalVotes": 1,
+              "totalUpvotes": 1
+            },
+            "isThankYou": false,
+            "isPartial": true
+          }
+        ],
+        "votes": {},
+        "isDeleted": true,
+        "isThankYou": false,
+        "isPartial": true
+      },
+      {
+        "id": 507888,
+        "postDate": "2019-04-05T11:00:44.693Z",
+        "replies": [
+          {
+            "id": 509025,
+            "postDate": "2019-04-07T08:14:09.493Z",
+            "votes": {},
+            "isThankYou": false,
+            "isPartial": true
+          },
+          {
+            "id": 509071,
+            "postDate": "2019-04-07T09:29:12.577Z",
+            "votes": {},
+            "isDeleted": true,
+            "isThankYou": false,
+            "isCollapsed": true,
+            "isPartial": true
+          },
+          {
+            "id": 510578,
+            "postDate": "2019-04-09T08:45:35.273Z",
+            "votes": {},
+            "isThankYou": false,
+            "isCollapsed": true,
+            "isPartial": true
+          },
+          {
+            "id": 510597,
+            "postDate": "2019-04-09T09:11:33.680Z",
+            "votes": {},
+            "isDeleted": true,
+            "isThankYou": false,
+            "isCollapsed": true,
+            "isPartial": true
+          }
+        ],
+        "votes": {},
+        "isDeleted": true,
+        "isThankYou": false,
+        "isPartial": true
+      },
+      {
+        "id": 504999,
+        "postDate": "2019-04-01T12:45:53.480Z",
+        "replies": [
+          {
+            "id": 505255,
+            "postDate": "2019-04-01T19:19:43.257Z",
+            "votes": {},
+            "isThankYou": false,
+            "isPartial": true
+          },
+          {
+            "id": 505661,
+            "postDate": "2019-04-02T11:18:49.993Z",
+            "votes": {
+              "totalUpvotes": 1
+            },
+            "isDeleted": true,
+            "isThankYou": false,
+            "isPartial": true
+          },
+          {
+            "id": 509075,
+            "postDate": "2019-04-07T09:32:14.943Z",
+            "votes": {
+              "totalUpvotes": 1
+            },
+            "isDeleted": true,
+            "isThankYou": false,
+            "isPartial": true
+          }
+        ],
+        "votes": {},
+        "isDeleted": true,
+        "isThankYou": false,
+        "isPartial": true
+      },
+      {
+        "id": 477622,
+        "postDate": "2019-02-25T01:37:32.563Z",
+        "votes": {
+          "totalVotes": 1,
+          "totalUpvotes": 1
+        },
+        "isDeleted": true,
+        "isThankYou": false,
+        "isPartial": true
+      },
+      {
+        "id": 476949,
+        "postDate": "2019-02-23T14:03:22.290Z",
+        "replies": [
+          {
+            "id": 476974,
+            "postDate": "2019-02-23T15:18:39.563Z",
+            "votes": {
+              "totalVotes": 1,
+              "totalUpvotes": 1
+            },
+            "isThankYou": false,
+            "isPartial": true
+          },
+          {
+            "id": 477253,
+            "postDate": "2019-02-24T08:04:30.200Z",
+            "votes": {
+              "totalVotes": 3,
+              "totalUpvotes": 3
+            },
+            "isDeleted": true,
+            "isThankYou": false,
+            "isPartial": true
+          },
+          {
+            "id": 477374,
+            "postDate": "2019-02-24T12:48:14.047Z",
+            "votes": {},
+            "isThankYou": false,
+            "isPartial": true
+          }
+        ],
+        "votes": {
+          "totalVotes": 1,
+          "totalUpvotes": 1
+        },
+        "isDeleted": true,
+        "isThankYou": false,
+        "isPartial": true
+      },
+      {
+        "id": 465121,
+        "postDate": "2019-02-02T11:24:29.937Z",
+        "votes": {
+          "totalVotes": 1,
+          "totalUpvotes": 1
+        },
+        "isDeleted": true,
+        "isThankYou": false,
+        "isPartial": true
+      },
+      {
+        "id": 461921,
+        "postDate": "2019-01-27T09:57:36.797Z",
+        "votes": {
+          "totalVotes": 1,
+          "totalUpvotes": 1
+        },
+        "isDeleted": true,
+        "isThankYou": false,
+        "isPartial": true
+      },
+      {
+        "id": 461668,
+        "postDate": "2019-01-26T17:14:27.237Z",
+        "votes": {},
+        "isDeleted": true,
+        "isThankYou": false,
+        "isPartial": true
+      },
+      {
+        "id": 461466,
+        "postDate": "2019-01-26T06:10:26.953Z",
+        "votes": {},
+        "isDeleted": true,
+        "isThankYou": false,
+        "isPartial": true
+      },
+      {
+        "id": 460344,
+        "postDate": "2019-01-23T14:02:49.553Z",
+        "votes": {
+          "totalVotes": 1,
+          "totalUpvotes": 1
+        },
+        "isDeleted": true,
+        "isThankYou": false,
+        "isPartial": true
+      },
+      {
+        "id": 459681,
+        "postDate": "2019-01-22T06:59:18.063Z",
+        "votes": {
+          "totalVotes": 1,
+          "totalUpvotes": 1
+        },
+        "isDeleted": true,
+        "isThankYou": false,
+        "isPartial": true
+      },
+      {
+        "id": 459515,
+        "postDate": "2019-01-21T22:32:53.887Z",
+        "votes": {
+          "totalVotes": 1,
+          "totalUpvotes": 1
+        },
+        "isDeleted": true,
+        "isThankYou": false,
+        "isPartial": true
+      },
+      {
+        "id": 2095233,
+        "postDate": "2023-01-11T08:49:20Z",
+        "votes": {
+          "totalVotes": 1,
+          "totalUpvotes": 1
+        },
+        "isThankYou": true,
+        "isPartial": true
+      },
+      {
+        "id": 1576976,
+        "postDate": "2021-11-09T16:13:58.707Z",
+        "votes": {
+          "totalVotes": 1,
+          "totalUpvotes": 1
+        },
+        "isThankYou": true,
+        "isPartial": true
+      },
+      {
+        "id": 731549,
+        "postDate": "2020-01-28T19:22:08.777Z",
+        "votes": {
+          "totalVotes": 1,
+          "totalUpvotes": 1
+        },
+        "isThankYou": true,
+        "isPartial": true
+      },
+      {
+        "id": 458755,
+        "postDate": "2019-01-20T12:51:26.587Z",
+        "votes": {
+          "totalVotes": 3,
+          "totalUpvotes": 3
+        },
+        "isThankYou": true,
+        "isPartial": true
+      },
+      {
+        "id": 531134,
+        "postDate": "2019-05-14T11:10:39.907Z",
+        "votes": {
+          "totalVotes": 1,
+          "totalUpvotes": 1
+        },
+        "isThankYou": true,
+        "isPartial": true
+      },
+      {
+        "id": 475826,
+        "postDate": "2019-02-21T08:46:23.440Z",
+        "votes": {
+          "totalVotes": 1,
+          "totalUpvotes": 1
+        },
+        "isThankYou": true,
+        "isPartial": true
+      },
+      {
+        "id": 469147,
+        "postDate": "2019-02-10T15:33:34.473Z",
+        "votes": {
+          "totalVotes": 1,
+          "totalUpvotes": 1
+        },
+        "isThankYou": true,
+        "isPartial": true
+      },
+      {
+        "id": 468958,
+        "postDate": "2019-02-10T05:39:18.463Z",
+        "votes": {
+          "totalVotes": 1,
+          "totalUpvotes": 1
+        },
+        "isThankYou": true,
+        "isPartial": true
+      },
+      {
+        "id": 468774,
+        "postDate": "2019-02-09T16:18:29.650Z",
+        "votes": {
+          "totalVotes": 1,
+          "totalUpvotes": 1
+        },
+        "isThankYou": true,
+        "isPartial": true
+      },
+      {
+        "id": 466685,
+        "postDate": "2019-02-05T20:10:08.217Z",
+        "votes": {
+          "totalVotes": 1,
+          "totalUpvotes": 1
+        },
+        "isThankYou": true,
+        "isPartial": true
+      },
+      {
+        "id": 464618,
+        "postDate": "2019-02-01T06:54:31.947Z",
+        "votes": {
+          "totalVotes": 1,
+          "totalUpvotes": 1
+        },
+        "isThankYou": true,
+        "isPartial": true
+      },
+      {
+        "id": 464428,
+        "postDate": "2019-01-31T21:18:56.893Z",
+        "votes": {
+          "totalVotes": 1,
+          "totalUpvotes": 1
+        },
+        "isThankYou": true,
+        "isPartial": true
+      },
+      {
+        "id": 464340,
+        "postDate": "2019-01-31T16:45:16.877Z",
+        "votes": {
+          "totalVotes": 1,
+          "totalUpvotes": 1
+        },
+        "isThankYou": true,
+        "isPartial": true
+      },
+      {
+        "id": 463867,
+        "postDate": "2019-01-30T19:25:23.817Z",
+        "votes": {
+          "totalVotes": 1,
+          "totalUpvotes": 1
+        },
+        "isThankYou": true,
+        "isPartial": true
+      },
+      {
+        "id": 462948,
+        "postDate": "2019-01-29T06:29:29.863Z",
+        "votes": {
+          "totalVotes": 1,
+          "totalUpvotes": 1
+        },
+        "isThankYou": true,
+        "isPartial": true
+      },
+      {
+        "id": 462606,
+        "postDate": "2019-01-28T15:21:47.710Z",
+        "votes": {
+          "totalVotes": 1,
+          "totalUpvotes": 1
+        },
+        "isThankYou": true,
+        "isPartial": true
+      },
+      {
+        "id": 462405,
+        "postDate": "2019-01-28T08:52:51.127Z",
+        "votes": {
+          "totalVotes": 1,
+          "totalUpvotes": 1
+        },
+        "isThankYou": true,
+        "isPartial": true
+      },
+      {
+        "id": 462089,
+        "postDate": "2019-01-27T16:33:06.763Z",
+        "votes": {
+          "totalVotes": 1,
+          "totalUpvotes": 1
+        },
+        "isThankYou": true,
+        "isPartial": true
+      },
+      {
+        "id": 461798,
+        "postDate": "2019-01-27T02:52:02.503Z",
+        "votes": {
+          "totalVotes": 1,
+          "totalUpvotes": 1
+        },
+        "isThankYou": true,
+        "isPartial": true
+      },
+      {
+        "id": 461674,
+        "postDate": "2019-01-26T17:31:21.290Z",
+        "votes": {
+          "totalVotes": 1,
+          "totalUpvotes": 1
+        },
+        "isThankYou": true,
+        "isPartial": true
+      },
+      {
+        "id": 461607,
+        "postDate": "2019-01-26T13:55:41.613Z",
+        "votes": {
+          "totalVotes": 1,
+          "totalUpvotes": 1
+        },
+        "isThankYou": true,
+        "isPartial": true
+      },
+      {
+        "id": 461251,
+        "postDate": "2019-01-25T16:19:50.190Z",
+        "votes": {
+          "totalVotes": 1,
+          "totalUpvotes": 1
+        },
+        "isThankYou": true,
+        "isPartial": true
+      },
+      {
+        "id": 461192,
+        "postDate": "2019-01-25T14:03:31.710Z",
+        "votes": {
+          "totalVotes": 1,
+          "totalUpvotes": 1
+        },
+        "isThankYou": true,
+        "isPartial": true
+      },
+      {
+        "id": 461084,
+        "postDate": "2019-01-25T07:08:52.363Z",
+        "votes": {
+          "totalVotes": 1,
+          "totalUpvotes": 1
+        },
+        "isThankYou": true,
+        "isPartial": true
+      },
+      {
+        "id": 460916,
+        "postDate": "2019-01-24T17:45:19.047Z",
+        "votes": {
+          "totalVotes": 1,
+          "totalUpvotes": 1
+        },
+        "isThankYou": true,
+        "isPartial": true
+      },
+      {
+        "id": 460696,
+        "postDate": "2019-01-24T08:57:32.033Z",
+        "votes": {
+          "totalVotes": 1,
+          "totalUpvotes": 1
+        },
+        "isThankYou": true,
+        "isPartial": true
+      },
+      {
+        "id": 460525,
+        "postDate": "2019-01-23T22:16:38.267Z",
+        "votes": {
+          "totalVotes": 1,
+          "totalUpvotes": 1
+        },
+        "isThankYou": true,
+        "isPartial": true
+      },
+      {
+        "id": 460014,
+        "postDate": "2019-01-22T20:15:53.677Z",
+        "votes": {
+          "totalVotes": 1,
+          "totalUpvotes": 1
+        },
+        "isThankYou": true,
+        "isPartial": true
+      },
+      {
+        "id": 459607,
+        "postDate": "2019-01-22T04:23:03.243Z",
+        "votes": {
+          "totalVotes": 1,
+          "totalUpvotes": 1
+        },
+        "isThankYou": true,
+        "isPartial": true
+      },
+      {
+        "id": 459573,
+        "postDate": "2019-01-22T02:36:12.237Z",
+        "votes": {
+          "totalVotes": 1,
+          "totalUpvotes": 1
+        },
+        "isThankYou": true,
+        "isPartial": true
+      },
+      {
+        "id": 459266,
+        "postDate": "2019-01-21T13:27:18.103Z",
+        "votes": {
+          "totalVotes": 1,
+          "totalUpvotes": 1
+        },
+        "isThankYou": true,
+        "isPartial": true
+      },
+      {
+        "id": 459125,
+        "postDate": "2019-01-21T08:30:59.003Z",
+        "votes": {
+          "totalVotes": 1,
+          "totalUpvotes": 1
+        },
+        "isThankYou": true,
+        "isPartial": true
+      },
+      {
+        "id": 458652,
+        "postDate": "2019-01-20T07:16:24.893Z",
+        "votes": {
+          "totalVotes": 1,
+          "totalUpvotes": 1
+        },
+        "isThankYou": true,
+        "isPartial": true
+      },
+      {
+        "id": 458596,
+        "postDate": "2019-01-20T02:47:31.300Z",
+        "votes": {
+          "totalVotes": 1,
+          "totalUpvotes": 1
+        },
+        "isThankYou": true,
+        "isPartial": true
+      },
+      {
+        "id": 458592,
+        "postDate": "2019-01-20T02:19:42.720Z",
+        "votes": {
+          "totalVotes": 1,
+          "totalUpvotes": 1
+        },
+        "isThankYou": true,
+        "isPartial": true
+      },
+      {
+        "id": 3163085,
+        "postDate": "2025-03-30T09:29:00.087Z",
+        "votes": {},
+        "isThankYou": true,
+        "isPartial": true
+      },
+      {
+        "id": 1883129,
+        "postDate": "2022-08-03T15:50:20.433Z",
+        "votes": {},
+        "isThankYou": true,
+        "isPartial": true
+      },
+      {
+        "id": 1201790,
+        "postDate": "2021-02-15T16:59:25.487Z",
+        "votes": {},
+        "isThankYou": true,
+        "isPartial": true
+      },
+      {
+        "id": 1197050,
+        "postDate": "2021-02-11T22:04:29.353Z",
+        "votes": {},
+        "isThankYou": true,
+        "isPartial": true
+      },
+      {
+        "id": 1041566,
+        "postDate": "2020-10-07T20:14:00.917Z",
+        "votes": {},
+        "isThankYou": true,
+        "isPartial": true
+      },
+      {
+        "id": 620235,
+        "postDate": "2019-09-07T07:27:19.590Z",
+        "votes": {},
+        "isThankYou": true,
+        "isPartial": true
+      },
+      {
+        "id": 584512,
+        "postDate": "2019-07-26T05:24:04.717Z",
+        "votes": {},
+        "isThankYou": true,
+        "isPartial": true
+      },
+      {
+        "id": 507663,
+        "postDate": "2019-04-05T03:50:01.807Z",
+        "votes": {},
+        "isThankYou": true,
+        "isPartial": true
+      }
+    ],
+    "commentSort": "COMMENT_LIST_SORT_BY_HOT",
+    "firstMessage": {
+      "id": 458525,
+      "postDate": "2019-01-19T20:49:54.063Z",
+      "rawMarkdown": "Congrats to all the winners, and thanks to the host and kaggle hosted such an interesting competetion.<br>\nI am sorry for late share, I have worked hard to prepare it in recent days,tried to verify my solution and to make sure it\u2019s reproducible,stable,efficient as well as interpretative.\n\n**Overview**\n![enter image description here][1]\n**Challenges:**<br>\n*Extreme Imbalance,rare classes hard to train and predict but play an important role in the score.*<br>\n*Data distribution is not consistent in train set,test set,and HPA v18 external data.*<br>\n*The images are with high quality,but we must find a balance between model efficiency and accuracy.*<br>\n\n**Validation for CNNs:**<br>\nI split the val set according to https://www.kaggle.com/c/human-protein-atlas-image-classification/discussion/67819 great thanks to @trentb\n\nI found Focal Loss of the whole val set is a relative good metric to the model capability, F1 is not a good metric as it\u2019s sensitive to the threshold and the threshold is depend on the distribution of the train and val set.\n\nI tried to evaluate the capability of a model by set the ratio of each class to the same as train set. I did so because I thought I should not adjust the thresholds according to the public LB,but if I set the ratio of the prediction stable,and,if the model is stronger,the score will improve. That\u2019s to say,I used public LB as another validation set.\n\n**Training Time Augmentations:**<br>\nRotate 90,flip and randomly crop 512x512 patches from 768x768 images(or crop 1024x1024 patches from 1536x1536 images)\n\n\n**Data Pre-Processing:**\nRemove about 6000 duplicates samples from v18 external data, using hash method which been used to find test set leak.\n\nCalculate mean and std using train+test,and used them before feeding images to the model.\n\n**Model training:**<br>\n**Optimizer**:Adam<br>\n**Scheduler**:<pre>lr = 30e-5\nif epoch &gt; 25:\n    lr = 15e-5\nif epoch &gt; 30:\n    lr = 7.5e-5\nif epoch &gt; 35:\n    lr = 3e-5\nif epoch &gt; 40:\n    lr = 1e-5\n</pre>\n**Loss Functions**:FocalLoss+Lovasz,I did not use macro F1 soft loss, because the batch size is small and some classes are rare, I think it\u2019s not suitable for this competition.I used lovasz loss function because I thought although the IOU and F1 are not the same,but it can balance the Recall and Precision to some extend.\n\n**I did not use oversample.**<br>\n**Model structure:**\nMy best model is a densenet121 model, which is very simple,the head of the model is almost same as public kernel https://www.kaggle.com/iafoss/pretrained-resnet34-with-rgby-0-460-public-lb by @iafoss.\n<pre>  (1): AdaptiveConcatPool2d(\n    (ap): AdaptiveAvgPool2d(output_size=(1, 1))\n    (mp): AdaptiveMaxPool2d(output_size=(1, 1))\n  )\n  (2): Flatten()\n  (3): BatchNorm1d(2048, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)\n  (4): Dropout(p=0.5)\n  (5): Linear(in_features=2048, out_features=1024, bias=True)\n  (6): ReLU()\n  (7): BatchNorm1d(1024, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)\n  (8): Dropout(p=0.5)\n  (9): Linear(in_features=1024, out_features=28, bias=True)\n</pre>\nI tried all kinds of network structure according to the Multi-Label classification papers, the results were not improved instead of their beautiful structures and theory behind them.:) <br>\n**Prediction time augmentations:**\nI predicted the test set by using best focal loss epoch with 4 seeds to random crop 512x512 patches from 768x768 images, and got the max probs from the predictions. \n\n**Post-processing:**\nAt the final stage of the competition, I decided to generate two submissions:\n1.The first one was keep the ratio of the labels to the public test set,since we did not know the ratio of the rare classes,I set them to the ratio of the train set.\n2.The second one was keep the ratio of the labels to the average ratio of train set and public test set.\n\nWhy? Although I tried to add or reduce the count of rare classes by 2-5 samples,the public LB can improve, but this was a dangerous way.I just only used it to   evaluate the possible shakeup.\n<hr>\nMetric Learning:\nI took part in the landmark recognition challenge in May 2018,https://www.kaggle.com/c/landmark-recognition-challenge,and I had planed to use metric learning in that competition,but time was limited after I finished the TalkingData competition. But I read many  papers related,and did many experiments after that. \n\nWhen I analyzed the predictions of my models,I wanted to find the nearest samples to compare,I first used the features from CNN model,I found they are not so good,so I decided to try Metric Learning.\n\nI found it\u2019s very hard to train in this competition,it took me a lot of time but the result was not so good,and I found the same algorithm can work very well in Whale identification competition,but I did not give up and finally found a good model in last two days.\n\nBy using the model,I could find the nearest sample on validation set,**the top1 accuracy &gt;0.9**\nThese are the demo:<br>\nCorrect sample with single Label\n![][2]\nCorrect sample multiple labels\n![][3]\nCorrect sample with rare label:Lipid droplets\n![][4]\nCorrect sample with rare label:Rods &amp; rings\n![][5]\nMissed a label\n![][6]\nIncorrectly add a label\n![][7]\n\nSince the top1 accuracy&gt;0.9,I thought I could just use the metric learning result to set the labels of test set. But I found that the test set is a little different to V18, and some of samples can not find nearest neighbor in train set and V18. So I set a threshold and replace the labels with found sample\u2019s. Fortunately,the threshold is not sensitive to the threshold. Replacing 1000 samples in test set is almost the same score as replacing 1300 samples. By doing so, my score can improve 0.03+,which was a huge improvement in this competition.\n\nI think my method is important not only improve the score,it can help HPA and their users in following way:<br>\n*1.When someone want to label or learn to label an image or check the quality, he can get the nearest images for referring to.<br>\n2.We can cluster the images by the metric and find the label noises and then improve the quality of the labels.<br>\n3.We can explain why the model is good by visualizing the predictions.<br>*\n\n**Ensemble:**\nTo keep the solution simple,I don't discuss the ensemble here, a single model or even a single fold + metric learning result is good enough to get the first place.\n\n**The scores on LB:**\n![][8]\n<br>\nI am sorry I can not describe the details of this part now, as I mentioned before,the whale identification competition is still on-going. \n\n\n**Introspection**:\nBefore I entered this competition,I never expected I can find a way out,it\u2019s very hard to build a stable CV and the score is sensitive to the distribution of rare classes.A gold medal is my max expectation.<br>\nI feel kaggle competitions are becoming harder and harder.In all honesty,there are no secrets but hard work.I treat every competition as a force to push me forward.I force myself not to learn and use too much competition skills but knowledge to solve real problems.<br>\nIt\u2019s quite lucky I found a relatively good solution in this competition as I failed to find a Reinforcement Learning algorithm in Track ML, and failed to finish a good CNN-RNN model in Quick Draw competition in time,but anyway,if we compete only for win,we may loss,if we compete for learning and providing useful solution to the host,nothing to loss.\n\n**Update,Metric Learning Part:**\n\nSorry for late update!\n\nAs I noticed that the sample with same antibody-id have almost same labels, so I thought I may treat the antibody-id as face id, and use face-recognition algorithms on HPA v18 dataset.\n\nWhen training, I used V18 data antibody IDs to split the samples,keep a sample in validation set,and put the other samples with same ID in train set.I used top1-acc as validation metric.\n\n**Metric Learning Model:**\nNetwork:resnet50\nAugmentations:Rotate 90,flip\nLoss Functions:ArcFaceLoss\nOptimizer:Adam\nScheduler:lr = 10e-5, 50 epochs.\n\n**Model details:**\n\n<pre>class ArcFaceLoss(nn.modules.Module):\n    def __init__(self,s=30.0,m=0.5):\n        super(ArcFaceLoss, self).__init__()\n        self.classify_loss = nn.CrossEntropyLoss()\n        self.s = s\n        self.easy_margin = False\n        self.cos_m = math.cos(m)\n        self.sin_m = math.sin(m)\n        self.th = math.cos(math.pi - m)\n        self.mm = math.sin(math.pi - m) * m\n\n    def forward(self, logits, labels, epoch=0):\n        cosine = logits\n        sine = torch.sqrt(1.0 - torch.pow(cosine, 2))\n        phi = cosine * self.cos_m - sine * self.sin_m\n        if self.easy_margin:\n            phi = torch.where(cosine &gt; 0, phi, cosine)\n        else:\n            phi = torch.where(cosine &gt; self.th, phi, cosine - self.mm)\n\n        one_hot = torch.zeros(cosine.size(), device='cuda')\n        one_hot.scatter_(1, labels.view(-1, 1).long(), 1)\n        # -------------torch.where(out_i = {x_i if condition_i else y_i) -------------\n        output = (one_hot * phi) + ((1.0 - one_hot) * cosine)\n        output *= self.s\n        loss1 = self.classify_loss(output, labels)\n        loss2 = self.classify_loss(cosine, labels)\n        gamma=1\n        loss=(loss1+gamma*loss2)/(1+gamma)\n        return loss\n\nclass ArcMarginProduct(nn.Module):\n    r\"\"\"Implement of large margin arc distance: :\n        Args:\n            in_features: size of each input sample\n            out_features: size of each output sample\n            s: norm of input feature\n            m: margin\n            cos(theta + m)\n        \"\"\"\n    def __init__(self, in_features, out_features):\n        super(ArcMarginProduct, self).__init__()\n        self.weight = Parameter(torch.FloatTensor(out_features, in_features))\n        # nn.init.xavier_uniform_(self.weight)\n        self.reset_parameters()\n\n    def reset_parameters(self):\n        stdv = 1. / math.sqrt(self.weight.size(1))\n        self.weight.data.uniform_(-stdv, stdv)\n\n    def forward(self, features):\n        cosine = F.linear(F.normalize(features), F.normalize(self.weight.cuda()))\n        return cosine\n\n def __init__(self,....\n \t... ...\n\tself.avgpool = nn.AdaptiveAvgPool2d(1)\n\tself.arc_margin_product=ArcMarginProduct(512, num_classes)\n\tself.bn1 = nn.BatchNorm1d(1024 * self.EX)\n\tself.fc1 = nn.Linear(1024 * self.EX, 512 * self.EX)\n\tself.bn2 = nn.BatchNorm1d(512 * self.EX)\n\tself.relu = nn.ReLU(inplace=True)\n\tself.fc2 = nn.Linear(512 * self.EX, 512)\n\tself.bn3 = nn.BatchNorm1d(512)\n\ndef forward(self, x):\n\t... ...\n\tx = torch.cat((nn.AdaptiveAvgPool2d(1)(e5), nn.AdaptiveMaxPool2d(1)(e5)), dim=1)\n\tx = x.view(x.size(0), -1)\n\tx = self.bn1(x)\n\tx = F.dropout(x, p=0.25)\n\tx = self.fc1(x)\n\tx = self.relu(x)\n\tx = self.bn2(x)\n\tx = F.dropout(x, p=0.5)\n\n\tx = x.view(x.size(0), -1)\n\n\tx = self.fc2(x)\n\tfeature = self.bn3(x)\n\n\tcosine=self.arc_margin_product(feature)\n\tif self.extract_feature:\n\t    return cosine, feature\n\telse:\n\t    return cosine\n</pre>\n\nPlease refer to the paper:\nArcFace: Additive Angular Margin Loss for Deep Face Recognition \nhttps://arxiv.org/pdf/1801.07698v1.pdf\nDeep Face Recognition: A Survey    \nhttps://arxiv.org/pdf/1804.06655.pdf\n\nAs I was very busy after this competition(and will be for a little long time),I used almost the same model finsihed the Whale competition and the winners' models are very good, so I think I need not write a summary of that competition. I the person re-idenfication related papers and solutions are good choice to Whale competition.\n\nThanks for your patience! \n\n\n  [1]: https://bestfitting.github.io/kaggle/protein/images/001_pipeline.png\n[2]:https://bestfitting.github.io/kaggle/protein/images/002_Sample%20with%20single%20Label.jpg\n[3]:https://bestfitting.github.io/kaggle/protein/images/003_Sampe%20with%20multi%20labels.jpg\n[4]:https://bestfitting.github.io/kaggle/protein/images/004_Rare%20Label_Lipid%20droplets.jpg\n[5]:https://bestfitting.github.io/kaggle/protein/images/005_Rare%20Label_Rods%20%26%20rings.jpg\n[6]:https://bestfitting.github.io/kaggle/protein/images/006_Missed%20a%20label.jpg\n[7]:https://bestfitting.github.io/kaggle/protein/images/007_incorrectly%20add%20a%20label.jpg\n[8]: https://bestfitting.github.io/kaggle/protein/images/008_scores.png\n",
+      "content": "<p>Congrats to all the winners, and thanks to the host and kaggle hosted such an interesting competetion.<br><br>\nI am sorry for late share, I have worked hard to prepare it in recent days,tried to verify my solution and to make sure it\u2019s reproducible,stable,efficient as well as interpretative.</p>\n<p><strong>Overview</strong><br>\n<img src=\"https://bestfitting.github.io/kaggle/protein/images/001_pipeline.png\" alt=\"enter image description here\"><br>\n<strong>Challenges:</strong><br><br>\n<em>Extreme Imbalance,rare classes hard to train and predict but play an important role in the score.</em><br><br>\n<em>Data distribution is not consistent in train set,test set,and HPA v18 external data.</em><br><br>\n<em>The images are with high quality,but we must find a balance between model efficiency and accuracy.</em><br></p>\n<p><strong>Validation for CNNs:</strong><br><br>\nI split the val set according to <a href=\"https://www.kaggle.com/c/human-protein-atlas-image-classification/discussion/67819\" target=\"_blank\">https://www.kaggle.com/c/human-protein-atlas-image-classification/discussion/67819</a> great thanks to <a href=\"https://www.kaggle.com/trentb\" target=\"_blank\">@trentb</a></p>\n<p>I found Focal Loss of the whole val set is a relative good metric to the model capability, F1 is not a good metric as it\u2019s sensitive to the threshold and the threshold is depend on the distribution of the train and val set.</p>\n<p>I tried to evaluate the capability of a model by set the ratio of each class to the same as train set. I did so because I thought I should not adjust the thresholds according to the public LB,but if I set the ratio of the prediction stable,and,if the model is stronger,the score will improve. That\u2019s to say,I used public LB as another validation set.</p>\n<p><strong>Training Time Augmentations:</strong><br><br>\nRotate 90,flip and randomly crop 512x512 patches from 768x768 images(or crop 1024x1024 patches from 1536x1536 images)</p>\n<p><strong>Data Pre-Processing:</strong><br>\nRemove about 6000 duplicates samples from v18 external data, using hash method which been used to find test set leak.</p>\n<p>Calculate mean and std using train+test,and used them before feeding images to the model.</p>\n<p><strong>Model training:</strong><br><br>\n<strong>Optimizer</strong>:Adam<br><br>\n<strong>Scheduler</strong>:</p><pre>lr = 30e-5\nif epoch &gt; 25:\n    lr = 15e-5\nif epoch &gt; 30:\n    lr = 7.5e-5\nif epoch &gt; 35:\n    lr = 3e-5\nif epoch &gt; 40:\n    lr = 1e-5\n</pre><br>\n<strong>Loss Functions</strong>:FocalLoss+Lovasz,I did not use macro F1 soft loss, because the batch size is small and some classes are rare, I think it\u2019s not suitable for this competition.I used lovasz loss function because I thought although the IOU and F1 are not the same,but it can balance the Recall and Precision to some extend.<p></p>\n<p><strong>I did not use oversample.</strong><br><br>\n<strong>Model structure:</strong><br>\nMy best model is a densenet121 model, which is very simple,the head of the model is almost same as public kernel <a href=\"https://www.kaggle.com/iafoss/pretrained-resnet34-with-rgby-0-460-public-lb\" target=\"_blank\">https://www.kaggle.com/iafoss/pretrained-resnet34-with-rgby-0-460-public-lb</a> by <a href=\"https://www.kaggle.com/iafoss\" target=\"_blank\">@iafoss</a>.</p>\n<pre>  (1): AdaptiveConcatPool2d(\n    (ap): AdaptiveAvgPool2d(output_size=(1, 1))\n    (mp): AdaptiveMaxPool2d(output_size=(1, 1))\n  )\n  (2): Flatten()\n  (3): BatchNorm1d(2048, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)\n  (4): Dropout(p=0.5)\n  (5): Linear(in_features=2048, out_features=1024, bias=True)\n  (6): ReLU()\n  (7): BatchNorm1d(1024, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)\n  (8): Dropout(p=0.5)\n  (9): Linear(in_features=1024, out_features=28, bias=True)\n</pre>\n<p>I tried all kinds of network structure according to the Multi-Label classification papers, the results were not improved instead of their beautiful structures and theory behind them.:) <br><br>\n<strong>Prediction time augmentations:</strong><br>\nI predicted the test set by using best focal loss epoch with 4 seeds to random crop 512x512 patches from 768x768 images, and got the max probs from the predictions. </p>\n<p><strong>Post-processing:</strong><br>\nAt the final stage of the competition, I decided to generate two submissions:<br>\n1.The first one was keep the ratio of the labels to the public test set,since we did not know the ratio of the rare classes,I set them to the ratio of the train set.<br>\n2.The second one was keep the ratio of the labels to the average ratio of train set and public test set.</p>\n<p>Why? Although I tried to add or reduce the count of rare classes by 2-5 samples,the public LB can improve, but this was a dangerous way.I just only used it to   evaluate the possible shakeup.<br>\n</p><hr><br>\nMetric Learning:<br>\nI took part in the landmark recognition challenge in May 2018,<a href=\"https://www.kaggle.com/c/landmark-recognition-challenge,and\" target=\"_blank\">https://www.kaggle.com/c/landmark-recognition-challenge,and</a> I had planed to use metric learning in that competition,but time was limited after I finished the TalkingData competition. But I read many  papers related,and did many experiments after that. <p></p>\n<p>When I analyzed the predictions of my models,I wanted to find the nearest samples to compare,I first used the features from CNN model,I found they are not so good,so I decided to try Metric Learning.</p>\n<p>I found it\u2019s very hard to train in this competition,it took me a lot of time but the result was not so good,and I found the same algorithm can work very well in Whale identification competition,but I did not give up and finally found a good model in last two days.</p>\n<p>By using the model,I could find the nearest sample on validation set,<strong>the top1 accuracy &gt;0.9</strong><br>\nThese are the demo:<br><br>\nCorrect sample with single Label<br>\n<img src=\"https://bestfitting.github.io/kaggle/protein/images/002_Sample%20with%20single%20Label.jpg\" alt=\"\"><br>\nCorrect sample multiple labels<br>\n<img src=\"https://bestfitting.github.io/kaggle/protein/images/003_Sampe%20with%20multi%20labels.jpg\" alt=\"\"><br>\nCorrect sample with rare label:Lipid droplets<br>\n<img src=\"https://bestfitting.github.io/kaggle/protein/images/004_Rare%20Label_Lipid%20droplets.jpg\" alt=\"\"><br>\nCorrect sample with rare label:Rods &amp; rings<br>\n<img src=\"https://bestfitting.github.io/kaggle/protein/images/005_Rare%20Label_Rods%20%26%20rings.jpg\" alt=\"\"><br>\nMissed a label<br>\n<img src=\"https://bestfitting.github.io/kaggle/protein/images/006_Missed%20a%20label.jpg\" alt=\"\"><br>\nIncorrectly add a label<br>\n<img src=\"https://bestfitting.github.io/kaggle/protein/images/007_incorrectly%20add%20a%20label.jpg\" alt=\"\"></p>\n<p>Since the top1 accuracy&gt;0.9,I thought I could just use the metric learning result to set the labels of test set. But I found that the test set is a little different to V18, and some of samples can not find nearest neighbor in train set and V18. So I set a threshold and replace the labels with found sample\u2019s. Fortunately,the threshold is not sensitive to the threshold. Replacing 1000 samples in test set is almost the same score as replacing 1300 samples. By doing so, my score can improve 0.03+,which was a huge improvement in this competition.</p>\n<p>I think my method is important not only improve the score,it can help HPA and their users in following way:<br><br>\n<em>1.When someone want to label or learn to label an image or check the quality, he can get the nearest images for referring to.<br>\n2.We can cluster the images by the metric and find the label noises and then improve the quality of the labels.<br>\n3.We can explain why the model is good by visualizing the predictions.<br></em></p>\n<p><strong>Ensemble:</strong><br>\nTo keep the solution simple,I don't discuss the ensemble here, a single model or even a single fold + metric learning result is good enough to get the first place.</p>\n<p><strong>The scores on LB:</strong><br>\n<img src=\"https://bestfitting.github.io/kaggle/protein/images/008_scores.png\" alt=\"\"><br>\n<br><br>\nI am sorry I can not describe the details of this part now, as I mentioned before,the whale identification competition is still on-going. </p>\n<p><strong>Introspection</strong>:<br>\nBefore I entered this competition,I never expected I can find a way out,it\u2019s very hard to build a stable CV and the score is sensitive to the distribution of rare classes.A gold medal is my max expectation.<br><br>\nI feel kaggle competitions are becoming harder and harder.In all honesty,there are no secrets but hard work.I treat every competition as a force to push me forward.I force myself not to learn and use too much competition skills but knowledge to solve real problems.<br><br>\nIt\u2019s quite lucky I found a relatively good solution in this competition as I failed to find a Reinforcement Learning algorithm in Track ML, and failed to finish a good CNN-RNN model in Quick Draw competition in time,but anyway,if we compete only for win,we may loss,if we compete for learning and providing useful solution to the host,nothing to loss.</p>\n<p><strong>Update,Metric Learning Part:</strong></p>\n<p>Sorry for late update!</p>\n<p>As I noticed that the sample with same antibody-id have almost same labels, so I thought I may treat the antibody-id as face id, and use face-recognition algorithms on HPA v18 dataset.</p>\n<p>When training, I used V18 data antibody IDs to split the samples,keep a sample in validation set,and put the other samples with same ID in train set.I used top1-acc as validation metric.</p>\n<p><strong>Metric Learning Model:</strong><br>\nNetwork:resnet50<br>\nAugmentations:Rotate 90,flip<br>\nLoss Functions:ArcFaceLoss<br>\nOptimizer:Adam<br>\nScheduler:lr = 10e-5, 50 epochs.</p>\n<p><strong>Model details:</strong></p>\n<pre>class ArcFaceLoss(nn.modules.Module):\n    def __init__(self,s=30.0,m=0.5):\n        super(ArcFaceLoss, self).__init__()\n        self.classify_loss = nn.CrossEntropyLoss()\n        self.s = s\n        self.easy_margin = False\n        self.cos_m = math.cos(m)\n        self.sin_m = math.sin(m)\n        self.th = math.cos(math.pi - m)\n        self.mm = math.sin(math.pi - m) * m\n\n    def forward(self, logits, labels, epoch=0):\n        cosine = logits\n        sine = torch.sqrt(1.0 - torch.pow(cosine, 2))\n        phi = cosine * self.cos_m - sine * self.sin_m\n        if self.easy_margin:\n            phi = torch.where(cosine &gt; 0, phi, cosine)\n        else:\n            phi = torch.where(cosine &gt; self.th, phi, cosine - self.mm)\n\n        one_hot = torch.zeros(cosine.size(), device='cuda')\n        one_hot.scatter_(1, labels.view(-1, 1).long(), 1)\n        # -------------torch.where(out_i = {x_i if condition_i else y_i) -------------\n        output = (one_hot * phi) + ((1.0 - one_hot) * cosine)\n        output *= self.s\n        loss1 = self.classify_loss(output, labels)\n        loss2 = self.classify_loss(cosine, labels)\n        gamma=1\n        loss=(loss1+gamma*loss2)/(1+gamma)\n        return loss\n\nclass ArcMarginProduct(nn.Module):\n    r\"\"\"Implement of large margin arc distance: :\n        Args:\n            in_features: size of each input sample\n            out_features: size of each output sample\n            s: norm of input feature\n            m: margin\n            cos(theta + m)\n        \"\"\"\n    def __init__(self, in_features, out_features):\n        super(ArcMarginProduct, self).__init__()\n        self.weight = Parameter(torch.FloatTensor(out_features, in_features))\n        # nn.init.xavier_uniform_(self.weight)\n        self.reset_parameters()\n\n    def reset_parameters(self):\n        stdv = 1. / math.sqrt(self.weight.size(1))\n        self.weight.data.uniform_(-stdv, stdv)\n\n    def forward(self, features):\n        cosine = F.linear(F.normalize(features), F.normalize(self.weight.cuda()))\n        return cosine\n\n def __init__(self,....\n     ... ...\n    self.avgpool = nn.AdaptiveAvgPool2d(1)\n    self.arc_margin_product=ArcMarginProduct(512, num_classes)\n    self.bn1 = nn.BatchNorm1d(1024 * self.EX)\n    self.fc1 = nn.Linear(1024 * self.EX, 512 * self.EX)\n    self.bn2 = nn.BatchNorm1d(512 * self.EX)\n    self.relu = nn.ReLU(inplace=True)\n    self.fc2 = nn.Linear(512 * self.EX, 512)\n    self.bn3 = nn.BatchNorm1d(512)\n\ndef forward(self, x):\n    ... ...\n    x = torch.cat((nn.AdaptiveAvgPool2d(1)(e5), nn.AdaptiveMaxPool2d(1)(e5)), dim=1)\n    x = x.view(x.size(0), -1)\n    x = self.bn1(x)\n    x = F.dropout(x, p=0.25)\n    x = self.fc1(x)\n    x = self.relu(x)\n    x = self.bn2(x)\n    x = F.dropout(x, p=0.5)\n\n    x = x.view(x.size(0), -1)\n\n    x = self.fc2(x)\n    feature = self.bn3(x)\n\n    cosine=self.arc_margin_product(feature)\n    if self.extract_feature:\n        return cosine, feature\n    else:\n        return cosine\n</pre>\n<p>Please refer to the paper:<br>\nArcFace: Additive Angular Margin Loss for Deep Face Recognition <br>\n<a href=\"https://arxiv.org/pdf/1801.07698v1.pdf\" target=\"_blank\">https://arxiv.org/pdf/1801.07698v1.pdf</a><br>\nDeep Face Recognition: A Survey    <br>\n<a href=\"https://arxiv.org/pdf/1804.06655.pdf\" target=\"_blank\">https://arxiv.org/pdf/1804.06655.pdf</a></p>\n<p>As I was very busy after this competition(and will be for a little long time),I used almost the same model finsihed the Whale competition and the winners' models are very good, so I think I need not write a summary of that competition. I the person re-idenfication related papers and solutions are good choice to Whale competition.</p>\n<p>Thanks for your patience! </p>",
+      "parent": {},
+      "author": {
+        "displayName": "bestfitting",
+        "thumbnailUrl": "https://storage.googleapis.com/kaggle-avatars/thumbnails/708283-kg.jpg",
+        "url": "/bestfitting",
+        "tier": "GRANDMASTER",
+        "id": 708283,
+        "progressionOptOut": false
+      },
+      "authorType": "TOPIC",
+      "votes": {
+        "totalVotes": 628,
+        "canUpvote": true,
+        "totalUpvotes": 628
+      },
+      "kernelVersion": 0,
+      "competitionRanking": 1,
+      "feedbackTrackingData": {},
+      "isThankYou": false,
+      "teamUpInfo": {
+        "teamLeader": {
+          "displayName": "bestfitting",
+          "thumbnailUrl": "https://storage.googleapis.com/kaggle-avatars/thumbnails/708283-kg.jpg",
+          "url": "/bestfitting",
+          "userName": "bestfitting",
+          "tier": "GRANDMASTER",
+          "id": 708283,
+          "profileUrl": "/bestfitting",
+          "performanceTier": "GRANDMASTER",
+          "userId": 708283,
+          "progressionOptOut": false
+        },
+        "intro": ""
+      }
+    },
+    "firstMessageId": 458525,
+    "forumId": 68207,
+    "forumName": "Human Protein Atlas Image Classification",
+    "id": 78109,
+    "name": "A CNN classifier and a Metric Learning model,1st Place Solution ",
+    "parentName": "human-protein-atlas-image-classification",
+    "parentUrl": "/competitions/human-protein-atlas-image-classification",
+    "postDate": "2019-01-19T20:49:54.063061400Z",
+    "totalVotes": 628,
+    "url": "/competitions/human-protein-atlas-image-classification/discussion/78109",
+    "totalMessages": 244,
+    "authorPerformanceTier": "GRANDMASTER",
+    "writeUp": {
+      "id": 8198,
+      "topicId": 78109,
+      "title": "A CNN classifier and a Metric Learning model,1st Place Solution ",
+      "message": {
+        "id": 458525,
+        "postDate": "2019-01-19T20:49:54.063Z",
+        "rawMarkdown": "Congrats to all the winners, and thanks to the host and kaggle hosted such an interesting competetion.<br>\nI am sorry for late share, I have worked hard to prepare it in recent days,tried to verify my solution and to make sure it\u2019s reproducible,stable,efficient as well as interpretative.\n\n**Overview**\n![enter image description here][1]\n**Challenges:**<br>\n*Extreme Imbalance,rare classes hard to train and predict but play an important role in the score.*<br>\n*Data distribution is not consistent in train set,test set,and HPA v18 external data.*<br>\n*The images are with high quality,but we must find a balance between model efficiency and accuracy.*<br>\n\n**Validation for CNNs:**<br>\nI split the val set according to https://www.kaggle.com/c/human-protein-atlas-image-classification/discussion/67819 great thanks to @trentb\n\nI found Focal Loss of the whole val set is a relative good metric to the model capability, F1 is not a good metric as it\u2019s sensitive to the threshold and the threshold is depend on the distribution of the train and val set.\n\nI tried to evaluate the capability of a model by set the ratio of each class to the same as train set. I did so because I thought I should not adjust the thresholds according to the public LB,but if I set the ratio of the prediction stable,and,if the model is stronger,the score will improve. That\u2019s to say,I used public LB as another validation set.\n\n**Training Time Augmentations:**<br>\nRotate 90,flip and randomly crop 512x512 patches from 768x768 images(or crop 1024x1024 patches from 1536x1536 images)\n\n\n**Data Pre-Processing:**\nRemove about 6000 duplicates samples from v18 external data, using hash method which been used to find test set leak.\n\nCalculate mean and std using train+test,and used them before feeding images to the model.\n\n**Model training:**<br>\n**Optimizer**:Adam<br>\n**Scheduler**:<pre>lr = 30e-5\nif epoch &gt; 25:\n    lr = 15e-5\nif epoch &gt; 30:\n    lr = 7.5e-5\nif epoch &gt; 35:\n    lr = 3e-5\nif epoch &gt; 40:\n    lr = 1e-5\n</pre>\n**Loss Functions**:FocalLoss+Lovasz,I did not use macro F1 soft loss, because the batch size is small and some classes are rare, I think it\u2019s not suitable for this competition.I used lovasz loss function because I thought although the IOU and F1 are not the same,but it can balance the Recall and Precision to some extend.\n\n**I did not use oversample.**<br>\n**Model structure:**\nMy best model is a densenet121 model, which is very simple,the head of the model is almost same as public kernel https://www.kaggle.com/iafoss/pretrained-resnet34-with-rgby-0-460-public-lb by @iafoss.\n<pre>  (1): AdaptiveConcatPool2d(\n    (ap): AdaptiveAvgPool2d(output_size=(1, 1))\n    (mp): AdaptiveMaxPool2d(output_size=(1, 1))\n  )\n  (2): Flatten()\n  (3): BatchNorm1d(2048, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)\n  (4): Dropout(p=0.5)\n  (5): Linear(in_features=2048, out_features=1024, bias=True)\n  (6): ReLU()\n  (7): BatchNorm1d(1024, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)\n  (8): Dropout(p=0.5)\n  (9): Linear(in_features=1024, out_features=28, bias=True)\n</pre>\nI tried all kinds of network structure according to the Multi-Label classification papers, the results were not improved instead of their beautiful structures and theory behind them.:) <br>\n**Prediction time augmentations:**\nI predicted the test set by using best focal loss epoch with 4 seeds to random crop 512x512 patches from 768x768 images, and got the max probs from the predictions. \n\n**Post-processing:**\nAt the final stage of the competition, I decided to generate two submissions:\n1.The first one was keep the ratio of the labels to the public test set,since we did not know the ratio of the rare classes,I set them to the ratio of the train set.\n2.The second one was keep the ratio of the labels to the average ratio of train set and public test set.\n\nWhy? Although I tried to add or reduce the count of rare classes by 2-5 samples,the public LB can improve, but this was a dangerous way.I just only used it to   evaluate the possible shakeup.\n<hr>\nMetric Learning:\nI took part in the landmark recognition challenge in May 2018,https://www.kaggle.com/c/landmark-recognition-challenge,and I had planed to use metric learning in that competition,but time was limited after I finished the TalkingData competition. But I read many  papers related,and did many experiments after that. \n\nWhen I analyzed the predictions of my models,I wanted to find the nearest samples to compare,I first used the features from CNN model,I found they are not so good,so I decided to try Metric Learning.\n\nI found it\u2019s very hard to train in this competition,it took me a lot of time but the result was not so good,and I found the same algorithm can work very well in Whale identification competition,but I did not give up and finally found a good model in last two days.\n\nBy using the model,I could find the nearest sample on validation set,**the top1 accuracy &gt;0.9**\nThese are the demo:<br>\nCorrect sample with single Label\n![][2]\nCorrect sample multiple labels\n![][3]\nCorrect sample with rare label:Lipid droplets\n![][4]\nCorrect sample with rare label:Rods &amp; rings\n![][5]\nMissed a label\n![][6]\nIncorrectly add a label\n![][7]\n\nSince the top1 accuracy&gt;0.9,I thought I could just use the metric learning result to set the labels of test set. But I found that the test set is a little different to V18, and some of samples can not find nearest neighbor in train set and V18. So I set a threshold and replace the labels with found sample\u2019s. Fortunately,the threshold is not sensitive to the threshold. Replacing 1000 samples in test set is almost the same score as replacing 1300 samples. By doing so, my score can improve 0.03+,which was a huge improvement in this competition.\n\nI think my method is important not only improve the score,it can help HPA and their users in following way:<br>\n*1.When someone want to label or learn to label an image or check the quality, he can get the nearest images for referring to.<br>\n2.We can cluster the images by the metric and find the label noises and then improve the quality of the labels.<br>\n3.We can explain why the model is good by visualizing the predictions.<br>*\n\n**Ensemble:**\nTo keep the solution simple,I don't discuss the ensemble here, a single model or even a single fold + metric learning result is good enough to get the first place.\n\n**The scores on LB:**\n![][8]\n<br>\nI am sorry I can not describe the details of this part now, as I mentioned before,the whale identification competition is still on-going. \n\n\n**Introspection**:\nBefore I entered this competition,I never expected I can find a way out,it\u2019s very hard to build a stable CV and the score is sensitive to the distribution of rare classes.A gold medal is my max expectation.<br>\nI feel kaggle competitions are becoming harder and harder.In all honesty,there are no secrets but hard work.I treat every competition as a force to push me forward.I force myself not to learn and use too much competition skills but knowledge to solve real problems.<br>\nIt\u2019s quite lucky I found a relatively good solution in this competition as I failed to find a Reinforcement Learning algorithm in Track ML, and failed to finish a good CNN-RNN model in Quick Draw competition in time,but anyway,if we compete only for win,we may loss,if we compete for learning and providing useful solution to the host,nothing to loss.\n\n**Update,Metric Learning Part:**\n\nSorry for late update!\n\nAs I noticed that the sample with same antibody-id have almost same labels, so I thought I may treat the antibody-id as face id, and use face-recognition algorithms on HPA v18 dataset.\n\nWhen training, I used V18 data antibody IDs to split the samples,keep a sample in validation set,and put the other samples with same ID in train set.I used top1-acc as validation metric.\n\n**Metric Learning Model:**\nNetwork:resnet50\nAugmentations:Rotate 90,flip\nLoss Functions:ArcFaceLoss\nOptimizer:Adam\nScheduler:lr = 10e-5, 50 epochs.\n\n**Model details:**\n\n<pre>class ArcFaceLoss(nn.modules.Module):\n    def __init__(self,s=30.0,m=0.5):\n        super(ArcFaceLoss, self).__init__()\n        self.classify_loss = nn.CrossEntropyLoss()\n        self.s = s\n        self.easy_margin = False\n        self.cos_m = math.cos(m)\n        self.sin_m = math.sin(m)\n        self.th = math.cos(math.pi - m)\n        self.mm = math.sin(math.pi - m) * m\n\n    def forward(self, logits, labels, epoch=0):\n        cosine = logits\n        sine = torch.sqrt(1.0 - torch.pow(cosine, 2))\n        phi = cosine * self.cos_m - sine * self.sin_m\n        if self.easy_margin:\n            phi = torch.where(cosine &gt; 0, phi, cosine)\n        else:\n            phi = torch.where(cosine &gt; self.th, phi, cosine - self.mm)\n\n        one_hot = torch.zeros(cosine.size(), device='cuda')\n        one_hot.scatter_(1, labels.view(-1, 1).long(), 1)\n        # -------------torch.where(out_i = {x_i if condition_i else y_i) -------------\n        output = (one_hot * phi) + ((1.0 - one_hot) * cosine)\n        output *= self.s\n        loss1 = self.classify_loss(output, labels)\n        loss2 = self.classify_loss(cosine, labels)\n        gamma=1\n        loss=(loss1+gamma*loss2)/(1+gamma)\n        return loss\n\nclass ArcMarginProduct(nn.Module):\n    r\"\"\"Implement of large margin arc distance: :\n        Args:\n            in_features: size of each input sample\n            out_features: size of each output sample\n            s: norm of input feature\n            m: margin\n            cos(theta + m)\n        \"\"\"\n    def __init__(self, in_features, out_features):\n        super(ArcMarginProduct, self).__init__()\n        self.weight = Parameter(torch.FloatTensor(out_features, in_features))\n        # nn.init.xavier_uniform_(self.weight)\n        self.reset_parameters()\n\n    def reset_parameters(self):\n        stdv = 1. / math.sqrt(self.weight.size(1))\n        self.weight.data.uniform_(-stdv, stdv)\n\n    def forward(self, features):\n        cosine = F.linear(F.normalize(features), F.normalize(self.weight.cuda()))\n        return cosine\n\n def __init__(self,....\n \t... ...\n\tself.avgpool = nn.AdaptiveAvgPool2d(1)\n\tself.arc_margin_product=ArcMarginProduct(512, num_classes)\n\tself.bn1 = nn.BatchNorm1d(1024 * self.EX)\n\tself.fc1 = nn.Linear(1024 * self.EX, 512 * self.EX)\n\tself.bn2 = nn.BatchNorm1d(512 * self.EX)\n\tself.relu = nn.ReLU(inplace=True)\n\tself.fc2 = nn.Linear(512 * self.EX, 512)\n\tself.bn3 = nn.BatchNorm1d(512)\n\ndef forward(self, x):\n\t... ...\n\tx = torch.cat((nn.AdaptiveAvgPool2d(1)(e5), nn.AdaptiveMaxPool2d(1)(e5)), dim=1)\n\tx = x.view(x.size(0), -1)\n\tx = self.bn1(x)\n\tx = F.dropout(x, p=0.25)\n\tx = self.fc1(x)\n\tx = self.relu(x)\n\tx = self.bn2(x)\n\tx = F.dropout(x, p=0.5)\n\n\tx = x.view(x.size(0), -1)\n\n\tx = self.fc2(x)\n\tfeature = self.bn3(x)\n\n\tcosine=self.arc_margin_product(feature)\n\tif self.extract_feature:\n\t    return cosine, feature\n\telse:\n\t    return cosine\n</pre>\n\nPlease refer to the paper:\nArcFace: Additive Angular Margin Loss for Deep Face Recognition \nhttps://arxiv.org/pdf/1801.07698v1.pdf\nDeep Face Recognition: A Survey    \nhttps://arxiv.org/pdf/1804.06655.pdf\n\nAs I was very busy after this competition(and will be for a little long time),I used almost the same model finsihed the Whale competition and the winners' models are very good, so I think I need not write a summary of that competition. I the person re-idenfication related papers and solutions are good choice to Whale competition.\n\nThanks for your patience! \n\n\n  [1]: https://bestfitting.github.io/kaggle/protein/images/001_pipeline.png\n[2]:https://bestfitting.github.io/kaggle/protein/images/002_Sample%20with%20single%20Label.jpg\n[3]:https://bestfitting.github.io/kaggle/protein/images/003_Sampe%20with%20multi%20labels.jpg\n[4]:https://bestfitting.github.io/kaggle/protein/images/004_Rare%20Label_Lipid%20droplets.jpg\n[5]:https://bestfitting.github.io/kaggle/protein/images/005_Rare%20Label_Rods%20%26%20rings.jpg\n[6]:https://bestfitting.github.io/kaggle/protein/images/006_Missed%20a%20label.jpg\n[7]:https://bestfitting.github.io/kaggle/protein/images/007_incorrectly%20add%20a%20label.jpg\n[8]: https://bestfitting.github.io/kaggle/protein/images/008_scores.png\n",
+        "content": "<p>Congrats to all the winners, and thanks to the host and kaggle hosted such an interesting competetion.<br><br>\nI am sorry for late share, I have worked hard to prepare it in recent days,tried to verify my solution and to make sure it\u2019s reproducible,stable,efficient as well as interpretative.</p>\n<p><strong>Overview</strong><br>\n<img src=\"https://bestfitting.github.io/kaggle/protein/images/001_pipeline.png\" alt=\"enter image description here\"><br>\n<strong>Challenges:</strong><br><br>\n<em>Extreme Imbalance,rare classes hard to train and predict but play an important role in the score.</em><br><br>\n<em>Data distribution is not consistent in train set,test set,and HPA v18 external data.</em><br><br>\n<em>The images are with high quality,but we must find a balance between model efficiency and accuracy.</em><br></p>\n<p><strong>Validation for CNNs:</strong><br><br>\nI split the val set according to <a href=\"https://www.kaggle.com/c/human-protein-atlas-image-classification/discussion/67819\" target=\"_blank\">https://www.kaggle.com/c/human-protein-atlas-image-classification/discussion/67819</a> great thanks to <a href=\"https://www.kaggle.com/trentb\" target=\"_blank\">@trentb</a></p>\n<p>I found Focal Loss of the whole val set is a relative good metric to the model capability, F1 is not a good metric as it\u2019s sensitive to the threshold and the threshold is depend on the distribution of the train and val set.</p>\n<p>I tried to evaluate the capability of a model by set the ratio of each class to the same as train set. I did so because I thought I should not adjust the thresholds according to the public LB,but if I set the ratio of the prediction stable,and,if the model is stronger,the score will improve. That\u2019s to say,I used public LB as another validation set.</p>\n<p><strong>Training Time Augmentations:</strong><br><br>\nRotate 90,flip and randomly crop 512x512 patches from 768x768 images(or crop 1024x1024 patches from 1536x1536 images)</p>\n<p><strong>Data Pre-Processing:</strong><br>\nRemove about 6000 duplicates samples from v18 external data, using hash method which been used to find test set leak.</p>\n<p>Calculate mean and std using train+test,and used them before feeding images to the model.</p>\n<p><strong>Model training:</strong><br><br>\n<strong>Optimizer</strong>:Adam<br><br>\n<strong>Scheduler</strong>:</p><pre>lr = 30e-5\nif epoch &gt; 25:\n    lr = 15e-5\nif epoch &gt; 30:\n    lr = 7.5e-5\nif epoch &gt; 35:\n    lr = 3e-5\nif epoch &gt; 40:\n    lr = 1e-5\n</pre><br>\n<strong>Loss Functions</strong>:FocalLoss+Lovasz,I did not use macro F1 soft loss, because the batch size is small and some classes are rare, I think it\u2019s not suitable for this competition.I used lovasz loss function because I thought although the IOU and F1 are not the same,but it can balance the Recall and Precision to some extend.<p></p>\n<p><strong>I did not use oversample.</strong><br><br>\n<strong>Model structure:</strong><br>\nMy best model is a densenet121 model, which is very simple,the head of the model is almost same as public kernel <a href=\"https://www.kaggle.com/iafoss/pretrained-resnet34-with-rgby-0-460-public-lb\" target=\"_blank\">https://www.kaggle.com/iafoss/pretrained-resnet34-with-rgby-0-460-public-lb</a> by <a href=\"https://www.kaggle.com/iafoss\" target=\"_blank\">@iafoss</a>.</p>\n<pre>  (1): AdaptiveConcatPool2d(\n    (ap): AdaptiveAvgPool2d(output_size=(1, 1))\n    (mp): AdaptiveMaxPool2d(output_size=(1, 1))\n  )\n  (2): Flatten()\n  (3): BatchNorm1d(2048, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)\n  (4): Dropout(p=0.5)\n  (5): Linear(in_features=2048, out_features=1024, bias=True)\n  (6): ReLU()\n  (7): BatchNorm1d(1024, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)\n  (8): Dropout(p=0.5)\n  (9): Linear(in_features=1024, out_features=28, bias=True)\n</pre>\n<p>I tried all kinds of network structure according to the Multi-Label classification papers, the results were not improved instead of their beautiful structures and theory behind them.:) <br><br>\n<strong>Prediction time augmentations:</strong><br>\nI predicted the test set by using best focal loss epoch with 4 seeds to random crop 512x512 patches from 768x768 images, and got the max probs from the predictions. </p>\n<p><strong>Post-processing:</strong><br>\nAt the final stage of the competition, I decided to generate two submissions:<br>\n1.The first one was keep the ratio of the labels to the public test set,since we did not know the ratio of the rare classes,I set them to the ratio of the train set.<br>\n2.The second one was keep the ratio of the labels to the average ratio of train set and public test set.</p>\n<p>Why? Although I tried to add or reduce the count of rare classes by 2-5 samples,the public LB can improve, but this was a dangerous way.I just only used it to   evaluate the possible shakeup.<br>\n</p><hr><br>\nMetric Learning:<br>\nI took part in the landmark recognition challenge in May 2018,<a href=\"https://www.kaggle.com/c/landmark-recognition-challenge,and\" target=\"_blank\">https://www.kaggle.com/c/landmark-recognition-challenge,and</a> I had planed to use metric learning in that competition,but time was limited after I finished the TalkingData competition. But I read many  papers related,and did many experiments after that. <p></p>\n<p>When I analyzed the predictions of my models,I wanted to find the nearest samples to compare,I first used the features from CNN model,I found they are not so good,so I decided to try Metric Learning.</p>\n<p>I found it\u2019s very hard to train in this competition,it took me a lot of time but the result was not so good,and I found the same algorithm can work very well in Whale identification competition,but I did not give up and finally found a good model in last two days.</p>\n<p>By using the model,I could find the nearest sample on validation set,<strong>the top1 accuracy &gt;0.9</strong><br>\nThese are the demo:<br><br>\nCorrect sample with single Label<br>\n<img src=\"https://bestfitting.github.io/kaggle/protein/images/002_Sample%20with%20single%20Label.jpg\" alt=\"\"><br>\nCorrect sample multiple labels<br>\n<img src=\"https://bestfitting.github.io/kaggle/protein/images/003_Sampe%20with%20multi%20labels.jpg\" alt=\"\"><br>\nCorrect sample with rare label:Lipid droplets<br>\n<img src=\"https://bestfitting.github.io/kaggle/protein/images/004_Rare%20Label_Lipid%20droplets.jpg\" alt=\"\"><br>\nCorrect sample with rare label:Rods &amp; rings<br>\n<img src=\"https://bestfitting.github.io/kaggle/protein/images/005_Rare%20Label_Rods%20%26%20rings.jpg\" alt=\"\"><br>\nMissed a label<br>\n<img src=\"https://bestfitting.github.io/kaggle/protein/images/006_Missed%20a%20label.jpg\" alt=\"\"><br>\nIncorrectly add a label<br>\n<img src=\"https://bestfitting.github.io/kaggle/protein/images/007_incorrectly%20add%20a%20label.jpg\" alt=\"\"></p>\n<p>Since the top1 accuracy&gt;0.9,I thought I could just use the metric learning result to set the labels of test set. But I found that the test set is a little different to V18, and some of samples can not find nearest neighbor in train set and V18. So I set a threshold and replace the labels with found sample\u2019s. Fortunately,the threshold is not sensitive to the threshold. Replacing 1000 samples in test set is almost the same score as replacing 1300 samples. By doing so, my score can improve 0.03+,which was a huge improvement in this competition.</p>\n<p>I think my method is important not only improve the score,it can help HPA and their users in following way:<br><br>\n<em>1.When someone want to label or learn to label an image or check the quality, he can get the nearest images for referring to.<br>\n2.We can cluster the images by the metric and find the label noises and then improve the quality of the labels.<br>\n3.We can explain why the model is good by visualizing the predictions.<br></em></p>\n<p><strong>Ensemble:</strong><br>\nTo keep the solution simple,I don't discuss the ensemble here, a single model or even a single fold + metric learning result is good enough to get the first place.</p>\n<p><strong>The scores on LB:</strong><br>\n<img src=\"https://bestfitting.github.io/kaggle/protein/images/008_scores.png\" alt=\"\"><br>\n<br><br>\nI am sorry I can not describe the details of this part now, as I mentioned before,the whale identification competition is still on-going. </p>\n<p><strong>Introspection</strong>:<br>\nBefore I entered this competition,I never expected I can find a way out,it\u2019s very hard to build a stable CV and the score is sensitive to the distribution of rare classes.A gold medal is my max expectation.<br><br>\nI feel kaggle competitions are becoming harder and harder.In all honesty,there are no secrets but hard work.I treat every competition as a force to push me forward.I force myself not to learn and use too much competition skills but knowledge to solve real problems.<br><br>\nIt\u2019s quite lucky I found a relatively good solution in this competition as I failed to find a Reinforcement Learning algorithm in Track ML, and failed to finish a good CNN-RNN model in Quick Draw competition in time,but anyway,if we compete only for win,we may loss,if we compete for learning and providing useful solution to the host,nothing to loss.</p>\n<p><strong>Update,Metric Learning Part:</strong></p>\n<p>Sorry for late update!</p>\n<p>As I noticed that the sample with same antibody-id have almost same labels, so I thought I may treat the antibody-id as face id, and use face-recognition algorithms on HPA v18 dataset.</p>\n<p>When training, I used V18 data antibody IDs to split the samples,keep a sample in validation set,and put the other samples with same ID in train set.I used top1-acc as validation metric.</p>\n<p><strong>Metric Learning Model:</strong><br>\nNetwork:resnet50<br>\nAugmentations:Rotate 90,flip<br>\nLoss Functions:ArcFaceLoss<br>\nOptimizer:Adam<br>\nScheduler:lr = 10e-5, 50 epochs.</p>\n<p><strong>Model details:</strong></p>\n<pre>class ArcFaceLoss(nn.modules.Module):\n    def __init__(self,s=30.0,m=0.5):\n        super(ArcFaceLoss, self).__init__()\n        self.classify_loss = nn.CrossEntropyLoss()\n        self.s = s\n        self.easy_margin = False\n        self.cos_m = math.cos(m)\n        self.sin_m = math.sin(m)\n        self.th = math.cos(math.pi - m)\n        self.mm = math.sin(math.pi - m) * m\n\n    def forward(self, logits, labels, epoch=0):\n        cosine = logits\n        sine = torch.sqrt(1.0 - torch.pow(cosine, 2))\n        phi = cosine * self.cos_m - sine * self.sin_m\n        if self.easy_margin:\n            phi = torch.where(cosine &gt; 0, phi, cosine)\n        else:\n            phi = torch.where(cosine &gt; self.th, phi, cosine - self.mm)\n\n        one_hot = torch.zeros(cosine.size(), device='cuda')\n        one_hot.scatter_(1, labels.view(-1, 1).long(), 1)\n        # -------------torch.where(out_i = {x_i if condition_i else y_i) -------------\n        output = (one_hot * phi) + ((1.0 - one_hot) * cosine)\n        output *= self.s\n        loss1 = self.classify_loss(output, labels)\n        loss2 = self.classify_loss(cosine, labels)\n        gamma=1\n        loss=(loss1+gamma*loss2)/(1+gamma)\n        return loss\n\nclass ArcMarginProduct(nn.Module):\n    r\"\"\"Implement of large margin arc distance: :\n        Args:\n            in_features: size of each input sample\n            out_features: size of each output sample\n            s: norm of input feature\n            m: margin\n            cos(theta + m)\n        \"\"\"\n    def __init__(self, in_features, out_features):\n        super(ArcMarginProduct, self).__init__()\n        self.weight = Parameter(torch.FloatTensor(out_features, in_features))\n        # nn.init.xavier_uniform_(self.weight)\n        self.reset_parameters()\n\n    def reset_parameters(self):\n        stdv = 1. / math.sqrt(self.weight.size(1))\n        self.weight.data.uniform_(-stdv, stdv)\n\n    def forward(self, features):\n        cosine = F.linear(F.normalize(features), F.normalize(self.weight.cuda()))\n        return cosine\n\n def __init__(self,....\n     ... ...\n    self.avgpool = nn.AdaptiveAvgPool2d(1)\n    self.arc_margin_product=ArcMarginProduct(512, num_classes)\n    self.bn1 = nn.BatchNorm1d(1024 * self.EX)\n    self.fc1 = nn.Linear(1024 * self.EX, 512 * self.EX)\n    self.bn2 = nn.BatchNorm1d(512 * self.EX)\n    self.relu = nn.ReLU(inplace=True)\n    self.fc2 = nn.Linear(512 * self.EX, 512)\n    self.bn3 = nn.BatchNorm1d(512)\n\ndef forward(self, x):\n    ... ...\n    x = torch.cat((nn.AdaptiveAvgPool2d(1)(e5), nn.AdaptiveMaxPool2d(1)(e5)), dim=1)\n    x = x.view(x.size(0), -1)\n    x = self.bn1(x)\n    x = F.dropout(x, p=0.25)\n    x = self.fc1(x)\n    x = self.relu(x)\n    x = self.bn2(x)\n    x = F.dropout(x, p=0.5)\n\n    x = x.view(x.size(0), -1)\n\n    x = self.fc2(x)\n    feature = self.bn3(x)\n\n    cosine=self.arc_margin_product(feature)\n    if self.extract_feature:\n        return cosine, feature\n    else:\n        return cosine\n</pre>\n<p>Please refer to the paper:<br>\nArcFace: Additive Angular Margin Loss for Deep Face Recognition <br>\n<a href=\"https://arxiv.org/pdf/1801.07698v1.pdf\" target=\"_blank\">https://arxiv.org/pdf/1801.07698v1.pdf</a><br>\nDeep Face Recognition: A Survey    <br>\n<a href=\"https://arxiv.org/pdf/1804.06655.pdf\" target=\"_blank\">https://arxiv.org/pdf/1804.06655.pdf</a></p>\n<p>As I was very busy after this competition(and will be for a little long time),I used almost the same model finsihed the Whale competition and the winners' models are very good, so I think I need not write a summary of that competition. I the person re-idenfication related papers and solutions are good choice to Whale competition.</p>\n<p>Thanks for your patience! </p>",
+        "parent": {},
+        "author": {
+          "displayName": "bestfitting",
+          "thumbnailUrl": "https://storage.googleapis.com/kaggle-avatars/thumbnails/708283-kg.jpg",
+          "url": "/bestfitting",
+          "tier": "GRANDMASTER",
+          "id": 708283,
+          "progressionOptOut": false
+        },
+        "authorType": "TOPIC",
+        "votes": {
+          "totalVotes": 628,
+          "canUpvote": true,
+          "totalUpvotes": 628
+        },
+        "kernelVersion": 0,
+        "competitionRanking": 1,
+        "feedbackTrackingData": {},
+        "teamUpInfo": {
+          "teamLeader": {
+            "displayName": "bestfitting",
+            "thumbnailUrl": "https://storage.googleapis.com/kaggle-avatars/thumbnails/708283-kg.jpg",
+            "url": "/bestfitting",
+            "userName": "bestfitting",
+            "tier": "GRANDMASTER",
+            "id": 708283,
+            "profileUrl": "/bestfitting",
+            "performanceTier": "GRANDMASTER",
+            "userId": 708283,
+            "progressionOptOut": false
+          },
+          "intro": ""
+        }
+      },
+      "type": "COMPETITION_SOLUTION",
+      "coverImageUrl": "/competitions/10418/images/header",
+      "slug": "bestfitting-a-cnn-classifier-and-a-metric-learning",
+      "url": "/competitions/human-protein-atlas-image-classification/writeups/bestfitting-a-cnn-classifier-and-a-metric-learning",
+      "createTime": "2019-01-19T20:49:54.063Z",
+      "updateTime": "2021-05-15T01:22:55.247Z",
+      "contentState": "PUBLISHED",
+      "imageInfo": {},
+      "collaborators": [
+        {
+          "displayName": "bestfitting",
+          "thumbnailUrl": "https://storage.googleapis.com/kaggle-avatars/thumbnails/708283-kg.jpg",
+          "url": "/bestfitting",
+          "userName": "bestfitting",
+          "tier": "GRANDMASTER",
+          "id": 708283,
+          "profileUrl": "/bestfitting",
+          "performanceTier": "GRANDMASTER",
+          "userId": 708283,
+          "progressionOptOut": false
+        }
+      ],
+      "publishTime": "2021-05-15T01:22:55.247Z"
+    },
+    "authorProgressionOptOut": false
+  }
+}

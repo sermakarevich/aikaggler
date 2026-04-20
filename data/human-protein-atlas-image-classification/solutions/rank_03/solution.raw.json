@@ -1,0 +1,751 @@
+{
+  "forumTopic": {
+    "authorId": 852781,
+    "authorThumbnailName": "852781-kg.jpg",
+    "authorUserDisplayName": "pudae",
+    "authorUserName": "pudae81",
+    "comments": [
+      {
+        "id": 454457,
+        "postDate": "2019-01-11T16:59:23.800Z",
+        "rawMarkdown": "@pudae81 Thanks for the write up and congrats! That AutoAugment paper is interesting. Can you post the policy your random search produced? Rotations were obviously effective, another write up said Brightness was a key augmentation, I'm curious what the algorithm ended up finding. ",
+        "content": "<p><a href=\"/pudae81\">@pudae81</a> Thanks for the write up and congrats! That AutoAugment paper is interesting. Can you post the policy your random search produced? Rotations were obviously effective, another write up said Brightness was a key augmentation, I'm curious what the algorithm ended up finding. </p>",
+        "replies": [
+          {
+            "id": 454668,
+            "postDate": "2019-01-12T00:31:46.260Z",
+            "rawMarkdown": "Congrats and thanks for a interesting AutoAugment approach. Would be very interested to find out the parameters algorithm produced as well.",
+            "content": "<p>Congrats and thanks for a interesting AutoAugment approach. Would be very interested to find out the parameters algorithm produced as well.</p>",
+            "parent": {},
+            "author": {
+              "displayName": "Dmytro Poplavskiy",
+              "thumbnailUrl": "https://storage.googleapis.com/kaggle-avatars/thumbnails/743064-kg.jpg",
+              "url": "/dmytropoplavskiy",
+              "tier": "GRANDMASTER",
+              "id": 743064,
+              "progressionOptOut": false
+            },
+            "authorType": "COMMENT",
+            "votes": {
+              "canUpvote": true
+            },
+            "kernelVersion": 0,
+            "competitionRanking": 4,
+            "feedbackTrackingData": {},
+            "isThankYou": false,
+            "teamUpInfo": {
+              "teamLeader": {
+                "displayName": "Bojan Tunguz",
+                "thumbnailUrl": "https://storage.googleapis.com/kaggle-avatars/thumbnails/417337-fb.jpg",
+                "url": "/tunguz",
+                "userName": "tunguz",
+                "tier": "GRANDMASTER",
+                "id": 417337,
+                "profileUrl": "/tunguz",
+                "performanceTier": "GRANDMASTER",
+                "userId": 417337,
+                "progressionOptOut": false
+              },
+              "intro": ""
+            }
+          },
+          {
+            "id": 455574,
+            "postDate": "2019-01-14T07:14:43.093Z",
+            "rawMarkdown": "Congratulations! The autoaugment part is really interesting... would you be able to post the code or at least detail your approach a bit more? ",
+            "content": "<p>Congratulations! The autoaugment part is really interesting... would you be able to post the code or at least detail your approach a bit more? </p>",
+            "parent": {},
+            "author": {
+              "displayName": "Moshel",
+              "thumbnailUrl": "https://storage.googleapis.com/kaggle-avatars/thumbnails/1928848-gp.jpg",
+              "url": "/moshel",
+              "tier": "EXPERT",
+              "id": 1928848,
+              "progressionOptOut": false
+            },
+            "authorType": "COMMENT",
+            "votes": {
+              "canUpvote": true
+            },
+            "kernelVersion": 0,
+            "competitionRanking": 220,
+            "feedbackTrackingData": {},
+            "isThankYou": false,
+            "teamUpInfo": {
+              "teamLeader": {
+                "displayName": "Kevin Garda",
+                "thumbnailUrl": "https://storage.googleapis.com/kaggle-avatars/thumbnails/833438-fb.jpg",
+                "url": "/kevingarda7",
+                "userName": "kevingarda7",
+                "tier": "CONTRIBUTOR",
+                "id": 833438,
+                "profileUrl": "/kevingarda7",
+                "performanceTier": "CONTRIBUTOR",
+                "userId": 833438,
+                "progressionOptOut": false
+              },
+              "intro": ""
+            }
+          },
+          {
+            "id": 555062,
+            "postDate": "2019-06-18T11:42:19.793Z",
+            "rawMarkdown": "Congrats! I am very interesting in your implement of AutoAugment. How do you use random search?",
+            "content": "<p>Congrats! I am very interesting in your implement of AutoAugment. How do you use random search?</p>",
+            "parent": {},
+            "author": {
+              "displayName": "seefun",
+              "thumbnailUrl": "https://storage.googleapis.com/kaggle-avatars/thumbnails/734344-kg.jpg",
+              "url": "/seefun",
+              "tier": "MASTER",
+              "id": 734344,
+              "progressionOptOut": false
+            },
+            "authorType": "COMMENT",
+            "votes": {
+              "canUpvote": true
+            },
+            "kernelVersion": 0,
+            "feedbackTrackingData": {},
+            "isThankYou": false,
+            "teamUpInfo": {
+              "teamLeader": {
+                "displayName": "seefun",
+                "thumbnailUrl": "https://storage.googleapis.com/kaggle-avatars/thumbnails/734344-kg.jpg",
+                "url": "/seefun",
+                "userName": "seefun",
+                "tier": "MASTER",
+                "id": 734344,
+                "profileUrl": "/seefun",
+                "performanceTier": "MASTER",
+                "userId": 734344,
+                "progressionOptOut": false
+              },
+              "intro": ""
+            }
+          }
+        ],
+        "parent": {},
+        "author": {
+          "displayName": "David Wagner",
+          "thumbnailUrl": "https://storage.googleapis.com/kaggle-avatars/thumbnails/2247291-gp.jpg",
+          "url": "/davidwagnerkc",
+          "tier": "CONTRIBUTOR",
+          "id": 2247291,
+          "progressionOptOut": false
+        },
+        "authorType": "COMMENT",
+        "votes": {
+          "totalVotes": 3,
+          "canUpvote": true,
+          "totalUpvotes": 3
+        },
+        "kernelVersion": 0,
+        "competitionRanking": 298,
+        "feedbackTrackingData": {},
+        "isThankYou": false,
+        "teamUpInfo": {
+          "teamLeader": {
+            "displayName": "David Wagner",
+            "thumbnailUrl": "https://storage.googleapis.com/kaggle-avatars/thumbnails/2247291-gp.jpg",
+            "url": "/davidwagnerkc",
+            "userName": "davidwagnerkc",
+            "tier": "CONTRIBUTOR",
+            "id": 2247291,
+            "profileUrl": "/davidwagnerkc",
+            "performanceTier": "CONTRIBUTOR",
+            "userId": 2247291,
+            "progressionOptOut": false
+          },
+          "intro": ""
+        }
+      },
+      {
+        "id": 454426,
+        "postDate": "2019-01-11T16:16:02.217Z",
+        "rawMarkdown": "Congratilations. Is it possible to share your code.",
+        "content": "<p>Congratilations. Is it possible to share your code.</p>",
+        "parent": {},
+        "author": {
+          "displayName": "JM100",
+          "thumbnailUrl": "https://storage.googleapis.com/kaggle-avatars/thumbnails/2236338-kg.jpg",
+          "url": "/jmourad100",
+          "tier": "EXPERT",
+          "id": 2236338,
+          "progressionOptOut": false
+        },
+        "authorType": "COMMENT",
+        "votes": {
+          "totalVotes": 3,
+          "canUpvote": true,
+          "totalUpvotes": 3
+        },
+        "kernelVersion": 0,
+        "competitionRanking": 1725,
+        "feedbackTrackingData": {},
+        "isThankYou": false,
+        "teamUpInfo": {
+          "teamLeader": {
+            "displayName": "JM100",
+            "thumbnailUrl": "https://storage.googleapis.com/kaggle-avatars/thumbnails/2236338-kg.jpg",
+            "url": "/jmourad100",
+            "userName": "jmourad100",
+            "tier": "EXPERT",
+            "id": 2236338,
+            "profileUrl": "/jmourad100",
+            "performanceTier": "EXPERT",
+            "userId": 2236338,
+            "progressionOptOut": false
+          },
+          "intro": ""
+        }
+      },
+      {
+        "id": 469487,
+        "postDate": "2019-02-11T10:06:26.157Z",
+        "rawMarkdown": "Pudae,\n\nExcellent work.  Thank you.\n\nI looked at your code, which is well-written and concise.  My only wish is that you would add comments because it would help hasten my understanding.\n\nI did not see where in your code you fine-tuned the pretrained model.  Did you allow your model to continue training any of its pretrained layers?\n\n--Scott",
+        "content": "<p>Pudae,</p>\n\n<p>Excellent work.  Thank you.</p>\n\n<p>I looked at your code, which is well-written and concise.  My only wish is that you would add comments because it would help hasten my understanding.</p>\n\n<p>I did not see where in your code you fine-tuned the pretrained model.  Did you allow your model to continue training any of its pretrained layers?</p>\n\n<p>--Scott</p>",
+        "parent": {},
+        "author": {
+          "displayName": "Scott Miller",
+          "thumbnailUrl": "https://storage.googleapis.com/kaggle-avatars/thumbnails/2222105-kg.JPG",
+          "url": "/unsunnedsnow",
+          "tier": "CONTRIBUTOR",
+          "id": 2222105,
+          "progressionOptOut": false
+        },
+        "authorType": "COMMENT",
+        "votes": {
+          "canUpvote": true
+        },
+        "kernelVersion": 0,
+        "feedbackTrackingData": {},
+        "isThankYou": false
+      },
+      {
+        "id": 457886,
+        "postDate": "2019-01-18T09:13:25.450Z",
+        "rawMarkdown": "Thanks for sharing. One question, why did you set 'eval.batch_size' to 2  when inferring the inceptionv3 model? ",
+        "content": "<p>Thanks for sharing. One question, why did you set 'eval.batch_size' to 2  when inferring the inceptionv3 model? </p>",
+        "parent": {},
+        "author": {
+          "displayName": "vikeezhou",
+          "thumbnailUrl": "https://storage.googleapis.com/kaggle-avatars/thumbnails/2074884-gr.jpg",
+          "url": "/vikeezhou",
+          "tier": "EXPERT",
+          "id": 2074884,
+          "progressionOptOut": false
+        },
+        "authorType": "COMMENT",
+        "votes": {
+          "canUpvote": true
+        },
+        "kernelVersion": 0,
+        "competitionRanking": 198,
+        "feedbackTrackingData": {},
+        "isThankYou": false,
+        "teamUpInfo": {
+          "teamLeader": {
+            "displayName": "vikeezhou",
+            "thumbnailUrl": "https://storage.googleapis.com/kaggle-avatars/thumbnails/2074884-gr.jpg",
+            "url": "/vikeezhou",
+            "userName": "vikeezhou",
+            "tier": "EXPERT",
+            "id": 2074884,
+            "profileUrl": "/vikeezhou",
+            "performanceTier": "EXPERT",
+            "userId": 2074884,
+            "progressionOptOut": false
+          },
+          "intro": ""
+        }
+      },
+      {
+        "id": 456760,
+        "postDate": "2019-01-16T13:33:21.763Z",
+        "rawMarkdown": "Congratulation",
+        "content": "<p>Congratulation</p>",
+        "parent": {},
+        "author": {
+          "displayName": "Sehank",
+          "thumbnailUrl": "https://storage.googleapis.com/kaggle-avatars/thumbnails/1412857-gp.jpg",
+          "url": "/sehank",
+          "tier": "CONTRIBUTOR",
+          "id": 1412857,
+          "progressionOptOut": false
+        },
+        "authorType": "COMMENT",
+        "votes": {
+          "canUpvote": true
+        },
+        "kernelVersion": 0,
+        "feedbackTrackingData": {},
+        "isThankYou": false
+      },
+      {
+        "id": 454685,
+        "postDate": "2019-01-12T01:59:39.160Z",
+        "rawMarkdown": "thanks for sharing. \"1/10 holdout set for ensemble\" is really a smart idea. \nHow much LB will decrease if you drop this step and just use validation set for ensemble?",
+        "content": "<p>thanks for sharing. \"1/10 holdout set for ensemble\" is really a smart idea. \nHow much LB will decrease if you drop this step and just use validation set for ensemble?</p>",
+        "parent": {},
+        "author": {
+          "displayName": "good good study",
+          "thumbnailUrl": "https://storage.googleapis.com/kaggle-avatars/thumbnails/1131983-kg.jpeg",
+          "url": "/zjucor",
+          "tier": "EXPERT",
+          "id": 1131983,
+          "progressionOptOut": false
+        },
+        "authorType": "COMMENT",
+        "votes": {
+          "canUpvote": true
+        },
+        "kernelVersion": 0,
+        "competitionRanking": 151,
+        "feedbackTrackingData": {},
+        "isThankYou": false,
+        "teamUpInfo": {
+          "teamLeader": {
+            "displayName": "good good study",
+            "thumbnailUrl": "https://storage.googleapis.com/kaggle-avatars/thumbnails/1131983-kg.jpeg",
+            "url": "/zjucor",
+            "userName": "zjucor",
+            "tier": "EXPERT",
+            "id": 1131983,
+            "profileUrl": "/zjucor",
+            "performanceTier": "EXPERT",
+            "userId": 1131983,
+            "progressionOptOut": false
+          },
+          "intro": ""
+        }
+      },
+      {
+        "id": 454578,
+        "postDate": "2019-01-11T21:01:29.530Z",
+        "rawMarkdown": "Yikes, being a novice, this competition was super grounding :).  Anyways, awesome work! Thanks for sharing!! Can;t wait to reproduce your results.",
+        "content": "<p>Yikes, being a novice, this competition was super grounding :).  Anyways, awesome work! Thanks for sharing!! Can;t wait to reproduce your results.</p>",
+        "parent": {},
+        "author": {
+          "displayName": "Harsha Lokavarapu",
+          "thumbnailUrl": "https://storage.googleapis.com/kaggle-avatars/thumbnails/2281471-kg.jpeg",
+          "url": "/galacticbrewery",
+          "tier": "CONTRIBUTOR",
+          "id": 2281471,
+          "progressionOptOut": false
+        },
+        "authorType": "COMMENT",
+        "votes": {
+          "canUpvote": true
+        },
+        "kernelVersion": 0,
+        "competitionRanking": 1642,
+        "feedbackTrackingData": {},
+        "isThankYou": false,
+        "teamUpInfo": {
+          "teamLeader": {
+            "displayName": "Harsha Lokavarapu",
+            "thumbnailUrl": "https://storage.googleapis.com/kaggle-avatars/thumbnails/2281471-kg.jpeg",
+            "url": "/galacticbrewery",
+            "userName": "galacticbrewery",
+            "tier": "CONTRIBUTOR",
+            "id": 2281471,
+            "profileUrl": "/galacticbrewery",
+            "performanceTier": "CONTRIBUTOR",
+            "userId": 2281471,
+            "progressionOptOut": false
+          },
+          "intro": ""
+        }
+      },
+      {
+        "id": 454488,
+        "postDate": "2019-01-11T18:05:06.397Z",
+        "rawMarkdown": "congrats! I did almost the same thing as your resnet34 model , but the result is poor.  did you oversample some classes? or use different class weight? Is that possible to share your code ?",
+        "content": "<p>congrats! I did almost the same thing as your resnet34 model , but the result is poor.  did you oversample some classes? or use different class weight? Is that possible to share your code ?</p>",
+        "parent": {},
+        "author": {
+          "displayName": "soywu",
+          "thumbnailUrl": "https://storage.googleapis.com/kaggle-avatars/thumbnails/844777-kg.jpg",
+          "url": "/soywugzm",
+          "tier": "EXPERT",
+          "id": 844777,
+          "progressionOptOut": false
+        },
+        "authorType": "COMMENT",
+        "votes": {
+          "canUpvote": true
+        },
+        "kernelVersion": 0,
+        "competitionRanking": 217,
+        "feedbackTrackingData": {},
+        "isThankYou": false,
+        "teamUpInfo": {
+          "teamLeader": {
+            "displayName": "soywu",
+            "thumbnailUrl": "https://storage.googleapis.com/kaggle-avatars/thumbnails/844777-kg.jpg",
+            "url": "/soywugzm",
+            "userName": "soywugzm",
+            "tier": "EXPERT",
+            "id": 844777,
+            "profileUrl": "/soywugzm",
+            "performanceTier": "EXPERT",
+            "userId": 844777,
+            "progressionOptOut": false
+          },
+          "intro": ""
+        }
+      },
+      {
+        "id": 454435,
+        "postDate": "2019-01-11T16:25:56.677Z",
+        "rawMarkdown": "Thank you for the explanation and wonderful paper for data augmentation and I also experienced ensemble method is not good. I was consistently impressed how you efficiently climb up the leaderboard with few submissions and learned a lot from your solution overview above. Thank you!",
+        "content": "<p>Thank you for the explanation and wonderful paper for data augmentation and I also experienced ensemble method is not good. I was consistently impressed how you efficiently climb up the leaderboard with few submissions and learned a lot from your solution overview above. Thank you!</p>",
+        "parent": {},
+        "author": {
+          "displayName": "Soonhwan Kwon",
+          "thumbnailUrl": "https://storage.googleapis.com/kaggle-avatars/thumbnails/173840-fb.jpg",
+          "url": "/soonhwankwon",
+          "tier": "EXPERT",
+          "id": 173840,
+          "progressionOptOut": false
+        },
+        "authorType": "COMMENT",
+        "votes": {
+          "canUpvote": true
+        },
+        "kernelVersion": 0,
+        "competitionRanking": 24,
+        "feedbackTrackingData": {},
+        "isThankYou": false,
+        "teamUpInfo": {
+          "teamLeader": {
+            "displayName": "Soonhwan Kwon",
+            "thumbnailUrl": "https://storage.googleapis.com/kaggle-avatars/thumbnails/173840-fb.jpg",
+            "url": "/soonhwankwon",
+            "userName": "soonhwankwon",
+            "tier": "EXPERT",
+            "id": 173840,
+            "profileUrl": "/soonhwankwon",
+            "performanceTier": "EXPERT",
+            "userId": 173840,
+            "progressionOptOut": false
+          },
+          "intro": ""
+        }
+      },
+      {
+        "id": 456764,
+        "postDate": "2019-01-16T13:47:31.363Z",
+        "rawMarkdown": "",
+        "parent": {},
+        "author": {
+          "thumbnailUrl": "https://storage.googleapis.com/kaggle-avatars/thumbnails/default-thumb.png",
+          "url": "/"
+        },
+        "authorType": "COMMENT",
+        "votes": {},
+        "canDelete": true,
+        "isUserAuthor": true,
+        "isDeleted": true,
+        "kernelVersion": 0,
+        "feedbackTrackingData": {},
+        "isThankYou": false
+      },
+      {
+        "id": 574589,
+        "postDate": "2019-07-14T06:31:56.543Z",
+        "rawMarkdown": "Congratulations. Thanks for sharing.",
+        "content": "<p>Congratulations. Thanks for sharing.</p>",
+        "parent": {},
+        "author": {
+          "displayName": "Mohammed MASSOUNE",
+          "thumbnailUrl": "https://storage.googleapis.com/kaggle-avatars/thumbnails/default-thumb.png",
+          "url": "/massoune",
+          "tier": "CONTRIBUTOR",
+          "id": 3354528,
+          "progressionOptOut": false
+        },
+        "authorType": "COMMENT",
+        "votes": {
+          "canUpvote": true
+        },
+        "kernelVersion": 0,
+        "feedbackTrackingData": {},
+        "isThankYou": true
+      },
+      {
+        "id": 457858,
+        "postDate": "2019-01-18T08:07:36.393Z",
+        "rawMarkdown": "selfless work\uff01thanks",
+        "content": "<p>selfless work\uff01thanks</p>",
+        "parent": {},
+        "author": {
+          "displayName": "nopro",
+          "thumbnailUrl": "https://storage.googleapis.com/kaggle-avatars/thumbnails/2067995-kg.jpg",
+          "url": "/huangqinopro",
+          "tier": "CONTRIBUTOR",
+          "id": 2067995,
+          "progressionOptOut": false
+        },
+        "authorType": "COMMENT",
+        "votes": {
+          "canUpvote": true
+        },
+        "kernelVersion": 0,
+        "feedbackTrackingData": {},
+        "isThankYou": true,
+        "teamUpInfo": {
+          "teamLeader": {
+            "displayName": "nopro",
+            "thumbnailUrl": "https://storage.googleapis.com/kaggle-avatars/thumbnails/2067995-kg.jpg",
+            "url": "/huangqinopro",
+            "userName": "huangqinopro",
+            "tier": "CONTRIBUTOR",
+            "id": 2067995,
+            "profileUrl": "/huangqinopro",
+            "performanceTier": "CONTRIBUTOR",
+            "userId": 2067995,
+            "progressionOptOut": false
+          },
+          "intro": ""
+        }
+      },
+      {
+        "id": 456779,
+        "postDate": "2019-01-16T14:38:53.397Z",
+        "rawMarkdown": "Thank you for sharing code",
+        "content": "<p>Thank you for sharing code</p>",
+        "parent": {},
+        "author": {
+          "displayName": "Soonhwan Kwon",
+          "thumbnailUrl": "https://storage.googleapis.com/kaggle-avatars/thumbnails/173840-fb.jpg",
+          "url": "/soonhwankwon",
+          "tier": "EXPERT",
+          "id": 173840,
+          "progressionOptOut": false
+        },
+        "authorType": "COMMENT",
+        "votes": {
+          "canUpvote": true
+        },
+        "kernelVersion": 0,
+        "competitionRanking": 24,
+        "feedbackTrackingData": {},
+        "isThankYou": true,
+        "teamUpInfo": {
+          "teamLeader": {
+            "displayName": "Soonhwan Kwon",
+            "thumbnailUrl": "https://storage.googleapis.com/kaggle-avatars/thumbnails/173840-fb.jpg",
+            "url": "/soonhwankwon",
+            "userName": "soonhwankwon",
+            "tier": "EXPERT",
+            "id": 173840,
+            "profileUrl": "/soonhwankwon",
+            "performanceTier": "EXPERT",
+            "userId": 173840,
+            "progressionOptOut": false
+          },
+          "intro": ""
+        }
+      },
+      {
+        "id": 454887,
+        "postDate": "2019-01-12T12:34:55.847Z",
+        "rawMarkdown": "Congratulations. Thanks for sharing.",
+        "content": "<p>Congratulations. Thanks for sharing.</p>",
+        "parent": {},
+        "author": {
+          "displayName": "klickmal",
+          "thumbnailUrl": "https://storage.googleapis.com/kaggle-avatars/thumbnails/2313591-kg.JPG",
+          "url": "/klickmal",
+          "tier": "EXPERT",
+          "id": 2313591,
+          "progressionOptOut": false
+        },
+        "authorType": "COMMENT",
+        "votes": {
+          "canUpvote": true
+        },
+        "kernelVersion": 0,
+        "competitionRanking": 70,
+        "feedbackTrackingData": {},
+        "isThankYou": true,
+        "teamUpInfo": {
+          "teamLeader": {
+            "displayName": "klickmal",
+            "thumbnailUrl": "https://storage.googleapis.com/kaggle-avatars/thumbnails/2313591-kg.JPG",
+            "url": "/klickmal",
+            "userName": "klickmal",
+            "tier": "EXPERT",
+            "id": 2313591,
+            "profileUrl": "/klickmal",
+            "performanceTier": "EXPERT",
+            "userId": 2313591,
+            "progressionOptOut": false
+          },
+          "intro": ""
+        }
+      },
+      {
+        "id": 454638,
+        "postDate": "2019-01-11T22:59:49.963Z",
+        "rawMarkdown": "Congrats!. Thank for sharing ",
+        "content": "<p>Congrats!. Thank for sharing </p>",
+        "parent": {},
+        "author": {
+          "displayName": "cab",
+          "thumbnailUrl": "https://storage.googleapis.com/kaggle-avatars/thumbnails/1938879-kg.jpeg?t=2025-08-01-23-18-59",
+          "url": "/backaggle",
+          "tier": "MASTER",
+          "id": 1938879,
+          "progressionOptOut": false
+        },
+        "authorType": "COMMENT",
+        "votes": {
+          "canUpvote": true
+        },
+        "kernelVersion": 0,
+        "competitionRanking": 29,
+        "feedbackTrackingData": {},
+        "isThankYou": true,
+        "teamUpInfo": {
+          "teamLeader": {
+            "displayName": "Thanh Hau Nguyen",
+            "thumbnailUrl": "https://storage.googleapis.com/kaggle-avatars/thumbnails/1713154-kg.png?t=2024-07-11-10-02-51",
+            "url": "/thanhhau097a",
+            "userName": "thanhhau097a",
+            "tier": "GRANDMASTER",
+            "id": 1713154,
+            "profileUrl": "/thanhhau097a",
+            "performanceTier": "GRANDMASTER",
+            "userId": 1713154,
+            "progressionOptOut": false
+          },
+          "intro": ""
+        }
+      }
+    ],
+    "commentSort": "COMMENT_LIST_SORT_BY_HOT",
+    "firstMessage": {
+      "id": 454363,
+      "postDate": "2019-01-11T14:16:13.047Z",
+      "rawMarkdown": "## UPDATE: code available on github\nhttps://github.com/pudae/kaggle-hpa\n\n---\n\nCongrats to all the winners and thanks to all kagglers who posted great discussions. It was very helpful to me.\n\nThanks to Kaggle and HPA team for an interesting competition.\n\nHere is overview of my solution.\n\n## Dataset Preparation\nLike almost the other competitors, I also used official + [external](http://www.proteinatlas.org) data. \n(Thanks to [TomomiMoriyama](https://www.kaggle.com/tomomimoriyama) and [David Silva](https://www.kaggle.com/dr1t10))\n\nI splited dataset as following:\n\n* 1/10 holdout set for ensemble.\n* building 5 folds cross validation sets using rest of 9/10.\n* using phash and ahash to prevent duplicate images in difference splits. If the labels are not matched between official and external, I used official one. (Thanks to [Tilii](https://www.kaggle.com/tilii7))\n\n## Input Preprocessing\nI found that the distributions of image mean and stddev are very difference between official and external. So, I used mean and stddev of individual images for input normalization.\n\n## Augmentation\nI searched suitable data augmentation as following [AutoAugment](https://arxiv.org/pdf/1805.09501.pdf). For simplicity, I used random search instead of RL.\n\n## Loss\nFocal loss with gamma 2.\n\n## Training\n* Adam optimizer, learning rate 0.0005.\n* no learning rate scheduling.\n* For the large model with 1024x1024 images, I used gradient accumulation so that weights are updated every 32 examples.\n* Early stopping\n  * If I choose checkpoints that record best macro F1 score for the validation set, LB scores are poor.\n  * After analyzing F1 scores of each classes, I found that while macro F1 score is increasing, F1 scores of high-proportion classes (like 0, 1) are decreasing. Because of relying on rare class score is risky, I decided to stop training when F1 score of 0 class is decreasing.\n\n## Inference\n* Averaging the weights of last 10 checkpoints.\n* 8 test time augmentation\n* weighted averaging ensemble\n\n## Thresholds\nBecause of rare classes, macro F1 score is very sensitive to thresholds. I tested various method for finding good threshold, but almost tries are failed.\n\nMy final method is following:\n\n* For each classes, I choose the thresholds that make the proportion of positive predictions in validation set are closed to the proportion of positive examples. (Thanks to [lafoss](https://www.kaggle.com/iafoss) for the LB probing)\n\n## Models\n**512x512**\n\n* resnet34: 5 fold ensemble with TTA: Public LB 0.574 / Private LB 0.500\n\n**1024x1024**\n\n* inceptionv3: single fold with TTA: Public LB 0.583 / Private LB 0.549\n* se_resnext50: single fold with TTA: Public LB 0.601 / Private LB 0.531\n* From 1024x1024, the mean and stddev of individual images are used.\n* In case of 1024x1024 input, using global average pooling is not good performance in my case.. maybe... So, I modified last layer following:\n  * remove global average pooling.\n  * compute MxM logits using 1x1 convolution.\n  * compute weight maps using 1x1 convolution followed by softmax.\n  * using weight maps, compute weighted averaged logits.\n* Final submission is ensemble of above three predictions.\n* Additional models are trained, but the ensemble results were not good.\n\nBecause I failed to make stable CV, I can't be sure that methods described above were effective. Finding good methods without stable CV was painful process. So, I hope to learn from the [bestfitting](https://www.kaggle.com/bestfitting)'s solution that produce stable results always.",
+      "content": "<h2>UPDATE: code available on github</h2>\n\n<p><a href=\"https://github.com/pudae/kaggle-hpa\">https://github.com/pudae/kaggle-hpa</a></p>\n\n<hr>\n\n<p>Congrats to all the winners and thanks to all kagglers who posted great discussions. It was very helpful to me.</p>\n\n<p>Thanks to Kaggle and HPA team for an interesting competition.</p>\n\n<p>Here is overview of my solution.</p>\n\n<h2>Dataset Preparation</h2>\n\n<p>Like almost the other competitors, I also used official + <a href=\"http://www.proteinatlas.org\">external</a> data. \n(Thanks to <a href=\"https://www.kaggle.com/tomomimoriyama\">TomomiMoriyama</a> and <a href=\"https://www.kaggle.com/dr1t10\">David Silva</a>)</p>\n\n<p>I splited dataset as following:</p>\n\n<ul>\n<li>1/10 holdout set for ensemble.</li>\n<li>building 5 folds cross validation sets using rest of 9/10.</li>\n<li>using phash and ahash to prevent duplicate images in difference splits. If the labels are not matched between official and external, I used official one. (Thanks to <a href=\"https://www.kaggle.com/tilii7\">Tilii</a>)</li>\n</ul>\n\n<h2>Input Preprocessing</h2>\n\n<p>I found that the distributions of image mean and stddev are very difference between official and external. So, I used mean and stddev of individual images for input normalization.</p>\n\n<h2>Augmentation</h2>\n\n<p>I searched suitable data augmentation as following <a href=\"https://arxiv.org/pdf/1805.09501.pdf\">AutoAugment</a>. For simplicity, I used random search instead of RL.</p>\n\n<h2>Loss</h2>\n\n<p>Focal loss with gamma 2.</p>\n\n<h2>Training</h2>\n\n<ul>\n<li>Adam optimizer, learning rate 0.0005.</li>\n<li>no learning rate scheduling.</li>\n<li>For the large model with 1024x1024 images, I used gradient accumulation so that weights are updated every 32 examples.</li>\n<li>Early stopping\n<ul><li>If I choose checkpoints that record best macro F1 score for the validation set, LB scores are poor.</li>\n<li>After analyzing F1 scores of each classes, I found that while macro F1 score is increasing, F1 scores of high-proportion classes (like 0, 1) are decreasing. Because of relying on rare class score is risky, I decided to stop training when F1 score of 0 class is decreasing.</li></ul></li>\n</ul>\n\n<h2>Inference</h2>\n\n<ul>\n<li>Averaging the weights of last 10 checkpoints.</li>\n<li>8 test time augmentation</li>\n<li>weighted averaging ensemble</li>\n</ul>\n\n<h2>Thresholds</h2>\n\n<p>Because of rare classes, macro F1 score is very sensitive to thresholds. I tested various method for finding good threshold, but almost tries are failed.</p>\n\n<p>My final method is following:</p>\n\n<ul>\n<li>For each classes, I choose the thresholds that make the proportion of positive predictions in validation set are closed to the proportion of positive examples. (Thanks to <a href=\"https://www.kaggle.com/iafoss\">lafoss</a> for the LB probing)</li>\n</ul>\n\n<h2>Models</h2>\n\n<p><strong>512x512</strong></p>\n\n<ul>\n<li>resnet34: 5 fold ensemble with TTA: Public LB 0.574 / Private LB 0.500</li>\n</ul>\n\n<p><strong>1024x1024</strong></p>\n\n<ul>\n<li>inceptionv3: single fold with TTA: Public LB 0.583 / Private LB 0.549</li>\n<li>se_resnext50: single fold with TTA: Public LB 0.601 / Private LB 0.531</li>\n<li>From 1024x1024, the mean and stddev of individual images are used.</li>\n<li>In case of 1024x1024 input, using global average pooling is not good performance in my case.. maybe... So, I modified last layer following:\n<ul><li>remove global average pooling.</li>\n<li>compute MxM logits using 1x1 convolution.</li>\n<li>compute weight maps using 1x1 convolution followed by softmax.</li>\n<li>using weight maps, compute weighted averaged logits.</li></ul></li>\n<li>Final submission is ensemble of above three predictions.</li>\n<li>Additional models are trained, but the ensemble results were not good.</li>\n</ul>\n\n<p>Because I failed to make stable CV, I can't be sure that methods described above were effective. Finding good methods without stable CV was painful process. So, I hope to learn from the <a href=\"https://www.kaggle.com/bestfitting\">bestfitting</a>'s solution that produce stable results always.</p>",
+      "parent": {},
+      "author": {
+        "displayName": "pudae",
+        "thumbnailUrl": "https://storage.googleapis.com/kaggle-avatars/thumbnails/852781-kg.jpg",
+        "url": "/pudae81",
+        "tier": "GRANDMASTER",
+        "id": 852781,
+        "progressionOptOut": false
+      },
+      "authorType": "TOPIC",
+      "votes": {
+        "totalVotes": 123,
+        "canUpvote": true,
+        "totalUpvotes": 123
+      },
+      "kernelVersion": 0,
+      "competitionRanking": 3,
+      "feedbackTrackingData": {},
+      "isThankYou": false,
+      "teamUpInfo": {
+        "teamLeader": {
+          "displayName": "pudae",
+          "thumbnailUrl": "https://storage.googleapis.com/kaggle-avatars/thumbnails/852781-kg.jpg",
+          "url": "/pudae81",
+          "userName": "pudae81",
+          "tier": "GRANDMASTER",
+          "id": 852781,
+          "profileUrl": "/pudae81",
+          "performanceTier": "GRANDMASTER",
+          "userId": 852781,
+          "progressionOptOut": false
+        },
+        "intro": ""
+      }
+    },
+    "firstMessageId": 454363,
+    "forumId": 68207,
+    "forumName": "Human Protein Atlas Image Classification",
+    "id": 77320,
+    "name": "3rd place solution with code.",
+    "parentName": "human-protein-atlas-image-classification",
+    "parentUrl": "/competitions/human-protein-atlas-image-classification",
+    "postDate": "2019-01-11T14:16:13.048323900Z",
+    "totalVotes": 124,
+    "url": "/competitions/human-protein-atlas-image-classification/discussion/77320",
+    "totalMessages": 18,
+    "authorPerformanceTier": "GRANDMASTER",
+    "writeUp": {
+      "id": 9620,
+      "topicId": 77320,
+      "title": "3rd place solution with code.",
+      "message": {
+        "id": 454363,
+        "postDate": "2019-01-11T14:16:13.047Z",
+        "rawMarkdown": "## UPDATE: code available on github\nhttps://github.com/pudae/kaggle-hpa\n\n---\n\nCongrats to all the winners and thanks to all kagglers who posted great discussions. It was very helpful to me.\n\nThanks to Kaggle and HPA team for an interesting competition.\n\nHere is overview of my solution.\n\n## Dataset Preparation\nLike almost the other competitors, I also used official + [external](http://www.proteinatlas.org) data. \n(Thanks to [TomomiMoriyama](https://www.kaggle.com/tomomimoriyama) and [David Silva](https://www.kaggle.com/dr1t10))\n\nI splited dataset as following:\n\n* 1/10 holdout set for ensemble.\n* building 5 folds cross validation sets using rest of 9/10.\n* using phash and ahash to prevent duplicate images in difference splits. If the labels are not matched between official and external, I used official one. (Thanks to [Tilii](https://www.kaggle.com/tilii7))\n\n## Input Preprocessing\nI found that the distributions of image mean and stddev are very difference between official and external. So, I used mean and stddev of individual images for input normalization.\n\n## Augmentation\nI searched suitable data augmentation as following [AutoAugment](https://arxiv.org/pdf/1805.09501.pdf). For simplicity, I used random search instead of RL.\n\n## Loss\nFocal loss with gamma 2.\n\n## Training\n* Adam optimizer, learning rate 0.0005.\n* no learning rate scheduling.\n* For the large model with 1024x1024 images, I used gradient accumulation so that weights are updated every 32 examples.\n* Early stopping\n  * If I choose checkpoints that record best macro F1 score for the validation set, LB scores are poor.\n  * After analyzing F1 scores of each classes, I found that while macro F1 score is increasing, F1 scores of high-proportion classes (like 0, 1) are decreasing. Because of relying on rare class score is risky, I decided to stop training when F1 score of 0 class is decreasing.\n\n## Inference\n* Averaging the weights of last 10 checkpoints.\n* 8 test time augmentation\n* weighted averaging ensemble\n\n## Thresholds\nBecause of rare classes, macro F1 score is very sensitive to thresholds. I tested various method for finding good threshold, but almost tries are failed.\n\nMy final method is following:\n\n* For each classes, I choose the thresholds that make the proportion of positive predictions in validation set are closed to the proportion of positive examples. (Thanks to [lafoss](https://www.kaggle.com/iafoss) for the LB probing)\n\n## Models\n**512x512**\n\n* resnet34: 5 fold ensemble with TTA: Public LB 0.574 / Private LB 0.500\n\n**1024x1024**\n\n* inceptionv3: single fold with TTA: Public LB 0.583 / Private LB 0.549\n* se_resnext50: single fold with TTA: Public LB 0.601 / Private LB 0.531\n* From 1024x1024, the mean and stddev of individual images are used.\n* In case of 1024x1024 input, using global average pooling is not good performance in my case.. maybe... So, I modified last layer following:\n  * remove global average pooling.\n  * compute MxM logits using 1x1 convolution.\n  * compute weight maps using 1x1 convolution followed by softmax.\n  * using weight maps, compute weighted averaged logits.\n* Final submission is ensemble of above three predictions.\n* Additional models are trained, but the ensemble results were not good.\n\nBecause I failed to make stable CV, I can't be sure that methods described above were effective. Finding good methods without stable CV was painful process. So, I hope to learn from the [bestfitting](https://www.kaggle.com/bestfitting)'s solution that produce stable results always.",
+        "content": "<h2>UPDATE: code available on github</h2>\n\n<p><a href=\"https://github.com/pudae/kaggle-hpa\">https://github.com/pudae/kaggle-hpa</a></p>\n\n<hr>\n\n<p>Congrats to all the winners and thanks to all kagglers who posted great discussions. It was very helpful to me.</p>\n\n<p>Thanks to Kaggle and HPA team for an interesting competition.</p>\n\n<p>Here is overview of my solution.</p>\n\n<h2>Dataset Preparation</h2>\n\n<p>Like almost the other competitors, I also used official + <a href=\"http://www.proteinatlas.org\">external</a> data. \n(Thanks to <a href=\"https://www.kaggle.com/tomomimoriyama\">TomomiMoriyama</a> and <a href=\"https://www.kaggle.com/dr1t10\">David Silva</a>)</p>\n\n<p>I splited dataset as following:</p>\n\n<ul>\n<li>1/10 holdout set for ensemble.</li>\n<li>building 5 folds cross validation sets using rest of 9/10.</li>\n<li>using phash and ahash to prevent duplicate images in difference splits. If the labels are not matched between official and external, I used official one. (Thanks to <a href=\"https://www.kaggle.com/tilii7\">Tilii</a>)</li>\n</ul>\n\n<h2>Input Preprocessing</h2>\n\n<p>I found that the distributions of image mean and stddev are very difference between official and external. So, I used mean and stddev of individual images for input normalization.</p>\n\n<h2>Augmentation</h2>\n\n<p>I searched suitable data augmentation as following <a href=\"https://arxiv.org/pdf/1805.09501.pdf\">AutoAugment</a>. For simplicity, I used random search instead of RL.</p>\n\n<h2>Loss</h2>\n\n<p>Focal loss with gamma 2.</p>\n\n<h2>Training</h2>\n\n<ul>\n<li>Adam optimizer, learning rate 0.0005.</li>\n<li>no learning rate scheduling.</li>\n<li>For the large model with 1024x1024 images, I used gradient accumulation so that weights are updated every 32 examples.</li>\n<li>Early stopping\n<ul><li>If I choose checkpoints that record best macro F1 score for the validation set, LB scores are poor.</li>\n<li>After analyzing F1 scores of each classes, I found that while macro F1 score is increasing, F1 scores of high-proportion classes (like 0, 1) are decreasing. Because of relying on rare class score is risky, I decided to stop training when F1 score of 0 class is decreasing.</li></ul></li>\n</ul>\n\n<h2>Inference</h2>\n\n<ul>\n<li>Averaging the weights of last 10 checkpoints.</li>\n<li>8 test time augmentation</li>\n<li>weighted averaging ensemble</li>\n</ul>\n\n<h2>Thresholds</h2>\n\n<p>Because of rare classes, macro F1 score is very sensitive to thresholds. I tested various method for finding good threshold, but almost tries are failed.</p>\n\n<p>My final method is following:</p>\n\n<ul>\n<li>For each classes, I choose the thresholds that make the proportion of positive predictions in validation set are closed to the proportion of positive examples. (Thanks to <a href=\"https://www.kaggle.com/iafoss\">lafoss</a> for the LB probing)</li>\n</ul>\n\n<h2>Models</h2>\n\n<p><strong>512x512</strong></p>\n\n<ul>\n<li>resnet34: 5 fold ensemble with TTA: Public LB 0.574 / Private LB 0.500</li>\n</ul>\n\n<p><strong>1024x1024</strong></p>\n\n<ul>\n<li>inceptionv3: single fold with TTA: Public LB 0.583 / Private LB 0.549</li>\n<li>se_resnext50: single fold with TTA: Public LB 0.601 / Private LB 0.531</li>\n<li>From 1024x1024, the mean and stddev of individual images are used.</li>\n<li>In case of 1024x1024 input, using global average pooling is not good performance in my case.. maybe... So, I modified last layer following:\n<ul><li>remove global average pooling.</li>\n<li>compute MxM logits using 1x1 convolution.</li>\n<li>compute weight maps using 1x1 convolution followed by softmax.</li>\n<li>using weight maps, compute weighted averaged logits.</li></ul></li>\n<li>Final submission is ensemble of above three predictions.</li>\n<li>Additional models are trained, but the ensemble results were not good.</li>\n</ul>\n\n<p>Because I failed to make stable CV, I can't be sure that methods described above were effective. Finding good methods without stable CV was painful process. So, I hope to learn from the <a href=\"https://www.kaggle.com/bestfitting\">bestfitting</a>'s solution that produce stable results always.</p>",
+        "parent": {},
+        "author": {
+          "displayName": "pudae",
+          "thumbnailUrl": "https://storage.googleapis.com/kaggle-avatars/thumbnails/852781-kg.jpg",
+          "url": "/pudae81",
+          "tier": "GRANDMASTER",
+          "id": 852781,
+          "progressionOptOut": false
+        },
+        "authorType": "TOPIC",
+        "votes": {
+          "totalVotes": 123,
+          "canUpvote": true,
+          "totalUpvotes": 123
+        },
+        "kernelVersion": 0,
+        "competitionRanking": 3,
+        "feedbackTrackingData": {},
+        "teamUpInfo": {
+          "teamLeader": {
+            "displayName": "pudae",
+            "thumbnailUrl": "https://storage.googleapis.com/kaggle-avatars/thumbnails/852781-kg.jpg",
+            "url": "/pudae81",
+            "userName": "pudae81",
+            "tier": "GRANDMASTER",
+            "id": 852781,
+            "profileUrl": "/pudae81",
+            "performanceTier": "GRANDMASTER",
+            "userId": 852781,
+            "progressionOptOut": false
+          },
+          "intro": ""
+        }
+      },
+      "type": "COMPETITION_SOLUTION",
+      "coverImageUrl": "/competitions/10418/images/header",
+      "slug": "pudae-3rd-place-solution-with-code",
+      "url": "/competitions/human-protein-atlas-image-classification/writeups/pudae-3rd-place-solution-with-code",
+      "createTime": "2019-01-11T14:16:13.047Z",
+      "updateTime": "2019-01-16T13:32:07.330Z",
+      "contentState": "PUBLISHED",
+      "imageInfo": {},
+      "collaborators": [
+        {
+          "displayName": "pudae",
+          "thumbnailUrl": "https://storage.googleapis.com/kaggle-avatars/thumbnails/852781-kg.jpg",
+          "url": "/pudae81",
+          "userName": "pudae81",
+          "tier": "GRANDMASTER",
+          "id": 852781,
+          "profileUrl": "/pudae81",
+          "performanceTier": "GRANDMASTER",
+          "userId": 852781,
+          "progressionOptOut": false
+        }
+      ],
+      "publishTime": "2019-01-16T13:32:07.330Z"
+    },
+    "authorProgressionOptOut": false
+  }
+}

@@ -1,0 +1,63 @@
+{
+  "tldr": "Ensemble of a DenseNet-121 classifier and a ResNet-50 metric learning model using ArcFace loss to refine labels via nearest neighbor search.",
+  "summary": "The solution combines a DenseNet-121 classifier trained with Focal and Lovasz losses and a ResNet-50 metric learning model. Validation was based on Focal Loss and a specific split strategy to handle extreme class imbalance. The key performance boost came from using the metric learning model to identify nearest neighbors in the training and HPA v18 datasets, replacing test set labels for samples with high-confidence matches.",
+  "extensive_summary": "## CNN Classifier\n- **Architecture**: DenseNet-121 with a custom head consisting of AdaptiveConcatPool2d (AvgPool + MaxPool), BatchNorm1d, Dropout (0.5), Linear (2048 to 1024), ReLU, BatchNorm1d, Dropout (0.5), and a final Linear layer (1024 to 28).\n- **Training**: \n    - **Optimizer**: Adam.\n    - **Learning Rate Schedule**: Starts at 30e-5, decaying to 15e-5 (epoch 25), 7.5e-5 (epoch 30), 3e-5 (epoch 35), and 1e-5 (epoch 40).\n    - **Loss Functions**: FocalLoss + Lovasz loss to balance precision and recall.\n    - **Augmentations**: 90-degree rotations, flips, and random crops (512x512 from 768x768 or 1024x1024 from 1536x1536).\n- **Inference**: Test-time augmentation using 4 seeds for random cropping (512x512 from 768x768), taking the maximum probabilities.\n- **Post-processing**: Generated two submissions: one maintaining label ratios of the public test set (using train set ratios for rare classes) and another using the average ratio of train and public test sets.\n\n## Metric Learning Model\n- **Motivation**: Used to find nearest samples for label refinement, as standard CNN features were insufficient.\n- **Architecture**: ResNet-50 backbone. The head includes AdaptiveAvgPool2d and AdaptiveMaxPool2d, followed by BatchNorm, Dropout (0.25), Linear (1024*EX to 512*EX), ReLU, BatchNorm, Dropout (0.5), Linear (512*EX to 512), and BatchNorm. It uses an `ArcMarginProduct` layer for cosine similarity.\n- **Training**: \n    - **Loss**: ArcFaceLoss (Additive Angular Margin Loss).\n    - **Optimizer**: Adam.\n    - **Scheduler**: lr = 10e-5 for 50 epochs.\n    - **Augmentations**: 90-degree rotations and flips.\n    - **Strategy**: Treated antibody-id as a face-id; split samples by antibody-id to ensure a sample in the validation set had its counterparts in the training set.\n- **Application**: Used the model to find the nearest neighbor in the training and HPA v18 datasets. If the top-1 accuracy was > 0.9, the test set label was replaced with the found sample's label. This provided a significant score increase (> 0.03).\n\n## General Pipeline\n- **Preprocessing**: Removed ~6000 duplicate samples from HPA v18 external data using a hash method. Calculated mean and std from combined train and test sets for normalization.\n- **Validation**: Split the validation set based on a shared community strategy. Focal Loss was used as the primary metric over F1 due to threshold sensitivity.",
+  "rank": 1,
+  "models": [
+    "DenseNet-121",
+    "ResNet-50"
+  ],
+  "cv_strategy": "Split validation set according to a specific community discussion; for metric learning, split by antibody-id to keep samples with the same ID in the training set.",
+  "preprocessing": [
+    "Removed ~6000 duplicate samples from v18 external data using hash method",
+    "Calculated mean and std using train+test for normalization"
+  ],
+  "feature_engineering": [],
+  "augmentations": [
+    "Rotate 90",
+    "flip",
+    "random crop 512x512 from 768x768",
+    "random crop 1024x1024 from 1536x1536"
+  ],
+  "loss_functions": [
+    "FocalLoss",
+    "Lovasz",
+    "ArcFaceLoss"
+  ],
+  "ensemble": "A single model or single fold combined with metric learning results was sufficient for 1st place.",
+  "post_processing": "Maintained label ratios based on public test set or average of train and public test set; replaced test labels with nearest neighbor labels from metric learning.",
+  "what_worked": [
+    "Focal Loss as a validation metric",
+    "Metric learning for label replacement in test set",
+    "ArcFace loss for metric learning",
+    "Using antibody-id as a face-id for metric learning"
+  ],
+  "what_did_not_work": [
+    "Macro F1 soft loss (due to small batch size and rare classes)",
+    "Oversampling",
+    "Complex multi-label classification architectures from papers"
+  ],
+  "critical_findings": [
+    "F1 is not a good metric as it is sensitive to the threshold and distribution of train/val sets.",
+    "The test set is slightly different from V18, and some samples cannot find nearest neighbors in train/V18."
+  ],
+  "github_repos": [],
+  "papers": [
+    {
+      "title": "ArcFace: Additive Angular Margin Loss for Deep Face Recognition",
+      "url": "https://arxiv.org/pdf/1801.07698v1.pdf",
+      "arxiv_id": "1801.07698"
+    }
+  ],
+  "other_solution_refs": [
+    {
+      "description": "Validation split strategy",
+      "url": "https://www.kaggle.com/c/human-protein-atlas-image-classification/discussion/67819"
+    },
+    {
+      "description": "Pretrained ResNet34 public kernel",
+      "url": "https://www.kaggle.com/iafoss/pretrained-resnet34-with-rgby-0-460-public-lb"
+    }
+  ],
+  "source_url": "https://www.kaggle.com/competitions/human-protein-atlas-image-classification/discussion/78109"
+}

@@ -1,0 +1,1646 @@
+{
+  "forumTopic": {
+    "authorId": 71783,
+    "authorThumbnailName": "71783-gp.jpg",
+    "authorUserDisplayName": "Sergei Fironov",
+    "authorUserName": "sergeifironov",
+    "comments": [
+      {
+        "id": 454175,
+        "postDate": "2019-01-11T07:54:35.253Z",
+        "rawMarkdown": "Congratulations and good job! We had a nice fight in the public leaderboard ;).",
+        "content": "<p>Congratulations and good job! We had a nice fight in the public leaderboard ;).</p>",
+        "parent": {},
+        "author": {
+          "displayName": "FlYM",
+          "thumbnailUrl": "https://storage.googleapis.com/kaggle-avatars/thumbnails/1089347-kg.jpg",
+          "url": "/arnaurm",
+          "tier": "EXPERT",
+          "id": 1089347,
+          "progressionOptOut": false
+        },
+        "authorType": "COMMENT",
+        "votes": {
+          "totalVotes": 4,
+          "canUpvote": true,
+          "totalUpvotes": 4
+        },
+        "kernelVersion": 0,
+        "competitionRanking": 12,
+        "feedbackTrackingData": {},
+        "isThankYou": false,
+        "teamUpInfo": {
+          "teamLeader": {
+            "displayName": "FlYM",
+            "thumbnailUrl": "https://storage.googleapis.com/kaggle-avatars/thumbnails/1089347-kg.jpg",
+            "url": "/arnaurm",
+            "userName": "arnaurm",
+            "tier": "EXPERT",
+            "id": 1089347,
+            "profileUrl": "/arnaurm",
+            "performanceTier": "EXPERT",
+            "userId": 1089347,
+            "progressionOptOut": false
+          },
+          "intro": ""
+        }
+      },
+      {
+        "id": 455672,
+        "postDate": "2019-01-14T10:49:52.483Z",
+        "rawMarkdown": "@sergeifironov\n\nfirst of all congratulations to you and your team. It was a though race in the end. How did you come up with the stats of the slack channel?",
+        "content": "<p><a href=\"/sergeifironov\">@sergeifironov</a></p>\n\n<p>first of all congratulations to you and your team. It was a though race in the end. How did you come up with the stats of the slack channel?</p>",
+        "replies": [
+          {
+            "id": 455686,
+            "postDate": "2019-01-14T11:10:42.223Z",
+            "rawMarkdown": "Our team used Telegram. It has \"shared media\" feature which gives you all the numbers.",
+            "content": "<p>Our team used Telegram. It has \"shared media\" feature which gives you all the numbers.</p>",
+            "parent": {},
+            "author": {
+              "displayName": "Dmytro Panchenko",
+              "thumbnailUrl": "https://storage.googleapis.com/kaggle-avatars/thumbnails/default-thumb.png",
+              "url": "/hokmund",
+              "tier": "EXPERT",
+              "id": 837103,
+              "progressionOptOut": false
+            },
+            "authorType": "COMMENT",
+            "votes": {
+              "canUpvote": true
+            },
+            "kernelVersion": 0,
+            "competitionRanking": 8,
+            "feedbackTrackingData": {},
+            "isThankYou": false,
+            "teamUpInfo": {
+              "teamLeader": {
+                "displayName": "Dmytro Panchenko",
+                "thumbnailUrl": "https://storage.googleapis.com/kaggle-avatars/thumbnails/default-thumb.png",
+                "url": "/hokmund",
+                "userName": "hokmund",
+                "tier": "EXPERT",
+                "id": 837103,
+                "profileUrl": "/hokmund",
+                "performanceTier": "EXPERT",
+                "userId": 837103,
+                "progressionOptOut": false
+              },
+              "intro": ""
+            }
+          }
+        ],
+        "parent": {},
+        "author": {
+          "displayName": "Dieter",
+          "thumbnailUrl": "https://storage.googleapis.com/kaggle-avatars/thumbnails/1424766-kg.png",
+          "url": "/christofhenkel",
+          "tier": "GRANDMASTER",
+          "id": 1424766,
+          "progressionOptOut": false
+        },
+        "authorType": "COMMENT",
+        "votes": {
+          "totalVotes": 1,
+          "canUpvote": true,
+          "totalUpvotes": 1
+        },
+        "kernelVersion": 0,
+        "competitionRanking": 4,
+        "feedbackTrackingData": {},
+        "isThankYou": false,
+        "teamUpInfo": {
+          "teamLeader": {
+            "displayName": "Bojan Tunguz",
+            "thumbnailUrl": "https://storage.googleapis.com/kaggle-avatars/thumbnails/417337-fb.jpg",
+            "url": "/tunguz",
+            "userName": "tunguz",
+            "tier": "GRANDMASTER",
+            "id": 417337,
+            "profileUrl": "/tunguz",
+            "performanceTier": "GRANDMASTER",
+            "userId": 417337,
+            "progressionOptOut": false
+          },
+          "intro": ""
+        }
+      },
+      {
+        "id": 455249,
+        "postDate": "2019-01-13T12:00:56.437Z",
+        "rawMarkdown": "Congratulations!!\nI enjoyed your write up.\n\nI have tried the Cadene library with fastai, but could not make it work. It seems the order of the arguments of the cadene models are different than the fastai models and will not work with `create_cnn` of fastai v1. For example in the resnet50 in cadene is:\n`pretrainedmodels.__dict__[model_name](num_classes=1000, pretrained='imagenet')`\n\nwhile in fastai is:\n`models.resnet50(pretrained=False, **kwargs)`\n\nHow did you make it work?\n\nIf you have a simple example of a code that you can share for importing any cadene model into fastai v1 , that would be great!\n\nI am getting such sort of errors (attached)..\n\nAnd here is my [sample code][1] sent to Jeremy for help.\n\nUpdate: I could make `create_cnn` work with custom model. Here is my [code][2].\n\n\n  [1]: https://forums.fast.ai/t/lesson-5-advanced-discussion/30865/39?u=hwasiti\n  [2]: https://forums.fast.ai/t/lesson-5-advanced-discussion/30865/40?u=hwasiti",
+        "content": "<p>Congratulations!!\nI enjoyed your write up.</p>\n\n<p>I have tried the Cadene library with fastai, but could not make it work. It seems the order of the arguments of the cadene models are different than the fastai models and will not work with <code>create_cnn</code> of fastai v1. For example in the resnet50 in cadene is:\n<code>pretrainedmodels.__dict__[model_name](num_classes=1000, pretrained='imagenet')</code></p>\n\n<p>while in fastai is:\n<code>models.resnet50(pretrained=False, **kwargs)</code></p>\n\n<p>How did you make it work?</p>\n\n<p>If you have a simple example of a code that you can share for importing any cadene model into fastai v1 , that would be great!</p>\n\n<p>I am getting such sort of errors (attached)..</p>\n\n<p>And here is my <a href=\"https://forums.fast.ai/t/lesson-5-advanced-discussion/30865/39?u=hwasiti\">sample code</a> sent to Jeremy for help.</p>\n\n<p>Update: I could make <code>create_cnn</code> work with custom model. Here is my <a href=\"https://forums.fast.ai/t/lesson-5-advanced-discussion/30865/40?u=hwasiti\">code</a>.</p>",
+        "replies": [
+          {
+            "id": 455605,
+            "postDate": "2019-01-14T08:39:09.840Z",
+            "rawMarkdown": "I just used Learner() instead of create_cnn and worked with Cadene.",
+            "content": "<p>I just used Learner() instead of create_cnn and worked with Cadene.</p>",
+            "parent": {},
+            "author": {
+              "displayName": "Cape",
+              "thumbnailUrl": "https://storage.googleapis.com/kaggle-avatars/thumbnails/2172143-kg.png",
+              "url": "/tcapelle",
+              "tier": "EXPERT",
+              "id": 2172143,
+              "progressionOptOut": false
+            },
+            "authorType": "COMMENT",
+            "votes": {
+              "canUpvote": true
+            },
+            "kernelVersion": 0,
+            "competitionRanking": 215,
+            "feedbackTrackingData": {},
+            "isThankYou": false,
+            "teamUpInfo": {
+              "teamLeader": {
+                "displayName": "Andrij David",
+                "thumbnailUrl": "https://storage.googleapis.com/kaggle-avatars/thumbnails/1467892-gr.jpg",
+                "url": "/andrijdavid",
+                "userName": "andrijdavid",
+                "tier": "CONTRIBUTOR",
+                "id": 1467892,
+                "profileUrl": "/andrijdavid",
+                "performanceTier": "CONTRIBUTOR",
+                "userId": 1467892,
+                "progressionOptOut": false
+              },
+              "intro": ""
+            }
+          },
+          {
+            "id": 455652,
+            "postDate": "2019-01-14T09:54:55.647Z",
+            "rawMarkdown": "I could make them both work (create_cnn and Learner). The difference is that Learner will not do transfer learning for you, and you should train the network from scratch. It will work, but needs more time/epochs.",
+            "content": "<p>I could make them both work (create_cnn and Learner). The difference is that Learner will not do transfer learning for you, and you should train the network from scratch. It will work, but needs more time/epochs.</p>",
+            "parent": {},
+            "author": {
+              "displayName": "Haider Alwasiti",
+              "thumbnailUrl": "https://storage.googleapis.com/kaggle-avatars/thumbnails/982620-kg.png",
+              "url": "/hwasiti",
+              "tier": "EXPERT",
+              "id": 982620,
+              "progressionOptOut": false
+            },
+            "authorType": "COMMENT",
+            "votes": {
+              "canUpvote": true
+            },
+            "kernelVersion": 0,
+            "competitionRanking": 786,
+            "feedbackTrackingData": {},
+            "isThankYou": false,
+            "teamUpInfo": {
+              "teamLeader": {
+                "displayName": "Haider Alwasiti",
+                "thumbnailUrl": "https://storage.googleapis.com/kaggle-avatars/thumbnails/982620-kg.png",
+                "url": "/hwasiti",
+                "userName": "hwasiti",
+                "tier": "EXPERT",
+                "id": 982620,
+                "profileUrl": "/hwasiti",
+                "performanceTier": "EXPERT",
+                "userId": 982620,
+                "progressionOptOut": false
+              },
+              "intro": ""
+            }
+          },
+          {
+            "id": 455688,
+            "postDate": "2019-01-14T11:14:42.130Z",
+            "rawMarkdown": "<code>\ndef body(pretrained = True):\n    return pretrainedmodels.__dict__[_model_name](num_classes=1000, pretrained='imagenet')</code>\n\n<code>\nlearner = create_cnn(data, arch=body, cut=-2, \n                     custom_head = create_head(4096, len(data.classes), ps=0.5))</code>\n\nThis code works for me.",
+            "content": "<p><code>\ndef body(pretrained = True):\n    return pretrainedmodels.<strong>dict</strong>[_model_name](num_classes=1000, pretrained='imagenet')</code></p>\n\n<p><code>\nlearner = create_cnn(data, arch=body, cut=-2, \n                     custom_head = create_head(4096, len(data.classes), ps=0.5))</code></p>\n\n<p>This code works for me.</p>",
+            "parent": {},
+            "author": {
+              "displayName": "Dmytro Panchenko",
+              "thumbnailUrl": "https://storage.googleapis.com/kaggle-avatars/thumbnails/default-thumb.png",
+              "url": "/hokmund",
+              "tier": "EXPERT",
+              "id": 837103,
+              "progressionOptOut": false
+            },
+            "authorType": "COMMENT",
+            "votes": {
+              "totalVotes": 2,
+              "canUpvote": true,
+              "totalUpvotes": 2
+            },
+            "kernelVersion": 0,
+            "competitionRanking": 8,
+            "feedbackTrackingData": {},
+            "isThankYou": false,
+            "teamUpInfo": {
+              "teamLeader": {
+                "displayName": "Dmytro Panchenko",
+                "thumbnailUrl": "https://storage.googleapis.com/kaggle-avatars/thumbnails/default-thumb.png",
+                "url": "/hokmund",
+                "userName": "hokmund",
+                "tier": "EXPERT",
+                "id": 837103,
+                "profileUrl": "/hokmund",
+                "performanceTier": "EXPERT",
+                "userId": 837103,
+                "progressionOptOut": false
+              },
+              "intro": ""
+            }
+          }
+        ],
+        "attachments": [
+          {
+            "fileType": ".png",
+            "id": 11017,
+            "name": "Screenshot from 2019-01-13 03-53-24.png",
+            "totalBytes": 394528,
+            "url": "https://storage.googleapis.com/kaggle-forum-message-attachments/455249/11017/Screenshot from 2019-01-13 03-53-24.png"
+          },
+          {
+            "fileType": ".png",
+            "id": 11018,
+            "name": "Screenshot from 2019-01-13 02-21-51.png",
+            "totalBytes": 776758,
+            "url": "https://storage.googleapis.com/kaggle-forum-message-attachments/455249/11018/Screenshot from 2019-01-13 02-21-51.png"
+          }
+        ],
+        "parent": {},
+        "author": {
+          "displayName": "Haider Alwasiti",
+          "thumbnailUrl": "https://storage.googleapis.com/kaggle-avatars/thumbnails/982620-kg.png",
+          "url": "/hwasiti",
+          "tier": "EXPERT",
+          "id": 982620,
+          "progressionOptOut": false
+        },
+        "authorType": "COMMENT",
+        "votes": {
+          "totalVotes": 1,
+          "canUpvote": true,
+          "totalUpvotes": 1
+        },
+        "kernelVersion": 0,
+        "competitionRanking": 786,
+        "feedbackTrackingData": {},
+        "isThankYou": false,
+        "teamUpInfo": {
+          "teamLeader": {
+            "displayName": "Haider Alwasiti",
+            "thumbnailUrl": "https://storage.googleapis.com/kaggle-avatars/thumbnails/982620-kg.png",
+            "url": "/hwasiti",
+            "userName": "hwasiti",
+            "tier": "EXPERT",
+            "id": 982620,
+            "profileUrl": "/hwasiti",
+            "performanceTier": "EXPERT",
+            "userId": 982620,
+            "progressionOptOut": false
+          },
+          "intro": ""
+        }
+      },
+      {
+        "id": 454144,
+        "postDate": "2019-01-11T07:07:46.850Z",
+        "rawMarkdown": "Congratulations and well done !!",
+        "content": "<p>Congratulations and well done !!</p>",
+        "parent": {},
+        "author": {
+          "displayName": "Shai",
+          "thumbnailUrl": "https://storage.googleapis.com/kaggle-avatars/thumbnails/795565-kg.gif",
+          "url": "/sgalib",
+          "tier": "GRANDMASTER",
+          "id": 795565,
+          "progressionOptOut": false
+        },
+        "authorType": "COMMENT",
+        "votes": {
+          "totalVotes": 1,
+          "canUpvote": true,
+          "totalUpvotes": 1
+        },
+        "kernelVersion": 0,
+        "competitionRanking": 4,
+        "feedbackTrackingData": {},
+        "isThankYou": false,
+        "teamUpInfo": {
+          "teamLeader": {
+            "displayName": "Bojan Tunguz",
+            "thumbnailUrl": "https://storage.googleapis.com/kaggle-avatars/thumbnails/417337-fb.jpg",
+            "url": "/tunguz",
+            "userName": "tunguz",
+            "tier": "GRANDMASTER",
+            "id": 417337,
+            "profileUrl": "/tunguz",
+            "performanceTier": "GRANDMASTER",
+            "userId": 417337,
+            "progressionOptOut": false
+          },
+          "intro": ""
+        }
+      },
+      {
+        "id": 453929,
+        "postDate": "2019-01-11T00:47:33.037Z",
+        "rawMarkdown": "Great work and thanks for sharing. Brightness augmentation really made a big difference. ",
+        "content": "<p>Great work and thanks for sharing. Brightness augmentation really made a big difference. </p>",
+        "replies": [
+          {
+            "id": 453932,
+            "postDate": "2019-01-11T00:50:43.023Z",
+            "rawMarkdown": "Indeed, it affected training a lot. Explanation is quite obvious, actually: as I can see from leaked data, there  are pairs of images which are almost identical except slight shifts and different brightness. So brightness augmentation perfectly simulates natural data variability.",
+            "content": "<p>Indeed, it affected training a lot. Explanation is quite obvious, actually: as I can see from leaked data, there  are pairs of images which are almost identical except slight shifts and different brightness. So brightness augmentation perfectly simulates natural data variability.</p>",
+            "parent": {},
+            "author": {
+              "displayName": "Dmytro Panchenko",
+              "thumbnailUrl": "https://storage.googleapis.com/kaggle-avatars/thumbnails/default-thumb.png",
+              "url": "/hokmund",
+              "tier": "EXPERT",
+              "id": 837103,
+              "progressionOptOut": false
+            },
+            "authorType": "COMMENT",
+            "votes": {
+              "totalVotes": 1,
+              "canUpvote": true,
+              "totalUpvotes": 1
+            },
+            "kernelVersion": 0,
+            "competitionRanking": 8,
+            "feedbackTrackingData": {},
+            "isThankYou": false,
+            "teamUpInfo": {
+              "teamLeader": {
+                "displayName": "Dmytro Panchenko",
+                "thumbnailUrl": "https://storage.googleapis.com/kaggle-avatars/thumbnails/default-thumb.png",
+                "url": "/hokmund",
+                "userName": "hokmund",
+                "tier": "EXPERT",
+                "id": 837103,
+                "profileUrl": "/hokmund",
+                "performanceTier": "EXPERT",
+                "userId": 837103,
+                "progressionOptOut": false
+              },
+              "intro": ""
+            }
+          },
+          {
+            "id": 454080,
+            "postDate": "2019-01-11T05:23:06.527Z",
+            "rawMarkdown": "Hi, may I ask how much LB can improve after using Brightness augmentation?",
+            "content": "<p>Hi, may I ask how much LB can improve after using Brightness augmentation?</p>",
+            "parent": {},
+            "author": {
+              "displayName": "good good study",
+              "thumbnailUrl": "https://storage.googleapis.com/kaggle-avatars/thumbnails/1131983-kg.jpeg",
+              "url": "/zjucor",
+              "tier": "EXPERT",
+              "id": 1131983,
+              "progressionOptOut": false
+            },
+            "authorType": "COMMENT",
+            "votes": {
+              "canUpvote": true
+            },
+            "kernelVersion": 0,
+            "competitionRanking": 151,
+            "feedbackTrackingData": {},
+            "isThankYou": false,
+            "isCollapsed": true,
+            "teamUpInfo": {
+              "teamLeader": {
+                "displayName": "good good study",
+                "thumbnailUrl": "https://storage.googleapis.com/kaggle-avatars/thumbnails/1131983-kg.jpeg",
+                "url": "/zjucor",
+                "userName": "zjucor",
+                "tier": "EXPERT",
+                "id": 1131983,
+                "profileUrl": "/zjucor",
+                "performanceTier": "EXPERT",
+                "userId": 1131983,
+                "progressionOptOut": false
+              },
+              "intro": ""
+            }
+          },
+          {
+            "id": 454115,
+            "postDate": "2019-01-11T06:26:24.300Z",
+            "rawMarkdown": "We didn't benchmark separate augmentations, but brightness meant a lot, I think.",
+            "content": "<p>We didn't benchmark separate augmentations, but brightness meant a lot, I think.</p>",
+            "parent": {},
+            "author": {
+              "displayName": "Dmytro Panchenko",
+              "thumbnailUrl": "https://storage.googleapis.com/kaggle-avatars/thumbnails/default-thumb.png",
+              "url": "/hokmund",
+              "tier": "EXPERT",
+              "id": 837103,
+              "progressionOptOut": false
+            },
+            "authorType": "COMMENT",
+            "votes": {
+              "canUpvote": true
+            },
+            "kernelVersion": 0,
+            "competitionRanking": 8,
+            "feedbackTrackingData": {},
+            "isThankYou": false,
+            "isCollapsed": true,
+            "teamUpInfo": {
+              "teamLeader": {
+                "displayName": "Dmytro Panchenko",
+                "thumbnailUrl": "https://storage.googleapis.com/kaggle-avatars/thumbnails/default-thumb.png",
+                "url": "/hokmund",
+                "userName": "hokmund",
+                "tier": "EXPERT",
+                "id": 837103,
+                "profileUrl": "/hokmund",
+                "performanceTier": "EXPERT",
+                "userId": 837103,
+                "progressionOptOut": false
+              },
+              "intro": ""
+            }
+          },
+          {
+            "id": 458255,
+            "postDate": "2019-01-19T07:39:32.613Z",
+            "rawMarkdown": "hi dmytro\ncould you paste teh snipped for brightness aug here  please.",
+            "content": "<p>hi dmytro\ncould you paste teh snipped for brightness aug here  please.</p>",
+            "parent": {},
+            "author": {
+              "displayName": "Jaideep",
+              "thumbnailUrl": "https://storage.googleapis.com/kaggle-avatars/thumbnails/2033538-kg.PNG",
+              "url": "/jaideepvalani",
+              "tier": "MASTER",
+              "id": 2033538,
+              "progressionOptOut": false
+            },
+            "authorType": "COMMENT",
+            "votes": {
+              "canUpvote": true
+            },
+            "kernelVersion": 0,
+            "competitionRanking": 465,
+            "feedbackTrackingData": {},
+            "isThankYou": false,
+            "isCollapsed": true,
+            "teamUpInfo": {
+              "teamLeader": {
+                "displayName": "Jaideep",
+                "thumbnailUrl": "https://storage.googleapis.com/kaggle-avatars/thumbnails/2033538-kg.PNG",
+                "url": "/jaideepvalani",
+                "userName": "jaideepvalani",
+                "tier": "MASTER",
+                "id": 2033538,
+                "profileUrl": "/jaideepvalani",
+                "performanceTier": "MASTER",
+                "userId": 2033538,
+                "progressionOptOut": false
+              },
+              "intro": ""
+            }
+          }
+        ],
+        "parent": {},
+        "author": {
+          "displayName": "Ben Lai",
+          "thumbnailUrl": "https://storage.googleapis.com/kaggle-avatars/thumbnails/484952-kg.jpeg?t=2024-05-15-23-11-54",
+          "url": "/benlai",
+          "tier": "EXPERT",
+          "id": 484952,
+          "progressionOptOut": false
+        },
+        "authorType": "COMMENT",
+        "votes": {
+          "totalVotes": 1,
+          "canUpvote": true,
+          "totalUpvotes": 1
+        },
+        "kernelVersion": 0,
+        "competitionRanking": 76,
+        "feedbackTrackingData": {},
+        "isThankYou": false,
+        "teamUpInfo": {
+          "teamLeader": {
+            "displayName": "Ben Lai",
+            "thumbnailUrl": "https://storage.googleapis.com/kaggle-avatars/thumbnails/484952-kg.jpeg?t=2024-05-15-23-11-54",
+            "url": "/benlai",
+            "userName": "benlai",
+            "tier": "EXPERT",
+            "id": 484952,
+            "profileUrl": "/benlai",
+            "performanceTier": "EXPERT",
+            "userId": 484952,
+            "progressionOptOut": false
+          },
+          "intro": ""
+        }
+      },
+      {
+        "id": 454016,
+        "postDate": "2019-01-11T03:01:51.483Z",
+        "rawMarkdown": "Thanks for sharing your amazing work, however the your blog link (Differential learning rate with gradual reducing)  appears as an error, it has an additional \")\" towards the end of the link. Can you please update !! \nhttps://blog.slavv.com/differential-learning-rates-59eff5209a4f",
+        "content": "<p>Thanks for sharing your amazing work, however the your blog link (Differential learning rate with gradual reducing)  appears as an error, it has an additional \")\" towards the end of the link. Can you please update !! \n<a href=\"https://blog.slavv.com/differential-learning-rates-59eff5209a4f\">https://blog.slavv.com/differential-learning-rates-59eff5209a4f</a></p>",
+        "parent": {},
+        "author": {
+          "displayName": "Vishy",
+          "thumbnailUrl": "https://storage.googleapis.com/kaggle-avatars/thumbnails/372520-kg.jpg",
+          "url": "/viswanathravindran",
+          "tier": "EXPERT",
+          "id": 372520,
+          "progressionOptOut": false
+        },
+        "authorType": "COMMENT",
+        "votes": {
+          "totalVotes": 2,
+          "canUpvote": true,
+          "totalUpvotes": 2
+        },
+        "kernelVersion": 0,
+        "competitionRanking": 721,
+        "feedbackTrackingData": {},
+        "isThankYou": false,
+        "teamUpInfo": {
+          "teamLeader": {
+            "displayName": "Vishy",
+            "thumbnailUrl": "https://storage.googleapis.com/kaggle-avatars/thumbnails/372520-kg.jpg",
+            "url": "/viswanathravindran",
+            "userName": "viswanathravindran",
+            "tier": "EXPERT",
+            "id": 372520,
+            "profileUrl": "/viswanathravindran",
+            "performanceTier": "EXPERT",
+            "userId": 372520,
+            "progressionOptOut": false
+          },
+          "intro": ""
+        }
+      },
+      {
+        "id": 624840,
+        "postDate": "2019-09-12T12:29:54.457Z",
+        "rawMarkdown": "Heyo! First off, thanks for the write up and congrats on the win! I'm currently working on a problem that I want to try LSEP loss for but can't seem to figure it out. I was wondering if you had a reference or link for your implementation? It would be greatly appreciated -- thanks :)",
+        "content": "<p>Heyo! First off, thanks for the write up and congrats on the win! I'm currently working on a problem that I want to try LSEP loss for but can't seem to figure it out. I was wondering if you had a reference or link for your implementation? It would be greatly appreciated -- thanks :)</p>",
+        "parent": {},
+        "author": {
+          "displayName": "Zach Eberhart",
+          "thumbnailUrl": "https://storage.googleapis.com/kaggle-avatars/thumbnails/536911-kg.jpeg",
+          "url": "/zacheism",
+          "tier": "CONTRIBUTOR",
+          "id": 536911,
+          "progressionOptOut": false
+        },
+        "authorType": "COMMENT",
+        "votes": {
+          "canUpvote": true
+        },
+        "kernelVersion": 0,
+        "feedbackTrackingData": {},
+        "isThankYou": false,
+        "teamUpInfo": {
+          "teamLeader": {
+            "displayName": "Zach Eberhart",
+            "thumbnailUrl": "https://storage.googleapis.com/kaggle-avatars/thumbnails/536911-kg.jpeg",
+            "url": "/zacheism",
+            "userName": "zacheism",
+            "tier": "CONTRIBUTOR",
+            "id": 536911,
+            "profileUrl": "/zacheism",
+            "performanceTier": "CONTRIBUTOR",
+            "userId": 536911,
+            "progressionOptOut": false
+          },
+          "intro": ""
+        }
+      },
+      {
+        "id": 458197,
+        "postDate": "2019-01-19T03:21:27.217Z",
+        "rawMarkdown": "amazing cooperation.",
+        "content": "<p>amazing cooperation.</p>",
+        "parent": {},
+        "author": {
+          "displayName": "BenChur",
+          "thumbnailUrl": "https://storage.googleapis.com/kaggle-avatars/thumbnails/1702605-gp.jpg",
+          "url": "/benchur",
+          "tier": "CONTRIBUTOR",
+          "id": 1702605,
+          "progressionOptOut": false
+        },
+        "authorType": "COMMENT",
+        "votes": {
+          "canUpvote": true
+        },
+        "kernelVersion": 0,
+        "competitionRanking": 1973,
+        "feedbackTrackingData": {},
+        "isThankYou": false,
+        "teamUpInfo": {
+          "teamLeader": {
+            "displayName": "BenChur",
+            "thumbnailUrl": "https://storage.googleapis.com/kaggle-avatars/thumbnails/1702605-gp.jpg",
+            "url": "/benchur",
+            "userName": "benchur",
+            "tier": "CONTRIBUTOR",
+            "id": 1702605,
+            "profileUrl": "/benchur",
+            "performanceTier": "CONTRIBUTOR",
+            "userId": 1702605,
+            "progressionOptOut": false
+          },
+          "intro": ""
+        }
+      },
+      {
+        "id": 457319,
+        "postDate": "2019-01-17T08:16:40.090Z",
+        "rawMarkdown": "hi,i too used fastai but couldnt manage a better score\ncould you please throw light on ensembling if you used .\nsay a prediction from model 1 is 0.99.....0.2 0.3  and model 2 is 0.8...0.4. 0.1  result of ensembled model will be ?\n\n",
+        "content": "<p>hi,i too used fastai but couldnt manage a better score\ncould you please throw light on ensembling if you used .\nsay a prediction from model 1 is 0.99.....0.2 0.3  and model 2 is 0.8...0.4. 0.1  result of ensembled model will be ?</p>",
+        "parent": {},
+        "author": {
+          "displayName": "Jaideep",
+          "thumbnailUrl": "https://storage.googleapis.com/kaggle-avatars/thumbnails/2033538-kg.PNG",
+          "url": "/jaideepvalani",
+          "tier": "MASTER",
+          "id": 2033538,
+          "progressionOptOut": false
+        },
+        "authorType": "COMMENT",
+        "votes": {
+          "canUpvote": true
+        },
+        "kernelVersion": 0,
+        "competitionRanking": 465,
+        "feedbackTrackingData": {},
+        "isThankYou": false,
+        "teamUpInfo": {
+          "teamLeader": {
+            "displayName": "Jaideep",
+            "thumbnailUrl": "https://storage.googleapis.com/kaggle-avatars/thumbnails/2033538-kg.PNG",
+            "url": "/jaideepvalani",
+            "userName": "jaideepvalani",
+            "tier": "MASTER",
+            "id": 2033538,
+            "profileUrl": "/jaideepvalani",
+            "performanceTier": "MASTER",
+            "userId": 2033538,
+            "progressionOptOut": false
+          },
+          "intro": ""
+        }
+      },
+      {
+        "id": 456214,
+        "postDate": "2019-01-15T11:16:54.057Z",
+        "rawMarkdown": "kudos for the group chat stats.",
+        "content": "<p>kudos for the group chat stats.</p>",
+        "parent": {},
+        "author": {
+          "displayName": "RanaTallal",
+          "thumbnailUrl": "https://storage.googleapis.com/kaggle-avatars/thumbnails/582677-fb.jpg",
+          "url": "/tallaljaved",
+          "tier": "CONTRIBUTOR",
+          "id": 582677,
+          "progressionOptOut": false
+        },
+        "authorType": "COMMENT",
+        "votes": {
+          "canUpvote": true
+        },
+        "kernelVersion": 0,
+        "feedbackTrackingData": {},
+        "isThankYou": false
+      },
+      {
+        "id": 455194,
+        "postDate": "2019-01-13T07:39:55.277Z",
+        "rawMarkdown": "Will you share your code of lsep loss ? I tried but failed.",
+        "content": "<p>Will you share your code of lsep loss ? I tried but failed.</p>",
+        "replies": [
+          {
+            "id": 624838,
+            "postDate": "2019-09-12T12:26:51.600Z",
+            "rawMarkdown": "Did you ever figure this out? Also trying to integrate LSEP w/ Fast AI with no luck :(",
+            "content": "<p>Did you ever figure this out? Also trying to integrate LSEP w/ Fast AI with no luck :(</p>",
+            "parent": {},
+            "author": {
+              "displayName": "Zach Eberhart",
+              "thumbnailUrl": "https://storage.googleapis.com/kaggle-avatars/thumbnails/536911-kg.jpeg",
+              "url": "/zacheism",
+              "tier": "CONTRIBUTOR",
+              "id": 536911,
+              "progressionOptOut": false
+            },
+            "authorType": "COMMENT",
+            "votes": {
+              "canUpvote": true
+            },
+            "kernelVersion": 0,
+            "feedbackTrackingData": {},
+            "isThankYou": false,
+            "teamUpInfo": {
+              "teamLeader": {
+                "displayName": "Zach Eberhart",
+                "thumbnailUrl": "https://storage.googleapis.com/kaggle-avatars/thumbnails/536911-kg.jpeg",
+                "url": "/zacheism",
+                "userName": "zacheism",
+                "tier": "CONTRIBUTOR",
+                "id": 536911,
+                "profileUrl": "/zacheism",
+                "performanceTier": "CONTRIBUTOR",
+                "userId": 536911,
+                "progressionOptOut": false
+              },
+              "intro": ""
+            }
+          }
+        ],
+        "parent": {},
+        "author": {
+          "displayName": "zjuyang",
+          "thumbnailUrl": "https://storage.googleapis.com/kaggle-avatars/thumbnails/1406337-kg.jpg",
+          "url": "/zjuyang",
+          "tier": "CONTRIBUTOR",
+          "id": 1406337,
+          "progressionOptOut": false
+        },
+        "authorType": "COMMENT",
+        "votes": {
+          "canUpvote": true
+        },
+        "kernelVersion": 0,
+        "competitionRanking": 13,
+        "feedbackTrackingData": {},
+        "isThankYou": false,
+        "teamUpInfo": {
+          "teamLeader": {
+            "displayName": "zjuyang",
+            "thumbnailUrl": "https://storage.googleapis.com/kaggle-avatars/thumbnails/1406337-kg.jpg",
+            "url": "/zjuyang",
+            "userName": "zjuyang",
+            "tier": "CONTRIBUTOR",
+            "id": 1406337,
+            "profileUrl": "/zjuyang",
+            "performanceTier": "CONTRIBUTOR",
+            "userId": 1406337,
+            "progressionOptOut": false
+          },
+          "intro": ""
+        }
+      },
+      {
+        "id": 454402,
+        "postDate": "2019-01-11T15:31:29.963Z",
+        "rawMarkdown": "Congratulations! What score were you getting with your individual models? How did you decide which ones to choose for ensembling?",
+        "content": "<p>Congratulations! What score were you getting with your individual models? How did you decide which ones to choose for ensembling?</p>",
+        "replies": [
+          {
+            "id": 454404,
+            "postDate": "2019-01-11T15:37:31.853Z",
+            "rawMarkdown": "<blockquote>What score were you getting with your individual models?</blockquote>\nOur top model is ~top-20 on both public and private LB.\n\n<blockquote>How did you decide which ones to choose for ensembling?</blockquote>\nUse them all and let stack decide ;)",
+            "content": "<blockquote>What score were you getting with your individual models?</blockquote>\n\n<p>Our top model is ~top-20 on both public and private LB.</p>\n\n<blockquote>How did you decide which ones to choose for ensembling?</blockquote>\n\n<p>Use them all and let stack decide ;)</p>",
+            "parent": {},
+            "author": {
+              "displayName": "Dmytro Panchenko",
+              "thumbnailUrl": "https://storage.googleapis.com/kaggle-avatars/thumbnails/default-thumb.png",
+              "url": "/hokmund",
+              "tier": "EXPERT",
+              "id": 837103,
+              "progressionOptOut": false
+            },
+            "authorType": "COMMENT",
+            "votes": {
+              "canUpvote": true
+            },
+            "kernelVersion": 0,
+            "competitionRanking": 8,
+            "feedbackTrackingData": {},
+            "isThankYou": false,
+            "teamUpInfo": {
+              "teamLeader": {
+                "displayName": "Dmytro Panchenko",
+                "thumbnailUrl": "https://storage.googleapis.com/kaggle-avatars/thumbnails/default-thumb.png",
+                "url": "/hokmund",
+                "userName": "hokmund",
+                "tier": "EXPERT",
+                "id": 837103,
+                "profileUrl": "/hokmund",
+                "performanceTier": "EXPERT",
+                "userId": 837103,
+                "progressionOptOut": false
+              },
+              "intro": ""
+            }
+          }
+        ],
+        "parent": {},
+        "author": {
+          "displayName": "Gaurav",
+          "thumbnailUrl": "https://storage.googleapis.com/kaggle-avatars/thumbnails/1178996-kg.jpg",
+          "url": "/disisbig",
+          "tier": "EXPERT",
+          "id": 1178996,
+          "progressionOptOut": false
+        },
+        "authorType": "COMMENT",
+        "votes": {
+          "canUpvote": true
+        },
+        "kernelVersion": 0,
+        "competitionRanking": 365,
+        "feedbackTrackingData": {},
+        "isThankYou": false,
+        "teamUpInfo": {
+          "teamLeader": {
+            "displayName": "Gaurav",
+            "thumbnailUrl": "https://storage.googleapis.com/kaggle-avatars/thumbnails/1178996-kg.jpg",
+            "url": "/disisbig",
+            "userName": "disisbig",
+            "tier": "EXPERT",
+            "id": 1178996,
+            "profileUrl": "/disisbig",
+            "performanceTier": "EXPERT",
+            "userId": 1178996,
+            "progressionOptOut": false
+          },
+          "intro": ""
+        }
+      },
+      {
+        "id": 454340,
+        "postDate": "2019-01-11T13:23:23.230Z",
+        "rawMarkdown": "Congratulations to you and your team. Excellent write up. Are you guys planning to put the complete solution on GitHub? It would be a great learning resource for beginners like me",
+        "content": "<p>Congratulations to you and your team. Excellent write up. Are you guys planning to put the complete solution on GitHub? It would be a great learning resource for beginners like me</p>",
+        "parent": {},
+        "author": {
+          "displayName": "sandy1112",
+          "thumbnailUrl": "https://storage.googleapis.com/kaggle-avatars/thumbnails/573171-kg.jpeg?t=2024-12-09-14-19-31",
+          "url": "/sandy1112",
+          "tier": "EXPERT",
+          "id": 573171,
+          "progressionOptOut": false
+        },
+        "authorType": "COMMENT",
+        "votes": {
+          "canUpvote": true
+        },
+        "kernelVersion": 0,
+        "competitionRanking": 370,
+        "feedbackTrackingData": {},
+        "isThankYou": false,
+        "teamUpInfo": {
+          "teamLeader": {
+            "displayName": "sandy1112",
+            "thumbnailUrl": "https://storage.googleapis.com/kaggle-avatars/thumbnails/573171-kg.jpeg?t=2024-12-09-14-19-31",
+            "url": "/sandy1112",
+            "userName": "sandy1112",
+            "tier": "EXPERT",
+            "id": 573171,
+            "profileUrl": "/sandy1112",
+            "performanceTier": "EXPERT",
+            "userId": 573171,
+            "progressionOptOut": false
+          },
+          "intro": ""
+        }
+      },
+      {
+        "id": 454303,
+        "postDate": "2019-01-11T11:51:32.990Z",
+        "rawMarkdown": "Congratulations ! are you going to share your code?",
+        "content": "<p>Congratulations ! are you going to share your code?</p>",
+        "parent": {},
+        "author": {
+          "displayName": "soywu",
+          "thumbnailUrl": "https://storage.googleapis.com/kaggle-avatars/thumbnails/844777-kg.jpg",
+          "url": "/soywugzm",
+          "tier": "EXPERT",
+          "id": 844777,
+          "progressionOptOut": false
+        },
+        "authorType": "COMMENT",
+        "votes": {
+          "canUpvote": true
+        },
+        "kernelVersion": 0,
+        "competitionRanking": 217,
+        "feedbackTrackingData": {},
+        "isThankYou": false,
+        "teamUpInfo": {
+          "teamLeader": {
+            "displayName": "soywu",
+            "thumbnailUrl": "https://storage.googleapis.com/kaggle-avatars/thumbnails/844777-kg.jpg",
+            "url": "/soywugzm",
+            "userName": "soywugzm",
+            "tier": "EXPERT",
+            "id": 844777,
+            "profileUrl": "/soywugzm",
+            "performanceTier": "EXPERT",
+            "userId": 844777,
+            "progressionOptOut": false
+          },
+          "intro": ""
+        }
+      },
+      {
+        "id": 454232,
+        "postDate": "2019-01-11T09:20:47.620Z",
+        "rawMarkdown": "Nice sharing!!",
+        "content": "<p>Nice sharing!!</p>",
+        "parent": {},
+        "author": {
+          "displayName": "nekoder",
+          "thumbnailUrl": "https://storage.googleapis.com/kaggle-avatars/thumbnails/1256949-kg.png",
+          "url": "/nekoyyy",
+          "tier": "EXPERT",
+          "id": 1256949,
+          "progressionOptOut": false
+        },
+        "authorType": "COMMENT",
+        "votes": {
+          "canUpvote": true
+        },
+        "kernelVersion": 0,
+        "competitionRanking": 81,
+        "feedbackTrackingData": {},
+        "isThankYou": false,
+        "teamUpInfo": {
+          "teamLeader": {
+            "displayName": "nekoder",
+            "thumbnailUrl": "https://storage.googleapis.com/kaggle-avatars/thumbnails/1256949-kg.png",
+            "url": "/nekoyyy",
+            "userName": "nekoyyy",
+            "tier": "EXPERT",
+            "id": 1256949,
+            "profileUrl": "/nekoyyy",
+            "performanceTier": "EXPERT",
+            "userId": 1256949,
+            "progressionOptOut": false
+          },
+          "intro": ""
+        }
+      },
+      {
+        "id": 454023,
+        "postDate": "2019-01-11T03:16:52.050Z",
+        "rawMarkdown": "Thank you! Very enlightening. Would you mind giving some more details about how you trained se-resnext50? Did you use the titu github? I couldn't get it to train properly no matter what I did. ",
+        "content": "<p>Thank you! Very enlightening. Would you mind giving some more details about how you trained se-resnext50? Did you use the titu github? I couldn't get it to train properly no matter what I did. </p>",
+        "replies": [
+          {
+            "id": 454102,
+            "postDate": "2019-01-11T06:12:29.943Z",
+            "rawMarkdown": "Actually we used Fast.ai frameworks with many tricks from Jeremy's sleeves and pretrained model from amazing https://github.com/Cadene/pretrained-models.pytorch . Our pipeline was strictily inspired by first or third lection from the new version of fast.ai course.",
+            "content": "<p>Actually we used Fast.ai frameworks with many tricks from Jeremy's sleeves and pretrained model from amazing <a href=\"https://github.com/Cadene/pretrained-models.pytorch\">https://github.com/Cadene/pretrained-models.pytorch</a> . Our pipeline was strictily inspired by first or third lection from the new version of fast.ai course.</p>",
+            "parent": {},
+            "author": {
+              "displayName": "Sergei Fironov",
+              "thumbnailUrl": "https://storage.googleapis.com/kaggle-avatars/thumbnails/71783-gp.jpg",
+              "url": "/sergeifironov",
+              "tier": "GRANDMASTER",
+              "id": 71783,
+              "progressionOptOut": false
+            },
+            "authorType": "TOPIC",
+            "votes": {
+              "totalVotes": 1,
+              "canUpvote": true,
+              "totalUpvotes": 1
+            },
+            "kernelVersion": 0,
+            "competitionRanking": 8,
+            "feedbackTrackingData": {},
+            "isThankYou": false,
+            "teamUpInfo": {
+              "teamLeader": {
+                "displayName": "Dmytro Panchenko",
+                "thumbnailUrl": "https://storage.googleapis.com/kaggle-avatars/thumbnails/default-thumb.png",
+                "url": "/hokmund",
+                "userName": "hokmund",
+                "tier": "EXPERT",
+                "id": 837103,
+                "profileUrl": "/hokmund",
+                "performanceTier": "EXPERT",
+                "userId": 837103,
+                "progressionOptOut": false
+              },
+              "intro": ""
+            }
+          },
+          {
+            "id": 454194,
+            "postDate": "2019-01-11T08:21:21.613Z",
+            "rawMarkdown": "In addition to what Sergei said, I'd like to add that Se-ResNeXT-50 was the best-performing model in our experiments.",
+            "content": "<p>In addition to what Sergei said, I'd like to add that Se-ResNeXT-50 was the best-performing model in our experiments.</p>",
+            "parent": {},
+            "author": {
+              "displayName": "Dmytro Panchenko",
+              "thumbnailUrl": "https://storage.googleapis.com/kaggle-avatars/thumbnails/default-thumb.png",
+              "url": "/hokmund",
+              "tier": "EXPERT",
+              "id": 837103,
+              "progressionOptOut": false
+            },
+            "authorType": "COMMENT",
+            "votes": {
+              "canUpvote": true
+            },
+            "kernelVersion": 0,
+            "competitionRanking": 8,
+            "feedbackTrackingData": {},
+            "isThankYou": false,
+            "teamUpInfo": {
+              "teamLeader": {
+                "displayName": "Dmytro Panchenko",
+                "thumbnailUrl": "https://storage.googleapis.com/kaggle-avatars/thumbnails/default-thumb.png",
+                "url": "/hokmund",
+                "userName": "hokmund",
+                "tier": "EXPERT",
+                "id": 837103,
+                "profileUrl": "/hokmund",
+                "performanceTier": "EXPERT",
+                "userId": 837103,
+                "progressionOptOut": false
+              },
+              "intro": ""
+            }
+          }
+        ],
+        "parent": {},
+        "author": {
+          "displayName": "Moshel",
+          "thumbnailUrl": "https://storage.googleapis.com/kaggle-avatars/thumbnails/1928848-gp.jpg",
+          "url": "/moshel",
+          "tier": "EXPERT",
+          "id": 1928848,
+          "progressionOptOut": false
+        },
+        "authorType": "COMMENT",
+        "votes": {
+          "canUpvote": true
+        },
+        "kernelVersion": 0,
+        "competitionRanking": 220,
+        "feedbackTrackingData": {},
+        "isThankYou": false,
+        "teamUpInfo": {
+          "teamLeader": {
+            "displayName": "Kevin Garda",
+            "thumbnailUrl": "https://storage.googleapis.com/kaggle-avatars/thumbnails/833438-fb.jpg",
+            "url": "/kevingarda7",
+            "userName": "kevingarda7",
+            "tier": "CONTRIBUTOR",
+            "id": 833438,
+            "profileUrl": "/kevingarda7",
+            "performanceTier": "CONTRIBUTOR",
+            "userId": 833438,
+            "progressionOptOut": false
+          },
+          "intro": ""
+        }
+      },
+      {
+        "id": 453993,
+        "postDate": "2019-01-11T02:29:43.563Z",
+        "rawMarkdown": "Thx for ur sharing! Great work!",
+        "content": "<p>Thx for ur sharing! Great work!</p>",
+        "parent": {},
+        "author": {
+          "displayName": "Jun Liu",
+          "thumbnailUrl": "https://storage.googleapis.com/kaggle-avatars/thumbnails/1133510-kg.jpg",
+          "url": "/chrisluu",
+          "tier": "EXPERT",
+          "id": 1133510,
+          "progressionOptOut": false
+        },
+        "authorType": "COMMENT",
+        "votes": {
+          "canUpvote": true
+        },
+        "kernelVersion": 0,
+        "competitionRanking": 41,
+        "feedbackTrackingData": {},
+        "isThankYou": false,
+        "teamUpInfo": {
+          "teamLeader": {
+            "displayName": "Jun Liu",
+            "thumbnailUrl": "https://storage.googleapis.com/kaggle-avatars/thumbnails/1133510-kg.jpg",
+            "url": "/chrisluu",
+            "userName": "chrisluu",
+            "tier": "EXPERT",
+            "id": 1133510,
+            "profileUrl": "/chrisluu",
+            "performanceTier": "EXPERT",
+            "userId": 1133510,
+            "progressionOptOut": false
+          },
+          "intro": ""
+        }
+      },
+      {
+        "id": 453990,
+        "postDate": "2019-01-11T02:22:26.703Z",
+        "rawMarkdown": "Beautiful write up! Congratulations!",
+        "content": "<p>Beautiful write up! Congratulations!</p>",
+        "parent": {},
+        "author": {
+          "displayName": "Hilal Shaath",
+          "thumbnailUrl": "https://storage.googleapis.com/kaggle-avatars/thumbnails/107125-kg.jpg",
+          "url": "/abualabed",
+          "tier": "EXPERT",
+          "id": 107125,
+          "progressionOptOut": false
+        },
+        "authorType": "COMMENT",
+        "votes": {
+          "canUpvote": true
+        },
+        "kernelVersion": 0,
+        "competitionRanking": 1279,
+        "feedbackTrackingData": {},
+        "isThankYou": false,
+        "teamUpInfo": {
+          "teamLeader": {
+            "displayName": "Hilal Shaath",
+            "thumbnailUrl": "https://storage.googleapis.com/kaggle-avatars/thumbnails/107125-kg.jpg",
+            "url": "/abualabed",
+            "userName": "abualabed",
+            "tier": "EXPERT",
+            "id": 107125,
+            "profileUrl": "/abualabed",
+            "performanceTier": "EXPERT",
+            "userId": 107125,
+            "progressionOptOut": false
+          },
+          "intro": ""
+        }
+      },
+      {
+        "id": 453961,
+        "postDate": "2019-01-11T01:47:33.523Z",
+        "rawMarkdown": "Thanks for the write up. Interesting to see what it takes to be in top 10. Congrats!",
+        "content": "<p>Thanks for the write up. Interesting to see what it takes to be in top 10. Congrats!</p>",
+        "parent": {},
+        "author": {
+          "displayName": "David Wagner",
+          "thumbnailUrl": "https://storage.googleapis.com/kaggle-avatars/thumbnails/2247291-gp.jpg",
+          "url": "/davidwagnerkc",
+          "tier": "CONTRIBUTOR",
+          "id": 2247291,
+          "progressionOptOut": false
+        },
+        "authorType": "COMMENT",
+        "votes": {
+          "canUpvote": true
+        },
+        "kernelVersion": 0,
+        "competitionRanking": 298,
+        "feedbackTrackingData": {},
+        "isThankYou": false,
+        "teamUpInfo": {
+          "teamLeader": {
+            "displayName": "David Wagner",
+            "thumbnailUrl": "https://storage.googleapis.com/kaggle-avatars/thumbnails/2247291-gp.jpg",
+            "url": "/davidwagnerkc",
+            "userName": "davidwagnerkc",
+            "tier": "CONTRIBUTOR",
+            "id": 2247291,
+            "profileUrl": "/davidwagnerkc",
+            "performanceTier": "CONTRIBUTOR",
+            "userId": 2247291,
+            "progressionOptOut": false
+          },
+          "intro": ""
+        }
+      },
+      {
+        "id": 453933,
+        "postDate": "2019-01-11T00:51:41.077Z",
+        "rawMarkdown": "Thanks very much for the writeup. Is there a general reference for the method of stacking with LightGBM? I am not familiar with it.",
+        "content": "<p>Thanks very much for the writeup. Is there a general reference for the method of stacking with LightGBM? I am not familiar with it.</p>",
+        "replies": [
+          {
+            "id": 454096,
+            "postDate": "2019-01-11T05:59:12.803Z",
+            "rawMarkdown": "To be honest, I don't really think the general reference exists. \n\nWe treated probabilities of each class from each models as a features with some meta information about an images (brightness, blurness, size and so on). In this point we got standard tabular problem.\n\nStacking models with F1 or ROC-AUC is a bit tricky. The main idea of our solution to split holdout to folds then split training part of the fold to folds again and voting between models trained on inner folds and validate on the validation part of the outter fold. ",
+            "content": "<p>To be honest, I don't really think the general reference exists. </p>\n\n<p>We treated probabilities of each class from each models as a features with some meta information about an images (brightness, blurness, size and so on). In this point we got standard tabular problem.</p>\n\n<p>Stacking models with F1 or ROC-AUC is a bit tricky. The main idea of our solution to split holdout to folds then split training part of the fold to folds again and voting between models trained on inner folds and validate on the validation part of the outter fold. </p>",
+            "parent": {},
+            "author": {
+              "displayName": "Sergei Fironov",
+              "thumbnailUrl": "https://storage.googleapis.com/kaggle-avatars/thumbnails/71783-gp.jpg",
+              "url": "/sergeifironov",
+              "tier": "GRANDMASTER",
+              "id": 71783,
+              "progressionOptOut": false
+            },
+            "authorType": "TOPIC",
+            "votes": {
+              "canUpvote": true
+            },
+            "kernelVersion": 0,
+            "competitionRanking": 8,
+            "feedbackTrackingData": {},
+            "isThankYou": false,
+            "teamUpInfo": {
+              "teamLeader": {
+                "displayName": "Dmytro Panchenko",
+                "thumbnailUrl": "https://storage.googleapis.com/kaggle-avatars/thumbnails/default-thumb.png",
+                "url": "/hokmund",
+                "userName": "hokmund",
+                "tier": "EXPERT",
+                "id": 837103,
+                "profileUrl": "/hokmund",
+                "performanceTier": "EXPERT",
+                "userId": 837103,
+                "progressionOptOut": false
+              },
+              "intro": ""
+            }
+          }
+        ],
+        "parent": {},
+        "author": {
+          "displayName": "pete",
+          "thumbnailUrl": "https://storage.googleapis.com/kaggle-avatars/thumbnails/986843-kg.jpeg",
+          "url": "/petewills",
+          "tier": "EXPERT",
+          "id": 986843,
+          "progressionOptOut": false
+        },
+        "authorType": "COMMENT",
+        "votes": {
+          "canUpvote": true
+        },
+        "kernelVersion": 0,
+        "competitionRanking": 22,
+        "feedbackTrackingData": {},
+        "isThankYou": false,
+        "teamUpInfo": {
+          "teamLeader": {
+            "displayName": "pete",
+            "thumbnailUrl": "https://storage.googleapis.com/kaggle-avatars/thumbnails/986843-kg.jpeg",
+            "url": "/petewills",
+            "userName": "petewills",
+            "tier": "EXPERT",
+            "id": 986843,
+            "profileUrl": "/petewills",
+            "performanceTier": "EXPERT",
+            "userId": 986843,
+            "progressionOptOut": false
+          },
+          "intro": ""
+        }
+      },
+      {
+        "id": 453930,
+        "postDate": "2019-01-11T00:48:53.460Z",
+        "rawMarkdown": "Only thousands of messages? Those are rookie numbers :P",
+        "content": "<p>Only thousands of messages? Those are rookie numbers :P</p>",
+        "replies": [
+          {
+            "id": 453934,
+            "postDate": "2019-01-11T00:52:24.973Z",
+            "rawMarkdown": "Thousands, plural ;)\nMy estimate is a couple hundred thousand at least.",
+            "content": "<p>Thousands, plural ;)\nMy estimate is a couple hundred thousand at least.</p>",
+            "parent": {},
+            "author": {
+              "displayName": "Dmytro Panchenko",
+              "thumbnailUrl": "https://storage.googleapis.com/kaggle-avatars/thumbnails/default-thumb.png",
+              "url": "/hokmund",
+              "tier": "EXPERT",
+              "id": 837103,
+              "progressionOptOut": false
+            },
+            "authorType": "COMMENT",
+            "votes": {
+              "totalVotes": 1,
+              "canUpvote": true,
+              "totalUpvotes": 1
+            },
+            "kernelVersion": 0,
+            "competitionRanking": 8,
+            "feedbackTrackingData": {},
+            "isThankYou": false,
+            "teamUpInfo": {
+              "teamLeader": {
+                "displayName": "Dmytro Panchenko",
+                "thumbnailUrl": "https://storage.googleapis.com/kaggle-avatars/thumbnails/default-thumb.png",
+                "url": "/hokmund",
+                "userName": "hokmund",
+                "tier": "EXPERT",
+                "id": 837103,
+                "profileUrl": "/hokmund",
+                "performanceTier": "EXPERT",
+                "userId": 837103,
+                "progressionOptOut": false
+              },
+              "intro": ""
+            }
+          }
+        ],
+        "parent": {},
+        "author": {
+          "displayName": "ryches",
+          "thumbnailUrl": "https://storage.googleapis.com/kaggle-avatars/thumbnails/1035002-fb.jpg",
+          "url": "/ryches",
+          "tier": "GRANDMASTER",
+          "id": 1035002,
+          "progressionOptOut": false
+        },
+        "authorType": "COMMENT",
+        "votes": {
+          "canUpvote": true
+        },
+        "kernelVersion": 0,
+        "competitionRanking": 1282,
+        "feedbackTrackingData": {},
+        "isThankYou": false,
+        "teamUpInfo": {
+          "teamLeader": {
+            "displayName": "ryches",
+            "thumbnailUrl": "https://storage.googleapis.com/kaggle-avatars/thumbnails/1035002-fb.jpg",
+            "url": "/ryches",
+            "userName": "ryches",
+            "tier": "GRANDMASTER",
+            "id": 1035002,
+            "profileUrl": "/ryches",
+            "performanceTier": "GRANDMASTER",
+            "userId": 1035002,
+            "progressionOptOut": false
+          },
+          "intro": ""
+        }
+      },
+      {
+        "id": 454133,
+        "postDate": "2019-01-11T06:59:06.857Z",
+        "rawMarkdown": "Thank you very much and Congratulations!!",
+        "content": "<p>Thank you very much and Congratulations!!</p>",
+        "parent": {},
+        "author": {
+          "displayName": "[Deleted User]",
+          "thumbnailUrl": "https://storage.googleapis.com/kaggle-avatars/thumbnails/default-thumb.png",
+          "url": "/del=686b0a6d8b7f2d40",
+          "id": 1354585,
+          "progressionOptOut": false
+        },
+        "authorType": "COMMENT",
+        "votes": {
+          "canUpvote": true
+        },
+        "isDeleted": true,
+        "kernelVersion": 0,
+        "competitionRanking": 401,
+        "feedbackTrackingData": {},
+        "isThankYou": false,
+        "teamUpInfo": {
+          "teamLeader": {
+            "displayName": "[Deleted User]",
+            "thumbnailUrl": "https://storage.googleapis.com/kaggle-avatars/thumbnails/default-thumb.png",
+            "url": "/del=686b0a6d8b7f2d40",
+            "userName": "del=686b0a6d8b7f2d40",
+            "id": 1354585,
+            "profileUrl": "/del=686b0a6d8b7f2d40",
+            "userId": 1354585,
+            "progressionOptOut": false
+          },
+          "intro": ""
+        }
+      },
+      {
+        "id": 454006,
+        "postDate": "2019-01-11T02:47:07.440Z",
+        "rawMarkdown": "Thank you for your wonderful sharing",
+        "content": "<p>Thank you for your wonderful sharing</p>",
+        "parent": {},
+        "author": {
+          "displayName": "MountainClimber",
+          "thumbnailUrl": "https://storage.googleapis.com/kaggle-avatars/thumbnails/276323-kg.jpg",
+          "url": "/lwd0305",
+          "tier": "EXPERT",
+          "id": 276323,
+          "progressionOptOut": false
+        },
+        "authorType": "COMMENT",
+        "votes": {
+          "canUpvote": true
+        },
+        "kernelVersion": 0,
+        "competitionRanking": 226,
+        "feedbackTrackingData": {},
+        "isThankYou": true,
+        "teamUpInfo": {
+          "teamLeader": {
+            "displayName": "MountainClimber",
+            "thumbnailUrl": "https://storage.googleapis.com/kaggle-avatars/thumbnails/276323-kg.jpg",
+            "url": "/lwd0305",
+            "userName": "lwd0305",
+            "tier": "EXPERT",
+            "id": 276323,
+            "profileUrl": "/lwd0305",
+            "performanceTier": "EXPERT",
+            "userId": 276323,
+            "progressionOptOut": false
+          },
+          "intro": ""
+        }
+      },
+      {
+        "id": 453997,
+        "postDate": "2019-01-11T02:35:58.923Z",
+        "rawMarkdown": "Thanks for sharing your knowledge :)",
+        "content": "<p>Thanks for sharing your knowledge :)</p>",
+        "parent": {},
+        "author": {
+          "displayName": "Minh Duy",
+          "thumbnailUrl": "https://storage.googleapis.com/kaggle-avatars/thumbnails/2434845-kg.jpg",
+          "url": "/mrgyoza",
+          "tier": "CONTRIBUTOR",
+          "id": 2434845,
+          "progressionOptOut": false
+        },
+        "authorType": "COMMENT",
+        "votes": {
+          "canUpvote": true
+        },
+        "kernelVersion": 0,
+        "competitionRanking": 82,
+        "feedbackTrackingData": {},
+        "isThankYou": true,
+        "teamUpInfo": {
+          "teamLeader": {
+            "displayName": "huutrinh",
+            "thumbnailUrl": "https://storage.googleapis.com/kaggle-avatars/thumbnails/1895848-kg.jpg",
+            "url": "/huutrinh",
+            "userName": "huutrinh",
+            "tier": "EXPERT",
+            "id": 1895848,
+            "profileUrl": "/huutrinh",
+            "performanceTier": "EXPERT",
+            "userId": 1895848,
+            "progressionOptOut": false
+          },
+          "intro": ""
+        }
+      }
+    ],
+    "commentSort": "COMMENT_LIST_SORT_BY_HOT",
+    "firstMessage": {
+      "id": 453895,
+      "postDate": "2019-01-11T00:03:06.417Z",
+      "rawMarkdown": "First of all, thanks to Kaggle and HPA team for this interesting competition! Even leak couldn\u2019t spoil it! \n\nOur solution is an ensemble of 14 models. Most of them were trained on 512x512 RGB with additional data.\n\nMany thanks Jeremy Howard for great fast.ai framework! It\u2019s nice how easy it is to patch it. Fast.ai has been changed 40 times since the competition began, so it\u2019d have hurt if it was not open sourced.\n\nOur models are: Se-ResNext-50 trained on 256x256, 512x512 and 768x768 sizes, InceptionV4, BN-Inception and Xception (all trained on 512x512).  \nWe didn\u2019t have enough resources to train models on high resolution images. There were two ways to deal with it: resizing and crops, but training on crops is risky since some organelles occur only once per image (e.g. cytokinetic bridge), and it is difficult to select proper crops, so we didn\u2019t do it.\n\nThings that worked:\n1. Learning rate finder and cyclic learning rate (long cycles at the beginning, short cycles at the end).\n2. Differential learning rate with gradual reducing (as described here: https://blog.slavv.com/differential-learning-rates-59eff5209a4f ) helped to preserve weights from ImageNet.\n3. Focal loss with default gamma, LSEP loss ( https://arxiv.org/pdf/1704.03135.pdf ).\n4. Simple one-layer network head.\n5. Brightness augmentations, D4 and wrap transforms.\n6. Average of 32 TTAs (we used same augmentations as during training).\n\nThings that didn\u2019t work:\n1. Training on RGBY.\n2. Training with sample pairing ( https://arxiv.org/abs/1801.02929 ).\n3. Mixup, which probably didn\u2019t work because green channel is too important ( https://arxiv.org/abs/1710.09412 ).\n4. Complex network head.\n5. Large architectures such as Nasnet or Senet-154 (they would have probably worked, if we had more GPUs).\n6. Training one-vs-all models and training on subsets of similar classes.\n7. Training classifier over bottleneck features of networks (we tried lots of approaches here, but unfortunately all of them proved to be worse than our models).\n8. Complex augmentations, such as green channel modifications discussed here: https://www.kaggle.com/c/human-protein-atlas-image-classification/discussion/75768\n\nExternal data was acquired from Human Protein Atlas site. After trying to find duplicates between train and externaldata we found out that labels wasn't match some times. First of all they shouldn't be taken from subcellular_location.tsv as these locations is raleted to gene/protein not to the sample. But parsing labels from xml files also wasn't quite correct. More correct labels are actually on web-site, so we took them. And it looks like they merged some rare labels that wasn't presented in our task into others, so we do the same.\n\nOur resources: 4x1080ti. It seems that the full training cycle consumed approximately two weeks of computing time.\n\nFindings:\n1. Yellow channel wasn\u2019t very helpfulas many participants noticed on the forum.\n2. Labeling was probably quite noisy (we found several contradictions between HPAv18 data and data provided in this competition).\n3. Several classes are extremely similar visually. It is almost impossible to distinguish between lysosomes and endosomes, for example (no wonder: endosomes are literally reborn into lysosomes at some point of their lifecycle). So it is not surprising that models don\u2019t perform well enough on these classes too.\n\nOur validation is a kind of an Adversarial Validation. We arranged train by similarity to the test using an NN with simple architecture and got 8K samples as a holdout. We used this holdout to fit the thresholds for single models and check the scores. We tried our best to avoid duplicates between train and our holdout. All leaked images from HPA were added to the validation set too.\n\nThe most challenging part of the competition is how to deal with \u201csmall\u201d classes with only a few positive cases. We couldn\u2019t handle it better than ensembling models with linear models and voting between those stacks. \n\nOther classes were stacked with LightGBM model. It was stable enough on the validation set because we followed the \u201cfolds-inside-folds\u201d scheme (similar to Strategy C from https://www.kaggle.com/general/18793 ). The gap between the local validation and leader board was stable with 0.01 precision. It wasn\u2019t as accurate as we wanted it to be, but still it was ok to trust our validation.\n\nP.S. Some stats:\nOur group chat contains 1325 screenshots, 321 files, 428 links and thousands of messages.\n",
+      "content": "<p>First of all, thanks to Kaggle and HPA team for this interesting competition! Even leak couldn\u2019t spoil it! </p>\n\n<p>Our solution is an ensemble of 14 models. Most of them were trained on 512x512 RGB with additional data.</p>\n\n<p>Many thanks Jeremy Howard for great fast.ai framework! It\u2019s nice how easy it is to patch it. Fast.ai has been changed 40 times since the competition began, so it\u2019d have hurt if it was not open sourced.</p>\n\n<p>Our models are: Se-ResNext-50 trained on 256x256, 512x512 and 768x768 sizes, InceptionV4, BN-Inception and Xception (all trained on 512x512). <br>\nWe didn\u2019t have enough resources to train models on high resolution images. There were two ways to deal with it: resizing and crops, but training on crops is risky since some organelles occur only once per image (e.g. cytokinetic bridge), and it is difficult to select proper crops, so we didn\u2019t do it.</p>\n\n<p>Things that worked:\n1. Learning rate finder and cyclic learning rate (long cycles at the beginning, short cycles at the end).\n2. Differential learning rate with gradual reducing (as described here: <a href=\"https://blog.slavv.com/differential-learning-rates-59eff5209a4f\">https://blog.slavv.com/differential-learning-rates-59eff5209a4f</a> ) helped to preserve weights from ImageNet.\n3. Focal loss with default gamma, LSEP loss ( <a href=\"https://arxiv.org/pdf/1704.03135.pdf\">https://arxiv.org/pdf/1704.03135.pdf</a> ).\n4. Simple one-layer network head.\n5. Brightness augmentations, D4 and wrap transforms.\n6. Average of 32 TTAs (we used same augmentations as during training).</p>\n\n<p>Things that didn\u2019t work:\n1. Training on RGBY.\n2. Training with sample pairing ( <a href=\"https://arxiv.org/abs/1801.02929\">https://arxiv.org/abs/1801.02929</a> ).\n3. Mixup, which probably didn\u2019t work because green channel is too important ( <a href=\"https://arxiv.org/abs/1710.09412\">https://arxiv.org/abs/1710.09412</a> ).\n4. Complex network head.\n5. Large architectures such as Nasnet or Senet-154 (they would have probably worked, if we had more GPUs).\n6. Training one-vs-all models and training on subsets of similar classes.\n7. Training classifier over bottleneck features of networks (we tried lots of approaches here, but unfortunately all of them proved to be worse than our models).\n8. Complex augmentations, such as green channel modifications discussed here: <a href=\"https://www.kaggle.com/c/human-protein-atlas-image-classification/discussion/75768\">https://www.kaggle.com/c/human-protein-atlas-image-classification/discussion/75768</a></p>\n\n<p>External data was acquired from Human Protein Atlas site. After trying to find duplicates between train and externaldata we found out that labels wasn't match some times. First of all they shouldn't be taken from subcellular_location.tsv as these locations is raleted to gene/protein not to the sample. But parsing labels from xml files also wasn't quite correct. More correct labels are actually on web-site, so we took them. And it looks like they merged some rare labels that wasn't presented in our task into others, so we do the same.</p>\n\n<p>Our resources: 4x1080ti. It seems that the full training cycle consumed approximately two weeks of computing time.</p>\n\n<p>Findings:\n1. Yellow channel wasn\u2019t very helpfulas many participants noticed on the forum.\n2. Labeling was probably quite noisy (we found several contradictions between HPAv18 data and data provided in this competition).\n3. Several classes are extremely similar visually. It is almost impossible to distinguish between lysosomes and endosomes, for example (no wonder: endosomes are literally reborn into lysosomes at some point of their lifecycle). So it is not surprising that models don\u2019t perform well enough on these classes too.</p>\n\n<p>Our validation is a kind of an Adversarial Validation. We arranged train by similarity to the test using an NN with simple architecture and got 8K samples as a holdout. We used this holdout to fit the thresholds for single models and check the scores. We tried our best to avoid duplicates between train and our holdout. All leaked images from HPA were added to the validation set too.</p>\n\n<p>The most challenging part of the competition is how to deal with \u201csmall\u201d classes with only a few positive cases. We couldn\u2019t handle it better than ensembling models with linear models and voting between those stacks. </p>\n\n<p>Other classes were stacked with LightGBM model. It was stable enough on the validation set because we followed the \u201cfolds-inside-folds\u201d scheme (similar to Strategy C from <a href=\"https://www.kaggle.com/general/18793\">https://www.kaggle.com/general/18793</a> ). The gap between the local validation and leader board was stable with 0.01 precision. It wasn\u2019t as accurate as we wanted it to be, but still it was ok to trust our validation.</p>\n\n<p>P.S. Some stats:\nOur group chat contains 1325 screenshots, 321 files, 428 links and thousands of messages.</p>",
+      "parent": {},
+      "author": {
+        "displayName": "Sergei Fironov",
+        "thumbnailUrl": "https://storage.googleapis.com/kaggle-avatars/thumbnails/71783-gp.jpg",
+        "url": "/sergeifironov",
+        "tier": "GRANDMASTER",
+        "id": 71783,
+        "progressionOptOut": false
+      },
+      "authorType": "TOPIC",
+      "votes": {
+        "totalVotes": 97,
+        "canUpvote": true,
+        "totalUpvotes": 97
+      },
+      "kernelVersion": 0,
+      "competitionRanking": 8,
+      "feedbackTrackingData": {},
+      "isThankYou": false,
+      "teamUpInfo": {
+        "teamLeader": {
+          "displayName": "Dmytro Panchenko",
+          "thumbnailUrl": "https://storage.googleapis.com/kaggle-avatars/thumbnails/default-thumb.png",
+          "url": "/hokmund",
+          "userName": "hokmund",
+          "tier": "EXPERT",
+          "id": 837103,
+          "profileUrl": "/hokmund",
+          "performanceTier": "EXPERT",
+          "userId": 837103,
+          "progressionOptOut": false
+        },
+        "intro": ""
+      }
+    },
+    "firstMessageId": 453895,
+    "forumId": 68207,
+    "forumName": "Human Protein Atlas Image Classification",
+    "id": 77251,
+    "name": "8 place solution writeup",
+    "parentName": "human-protein-atlas-image-classification",
+    "parentUrl": "/competitions/human-protein-atlas-image-classification",
+    "postDate": "2019-01-11T00:03:06.417019Z",
+    "totalVotes": 98,
+    "url": "/competitions/human-protein-atlas-image-classification/discussion/77251",
+    "totalMessages": 38,
+    "authorPerformanceTier": "GRANDMASTER",
+    "writeUp": {
+      "id": 9609,
+      "topicId": 77251,
+      "title": "8 place solution writeup",
+      "message": {
+        "id": 453895,
+        "postDate": "2019-01-11T00:03:06.417Z",
+        "rawMarkdown": "First of all, thanks to Kaggle and HPA team for this interesting competition! Even leak couldn\u2019t spoil it! \n\nOur solution is an ensemble of 14 models. Most of them were trained on 512x512 RGB with additional data.\n\nMany thanks Jeremy Howard for great fast.ai framework! It\u2019s nice how easy it is to patch it. Fast.ai has been changed 40 times since the competition began, so it\u2019d have hurt if it was not open sourced.\n\nOur models are: Se-ResNext-50 trained on 256x256, 512x512 and 768x768 sizes, InceptionV4, BN-Inception and Xception (all trained on 512x512).  \nWe didn\u2019t have enough resources to train models on high resolution images. There were two ways to deal with it: resizing and crops, but training on crops is risky since some organelles occur only once per image (e.g. cytokinetic bridge), and it is difficult to select proper crops, so we didn\u2019t do it.\n\nThings that worked:\n1. Learning rate finder and cyclic learning rate (long cycles at the beginning, short cycles at the end).\n2. Differential learning rate with gradual reducing (as described here: https://blog.slavv.com/differential-learning-rates-59eff5209a4f ) helped to preserve weights from ImageNet.\n3. Focal loss with default gamma, LSEP loss ( https://arxiv.org/pdf/1704.03135.pdf ).\n4. Simple one-layer network head.\n5. Brightness augmentations, D4 and wrap transforms.\n6. Average of 32 TTAs (we used same augmentations as during training).\n\nThings that didn\u2019t work:\n1. Training on RGBY.\n2. Training with sample pairing ( https://arxiv.org/abs/1801.02929 ).\n3. Mixup, which probably didn\u2019t work because green channel is too important ( https://arxiv.org/abs/1710.09412 ).\n4. Complex network head.\n5. Large architectures such as Nasnet or Senet-154 (they would have probably worked, if we had more GPUs).\n6. Training one-vs-all models and training on subsets of similar classes.\n7. Training classifier over bottleneck features of networks (we tried lots of approaches here, but unfortunately all of them proved to be worse than our models).\n8. Complex augmentations, such as green channel modifications discussed here: https://www.kaggle.com/c/human-protein-atlas-image-classification/discussion/75768\n\nExternal data was acquired from Human Protein Atlas site. After trying to find duplicates between train and externaldata we found out that labels wasn't match some times. First of all they shouldn't be taken from subcellular_location.tsv as these locations is raleted to gene/protein not to the sample. But parsing labels from xml files also wasn't quite correct. More correct labels are actually on web-site, so we took them. And it looks like they merged some rare labels that wasn't presented in our task into others, so we do the same.\n\nOur resources: 4x1080ti. It seems that the full training cycle consumed approximately two weeks of computing time.\n\nFindings:\n1. Yellow channel wasn\u2019t very helpfulas many participants noticed on the forum.\n2. Labeling was probably quite noisy (we found several contradictions between HPAv18 data and data provided in this competition).\n3. Several classes are extremely similar visually. It is almost impossible to distinguish between lysosomes and endosomes, for example (no wonder: endosomes are literally reborn into lysosomes at some point of their lifecycle). So it is not surprising that models don\u2019t perform well enough on these classes too.\n\nOur validation is a kind of an Adversarial Validation. We arranged train by similarity to the test using an NN with simple architecture and got 8K samples as a holdout. We used this holdout to fit the thresholds for single models and check the scores. We tried our best to avoid duplicates between train and our holdout. All leaked images from HPA were added to the validation set too.\n\nThe most challenging part of the competition is how to deal with \u201csmall\u201d classes with only a few positive cases. We couldn\u2019t handle it better than ensembling models with linear models and voting between those stacks. \n\nOther classes were stacked with LightGBM model. It was stable enough on the validation set because we followed the \u201cfolds-inside-folds\u201d scheme (similar to Strategy C from https://www.kaggle.com/general/18793 ). The gap between the local validation and leader board was stable with 0.01 precision. It wasn\u2019t as accurate as we wanted it to be, but still it was ok to trust our validation.\n\nP.S. Some stats:\nOur group chat contains 1325 screenshots, 321 files, 428 links and thousands of messages.\n",
+        "content": "<p>First of all, thanks to Kaggle and HPA team for this interesting competition! Even leak couldn\u2019t spoil it! </p>\n\n<p>Our solution is an ensemble of 14 models. Most of them were trained on 512x512 RGB with additional data.</p>\n\n<p>Many thanks Jeremy Howard for great fast.ai framework! It\u2019s nice how easy it is to patch it. Fast.ai has been changed 40 times since the competition began, so it\u2019d have hurt if it was not open sourced.</p>\n\n<p>Our models are: Se-ResNext-50 trained on 256x256, 512x512 and 768x768 sizes, InceptionV4, BN-Inception and Xception (all trained on 512x512). <br>\nWe didn\u2019t have enough resources to train models on high resolution images. There were two ways to deal with it: resizing and crops, but training on crops is risky since some organelles occur only once per image (e.g. cytokinetic bridge), and it is difficult to select proper crops, so we didn\u2019t do it.</p>\n\n<p>Things that worked:\n1. Learning rate finder and cyclic learning rate (long cycles at the beginning, short cycles at the end).\n2. Differential learning rate with gradual reducing (as described here: <a href=\"https://blog.slavv.com/differential-learning-rates-59eff5209a4f\">https://blog.slavv.com/differential-learning-rates-59eff5209a4f</a> ) helped to preserve weights from ImageNet.\n3. Focal loss with default gamma, LSEP loss ( <a href=\"https://arxiv.org/pdf/1704.03135.pdf\">https://arxiv.org/pdf/1704.03135.pdf</a> ).\n4. Simple one-layer network head.\n5. Brightness augmentations, D4 and wrap transforms.\n6. Average of 32 TTAs (we used same augmentations as during training).</p>\n\n<p>Things that didn\u2019t work:\n1. Training on RGBY.\n2. Training with sample pairing ( <a href=\"https://arxiv.org/abs/1801.02929\">https://arxiv.org/abs/1801.02929</a> ).\n3. Mixup, which probably didn\u2019t work because green channel is too important ( <a href=\"https://arxiv.org/abs/1710.09412\">https://arxiv.org/abs/1710.09412</a> ).\n4. Complex network head.\n5. Large architectures such as Nasnet or Senet-154 (they would have probably worked, if we had more GPUs).\n6. Training one-vs-all models and training on subsets of similar classes.\n7. Training classifier over bottleneck features of networks (we tried lots of approaches here, but unfortunately all of them proved to be worse than our models).\n8. Complex augmentations, such as green channel modifications discussed here: <a href=\"https://www.kaggle.com/c/human-protein-atlas-image-classification/discussion/75768\">https://www.kaggle.com/c/human-protein-atlas-image-classification/discussion/75768</a></p>\n\n<p>External data was acquired from Human Protein Atlas site. After trying to find duplicates between train and externaldata we found out that labels wasn't match some times. First of all they shouldn't be taken from subcellular_location.tsv as these locations is raleted to gene/protein not to the sample. But parsing labels from xml files also wasn't quite correct. More correct labels are actually on web-site, so we took them. And it looks like they merged some rare labels that wasn't presented in our task into others, so we do the same.</p>\n\n<p>Our resources: 4x1080ti. It seems that the full training cycle consumed approximately two weeks of computing time.</p>\n\n<p>Findings:\n1. Yellow channel wasn\u2019t very helpfulas many participants noticed on the forum.\n2. Labeling was probably quite noisy (we found several contradictions between HPAv18 data and data provided in this competition).\n3. Several classes are extremely similar visually. It is almost impossible to distinguish between lysosomes and endosomes, for example (no wonder: endosomes are literally reborn into lysosomes at some point of their lifecycle). So it is not surprising that models don\u2019t perform well enough on these classes too.</p>\n\n<p>Our validation is a kind of an Adversarial Validation. We arranged train by similarity to the test using an NN with simple architecture and got 8K samples as a holdout. We used this holdout to fit the thresholds for single models and check the scores. We tried our best to avoid duplicates between train and our holdout. All leaked images from HPA were added to the validation set too.</p>\n\n<p>The most challenging part of the competition is how to deal with \u201csmall\u201d classes with only a few positive cases. We couldn\u2019t handle it better than ensembling models with linear models and voting between those stacks. </p>\n\n<p>Other classes were stacked with LightGBM model. It was stable enough on the validation set because we followed the \u201cfolds-inside-folds\u201d scheme (similar to Strategy C from <a href=\"https://www.kaggle.com/general/18793\">https://www.kaggle.com/general/18793</a> ). The gap between the local validation and leader board was stable with 0.01 precision. It wasn\u2019t as accurate as we wanted it to be, but still it was ok to trust our validation.</p>\n\n<p>P.S. Some stats:\nOur group chat contains 1325 screenshots, 321 files, 428 links and thousands of messages.</p>",
+        "parent": {},
+        "author": {
+          "displayName": "Sergei Fironov",
+          "thumbnailUrl": "https://storage.googleapis.com/kaggle-avatars/thumbnails/71783-gp.jpg",
+          "url": "/sergeifironov",
+          "tier": "GRANDMASTER",
+          "id": 71783,
+          "progressionOptOut": false
+        },
+        "authorType": "TOPIC",
+        "votes": {
+          "totalVotes": 97,
+          "canUpvote": true,
+          "totalUpvotes": 97
+        },
+        "kernelVersion": 0,
+        "competitionRanking": 8,
+        "feedbackTrackingData": {},
+        "teamUpInfo": {
+          "teamLeader": {
+            "displayName": "Dmytro Panchenko",
+            "thumbnailUrl": "https://storage.googleapis.com/kaggle-avatars/thumbnails/default-thumb.png",
+            "url": "/hokmund",
+            "userName": "hokmund",
+            "tier": "EXPERT",
+            "id": 837103,
+            "profileUrl": "/hokmund",
+            "performanceTier": "EXPERT",
+            "userId": 837103,
+            "progressionOptOut": false
+          },
+          "intro": ""
+        }
+      },
+      "type": "COMPETITION_SOLUTION",
+      "coverImageUrl": "/competitions/10418/images/header",
+      "slug": "one-more-layer-of-stacking-8-place-solution-writeu",
+      "url": "/competitions/human-protein-atlas-image-classification/writeups/one-more-layer-of-stacking-8-place-solution-writeu",
+      "createTime": "2019-01-11T00:03:06.417Z",
+      "updateTime": "2019-01-11T06:03:08.430Z",
+      "contentState": "PUBLISHED",
+      "imageInfo": {},
+      "collaborators": [
+        {
+          "displayName": "Dmytro Panchenko",
+          "thumbnailUrl": "https://storage.googleapis.com/kaggle-avatars/thumbnails/default-thumb.png",
+          "url": "/hokmund",
+          "userName": "hokmund",
+          "tier": "EXPERT",
+          "id": 837103,
+          "profileUrl": "/hokmund",
+          "performanceTier": "EXPERT",
+          "userId": 837103,
+          "progressionOptOut": false
+        },
+        {
+          "displayName": "Aleksandr Kiselev",
+          "thumbnailUrl": "https://storage.googleapis.com/kaggle-avatars/thumbnails/1088337-kg.jpg",
+          "url": "/mortido",
+          "userName": "mortido",
+          "tier": "CONTRIBUTOR",
+          "id": 1088337,
+          "profileUrl": "/mortido",
+          "performanceTier": "CONTRIBUTOR",
+          "userId": 1088337,
+          "progressionOptOut": false
+        },
+        {
+          "displayName": "Sergei Fironov",
+          "thumbnailUrl": "https://storage.googleapis.com/kaggle-avatars/thumbnails/71783-gp.jpg",
+          "url": "/sergeifironov",
+          "userName": "sergeifironov",
+          "tier": "GRANDMASTER",
+          "id": 71783,
+          "profileUrl": "/sergeifironov",
+          "performanceTier": "GRANDMASTER",
+          "userId": 71783,
+          "progressionOptOut": false
+        },
+        {
+          "displayName": "DmitryBuslov",
+          "thumbnailUrl": "https://storage.googleapis.com/kaggle-avatars/thumbnails/676963-fb.jpg",
+          "url": "/dimarik",
+          "userName": "dimarik",
+          "tier": "EXPERT",
+          "id": 676963,
+          "profileUrl": "/dimarik",
+          "performanceTier": "EXPERT",
+          "userId": 676963,
+          "progressionOptOut": false
+        }
+      ],
+      "publishTime": "2019-01-11T06:03:08.430Z"
+    },
+    "authorProgressionOptOut": false
+  }
+}
