@@ -1,0 +1,4 @@
+You are filtering a Kaggle competition's forum topics. Return ONLY topics that are solution writeups (e.g. '1st place solution', '5th place approach', 'Our solution', winner's summary, post-competition writeup). Exclude general questions, data bug reports, announcements, and off-topic threads.
+
+Topics:
+{topics_json}
