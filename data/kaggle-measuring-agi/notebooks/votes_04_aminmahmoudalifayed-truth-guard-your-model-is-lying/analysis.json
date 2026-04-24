@@ -1,0 +1,57 @@
+{
+  "tldr": "Post-hoc calibration middleware tutorial that simulates 6 LLMs, computes ECE and overconfidence metrics, applies temperature scaling to fix miscalibration, and demonstrates leakage detection via cross-validation.",
+  "summary": "This notebook introduces TruthGuard, a post-hoc calibration middleware designed to detect and correct overconfident model outputs without retraining. It generates a synthetic dataset of 1,200+ questions across 12 knowledge domains and simulates the behavior of 6 foundation models with distinct confidence/accuracy profiles. The author computes novel metrics including Expected Calibration Error (ECE), Unknown-Unknowns rate, and Misconception Trap Rate, then applies temperature scaling to minimize ECE. The notebook also demonstrates how data leakage during preprocessing artificially inflates validation scores and provides an interactive widget to explore calibration dynamics in real-time.",
+  "extensive_summary": "## Overview & Synthetic Data Generation\nThe notebook presents TruthGuard, a post-hoc calibration layer that converts raw overconfident LLM outputs into honest probability scores. It begins by generating a synthetic dataset of 1,200+ questions across 12 categories (e.g., Science Facts, Common Misconceptions, Medical Myths) using a `DATASET_SPEC` dictionary with parameters for base answerability and misconception rates. Questions are assigned `answerability` via clipped normal distributions and `is_misconception` via binomial sampling.\n\n## Simulated Foundation Models\nSix behavioral model profiles are simulated: `GPT4_Overconfident` (high base confidence, amplified on misconceptions), `Claude3_Cautious` (conservative scaling), `Gemini_Balanced`, `Llama3_Uncertain` (low confidence), `Mistral_Erratic` (bimodal confidence), and `PerfectAGI` (confidence matches answerability). Each generates confidence scores and binary correctness via `np.random.binomial` scaled by answerability.\n\n## Calibration & Novel Metrics\nThe notebook defines four key metrics:\n- **ECE**: Computed over 15 bins, measuring the weighted absolute difference between mean confidence and accuracy per bin.\n- **Unknown-Unknowns Rate**: Proportion of questions where confidence > 0.75 but answerability < 0.15.\n- **Misconception Trap Rate**: Proportion of misconceptions where the model is confidently wrong (conf > 0.7, correct = 0).\n- **AGI Safety Score**: Composite of calibration, safety, accuracy, and misconception metrics weighted 0.35/0.35/0.15/0.15.\n\n## Temperature Scaling Fix\nTo correct miscalibration, the notebook implements temperature scaling: `scaled_conf = sigmoid(logit(conf) / T)`. The optimal temperature `T` is found via `scipy.optimize.minimize_scalar` to minimize ECE. Results show `T > 1` softens overconfidence, while `T < 1` sharpens underconfidence, with ECE improvements ranging from ~10% to >50% across models.\n\n## Leakage Detection & Cross-Validation\nA controlled experiment demonstrates data leakage using `StratifiedKFold(n_splits=5)`. Model A fits a `StandardScaler` only on training folds, while Model B fits it on the entire dataset. The leaked model shows artificially inflated validation accuracy and smaller train-val gaps, illustrating how preprocessing leakage masks true generalization failure.\n\n## Visualization & Interactive Tools\nThe notebook generates reliability diagrams, ECE heatmaps by category, temperature scaling scatter plots, and a Lie Map (overconfidence gap per model/category). An `ipywidgets` interactive explorer allows real-time adjustment of temperature to observe shifts in reliability diagrams and confidence distributions. A production readiness report evaluates models against thresholds for ECE, UU rate, and CV gap.",
+  "purpose": "tutorial",
+  "models": [
+    "GPT4_Overconfident",
+    "Claude3_Cautious",
+    "Gemini_Balanced",
+    "Llama3_Uncertain",
+    "Mistral_Erratic",
+    "PerfectAGI"
+  ],
+  "frameworks": [
+    "numpy",
+    "pandas",
+    "matplotlib",
+    "seaborn",
+    "plotly",
+    "ipywidgets",
+    "scipy",
+    "scikit-learn"
+  ],
+  "cv_strategy": "StratifiedKFold(n_splits=5, shuffle=True, random_state=2026)",
+  "preprocessing": [
+    "StandardScaler fit on train-only folds (clean) vs full dataset (leaked)",
+    "Synthetic data generation with clipped normal distributions and binomial sampling for answerability/misconception flags"
+  ],
+  "feature_engineering": [],
+  "augmentations": [],
+  "loss_functions": [],
+  "ensemble": "",
+  "post_processing": "Temperature scaling via ECE minimization (logit(conf)/T); selective abstention gate triggering when calibrated confidence falls below 40% safety threshold",
+  "what_worked": [
+    "Temperature scaling successfully reduced ECE across all simulated models",
+    "Clean cross-validation correctly exposed generalization gaps",
+    "Composite AGI Safety Score effectively ranked model reliability"
+  ],
+  "what_did_not_work": [
+    "Leaked preprocessing (fitting scaler on full data) artificially inflated validation scores and masked true model failure",
+    "Overconfident models showed high accuracy but catastrophic NLL penalties when wrong"
+  ],
+  "critical_findings": [
+    "Overconfidence on incorrect answers incurs a catastrophic NLL penalty, making calibration more critical than raw accuracy.",
+    "Fitting preprocessors on test data leaks distribution info, creating a false sense of model competence.",
+    "Models that honestly abstain on unanswerable questions are safer than those that confidently hallucinate."
+  ],
+  "notable_techniques": [
+    "Temperature scaling optimized via ECE minimization to correct over/underconfidence",
+    "Unknown-Unknowns rate metric to flag confident predictions on unanswerable questions",
+    "Misconception Trap Rate to quantify confident hallucination on known myths",
+    "Train-val gap comparison to detect silent data leakage during preprocessing",
+    "Interactive reliability diagram explorer using ipywidgets for real-time calibration tuning"
+  ],
+  "source_url": "https://www.kaggle.com/code/aminmahmoudalifayed/truth-guard-your-model-is-lying",
+  "votes": 37
+}

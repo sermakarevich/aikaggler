@@ -1,0 +1,38 @@
+{
+  "tldr": "A copy-move forgery detection method that extracts overlapping image blocks, computes DCT coefficient signs, processes them with cellular automata, and matches them via kd-tree nearest-neighbor search to resist post-processing attacks.",
+  "summary": "The authors propose a copy-move forgery detection technique that partitions images into overlapping blocks and extracts features using the Discrete Cosine Transform (DCT). Rather than relying on coefficient magnitudes, the method leverages the signs of DCT coefficients, which are processed through cellular automata to build robust feature vectors. These vectors are matched using a kd-tree based nearest-neighbor search to locate duplicated regions. The approach demonstrates strong resilience against post-processing attacks like JPEG compression and additive white Gaussian noise, outperforming existing state-of-the-art methods.",
+  "extensive_summary": "## Method Overview\nThe technique detects copy-move forgery by partitioning images into overlapping blocks and applying the Discrete Cosine Transform (DCT) to extract block-level features.\n\n## Feature Construction & Matching\nThe core innovation replaces DCT magnitude values with coefficient signs, which are processed through Cellular Automata to generate stable feature vectors. These vectors are matched via kd-tree nearest-neighbor search to pinpoint duplicated regions.\n\n## Robustness & Evaluation\nDesigned specifically to survive post-processing distortions, the method demonstrates strong resilience against JPEG compression and additive white Gaussian noise. Experiments confirm it outperforms existing state-of-the-art approaches under both single and combined attack scenarios.",
+  "rank": null,
+  "models": [
+    "Cellular Automata",
+    "kd-tree"
+  ],
+  "cv_strategy": "",
+  "preprocessing": [
+    "Dividing input image into overlapping blocks"
+  ],
+  "feature_engineering": [
+    "Sign information of DCT coefficients",
+    "Feature vectors constructed via Cellular Automata"
+  ],
+  "augmentations": [],
+  "loss_functions": [],
+  "ensemble": "",
+  "post_processing": "",
+  "what_worked": [
+    "Using sign information of DCT coefficients instead of magnitudes significantly improves robustness to post-processing attacks."
+  ],
+  "what_did_not_work": [],
+  "critical_findings": [
+    "Signs of DCT coefficients are inherently more robust to post-processing attacks (e.g., JPEG, AWGN) than their magnitudes."
+  ],
+  "github_repos": [],
+  "papers": [
+    {
+      "title": "Copy-move forgery (CMFD) detection technique with DCT (Discrete Cosine Transform)",
+      "url": "https://www.sciencedirect.com/science/article/abs/pii/S2214212619307343"
+    }
+  ],
+  "other_solution_refs": [],
+  "source_url": "https://www.kaggle.com/competitions/recodai-luc-scientific-image-forgery-detection/discussion/613066"
+}

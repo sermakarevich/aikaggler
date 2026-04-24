@@ -10,7 +10,7 @@ USER_AGENT = (
 )
 KAGGLE_API = "https://www.kaggle.com/api/i"
 OLLAMA_URL = "http://localhost:11434/api/chat"
-OLLAMA_MODEL = "gemma4:31b"
+OLLAMA_MODEL = "qwen3.6:latest"
 
 PROMPTS_DIR = Path(__file__).parent / "prompts"
 

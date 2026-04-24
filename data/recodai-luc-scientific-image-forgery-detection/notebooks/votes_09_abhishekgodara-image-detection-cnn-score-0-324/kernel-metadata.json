@@ -1,0 +1,28 @@
+{
+  "id": "abhishekgodara/image-detection-cnn-score-0-324",
+  "id_no": 105937097,
+  "title": "image detection \ud83d\udd2c\ud83d\udd2c | CNN | score[0.324]\ud83d\udd25\ud83d\udd25",
+  "code_file": "image-detection-cnn-score-0-324.ipynb",
+  "language": "python",
+  "kernel_type": "notebook",
+  "is_private": false,
+  "enable_gpu": true,
+  "enable_tpu": false,
+  "enable_internet": false,
+  "keywords": [
+    "gpu"
+  ],
+  "dataset_sources": [
+    "pankajiitr/cnndinov2-pbd"
+  ],
+  "kernel_sources": [],
+  "competition_sources": [
+    "recodai-luc-scientific-image-forgery-detection"
+  ],
+  "model_sources": [
+    "metaresearch/dinov2/PyTorch/base/1",
+    "metaresearch/dinov2/PyTorch/large/1"
+  ],
+  "docker_image": "gcr.io/kaggle-private-byod/python@sha256:536e3d9752ddf933ae83b0a0c3ea67d38e6236db11a1cd47d84927a0b8d2c440",
+  "machine_shape": "NvidiaTeslaT4"
+}

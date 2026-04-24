@@ -1,0 +1,48 @@
+{
+  "tldr": "Lightweight Mask R-CNN baseline trained on 256x256 images with a MobileNetV3-Small backbone, produces RLE-encoded segmentation masks for image forgery detection.",
+  "summary": "This notebook provides a beginner-friendly baseline for a semantic segmentation task focused on detecting forged/tampered regions in images. It begins with an EDA to inspect image sizes and data structure, then implements a custom PyTorch dataset that loads RGB images and corresponding `.npy` segmentation masks. The core model is a lightweight Mask R-CNN using a MobileNetV3-Small backbone, trained for 3 epochs with an 80/20 random split. The pipeline covers training, validation, inference with score thresholding, and RLE encoding for the competition submission.",
+  "extensive_summary": "## EDA and Data Inspection\nThe notebook starts by analyzing the dataset structure for an image forgery detection task, distinguishing between authentic and forged/tampered images. It inspects image sizes across train (authentic, forged) and test folders, noting significant size variation. Masks are stored as `.npy` files, often multi-channel, which are collapsed to binary masks using `np.any` along the channel axis and thresholded at `> 0`.\n\n## Dataset and Preprocessing\nA custom `ForgeryDataset` class handles loading images and masks. Images are converted to RGB and resized to 256x256. Masks are processed to match image dimensions. Training augmentations include horizontal/vertical flips (p=0.5), random 90-degree rotations (p=0.5), and ImageNet normalization. Validation uses the same resize and normalization but without augmentations. The dataset is split 80/20 randomly for training and validation.\n\n## Model Architecture\nThe model is a `MaskRCNN` from `torchvision.models.detection` with a custom lightweight backbone. The backbone uses `mobilenet_v3_small` features, followed by a 1x1 convolution reducing channels to 256. Anchor sizes are set to `(16, 32, 64, 128)` with aspect ratios `(0.5, 1.0, 2.0)`. ROI and mask ROI aligners use `output_size=5` and `10` respectively. The model is configured with `min_size=max_size=224` and specific RPN/post-NMS top-N values.\n\n## Training and Validation\nTraining runs for 3 epochs with a batch size of 4. The optimizer is Adam (`lr=0.001`, `weight_decay=0.001`) with a `StepLR` scheduler (`step_size=5`, `gamma=0.1`). The loss is computed as the sum of all keys in the Mask R-CNN `loss_dict`. Validation is performed in training mode (as noted by the author for Mask R-CNN specifics). Losses are tracked and plotted.\n\n## Inference and Submission\nDuring inference, images are resized to 256x256, normalized, and passed through the model. Predictions are filtered by a confidence threshold (0.4 or 0.5). Detected masks are combined using logical OR, resized back to the original image dimensions using nearest-neighbor interpolation, and RLE-encoded for the competition submission. Images with no detections above the threshold are labeled as 'authentic'.\n\n## Key Takeaways\nThe notebook demonstrates a complete pipeline from EDA to submission for a segmentation task, emphasizing a lightweight model configuration and practical handling of variable image sizes and mask formats.",
+  "purpose": "baseline",
+  "models": [
+    "Mask R-CNN (MobileNetV3-Small backbone)"
+  ],
+  "frameworks": [
+    "pytorch",
+    "torchvision",
+    "albumentations",
+    "opencv"
+  ],
+  "cv_strategy": "train/val split 80/20",
+  "preprocessing": [
+    "Resize to 256x256",
+    "ImageNet normalization",
+    "Mask binarization (>0)",
+    "Multi-channel mask collapse via np.any",
+    "RLE encoding for submission"
+  ],
+  "feature_engineering": [],
+  "augmentations": [
+    "A.Resize(256, 256)",
+    "A.HorizontalFlip(p=0.5)",
+    "A.VerticalFlip(p=0.5)",
+    "A.RandomRotate90(p=0.5)",
+    "A.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225])",
+    "ToTensorV2()"
+  ],
+  "loss_functions": [
+    "Mask R-CNN composite loss (sum of classification, box regression, and mask losses)"
+  ],
+  "ensemble": "",
+  "post_processing": "Score thresholding (0.4/0.5), mask combination via logical OR, resizing to original dimensions with INTER_NEAREST, RLE encoding",
+  "what_worked": [],
+  "what_did_not_work": [],
+  "critical_findings": [],
+  "notable_techniques": [
+    "Custom lightweight Mask R-CNN with MobileNetV3-Small backbone + 1x1 conv channel reduction",
+    "Converting binary segmentation masks to bounding boxes for Mask R-CNN training",
+    "Handling variable image sizes by resizing to 256x256 for training and back to original for submission",
+    "RLE encoding implementation for competition submission format"
+  ],
+  "source_url": "https://www.kaggle.com/code/antonoof/eda-r-cnn-model",
+  "votes": 277
+}

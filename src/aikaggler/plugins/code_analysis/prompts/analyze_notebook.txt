@@ -1,0 +1,35 @@
+You are analyzing a public Kaggle notebook (kernel) shared for a competition. Extract concrete technical details into JSON following the schema. The notebook is provided as markdown + code cells, and is typically a tutorial / EDA / baseline / training recipe — NOT necessarily a winning solution.
+
+Rules:
+- Do NOT invent models, libraries, or techniques. If a field is not explicitly stated or visible in code, leave it empty (empty array or empty string).
+- 'tldr': one sentence describing what the notebook does. Do NOT copy the title. Example: 'ResNet-34 baseline trained with BCE loss on 512x512 RGBY images, produces 0.46 LB.'
+- 'summary': 3-5 sentences covering what the notebook demonstrates, the main model/approach, any validation shown, and the key techniques a reader would learn from it.
+- 'extensive_summary': a compressed rewrite of the full notebook (several paragraphs of markdown). Preserve ALL technical detail — architecture specifics, hyperparameters, training schedule, loss choices, validation scheme, augmentations, preprocessing pipeline. Drop only repetition, print statements, and fluff. Write as cohesive narrative with section headers (##) where helpful. Aim for ~30-50% the length of the source. Preserve author's terminology verbatim for model/technique names.
+- 'purpose': the primary intent of the notebook. 'eda' = exploratory data analysis / dataset inspection; 'baseline' = first-pass model for the competition; 'feature_engineering' = focused on feature generation; 'training' = full training pipeline; 'inference' = predicting / submission generation; 'ensemble' = combining models; 'tutorial' = explanatory / educational; 'utility' = helper scripts, data download, etc.; 'other' if none fit.
+- 'models': architecture names (e.g. 'ResNet-34', 'LightGBM', 'XGBoost', 'BERT-base').
+- 'frameworks': ML libraries used in the code cells (e.g. 'keras', 'pytorch', 'fastai', 'scikit-learn', 'lightgbm', 'xgboost', 'tensorflow', 'transformers').
+- 'cv_strategy': validation scheme shown (e.g. 'StratifiedKFold(n_splits=5)', 'GroupKFold by patient_id', 'holdout 10%', 'train/valid split 80/20'). Empty if not shown.
+- 'preprocessing': normalization, cleaning, duplicate handling, image resizing, tokenization.
+- 'feature_engineering': **CRITICAL FIELD for tabular notebooks** — every hand-crafted feature. Categories with examples:
+  * Aggregations: group-by stats (mean/std/count/min/max per user_id / category / time window), cumulative sums, nunique
+  * Encodings: target encoding, frequency/count encoding, mean encoding, ordinal mapping, label encoding, out-of-fold encoding
+  * Time-based: lag features, rolling windows, time since last event, hour/day/week cycles
+  * Interactions: ratios, differences, products, pairwise combinations
+  * Domain-derived: features from domain knowledge
+  * Dimensionality: PCA, SVD, t-SNE, UMAP components
+  * Text-from-tabular: n-grams, TF-IDF on categorical columns
+Leave empty for pure computer-vision or NLP notebooks where no hand-crafted tabular features apply.
+- 'augmentations': train-time and test-time augmentations (from code — e.g. albumentations transforms, torchvision transforms, TTA).
+- 'loss_functions': explicit loss functions used in training (e.g. 'binary_crossentropy', 'focal_loss', 'smooth_l1', 'CrossEntropyLoss with class weights').
+- 'ensemble': one sentence describing ensembling recipe, or empty if notebook trains a single model.
+- 'post_processing': threshold tuning, TTA, calibration, label-shift correction. Empty if none.
+- 'what_worked' / 'what_did_not_work': extract ONLY if the author explicitly discusses results / ablations / comparisons in markdown. Leave empty for pure EDA or utility notebooks.
+- 'critical_findings': counterintuitive observations or score-moving insights the author explicitly calls out (data quirks, label noise, leakage warnings, class imbalance stats). One sentence each. Leave empty if none.
+- 'notable_techniques': specific techniques or tricks that would be worth remembering for a knowledge base (e.g. 'RGBY 4-channel input stacking', 'cyclic LR 1e-4 → 1e-3 → 1e-4', 'oversampling rare classes to 1:1 ratio', 'pseudo-labeling using external 100k set'). These are concrete reusable ideas, not high-level method names.
+
+Title: {title}
+Author: {author}
+Keywords: {keywords}
+
+Notebook content (markdown + code cells):
+{body_excerpt}

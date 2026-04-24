@@ -1,0 +1,35 @@
+{
+  "competition_tldr": "This competition focused on copy-move image forgery detection, requiring algorithms to identify duplicated regions within manipulated images that may have undergone various post-processing attacks. The top solution demonstrates that carefully engineered classical signal processing techniques\u2014specifically leveraging the signs of DCT coefficients, cellular automata, and kd-tree matching\u2014can achieve superior robustness and localization accuracy compared to magnitude-based or purely deep learning approaches.",
+  "key_challenges": [
+    "Resisting post-processing attacks (e.g., JPEG compression, additive white Gaussian noise)",
+    "Accurately matching duplicated regions across overlapping image blocks",
+    "Maintaining feature invariance while preserving spatial precision for forgery localization"
+  ],
+  "all_models": [
+    "Cellular Automata",
+    "kd-tree"
+  ],
+  "all_cv_strategies": [],
+  "all_preprocessing": [
+    "Dividing input image into overlapping blocks"
+  ],
+  "all_feature_engineering": [
+    "Sign information of DCT coefficients",
+    "Feature vectors constructed via Cellular Automata"
+  ],
+  "all_augmentations": [],
+  "all_loss_functions": [],
+  "all_ensemble_patterns": [],
+  "all_post_processing": [],
+  "all_what_worked": [
+    "Using sign information of DCT coefficients instead of magnitudes significantly improves robustness to post-processing attacks."
+  ],
+  "all_what_did_not_work": [],
+  "all_critical_findings": [
+    "Signs of DCT coefficients are inherently more robust to post-processing attacks (e.g., JPEG, AWGN) than their magnitudes."
+  ],
+  "notable_individual_insights": [
+    "null (Copy-move forgery (CMFD) detection technique with DCT (Discrete Cosine Transform)): Using the signs of DCT coefficients rather than their magnitudes provides significantly better robustness against post-processing attacks.",
+    "null (Copy-move forgery (CMFD) detection technique with DCT (Discrete Cosine Transform)): Processing DCT coefficient signs through cellular automata effectively builds robust feature vectors that resist manipulation."
+  ]
+}

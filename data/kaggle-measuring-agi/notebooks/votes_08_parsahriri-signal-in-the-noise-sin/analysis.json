@@ -1,0 +1,48 @@
+{
+  "tldr": "Simulates and evaluates six hypothetical foundation models on a procedurally generated synthetic narrative benchmark designed to measure selective attention and noise filtering.",
+  "summary": "The notebook introduces the Signal in the Noise (SiN) benchmark, which tests a model's ability to extract specific tracked facts from procedurally generated stories while ignoring emotionally salient distractors. It constructs a dataset of 200 instances across four difficulty levels and five cue types, then simulates model responses using predefined behavioral profiles for recall and intrusion rates. Metrics including Signal Recall Rate, Distractor Intrusion Rate, and a composite SiN Score are computed and visualized. The key takeaway is that high raw recall does not guarantee selective attention, as models that retrieve everything fail the attention metric.",
+  "extensive_summary": "## Benchmark Design & Dataset Construction\nThe notebook defines the Signal in the Noise (SiN) benchmark to evaluate selective attention in language models. It procedurally generates 200 synthetic narrative instances across 5 cue types (PRICES, DURATIONS, PERSON NAMES, MEASUREMENTS, DATES) and 4 difficulty levels (Easy, Medium, Hard, Expert). Each story contains 3\u20135 signal facts and 5\u201316 emotionally salient distractor facts. Entity names, numbers, and locations are randomized per instance to guarantee zero overlap with training corpora. The noise ratio (distractors / total sentences) ranges from 0.63 to 0.79.\n\n## Simulation Methodology\nInstead of running actual LLMs, the notebook simulates six model archetypes using parametric behavioral profiles. Each profile defines base recall, base intrusion, difficulty penalty, and noise sensitivity. Effective recall degrades with difficulty steps and noise ratio, while effective intrusion increases. The simulation clips values to [0.05, 1.0] for recall and [0.01, 0.98] for intrusion, then computes per-instance n_found and n_intruded.\n\n## Metrics & Evaluation\nFour metrics are computed per instance: Signal Recall Rate (n_found / n_signal), Distractor Intrusion Rate (n_intruded / n_distractor), Attention Precision (n_found / (n_found + n_intruded)), and the composite SiN Score (Recall \u00d7 (1 \u2212 Intrusion)). Aggregated metrics are ranked, and performance is broken down by difficulty and cue type. A submission CSV is generated with per-model and per-difficulty scores.\n\n## Visualization & Key Findings\nResults are plotted in a 4-panel figure: recall vs. intrusion trade-off, SiN score degradation by difficulty, performance by cue type, and robustness curves binned by noise ratio. The analysis reveals that high raw recall does not guarantee attention; GPT-4 and Mistral achieve decent recall but fail due to high intrusion (68% and 70.8%), collapsing their SiN scores. Claude 3 achieves the best balance (SiN 0.576), while Llama 3 proves that prioritizing selectivity over recall yields superior attention scores.",
+  "purpose": "other",
+  "models": [
+    "GPT4_Unfocused",
+    "Claude3_Selective",
+    "Gemini_Balanced",
+    "Llama3_Cautious",
+    "Mistral_Scattered",
+    "Perfect_Attention"
+  ],
+  "frameworks": [
+    "numpy",
+    "pandas",
+    "matplotlib",
+    "random",
+    "itertools"
+  ],
+  "cv_strategy": "",
+  "preprocessing": [],
+  "feature_engineering": [],
+  "augmentations": [],
+  "loss_functions": [],
+  "ensemble": "",
+  "post_processing": "",
+  "what_worked": [
+    "Claude 3 achieved the best balance among simulated models with a recall of 0.751 and intrusion of 0.236, yielding the highest SiN Score of 0.576.",
+    "Llama 3 demonstrated that prioritizing selectivity over raw recall (0.563 recall, 0.210 intrusion) produces a higher SiN Score (0.450) than high-recall models that leak noise."
+  ],
+  "what_did_not_work": [
+    "GPT-4 and Mistral failed on selectivity despite decent recall, with intrusion rates of 68% and 70.8% respectively, collapsing their SiN scores to 0.230 and 0.158.",
+    "Their outputs behaved more like full document summaries than selective extractions, proving that high recall alone amplifies noise rather than filtering it."
+  ],
+  "critical_findings": [
+    "High raw recall is insufficient for attention tasks; models that retrieve everything amplify noise rather than filter it.",
+    "The SiN Score is zero if a model finds nothing or returns everything, proving that genuine selective attention requires a narrow balance between recall and intrusion."
+  ],
+  "notable_techniques": [
+    "Procedural story generation with randomized proper nouns, numbers, and dates to guarantee zero training data overlap",
+    "Simulating model behavior via parametric behavioral profiles (recall, intrusion, difficulty penalty, noise sensitivity) instead of running actual inference",
+    "Composite SiN Score metric (Recall \u00d7 (1 \u2212 Intrusion)) to penalize both under- and over-retrieval",
+    "Noise robustness curves by binning noise ratios to evaluate performance degradation under clutter density"
+  ],
+  "source_url": "https://www.kaggle.com/code/parsahriri/signal-in-the-noise-sin",
+  "votes": 31
+}

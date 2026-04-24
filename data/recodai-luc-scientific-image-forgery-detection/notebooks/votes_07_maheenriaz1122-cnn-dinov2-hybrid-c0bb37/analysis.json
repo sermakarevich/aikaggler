@@ -1,0 +1,44 @@
+{
+  "tldr": "Segmentation-based hybrid model using a frozen DINOv2 encoder and a lightweight CNN decoder to detect and localize image manipulations, evaluated with F1-score on a holdout split.",
+  "summary": "This notebook implements a segmentation-driven pipeline for scientific image forgery detection. It combines a frozen self-supervised DINOv2 visual encoder with a lightweight custom CNN decoder to produce pixel-level manipulation masks. The model is trained for 4 epochs using BCEWithLogitsLoss and AdamW on an 80/20 holdout split. Inference includes gradient-enhanced adaptive thresholding and morphological refinement, followed by a dual-condition classification rule based on mask area and mean probability. The author evaluates segmentation performance using F1-score and generates RLE-encoded submissions.",
+  "extensive_summary": "## Architecture & Setup\nThe solution uses a hybrid segmentation model combining a frozen DINOv2 base encoder with a lightweight CNN decoder (`DinoTinyDecoder`). The encoder extracts semantic features, which are reshaped into a feature map and passed through three convolutional layers (768\u2192256\u219264\u21921) with ReLU activations to produce a binary probability map. All images and masks are resized to 512\u00d7512.\n\n## Training Pipeline\nAuthentic images are paired with zero masks, while forged images use provided `.npy` binary masks. Data is split 80/20 via `train_test_split` with `random_state=42`. The model is trained for 4 epochs with batch size 1, learning rate 1e-5, and weight decay 2e-5 using `AdamW`. Only the CNN decoder head is trainable; DINOv2 remains frozen. Loss is `BCEWithLogitsLoss`.\n\n## Inference & Post-Processing\nDuring inference, the model outputs a probability map. This is refined using gradient enhancement (Sobel gradients normalized and blended with alpha=0.35) followed by Gaussian blur. An adaptive threshold is applied (`mean + 0.3 * std`). Morphological closing (5\u00d75) and opening (3\u00d73) clean the mask. Final classification uses a dual rule: if `mask_area < 400` or `mean_probability_inside_mask < 0.35`, the image is labeled authentic; otherwise, forged. Masks are resized to original dimensions and RLE-encoded for submission.\n\n## Evaluation\nSegmentation quality is measured via F1-score on a validation subset of forged images, comparing predicted masks against ground truth. Visualization cells demonstrate mask alignment on both forged and authentic samples.",
+  "purpose": "training",
+  "models": [
+    "DINOv2-base",
+    "Custom CNN Decoder"
+  ],
+  "frameworks": [
+    "pytorch",
+    "transformers",
+    "opencv",
+    "scikit-learn",
+    "numpy",
+    "pandas"
+  ],
+  "cv_strategy": "holdout 80/20 split",
+  "preprocessing": [
+    "RGB conversion",
+    "resize to 512x512",
+    "pixel normalization to [0,1]",
+    "mask binarization (>0)",
+    "nearest-neighbor mask resizing"
+  ],
+  "feature_engineering": [],
+  "augmentations": [],
+  "loss_functions": [
+    "BCEWithLogitsLoss"
+  ],
+  "ensemble": "",
+  "post_processing": "gradient-enhanced adaptive thresholding (mean + 0.3*std), Sobel gradient blending, Gaussian blur, morphological close/open, area/mean probability filtering for classification, RLE encoding",
+  "what_worked": [],
+  "what_did_not_work": [],
+  "critical_findings": [],
+  "notable_techniques": [
+    "Frozen DINOv2 encoder with lightweight CNN decoder for segmentation",
+    "Gradient-enhanced adaptive thresholding for mask refinement",
+    "Dual-condition classification rule (area < 400 or mean prob < 0.35) to filter false positives",
+    "RLE encoding for submission format"
+  ],
+  "source_url": "https://www.kaggle.com/code/maheenriaz1122/cnn-dinov2-hybrid-c0bb37",
+  "votes": 206
+}

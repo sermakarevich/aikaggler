@@ -1,0 +1,49 @@
+{
+  "tldr": "Implements a post-hoc temperature scaling calibration pipeline on OPT-1.3b using TruthfulQA, demonstrating a significant cross-lingual calibration gap where the model is more overconfident in Arabic than English.",
+  "summary": "This notebook demonstrates a pipeline for measuring and correcting LLM overconfidence using post-hoc temperature scaling. It evaluates the OPT-1.3b model on the TruthfulQA dataset, computing Expected Calibration Error (ECE) for both raw and calibrated confidence scores. The author introduces a custom calibration class that optimizes a single temperature parameter via LBFGS to minimize cross-entropy loss on validation logits. The notebook also highlights a novel cross-lingual finding: the model exhibits significantly higher overconfidence (worse ECE) in Arabic compared to English despite similar accuracy. It includes interactive widgets for demonstration and a custom matplotlib dashboard for benchmarking.",
+  "extensive_summary": "## Overview & Motivation\nThe notebook introduces TruthGuard, a framework designed to quantify and mitigate LLM overconfidence. While modern models achieve high accuracy, they often assign high probabilities to incorrect answers. TruthGuard addresses this by implementing post-hoc calibration to align predicted confidence with actual accuracy.\n\n## Data & Models\nThe evaluation uses the `TruthfulQA` dataset (multiple_choice validation split). The primary local model is `facebook/opt-1.3b` loaded via `transformers` with `float16` precision and `device_map=\"auto\"`. A comparison is made against `Gemini 1.5 Flash` via API (when available) and a simulated baseline. For cross-lingual analysis, 20 manually curated Arabic translations of TruthfulQA questions are used.\n\n## Calibration Pipeline\n1. **Logit Extraction**: For each question and choice, the model computes negative log-probability via `model(**enc, labels=enc[\"input_ids\"])`. Logits are padded to length 4 with `-999.0`.\n2. **ECE Computation**: A custom `compute_ece` function bins predictions into 10 equal-width bins, calculating the weighted absolute difference between mean confidence and mean accuracy per bin.\n3. **Temperature Scaling**: A `TruthGuardGPU` class (inheriting `nn.Module`) maintains a learnable temperature parameter `T`. Using `torch.optim.LBFGS` and `nn.CrossEntropyLoss`, it optimizes `T` on a subset of 80 validation samples to minimize NLL. The calibrated probabilities are computed as `softmax(logits / T)`.\n4. **Abstention Logic**: A safety threshold `\u03b8` is applied to calibrated confidence scores. If `confidence < \u03b8`, the system triggers \"Safe Abstention\" rather than outputting a potentially hallucinated answer.\n\n## Cross-Lingual Analysis\nThe notebook evaluates OPT-1.3b on both English and Arabic prompts. Results show that while accuracy remains comparable, the Arabic ECE is significantly higher (worse) than English ECE. This indicates a structural calibration gap where the model is more overconfident in Arabic, likely due to lower-resource training data or linguistic bias.\n\n## Visualization & Demos\nInteractive `ipywidgets` demos simulate cross-lingual stress tests and model showdowns. A custom matplotlib dashboard plots ECE and accuracy comparisons across models, highlighting the reduction in ECE after applying TruthGuard calibration.",
+  "purpose": "tutorial",
+  "models": [
+    "OPT-1.3b",
+    "Gemini 1.5 Flash"
+  ],
+  "frameworks": [
+    "torch",
+    "transformers",
+    "datasets",
+    "numpy",
+    "scipy",
+    "matplotlib",
+    "ipywidgets"
+  ],
+  "cv_strategy": "",
+  "preprocessing": [
+    "AutoTokenizer truncation to 128 tokens",
+    "logit padding to length 4 with -999.0",
+    "float16 precision"
+  ],
+  "feature_engineering": [],
+  "augmentations": [],
+  "loss_functions": [
+    "CrossEntropyLoss (for temperature scaling optimization)"
+  ],
+  "ensemble": "",
+  "post_processing": "Post-hoc temperature scaling via LBFGS to minimize NLL, followed by confidence-based abstention thresholding (\u03b8) to trigger safe rejection of low-confidence predictions.",
+  "what_worked": [
+    "Temperature scaling successfully reduced ECE without retraining the model",
+    "Cross-lingual ECE measurement effectively revealed an Arabic overconfidence gap"
+  ],
+  "what_did_not_work": [],
+  "critical_findings": [
+    "OPT-1.3b exhibits significantly higher overconfidence (worse ECE) in Arabic compared to English despite similar accuracy.",
+    "Manual curation of Arabic TruthfulQA questions is necessary for reliable cross-lingual calibration benchmarking."
+  ],
+  "notable_techniques": [
+    "Post-hoc temperature scaling optimized with LBFGS to minimize NLL on validation logits",
+    "Cross-lingual Expected Calibration Error (ECE) comparison to detect resource bias",
+    "Confidence thresholding for safe abstention in high-stakes deployments",
+    "Logit extraction via negative loss computation on choice prompts"
+  ],
+  "source_url": "https://www.kaggle.com/code/aminmahmoudalifayed/truthguard",
+  "votes": 56
+}

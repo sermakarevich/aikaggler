@@ -1,0 +1,84 @@
+{
+  "id": 128852,
+  "competitionName": "kaggle-measuring-agi",
+  "title": "Measuring Progress Toward AGI - Cognitive Abilities",
+  "briefDescription": "Design high-quality benchmarks that go beyond recall to evaluate how frontier models truly reason, act, and judge.",
+  "dateEnabled": "2026-03-17T15:54:59.853Z",
+  "deadline": "2026-04-16T23:59:00Z",
+  "leaderboardPercentage": 30,
+  "maxDailySubmissions": 1,
+  "numScoredSubmissions": 1,
+  "numPrizes": 1,
+  "forumId": 10024151,
+  "dateCreated": "2026-01-26T19:28:15.963900700Z",
+  "competitionHostSegmentId": 1,
+  "maxTeamSize": 5,
+  "organizationId": 3823,
+  "hasCoverImageUrl": true,
+  "showPrivateLeaderboard": true,
+  "hasScripts": true,
+  "totalTeams": 1071,
+  "totalCompetitors": 1233,
+  "totalSubmissions": 1072,
+  "rulesRequired": true,
+  "categories": [
+    {
+      "id": 17189,
+      "name": "personal benchmark",
+      "fullPath": "admin > personal benchmark",
+      "description": "Kernels that are bound to a Personal Benchmark",
+      "competitionCount": 2,
+      "scriptCount": 29138,
+      "slug": "personal-benchmark",
+      "displayName": "Personal Benchmark"
+    },
+    {
+      "id": 17184,
+      "name": "benchmark",
+      "fullPath": "technique > benchmark",
+      "description": "",
+      "datasetCount": 551,
+      "competitionCount": 12,
+      "scriptCount": 340,
+      "slug": "benchmark",
+      "displayName": "Benchmark"
+    },
+    {
+      "id": 1219,
+      "name": "research",
+      "fullPath": "subject > science and technology > research",
+      "description": "Research is our endeavor to systematically increase our knowledge about the world. Whether it's undertaken by greats like Einstein or underpaid graduate students, you'll find the fruits of their labor in this tag plus the kernels that make their work reproducible.",
+      "datasetCount": 2852,
+      "competitionCount": 26,
+      "scriptCount": 564,
+      "slug": "research",
+      "displayName": "Research"
+    }
+  ],
+  "organization": {
+    "slug": "deepmind",
+    "name": "Google DeepMind",
+    "thumbnailImageUrl": "https://storage.googleapis.com/kaggle-organizations/3823/thumbnail.png",
+    "profileUrl": "/organizations/deepmind"
+  },
+  "launched": true,
+  "createdByUserId": 19579895,
+  "license": {
+    "id": 30,
+    "name": "Apache 2.0",
+    "url": "https://www.apache.org/licenses/LICENSE-2.0",
+    "agreementRequired": false
+  },
+  "hostName": "Google DeepMind",
+  "scoreTruncationNumDecimals": 5,
+  "locked": true,
+  "totalJoinedUsers": 7654,
+  "requiresIdentityVerification": true,
+  "submissionSizeLimitMb": 20480,
+  "reward": {
+    "id": "USD",
+    "quantity": 200000,
+    "clarification": ""
+  },
+  "hackathon": true
+}

@@ -1,0 +1,66 @@
+{
+  "tldr": "Evaluates 17 LLMs on calibration, context awareness, and resilience to misleading context using ECE and confidence variance, revealing widespread metacognitive collapse and identifying Sonnet/Opus as the only models that both recalibrate and maintain accuracy.",
+  "summary": "This notebook introduces and runs the CASK benchmark, which measures LLM metacognition across three tasks: baseline calibration (T1), context awareness (T2), and calibration under misleading context (T3). It evaluates 17 frontier and open-weight models using `kaggle-benchmarks`, computing Expected Calibration Error (ECE), confidence standard deviation, and accuracy. The author demonstrates that 11 of 17 models exhibit zero confidence variance on adversarial tasks, effectively failing to express uncertainty. Only Claude Sonnet 4.6 and Opus 4.6 successfully recalibrate confidence while maintaining high accuracy. The notebook provides full code for prompt templates, response parsing, answer verification, and scoring, validating results against the Brier score.",
+  "extensive_summary": "## CASK Benchmark Overview\nThe notebook evaluates 17 LLMs on metacognitive capacity using the CASK benchmark, which consists of three tasks: T1 (Calibration Baseline), T2 (Context Awareness), and T3 (Calibration Under Misleading Context). ECE (Expected Calibration Error) is used as the primary metric, where `score = 1 - ECE`. Confidence variance (standard deviation) is tracked to detect metacognitive collapse.\n\n## Methodology & Dataset\nThe dataset (`darovalos/cask-dataset`) contains 100 problems across six domains. It is split deterministically using stratified round-robin ordering (seed=42) into POOL_A (30 problems for T1/T3) and POOL_B (65 problems for T2). Each task requires exactly one LLM call per problem with no chain-of-thought. Prompts enforce strict JSON output containing `answer`, `confidence` (0-100), and optionally `context_helped`.\n\n## Implementation Details\nThe notebook uses `kaggle-benchmarks` to orchestrate runs. Response parsing extracts JSON via regex, falling back to raw string matching for `answer`, `confidence`, and `context_helped`. Answer verification supports exact string matching, alias lists, and numeric tolerance. Scoring functions compute ECE with 5 bins, context awareness scores based on correct answers and `context_helped` flags, and Brier scores for validation.\n\n## Results & Findings\nEleven models (all Gemini variants, Gemma 3 4B/12B/27B, Qwen Thinking, DeepSeek-R1, GLM-5) output `confidence=100` on every T3 problem, showing zero metacognitive capacity. Qwen 3 Coder 480B lowers confidence on 90.5% of wrong T3 answers but suffers accuracy collapse to 30%. Only Claude Sonnet 4.6 and Opus 4.6 combine high T3 accuracy with meaningful confidence variance. Brier score validation confirms ECE rankings (Spearman \u03c1=0.995). The author notes RLHF may confound Claude's recalibration and that sample sizes (N=30/65) are sufficient for tier separation but not fine ranking.\n\n## Code Structure\nThe notebook provides reusable components: `BARE_PROMPT` and `CONTEXT_PROMPT` templates, `parse_json_response`, `check_answer`, `compute_ece`, `score_context_problem`, `compute_context_awareness`, and stratified dataset loading. Tasks are implemented as `@kbench.task` decorators for modular execution.",
+  "purpose": "other",
+  "models": [
+    "Gemini 3.1 Pro Preview",
+    "Claude Sonnet 4.6",
+    "Gemini 3 Pro Preview",
+    "Claude Opus 4.6",
+    "Gemini 2.5 Pro",
+    "GLM-5",
+    "Qwen 3 Next 80B Thinking",
+    "DeepSeek V3.1",
+    "DeepSeek V3.2",
+    "Gemini 2.5 Flash",
+    "Qwen 3 Next 80B Instruct",
+    "Gemini 3.1 Flash-Lite Preview",
+    "Qwen 3 Coder 480B",
+    "DeepSeek-R1",
+    "Gemma 3 27B",
+    "Gemma 3 12B",
+    "Gemma 3 4B"
+  ],
+  "frameworks": [
+    "kaggle-benchmarks",
+    "matplotlib",
+    "numpy",
+    "pandas",
+    "json",
+    "re",
+    "os",
+    "time",
+    "collections",
+    "random"
+  ],
+  "cv_strategy": "",
+  "preprocessing": [],
+  "feature_engineering": [],
+  "augmentations": [],
+  "loss_functions": [],
+  "ensemble": "",
+  "post_processing": "",
+  "what_worked": [
+    "Claude Sonnet 4.6 and Opus 4.6 successfully recalibrate confidence and maintain high accuracy under misleading context.",
+    "Qwen 3 Coder 480B demonstrates metacognitive honesty by lowering confidence on incorrect answers, making it viable for confidence-weighted RAG pipelines."
+  ],
+  "what_did_not_work": [
+    "Eleven of seventeen models (all Gemini variants, Gemma family, Qwen Thinking, DeepSeek-R1, GLM-5) exhibit zero confidence variance on T3, outputting 100% confidence regardless of correctness.",
+    "Gemma models suffer catastrophic accuracy collapse (<13.3% on T3) while maintaining constant confidence."
+  ],
+  "critical_findings": [
+    "Most models cannot express uncertainty under adversarial context, masking true calibration failure behind constant high confidence.",
+    "Gemini 3 Pro Preview's positive ECE \u0394 is a mathematical artifact of accuracy shifting rather than genuine recalibration.",
+    "Brier score validation confirms ECE tier rankings but shows Tier 1 \u0394 confidence intervals cross zero at N=30."
+  ],
+  "notable_techniques": [
+    "Strict JSON prompt enforcement with regex fallback parsing for LLM responses",
+    "ECE computation using 5 fixed bins with `score = 1 - ECE`",
+    "Stratified round-robin dataset splitting with fixed seed for deterministic task allocation",
+    "Context-aware scoring that rewards correct answers only when the model correctly identifies context utility",
+    "Brier score validation to verify ECE rankings without binning artifacts"
+  ],
+  "source_url": "https://www.kaggle.com/code/darovalos/16-llms-fail-adversarial-context-one-survives",
+  "votes": 41
+}

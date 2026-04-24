@@ -1,0 +1,39 @@
+{
+  "tldr": "DINOv2-based segmentation model with a progressive bilinear CNN decoder, using gradient-enhanced adaptive thresholding for forgery detection and mask refinement.",
+  "summary": "This notebook demonstrates a hybrid image forgery detection pipeline leveraging a frozen DINOv2 vision transformer for feature extraction and a custom CNN-based ProgressiveBilinearDecoder for pixel-level segmentation. The workflow covers dataset preparation, model construction, and a complete inference pipeline that converts DINOv2 feature maps into probability maps. Post-processing involves gradient-enhanced adaptive thresholding and morphological operations to refine masks and classify images as authentic or forged. The author provides visualization tools and an RLE-based submission generator, offering a practical recipe for self-supervised feature extraction applied to forgery localization.",
+  "extensive_summary": "## Notebook Overview & Setup\nThe notebook implements a hybrid forgery detection and segmentation pipeline combining a frozen DINOv2 base encoder with a custom CNN decoder. It begins by setting deterministic seeds, defining paths for training/test images and masks, and configuring global constants (`IMG_SIZE=518`, `BATCH_SIZE=2`, `AREA_THR=200`, `MEAN_THR=0.25`).\n\n## Data Loading & Preprocessing\nA custom `ForgerySegDataset` loads RGB images, resizes them to 518x518, and normalizes pixel values to [0, 1]. Masks are loaded from `.npy` files, converted to binary, and resized using `cv2.INTER_NEAREST`. The dataset splits authentic and forged images using a fixed 80/20 holdout split via `train_test_split`.\n\n## Model Architecture\nThe core model, `DinoSegmenter`, freezes all DINOv2 parameters and extracts feature maps (`last_hidden_state`), reshaping them from `[B, N, C]` to `[B, 768, 37, 37]`. These features are passed to `DinoTinyDecoder`, a progressive bilinear upsampling head:\n- Block 1: `Conv2d(768, 384)` + ReLU + Dropout2d(0.1) \u2192 interpolated to 74x74\n- Block 2: `Conv2d(384, 192)` + ReLU + Dropout2d(0.1) \u2192 interpolated to 148x148\n- Block 3: `Conv2d(192, 96)` + ReLU \u2192 interpolated to 296x296\n- Output: `Conv2d(96, 1)` \u2192 interpolated to 518x518\nAll interpolations use `mode='bilinear'` and `align_corners=False`.\n\n## Inference & Post-Processing Pipeline\nProbability maps are generated via `torch.sigmoid` on the decoder output. A custom `enhanced_adaptive_mask` function refines these maps:\n1. Computes Sobel gradients (x and y) and normalizes gradient magnitude.\n2. Blends the probability map with gradient magnitude using `alpha_grad=0.35`.\n3. Applies Gaussian blur `(3,3)`.\n4. Thresholds using `mean + 0.3 * std`.\n5. Applies morphological closing `(5x5)` and opening `(3x3)` operations.\nClassification uses two thresholds: `AREA_THR=200` (minimum mask pixels) and `MEAN_THR=0.25` (mean probability inside the mask). If either is not met, the image is classified as authentic.\n\n## Evaluation & Submission\nValidation F1 is computed on a subset of forged images. The inference pipeline generates RLE-encoded masks for the test set, merges them with the sample submission format, and saves the final CSV. Visualization cells display original images, ground truth masks, and predicted masks side-by-side for both forged and authentic samples.",
+  "purpose": "inference",
+  "models": [
+    "DINOv2-base",
+    "ProgressiveBilinearDecoder"
+  ],
+  "frameworks": [
+    "pytorch",
+    "transformers",
+    "opencv",
+    "scikit-learn"
+  ],
+  "cv_strategy": "holdout 80/20 split",
+  "preprocessing": [
+    "resize to 518x518",
+    "normalize pixel values to [0,1]",
+    "mask resized with nearest-neighbor interpolation",
+    "deterministic seeds"
+  ],
+  "feature_engineering": [],
+  "augmentations": [],
+  "loss_functions": [],
+  "ensemble": "",
+  "post_processing": "gradient-enhanced adaptive thresholding (Sobel gradients blended with alpha=0.35), Gaussian blur, morphological close/open, area threshold (200) and mean probability threshold (0.25) for classification",
+  "what_worked": [],
+  "what_did_not_work": [],
+  "critical_findings": [],
+  "notable_techniques": [
+    "frozen DINOv2 feature extraction for segmentation",
+    "progressive bilinear upsampling decoder with intermediate convolutions",
+    "gradient-enhanced adaptive thresholding for mask refinement",
+    "area/mean probability dual-threshold classification rule"
+  ],
+  "source_url": "https://www.kaggle.com/code/pankajiitr/cnn-dinov2-progressivebilineardecoder",
+  "votes": 217
+}

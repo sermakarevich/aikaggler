@@ -1,0 +1,50 @@
+{
+  "tldr": "Streaming inference with early termination and magnitude-weighted voting on GPT-OSS via vLLM to solve mathematical Olympiad problems efficiently.",
+  "summary": "The author leverages a vLLM server hosting GPT-OSS to solve mathematical problems using streaming inference and early termination to optimize GPU throughput. Key techniques include prompting the model to verify answers, forcing a guess after a token limit, and implementing a custom weighted voting system that prioritizes larger answer magnitudes to filter out random guesses. The approach emphasizes API-ification, detailed logging of token usage and GPU KV cache, and adaptive termination strategies to maximize scoring efficiency.",
+  "extensive_summary": "## Core Inference Strategy\nThe solution centers on streaming inference via a vLLM server exposing an OpenAI-compatible API. By streaming completions, the system can interrupt generation once a confident answer is found, freeing GPU capacity for subsequent questions. This API-ification allows benchmarking other models and utilizing remote GPUs.\n\n## Prompting & Termination Tactics\nSeveral prompting tricks were employed to improve accuracy: asking the model to verify answers for quick problems, and instructing it to guess after a specific token limit to prevent empty outputs. Early termination is also triggered when GPU KV cache usage approaches 100%, though the author notes this is less critical now as the strategy favors deep generation over wide parallelism.\n\n## Voting & Scoring Logic\nInstead of simple majority voting, a custom weighted voting mechanism was implemented. Larger numerical answers receive higher weights, under the assumption that answers between 0 and 99999 are uniformly distributed and small numbers are likely random guesses. A candidate answer wins by meeting thresholds for minimum points, proportion of total points, and margin over the next best answer. The author notes this voting logic is becoming less relevant as newer high-reasoning models stop guessing outright.\n\n## Observations & Future Directions\nDetailed logging of generated tokens, answers, and GPU KV cache usage proved essential for debugging failure modes and tuning throughput. The author suggests exploring code execution for certain problems and branch selection/mixing to share results across parallel generations rather than running them independently.",
+  "rank": null,
+  "models": [
+    "GPT-OSS"
+  ],
+  "cv_strategy": "",
+  "preprocessing": [],
+  "feature_engineering": [],
+  "augmentations": [],
+  "loss_functions": [],
+  "ensemble": "Weighted voting system that prioritizes larger answer magnitudes, requiring candidates to meet minimum point thresholds and a margin over the next best answer to win.",
+  "post_processing": "",
+  "what_worked": [
+    "Streaming inference with early termination to save GPU capacity",
+    "Prompting the model to verify answers for quick problems",
+    "Forcing a guess after a token limit to prevent empty outputs",
+    "API-ification via vLLM for benchmarking and remote GPU usage",
+    "Logging token counts and GPU KV cache to debug failure modes"
+  ],
+  "what_did_not_work": [
+    "Termination based strictly on GPU KV cache usage (no longer relevant)",
+    "Magnitude-based vote manipulation (losing relevance as models stop guessing)"
+  ],
+  "critical_findings": [
+    "Small answers are likely random guesses when the AI gives up.",
+    "Answers are uniformly distributed (0-99999) rather than logarithmically distributed.",
+    "GPU KV cache hitting 100% causes generation failures.",
+    "Streaming/inference termination significantly improves throughput for sequential questions."
+  ],
+  "github_repos": [],
+  "papers": [],
+  "other_solution_refs": [
+    {
+      "description": "Resubmitted streaming inference notebook",
+      "url": "https://www.kaggle.com/code/huxingyu/streaming-inference1"
+    },
+    {
+      "description": "Discussion thread on remote GPU usage",
+      "url": "https://www.kaggle.com/competitions/ai-mathematical-olympiad-progress-prize-3/discussion/643580"
+    },
+    {
+      "description": "Baseline notebook using GPT-OSS-20B",
+      "url": "https://www.kaggle.com/code/theunforgiven7/aimo-3-baseline-gpt-oss-20b?scriptVersionId=280576466"
+    }
+  ],
+  "source_url": "https://www.kaggle.com/competitions/ai-mathematical-olympiad-progress-prize-3/discussion/637882"
+}

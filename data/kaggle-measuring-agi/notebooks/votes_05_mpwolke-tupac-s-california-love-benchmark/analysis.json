@@ -1,0 +1,35 @@
+{
+  "tldr": "Combines an LLM benchmarking script using kaggle_benchmarks with basic EDA and wordcloud visualization on a Tupac lyrics dataset.",
+  "summary": "This notebook serves as a personal benchmark and exploratory starter for a Tupac lyrics dataset. It demonstrates how to set up an LLM evaluation task using the kaggle_benchmarks library, including keyword assertions and an LLM-as-a-judge evaluation pipeline. The code then loads a CSV of lyrics, renames columns for consistency, and implements a reusable wordcloud plotting function with custom stopwords. The notebook is incomplete, as the author notes that installing PyTorch halted execution.",
+  "extensive_summary": "## LLM Benchmark Setup\nThe notebook begins by importing `kaggle_benchmarks` and defining a benchmark task named \"Who was Tupac?\". It prompts a placeholder LLM (`kbench.llm`) with the question \"Who was Tupac Shakur?\". Evaluation is handled via two methods: a fast keyword check ensuring the response contains \"rapper\", and an advanced LLM-as-a-judge assessment using `kbench.assertions.assess_response_with_judge` against three criteria (mentions Las Vegas, 2Pacalypse Now, hip-hop). The task is executed with `what_is_kaggle.run(kbench.llm)`.\n\n## Dataset Loading & Preprocessing\nAfter noting that installing PyTorch interrupted the environment, the author installs `matplotlib`, `seaborn`, and `wordcloud`. Standard data science imports (`os`, `numpy`, `pandas`, `warnings`) are configured, with warnings suppressed. A CSV dataset (`lyrics-TUPAC.csv`) is loaded into a pandas DataFrame. The columns are explicitly renamed to `['artist', 'title', 'lyrics']` to standardize the schema.\n\n## Visualization\nA custom `plot_wordcloud` function is defined, leveraging `wordcloud.WordCloud` and `matplotlib`. It accepts parameters for text, mask, max words, font size, and figure dimensions. Stopwords are extended with domain-specific terms (`'one', 'br', 'Po', 'th', 'sayi', 'fo', 'Unknown'`). The function generates a wordcloud with a white background, red text, and a fixed random state, then displays it with a title. The notebook concludes by calling this function on the `artist` column to generate a visualization.",
+  "purpose": "other",
+  "models": [],
+  "frameworks": [
+    "kaggle_benchmarks",
+    "pandas",
+    "numpy",
+    "matplotlib",
+    "seaborn",
+    "wordcloud"
+  ],
+  "cv_strategy": "",
+  "preprocessing": [
+    "CSV loading",
+    "column renaming to artist/title/lyrics",
+    "warning suppression"
+  ],
+  "feature_engineering": [],
+  "augmentations": [],
+  "loss_functions": [],
+  "ensemble": "",
+  "post_processing": "",
+  "what_worked": [],
+  "what_did_not_work": [],
+  "critical_findings": [],
+  "notable_techniques": [
+    "Using kaggle_benchmarks for structured LLM evaluation with keyword assertions and LLM-as-a-judge criteria",
+    "Custom wordcloud generation with extended stopwords and configurable color/mask parameters"
+  ],
+  "source_url": "https://www.kaggle.com/code/mpwolke/tupac-s-california-love-benchmark",
+  "votes": 34
+}

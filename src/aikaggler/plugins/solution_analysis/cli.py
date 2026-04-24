@@ -2,11 +2,11 @@ from __future__ import annotations
 
 import argparse
 import json
-import re
 from pathlib import Path
 
 import httpx
 
+from aikaggler.plugins._shared.ollama import load_prompt as _load_prompt, ollama_call
 from aikaggler.plugins.solution_analysis.config import (
     AGGREGATE_TIMEOUT,
     ANALYZE_TIMEOUT,
@@ -14,14 +14,12 @@ from aikaggler.plugins.solution_analysis.config import (
     KAGGLE_API,
     MAX_SOLUTION_BODY_CHARS,
     OLLAMA_MODEL,
-    OLLAMA_RETRIES,
     OLLAMA_URL,
     PROMPTS_DIR,
     USER_AGENT,
 )
 from aikaggler.plugins.solution_analysis.structure import (
     AGGREGATED_SCHEMA,
-    COMPETITION_CLASSIFICATION_SCHEMA,
     FILTER_SCHEMA,
     GITHUB_URL_RE,
     NON_REPO_OWNERS,
@@ -30,10 +28,7 @@ from aikaggler.plugins.solution_analysis.structure import (
 
 
 def load_prompt(name: str, **kwargs: str) -> str:
-    text = (PROMPTS_DIR / f"{name}.txt").read_text()
-    for key, value in kwargs.items():
-        text = text.replace("{" + key + "}", value)
-    return text
+    return _load_prompt(PROMPTS_DIR, name, **kwargs)
 
 
 def competition_dir(slug: str, root: Path = DEFAULT_OUTPUT_ROOT) -> Path:
@@ -103,40 +98,6 @@ class KaggleRPC:
         )
 
 
-def _ollama_call(
-    prompt: str,
-    schema: dict,
-    timeout: int,
-    model: str = OLLAMA_MODEL,
-    url: str = OLLAMA_URL,
-    retries: int = OLLAMA_RETRIES,
-) -> dict:
-    body = {
-        "model": model,
-        "messages": [{"role": "user", "content": prompt}],
-        "stream": False,
-        "options": {"temperature": 0},
-        "format": schema,
-    }
-    last_err: Exception | None = None
-    for attempt in range(1, retries + 1):
-        try:
-            r = httpx.post(url, json=body, timeout=timeout)
-            r.raise_for_status()
-            content = r.json()["message"]["content"]
-            out = json.loads(content)
-            return out
-        
-        except (json.JSONDecodeError, httpx.HTTPError) as e:
-            last_err = e
-            if attempt < retries:
-                print(
-                    f"  ollama call failed ({type(e).__name__}: {e}), "
-                    f"retrying {attempt}/{retries - 1}..."
-                )
-    raise last_err  # type: ignore[misc]
-
-
 def ask_ollama_to_filter(
     topics: list[dict], model: str = OLLAMA_MODEL, url: str = OLLAMA_URL
 ) -> list[dict]:
@@ -147,36 +108,10 @@ def ask_ollama_to_filter(
     prompt = load_prompt(
         "filter_topics", topics_json=json.dumps(slim, indent=2)
     )
-    result = _ollama_call(
+    result = ollama_call(
         prompt, FILTER_SCHEMA, ANALYZE_TIMEOUT, model=model, url=url
     )
     return result.get("solutions", [])
-
-
-def classify_competition_with_ollama(
-    comp: dict,
-    solution_titles: list[str],
-    model: str = OLLAMA_MODEL,
-    url: str = OLLAMA_URL,
-) -> dict:
-    slim_keys = [
-        "title", "briefDescription", "evaluationAlgorithm", "categories",
-        "hostName", "organization", "totalCompetitors", "totalTeams",
-        "maxDailySubmissions", "license",
-    ]
-    slim = {k: comp.get(k) for k in slim_keys if comp.get(k) is not None}
-    prompt = load_prompt(
-        "classify_competition",
-        competition_json=json.dumps(slim, indent=2)[:MAX_SOLUTION_BODY_CHARS],
-        solution_titles_json=json.dumps(solution_titles, indent=2),
-    )
-    return _ollama_call(
-        prompt,
-        COMPETITION_CLASSIFICATION_SCHEMA,
-        ANALYZE_TIMEOUT,
-        model=model,
-        url=url,
-    )
 
 
 def analyze_solution_with_ollama(
@@ -192,7 +127,7 @@ def analyze_solution_with_ollama(
         regex_urls_json=json.dumps([l["url"] for l in regex_links]),
         body_excerpt=body[:MAX_SOLUTION_BODY_CHARS],
     )
-    return _ollama_call(
+    return ollama_call(
         prompt, SOLUTION_SCHEMA, ANALYZE_TIMEOUT, model=model, url=url
     )
 
@@ -226,7 +161,7 @@ def aggregate_analyses_with_ollama(
     prompt = load_prompt(
         "aggregate_analyses", payload_json=json.dumps(payload, indent=2)
     )
-    return _ollama_call(
+    return ollama_call(
         prompt, AGGREGATED_SCHEMA, AGGREGATE_TIMEOUT, model=model, url=url
     )
 
@@ -310,36 +245,9 @@ def _render_aggregated_markdown(
     agg: dict,
     analyses: list[dict],
     all_links: list[dict],
-    classification: dict | None = None,
 ) -> str:
     lines = [f"# {slug}: cross-solution summary", ""]
     lines += [agg.get("competition_tldr", ""), ""]
-
-    if classification and "error" not in classification:
-        lines.append("## Competition profile")
-        lines.append(
-            f"- **Modality / task:** {classification.get('data_modality', '?')} / "
-            f"{classification.get('task_type', '?')}"
-        )
-        lines.append(f"- **Domain:** {classification.get('domain', '?')}")
-        lines.append(f"- **Metric:** {classification.get('metric', '?')}")
-        lines.append(
-            f"- **Labels:** {classification.get('label_structure', '?')}"
-        )
-        lines.append(
-            f"- **Test split:** {classification.get('test_split', '?')}"
-        )
-        lines.append(f"- **Format:** {classification.get('format', '?')}")
-        lines.append(
-            f"- **Dataset scale:** {classification.get('dataset_scale', '?')}"
-        )
-        challenges = classification.get("data_challenges") or []
-        if challenges:
-            lines.append(f"- **Data challenges:** {', '.join(challenges)}")
-        constraints = classification.get("constraints") or []
-        if constraints:
-            lines.append(f"- **Constraints:** {', '.join(constraints)}")
-        lines.append("")
 
     def _section(title: str, items: list[str]) -> None:
         if not items:
@@ -435,24 +343,6 @@ def cmd_solutions(args: argparse.Namespace) -> int:
         selected = ask_ollama_to_filter(unique[: args.limit], model=args.model)
         print(f"Ollama ({args.model}) selected {len(selected)} solution threads")
 
-        try:
-            classification = classify_competition_with_ollama(
-                comp, [s["title"] for s in selected], model=args.model
-            )
-        except Exception as e:
-            classification = {"error": f"{type(e).__name__}: {e}"}
-        (out / "competition.classification.json").write_text(
-            json.dumps(classification, indent=2)
-        )
-        if "error" not in classification:
-            print(
-                f"Classified: {classification.get('data_modality')}/"
-                f"{classification.get('task_type')} "
-                f"({classification.get('domain')})"
-            )
-        else:
-            print(f"Classification failed: {classification['error']}")
-
         all_links: list[dict] = []
         all_analyses: list[dict] = []
         for i, s in enumerate(selected, 1):
@@ -475,31 +365,26 @@ def cmd_solutions(args: argparse.Namespace) -> int:
             agg = aggregate_analyses_with_ollama(all_analyses, model=args.model)
         except Exception as e:
             agg = {"error": f"{type(e).__name__}: {e}"}
-        (out / "aggregated_analysis.json").write_text(json.dumps(agg, indent=2))
+        (out / "aggregated_solutions.json").write_text(json.dumps(agg, indent=2))
         if "error" not in agg:
             md = _render_aggregated_markdown(
-                args.slug, agg, all_analyses, all_links, classification
+                args.slug, agg, all_analyses, all_links
             )
-            (out / "aggregated_summary.md").write_text(md)
-            print(f"Wrote aggregated summary to {out}/aggregated_summary.md")
+            (out / "aggregated_solutions.md").write_text(md)
+            print(f"Wrote aggregated solutions to {out}/aggregated_solutions.md")
         else:
             print(f"Aggregation failed: {agg['error']}")
     return 0
 
 
 def main(argv: list[str] | None = None) -> int:
-    parser = argparse.ArgumentParser(prog="akc")
-    sub = parser.add_subparsers(dest="cmd", required=True)
-
-    p = sub.add_parser("solutions")
-    p.add_argument("slug")
-    p.add_argument("--limit", type=int, default=20)
-    p.add_argument("--pages", type=int, default=5)
-    p.add_argument("--model", default=OLLAMA_MODEL)
-    p.set_defaults(func=cmd_solutions)
-
+    parser = argparse.ArgumentParser(prog="akc-solutions")
+    parser.add_argument("slug")
+    parser.add_argument("--limit", type=int, default=20)
+    parser.add_argument("--pages", type=int, default=5)
+    parser.add_argument("--model", default=OLLAMA_MODEL)
     args = parser.parse_args(argv)
-    return args.func(args)
+    return cmd_solutions(args)
 
 
 if __name__ == "__main__":
