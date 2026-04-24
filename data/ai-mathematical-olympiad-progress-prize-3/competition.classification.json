@@ -1,0 +1,15 @@
+{
+  "description": "Participants develop AI models to solve advanced mathematical problems from the AI Mathematical Olympiad. The competition provides text-based math challenges, and competitors must generate correct solutions or final answers. Success is measured using a custom multirun accuracy metric on a held-out test set, with results tracked across public and private leaderboards.",
+  "data_modality": "text",
+  "task_type": "generation",
+  "label_structure": "single_label",
+  "metric": "118448 AIMO 3 Multirun-Accuracy",
+  "test_split": "unknown",
+  "format": "two_stage",
+  "dataset_scale": "small",
+  "domain": "mathematics",
+  "data_challenges": [],
+  "constraints": [
+    "daily_submission_limit"
+  ]
+}

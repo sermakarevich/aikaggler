@@ -1,0 +1,37 @@
+{
+  "tldr": "Streaming inference of GPT-OSS-120B via vLLM with multi-turn reflection prompting and log-scaled weighted voting to solve AIMO3 math problems.",
+  "summary": "This notebook demonstrates a streaming inference pipeline for the AIMO3 competition using the GPT-OSS-120B model served locally via vLLM. It implements a multi-turn reflection mechanism where the model generates solutions, and if the output lacks a valid boxed answer or confidence is low, dynamic follow-up prompts are injected to force verification or guessing. The author runs four parallel generations with distinct rigorous system prompts, collects the outputs, and applies a custom log-scaled weighted voting scheme to reach a consensus. The pipeline includes strict timeout management, GPU KV cache monitoring, and integrates with Kaggle's official inference server for submission.",
+  "extensive_summary": "## Environment & Server Setup\nThe notebook initializes a Kaggle kernel environment that detects batch vs. interactive run types. It establishes a 4.75-hour runtime cutoff with 50 granular timeout checkpoints. A vLLM server is launched in the background to serve the GPT-OSS-120B model, configured with the `TRITON_ATTN` backend, `max-model-len=65536`, `gpu-memory-utilization=0.96`, and `max-num-seqs=4`. The server is exposed via an OpenAI-compatible API on port 8000.\n\n## Inference & Reflection Prompting\nAn OpenAI client is initialized to communicate with the local vLLM server. The author defines five distinct system prompts (`SYSTEM_PROMPTS`) that enforce rigorous mathematical reasoning, self-refutation, multi-strategy exploration, and boundary case verification. The `generate_solution` function streams responses with `temperature=1.0`, `min_p=0.02`, and `reasoning_effort=\"high\"`. It caps generation at 60,000 tokens per stream and 50,000 for the first iteration. If a valid integer answer in `[0, 99999]` is not found within the token limit, the system injects dynamic follow-up prompts: requesting an educated guess, demanding a boxed answer, asking for verification, or checking confidence if GPU KV cache usage drops below 10%.\n\n## Consensus & Voting\nThe `solve` function orchestrates four parallel generations using a `ThreadPoolExecutor`, each with a different system prompt. Answers are collected in a `Counter` per question ID. A custom `vote_answer` function applies a log-scaled reweighting: `log(1.25 + abs(value)) * count`. An answer is accepted if its weighted score exceeds a dynamic threshold `max(3, total_score / (2 + log(1 + total_score)))` and leads by at least 1 point over the second-highest candidate. If no answers are recorded, it force-returns `12453`.\n\n## Submission & Debugging\nThe notebook integrates with `kaggle_evaluation.aimo_3_inference_server` to stream predictions per problem. It loads the reference CSV, unpacks IDs and problem texts, calls `solve`, and returns the consensus answer. Debug scoring against the reference is included but disabled in production reruns.\n\n## Key Technical Details\n- Model: GPT-OSS-120B\n- Inference Engine: vLLM (OpenAI API wrapper)\n- Prompting: 5 rigorous system prompts + dynamic multi-turn reflection\n- Generation: Streaming, temp=1.0, min_p=0.02, reasoning_effort=high\n- Consensus: 4 parallel threads + log-scaled weighted voting\n- Resource Management: 4.75h cutoff, KV cache monitoring, token limits\n- Submission: Kaggle AIMo3 Inference Server",
+  "purpose": "inference",
+  "models": [
+    "GPT-OSS-120B"
+  ],
+  "frameworks": [
+    "vllm",
+    "openai",
+    "torch",
+    "numpy",
+    "cachetools",
+    "concurrent.futures",
+    "kaggle_evaluation"
+  ],
+  "cv_strategy": "",
+  "preprocessing": [],
+  "feature_engineering": [],
+  "augmentations": [],
+  "loss_functions": [],
+  "ensemble": "Parallel generation with 4 distinct system prompts combined via log-scaled weighted voting and margin thresholding.",
+  "post_processing": "Log-scaled reweighting of answer counts, dynamic margin thresholding for consensus, fallback to default answer 12453, and GPU KV cache monitoring to trigger verification prompts.",
+  "what_worked": [],
+  "what_did_not_work": [],
+  "critical_findings": [],
+  "notable_techniques": [
+    "Streaming vLLM inference via OpenAI API wrapper",
+    "Multi-turn reflection prompting with dynamic follow-ups based on answer validity and confidence",
+    "Log-scaled weighted voting for answer consensus",
+    "GPU KV cache usage monitoring to trigger verification prompts",
+    "Granular cutoff-based timeout management for long-running inference"
+  ],
+  "source_url": "https://www.kaggle.com/code/nihilisticneuralnet/aimo3-streaming-inference-reflexion-prompting",
+  "votes": 449
+}

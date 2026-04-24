@@ -1,0 +1,39 @@
+{
+  "tldr": "Local vLLM inference of GPT-OSS-120B with multi-attempt parallel solving, entropy-based answer aggregation, and self-verification, wrapped in a Kaggle inference server for AIMO-3.",
+  "summary": "This notebook implements a local inference pipeline for the GPT-OSS-120B model using vLLM, tailored for the AI Mathematical Olympiad Progress Prize 3. It sets up a custom chat template with a rigorous mathematical solving protocol and tool-use instructions for Python execution. The core solver runs multiple parallel attempts per problem, streaming completions while tracking token logprobs to compute mean entropy. Answers are aggregated using an entropy-weighted voting scheme, with an optional self-verification step and early stopping for unanimous results. The solution is packaged as a Kaggle inference server to handle the competition's evaluation format.",
+  "extensive_summary": "## Environment Setup & Dependencies\nUninstalls heavy dependencies (keras, matplotlib, scikit-learn, tensorflow) and installs `unsloth`, `trl`, `vllm`, and `openai_harmony` from a local wheel archive (`/kaggle/input/aimo-3-utils/wheels.tar.gz`). Configures environment variables to disable TF/Flax backends, set CUDA device to 0, disable tokenizer parallelism, and point to custom tiktoken encodings.\n\n## Configuration & Prompt Engineering\nDefines a `CFG` class containing system prompts that enforce IMO-level mathematical reasoning, structural detection, and constraint verification. Includes tool-use guidelines restricting Python to `math`, `numpy`, and `sympy`. Inference hyperparameters: `context_tokens=65536`, `batch_size=128`, `temperature=0.8`, `min_p=0.02`, `kv_cache_dtype='fp8_e4m3'`, `seed=42`, `attempts=12`, `turns=128`, `early_stop=4`.\n\n## Local Model Serving & Weight Preloading\n`AIMO3Solver` preloads model weights from `/kaggle/input/gpt-oss-120b/transformers/default/1` into the OS page cache using a thread pool to eliminate cold-start latency. Launches a local vLLM OpenAI-compatible server with `--tensor-parallel-size 1`, `--gpu-memory-utilization 0.96`, `--enable-prefix-caching`, `--async-scheduling`, and `--max-model-len 65536`.\n\n## Tool Execution Sandbox\nImplements `AIMO3Sandbox` to manage isolated Jupyter kernels via `jupyter_client.KernelManager`. Each sandbox handles Python execution with strict timeouts, captures stdout/stderr, formats tracebacks, and resets state between calls. `AIMO3Tool` wraps this to process tool calls from the LLM, ensuring safe, stateful code execution.\n\n## Parallel Solving Loop & Decoding\nFor each problem, the solver allocates a dynamic time budget based on remaining problems. It spawns `attempts=12` parallel tasks. Each task streams completions, tracks top logprobs to compute mean entropy, and scans for `\\boxed{answer}` or `final answer is` patterns. Early stopping triggers if `early_stop=4` identical answers are found.\n\n## Answer Aggregation & Verification\nValid answers are weighted by inverse entropy (`1.0 / max(entropy, 1e-9)`) and voted on. Candidates with \u22652 votes are sorted by average entropy. The solver attempts self-verification by prompting the model to check the answer at `temperature=0.0`, falling back to entropy-weighted selection if verification fails or isn't attempted.\n\n## Inference Server Wrapper\nThe `predict` function disables garbage collection during inference, calls `solver.solve_problem()`, and returns a Polars DataFrame. Wrapped in `kaggle_evaluation.aimo_3_inference_server.AIMO3InferenceServer` to serve the competition's local gateway or remote evaluation endpoint.",
+  "purpose": "inference",
+  "models": [
+    "gpt-oss-120b"
+  ],
+  "frameworks": [
+    "vllm",
+    "openai_harmony",
+    "transformers",
+    "jupyter_client",
+    "kaggle_evaluation"
+  ],
+  "cv_strategy": "",
+  "preprocessing": [
+    "Harmony tokenization",
+    "regex-based answer extraction from raw model output"
+  ],
+  "feature_engineering": [],
+  "augmentations": [],
+  "loss_functions": [],
+  "ensemble": "",
+  "post_processing": "Entropy-weighted answer aggregation across 12 parallel attempts, early stopping at 4 unanimous votes, and optional self-verification via a secondary zero-temperature LLM call.",
+  "what_worked": [],
+  "what_did_not_work": [],
+  "critical_findings": [],
+  "notable_techniques": [
+    "OS page cache preloading for model weights to reduce cold-start latency",
+    "FP8 KV cache quantization (fp8_e4m3) for memory efficiency",
+    "Entropy-weighted voting across parallel decoding attempts",
+    "Persistent Jupyter kernel pool for safe, stateful Python tool execution",
+    "Dynamic time budgeting based on remaining problem count",
+    "Self-verification prompt to validate candidate answers before final submission"
+  ],
+  "source_url": "https://www.kaggle.com/code/amanatar/ans-verifys",
+  "votes": 752
+}

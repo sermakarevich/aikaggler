@@ -1,0 +1,95 @@
+{
+  "id": 130469,
+  "competitionName": "march-machine-learning-mania-2026",
+  "title": "March Machine Learning Mania 2026",
+  "briefDescription": "Forecast the 2026 NCAA Basketball Tournaments",
+  "dateEnabled": "2026-02-19T21:05:09.250Z",
+  "deadline": "2026-04-07T16:00:00Z",
+  "hasLeaderboard": true,
+  "leaderboardPercentage": 1,
+  "maxDailySubmissions": 5,
+  "numScoredSubmissions": 1,
+  "hasSolution": true,
+  "numPrizes": 8,
+  "forumId": 10157244,
+  "finalLeaderboardHasBeenVerified": true,
+  "userRankMultiplier": 1,
+  "publicLeaderboardDisclaimerMessage": "The Leaderboard is Complete",
+  "finalLeaderboardDisclaimerMessage": "",
+  "dateCreated": "2026-02-10T21:48:39.045271300Z",
+  "competitionHostSegmentId": 1,
+  "maxTeamSize": 5,
+  "medalsAllowed": true,
+  "enableTeamFiles": true,
+  "teamFileDeadline": "2026-05-09T00:00:00Z",
+  "totalSolutionRows": 132133,
+  "organizationId": 4,
+  "hasCoverImageUrl": true,
+  "showPrivateLeaderboard": true,
+  "hasScripts": true,
+  "totalTeams": 3462,
+  "totalCompetitors": 3767,
+  "totalSubmissions": 3464,
+  "rulesRequired": true,
+  "clonedFromCompetitionId": 91497,
+  "evaluationAlgorithm": {
+    "id": 291,
+    "name": "Mean Squared Error",
+    "isPublic": true,
+    "environmentRenderType": "ENVIRONMENT_RENDER_TYPE_JSON",
+    "state": "LEGACY"
+  },
+  "categories": [
+    {
+      "id": 2606,
+      "name": "basketball",
+      "fullPath": "subject > health and fitness > exercise > sports > basketball",
+      "description": "Basketball is one of the world's most popular and widely viewed sports. Analyze Kobe Bryant's shot selections and peruse our annual March Mania competitions.",
+      "datasetCount": 2504,
+      "competitionCount": 27,
+      "scriptCount": 720,
+      "slug": "basketball",
+      "displayName": "Basketball"
+    },
+    {
+      "id": 4141,
+      "name": "sports",
+      "fullPath": "subject > health and fitness > exercise > sports",
+      "description": "The sports tag covers the whole spectrum of sports around the world. We've got tennis, we've got football, and we've even got kitefoil racing.",
+      "datasetCount": 11669,
+      "competitionCount": 44,
+      "scriptCount": 3736,
+      "slug": "sports",
+      "displayName": "Sports"
+    },
+    {
+      "name": "mse",
+      "description": "The average of the squared errors.",
+      "displayName": "Mean Squared Error"
+    }
+  ],
+  "organization": {
+    "slug": "kaggle",
+    "name": "Kaggle",
+    "thumbnailImageUrl": "https://storage.googleapis.com/kaggle-organizations/4/thumbnail.png",
+    "profileUrl": "/organizations/kaggle"
+  },
+  "launched": true,
+  "createdByUserId": 1095143,
+  "license": {
+    "id": 13,
+    "name": "Attribution 4.0 International (CC BY 4.0)",
+    "url": "https://creativecommons.org/licenses/by/4.0/",
+    "agreementRequired": false
+  },
+  "hostName": "Kaggle",
+  "scoreTruncationNumDecimals": 7,
+  "locked": true,
+  "totalJoinedUsers": 12252,
+  "requiresIdentityVerification": true,
+  "submissionSizeLimitMb": 20480,
+  "reward": {
+    "id": "USD",
+    "quantity": 50000
+  }
+}

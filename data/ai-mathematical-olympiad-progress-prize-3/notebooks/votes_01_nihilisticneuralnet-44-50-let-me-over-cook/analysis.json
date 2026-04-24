@@ -1,0 +1,36 @@
+{
+  "tldr": "Inference notebook for AIMO-3 that serves a 120B parameter model via vLLM with fp8 KV-cache, implements a persistent Jupyter kernel sandbox for tool use, and solves math problems using entropy-weighted voting across 8 parallel attempts with early stopping.",
+  "summary": "This notebook provides a complete inference pipeline for the AI Mathematical Olympiad Progress Prize 3 competition. It loads a 120B-parameter model (gpt-oss) and serves it locally using vLLM with fp8_e4m3 KV-cache quantization and prefix caching. The core approach involves a custom solver class that runs 8 parallel attempts per problem, each limited to 128 turns and equipped with a persistent Jupyter kernel sandbox for executing Python code via tools. The solver tracks token logprobs to compute mean entropy, scans outputs for boxed patterns, and selects the final answer using an entropy-weighted voting mechanism across attempts. It also implements dynamic time budgeting and early stopping when a consensus is reached.",
+  "extensive_summary": "## Environment & Setup\nThe notebook begins by stripping unnecessary packages and installing `unsloth`, `trl`, `vllm`, and `openai_harmony` from a local wheel archive. Environment variables are configured to disable TensorFlow/Flax backends, set CUDA device 0, disable tokenizer parallelism, and point to custom tiktoken encodings.\n\n## Model Serving & Configuration\nA `CFG` object defines hyperparameters: model path points to a local 120B parameter checkpoint, served as `gpt-oss`. vLLM is launched with `--kv-cache-dtype fp8_e4m3`, `--max-model-len 65536`, `--gpu-memory-utilization 0.96`, `--enable-prefix-caching`, and `--async-scheduling`. The system prompt enforces a rigorous IMO-level problem-solving framework (Understand, Explore, Plan, Execute, Verify) and mandates boxed output format. A preference prompt restricts tool usage to `math`, `numpy`, and `sympy`.\n\n## Tool Execution Sandbox\nCode execution is handled via `AIMO3Sandbox`, which manages persistent Jupyter kernels using `jupyter_client.KernelManager`. Each sandbox preloads `math`, `numpy`, `sympy`, `itertools`, `collections`, and `mpmath` (set to 64 decimal places). The sandbox enforces timeouts, parses stdout/stderr, formats tracebacks, and resets state between calls. `AIMO3Tool` wraps this sandbox, ensuring the last line of user code includes `print()` and routing responses back to the model.\n\n## Inference Loop & Answer Selection\n`AIMO3Solver` preloads model weights into the OS page cache using a thread pool. For each problem, it allocates a dynamic time budget (capped at 900s for hard problems, 300s base) and spawns 8 parallel attempts. Each attempt streams completions with `temperature=0.5`, `min_p=0.02`, and `top_logprobs=5`. The solver tracks logprobs to compute mean token entropy, scans for boxed or `final answer is` patterns, and breaks early if found. Tool calls trigger synchronous execution in the sandbox pool. After streaming, answers are aggregated using an entropy-weighted voting scheme: `weight = 1.0 / max(entropy, 1e-9)`. If a single answer reaches a vote threshold (`early_stop=4`), remaining attempts are cancelled.\n\n## Submission Pipeline\nThe `predict` function wraps the solver for Kaggle's evaluation gateway, accepting polars DataFrames for IDs and questions, and returning predictions. The notebook runs locally via `kaggle_evaluation.aimo_3_inference_server` for testing and switches to the competition gateway when deployed.",
+  "purpose": "inference",
+  "models": [
+    "gpt-oss-120b"
+  ],
+  "frameworks": [
+    "vllm",
+    "openai_harmony",
+    "jupyter_client",
+    "transformers",
+    "kaggle_evaluation"
+  ],
+  "cv_strategy": "",
+  "preprocessing": [],
+  "feature_engineering": [],
+  "augmentations": [],
+  "loss_functions": [],
+  "ensemble": "Entropy-weighted voting across 8 parallel attempts per problem, with early stopping when a consensus threshold is reached.",
+  "post_processing": "Scanning model outputs for \\boxed{} or final answer is patterns to extract the final integer; entropy-weighted voting to select the most confident answer across parallel attempts.",
+  "what_worked": [],
+  "what_did_not_work": [],
+  "critical_findings": [],
+  "notable_techniques": [
+    "Persistent Jupyter kernel sandbox for stateful tool execution",
+    "fp8_e4m3 KV-cache quantization in vLLM",
+    "Entropy-weighted voting across parallel attempts",
+    "OS page cache preloading for model weights",
+    "Dynamic time budgeting with early stopping based on answer consensus",
+    "Harmony encoding for gpt-oss tokenization"
+  ],
+  "source_url": "https://www.kaggle.com/code/nihilisticneuralnet/44-50-let-me-over-cook",
+  "votes": 2955
+}

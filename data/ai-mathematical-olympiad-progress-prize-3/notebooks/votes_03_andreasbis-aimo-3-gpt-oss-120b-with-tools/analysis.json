@@ -1,0 +1,37 @@
+{
+  "tldr": "Inference-only notebook running GPT-OSS-120B via vLLM with a custom tool-use agent loop, persistent Jupyter sandbox pool, and entropy-weighted voting to solve AIMO 3 math problems.",
+  "summary": "This notebook implements a submission pipeline for the AIMO 3 competition using the GPT-OSS-120B model served locally via vLLM. It features a custom agent loop that allows the model to execute Python code in isolated Jupyter kernels for computation. The solver runs multiple attempts per problem, streaming completions with logprobs to compute token-level entropy, and selects the final answer using an entropy-weighted voting mechanism across attempts. It also implements dynamic time budgeting, early stopping, and efficient weight preloading to optimize inference latency on a single GPU.",
+  "extensive_summary": "## Setup & Environment\nThe notebook strips unnecessary packages and installs `unsloth`, `trl`, `vllm`, and `openai_harmony` from a local wheel archive. Environment variables are configured to disable TensorFlow/Flax, set CUDA device 0, disable tokenizer parallelism, and point to custom tiktoken encodings.\n\n## Configuration & Model Loading\nA `CFG` class defines hyperparameters: `context_tokens=81920`, `batch_size=64`, `temperature=1.0`, `min_p=0.02`, `kv_cache_dtype='fp8_e4m3'`, and `gpu_memory_utilization=0.99`. The model path points to `/kaggle/input/gpt-oss-120b/transformers/default/1`. Weights are preloaded into the OS page cache using a `ThreadPoolExecutor` to minimize cold-start latency.\n\n## vLLM Server Initialization\nThe solver launches a vLLM OpenAI-compatible server with `--tensor-parallel-size 1`, `--max-num-seqs 64`, `--max-model-len 81920`, `--enable-prefix-caching`, and `--async-scheduling`. It waits for the server to become responsive before proceeding.\n\n## Agent Loop & Tool Execution\nA custom `AIMO3Template` formats prompts with a system prompt instructing the model to output answers in `\\boxed{}`, sets `ReasoningEffort.HIGH`, and attaches a Python tool config. The `AIMO3Sandbox` class manages isolated Jupyter kernels via `jupyter_client.KernelManager`, allocating unique ports, capturing stdout/stderr, handling timeouts, and resetting state between calls. A pool of 16 persistent kernels is pre-initialized to avoid kernel startup overhead during tool calls.\n\n## Inference & Answer Selection\nFor each problem, the solver allocates a dynamic time budget based on remaining problems and global limits. It runs up to 8 attempts in parallel, each streaming completions with `top_logprobs=5`. Token entropy is computed from the logprobs buffer. The model iterates up to 128 turns, executing Python code via the sandbox when tool calls are generated. Answers are extracted via regex matching `\\boxed{}` or \"final answer is\". An entropy-weighted voting scheme aggregates results across attempts, with early stopping triggered if any answer reaches 4 votes. The highest-weighted answer is returned.\n\n## Inference Server Wrapper\nThe `predict` function wraps the solver for Kaggle's evaluation framework, disabling garbage collection during inference and returning a Polars DataFrame. The notebook registers this with `kaggle_evaluation.aimo_3_inference_server` to handle local testing or competition submission.",
+  "purpose": "inference",
+  "models": [
+    "GPT-OSS-120B"
+  ],
+  "frameworks": [
+    "vllm",
+    "openai_harmony",
+    "jupyter_client",
+    "transformers",
+    "openai"
+  ],
+  "cv_strategy": "",
+  "preprocessing": [],
+  "feature_engineering": [],
+  "augmentations": [],
+  "loss_functions": [],
+  "ensemble": "",
+  "post_processing": "Entropy-weighted voting across multiple attempts, regex extraction of \\boxed{} answers, dynamic time budgeting, and early stopping based on vote thresholds.",
+  "what_worked": [],
+  "what_did_not_work": [],
+  "critical_findings": [],
+  "notable_techniques": [
+    "Preloading model weights into OS page cache via parallel file reads",
+    "Persistent pool of isolated Jupyter kernels for low-latency tool execution",
+    "Token-level entropy calculation from top_logprobs for answer confidence scoring",
+    "Entropy-weighted voting across parallel attempts with early stopping",
+    "Dynamic time budgeting based on remaining problem count and global limits",
+    "fp8_e4m3 kv-cache dtype with prefix caching for memory efficiency",
+    "min_p sampling (0.02) combined with temperature 1.0 for diverse reasoning paths"
+  ],
+  "source_url": "https://www.kaggle.com/code/andreasbis/aimo-3-gpt-oss-120b-with-tools",
+  "votes": 1017
+}
