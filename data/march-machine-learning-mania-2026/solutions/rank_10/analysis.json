@@ -1,0 +1,36 @@
+{
+  "tldr": "Reframed NCAA tournament prediction as a regression problem on point differential with post-hoc calibration, optimized via XGBoost and leave-one-season-out CV.",
+  "summary": "The solution reframes tournament prediction from binary classification to regression on point differential to capture game strength and provide a richer training signal. XGBoost was trained on season-aggregated box score statistics, possession-based efficiency metrics, shooting/rebounding profiles, venue splits, Elo ratings, GLM-derived team quality, and seed differences. Validation used a leave-one-season-out cross-validation scheme from 2003 onward to respect temporal structure and generate unbiased out-of-fold predictions. Final win probabilities were derived by calibrating raw margin predictions with a symmetric clipping step optimized via Optuna, and a six-seed multi-seed ensemble was averaged for the final submission.",
+  "extensive_summary": "## Overview\nThe solution reframes tournament prediction as regression on point differential to capture game strength and provide a richer training signal than binary classification. Men's and women's NCAA data are processed jointly with a gender indicator.\n\n## Feature Engineering\nFeatures are season-aggregated from regular season box scores:\n- **Box score stats:** Points, FG/3PT, FT, ORB/DRB, AST, TO, STL, BLK, PF from both team and opponent perspectives, adjusted for overtime length.\n- **Efficiency & Shooting:** Possessions estimated via FGA, ORB, TO, FTA. Derived: offensive/defensive/net rating, eFG%, TS%, 3PA rate, FT rate.\n- **Rebounding & Venue:** Offensive/defensive rebound % (accounting for opponent rates). Home/road/recent game averages and volatility with small-sample fallbacks.\n- **Strength & Seeding:** Elo difference between teams (trained per season). GLM-derived team quality difference (Gaussian GLM with point differential response and team fixed effects). Numeric seed difference.\n\n## Modeling & Validation\nXGBoost predicts point differential directly. Validation uses leave-one-season-out CV (2003 onward), holding out one full tournament season per fold to respect temporal structure and yield unbiased OOF margins. Optuna jointly optimizes XGBoost hyperparameters (learning rate, depth, subsampling, regularization, tree count) and performs feature selection via OOF Brier score. A six-seed multi-seed ensemble runs independent Optuna studies and feature subsets per seed.\n\n## Calibration\nRaw margins are calibrated to probabilities using each seed's OOF predictions against binary win indicators. A symmetric trim is applied to margins before calibration, with the trim value optimized via Optuna. The same trim is applied at inference. Probabilities are clipped to [0, 1]. Final submission averages probabilities across all seeds and season-specific models.",
+  "rank": 10,
+  "models": [
+    "XGBoost"
+  ],
+  "cv_strategy": "Leave-one-season-out cross-validation over all seasons from 2003 onward, holding out one complete tournament season per fold to respect temporal structure.",
+  "preprocessing": [
+    "Box score totals adjusted to normalize for overtime length"
+  ],
+  "feature_engineering": [
+    "Season-averaged box score statistics (points, FG/3PT, FT, ORB/DRB, AST, TO, STL, BLK, PF) from team and opponent perspectives, adjusted for overtime length",
+    "Possession-based efficiency metrics (possessions via FGA/ORB/TO/FTA, offensive/defensive/net rating)",
+    "Shooting profile (eFG%, TS%, 3PA rate, FT rate)",
+    "Rebounding percentages (offensive/defensive rebound %, accounting for opponent rates)",
+    "Venue splits (home/road/recent game averages and volatility with small-sample fallbacks)",
+    "Elo ratings (dynamic strength per season, feature: Elo difference between matchup sides)",
+    "GLM team quality (Gaussian GLM with point differential response and team fixed effects, feature: quality difference)",
+    "Seed difference (numeric tournament seed difference)"
+  ],
+  "augmentations": [],
+  "loss_functions": [],
+  "ensemble": "Multi-seed ensemble across six distinct random seeds, averaging final win probabilities across all seeds and season-specific models.",
+  "post_processing": "Symmetric clipping (trim) applied to raw margin predictions before calibration, with trim value optimized via Optuna; final probabilities clipped to [0, 1].",
+  "what_worked": [],
+  "what_did_not_work": [],
+  "critical_findings": [
+    "Predicting margin of victory captures game strength and provides a richer training signal than binary classification, which discards margin information."
+  ],
+  "github_repos": [],
+  "papers": [],
+  "other_solution_refs": [],
+  "source_url": "https://www.kaggle.com/competitions/march-machine-learning-mania-2026/discussion/689044"
+}
