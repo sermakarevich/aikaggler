@@ -1,0 +1,40 @@
+{
+  "summary": "This notebook demonstrates a streaming inference pipeline for the AIMO3 competition using a large open-weight language model served locally via vLLM. It implements a multi-turn reflection and refinement loop where the model generates solutions, receives dynamic follow-up prompts to verify or refute its own answers, and retries if necessary. Multiple parallel generations are run with different system prompts, and a log-weighted voting mechanism is used to select the final answer. The pipeline includes strict timeout handling, GPU memory monitoring, and integration with the official Kaggle inference server. Readers should learn how dynamic prompting, streaming, and weighted voting can significantly improve LLM reliability on complex mathematical reasoning tasks without fine-tuning.",
+  "purpose": "inference",
+  "competition_flow": "Loads competition questions from a reference CSV, serves a 120B parameter LLM via vLLM, generates solutions through a multi-turn reflection and voting pipeline, and submits predictions via the official Kaggle inference server.",
+  "data_reading": [
+    "Reads question IDs and text from /kaggle/input/ai-mathematical-olympiad-progress-prize-3/reference.csv using pandas, then converts to polars for the prediction function."
+  ],
+  "data_processing": [
+    "No explicit preprocessing; raw question text is passed directly to the LLM."
+  ],
+  "features_engineering": [
+    "No hand-crafted tabular features; pure LLM inference pipeline."
+  ],
+  "models": [
+    "GPT-OSS-120B"
+  ],
+  "frameworks_used": [
+    "torch",
+    "vllm",
+    "openai",
+    "pandas",
+    "polars",
+    "cachetools"
+  ],
+  "loss_functions": [],
+  "cv_strategy": "",
+  "ensembling": "Combines 4 parallel generations using different system prompts, applies a log-weighted voting mechanism to select the final answer, and forces a fallback answer if no consensus is reached within time limits.",
+  "insights": [
+    "Streaming inference with dynamic follow-up prompts (e.g., asking for verification or a guess) improves answer extraction reliability.",
+    "Log-weighted voting across multiple reasoning paths outperforms simple majority voting for complex math problems.",
+    "Serving large models locally via vLLM with an OpenAI-compatible API allows flexible, low-latency interaction during competition inference."
+  ],
+  "critical_findings": [
+    "Smaller numerical answers tend to be incorrect in this competition, so the voting weight is adjusted using math.log(1.25 + abs(value)).",
+    "GPU KV cache usage monitoring is used to trigger verification prompts when memory pressure is low."
+  ],
+  "what_did_not_work": [],
+  "source_url": "https://www.kaggle.com/code/nihilisticneuralnet/aimo3-streaming-inference-reflexion-prompting",
+  "votes": 449
+}

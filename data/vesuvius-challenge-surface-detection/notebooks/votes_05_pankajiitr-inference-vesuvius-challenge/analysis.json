@@ -1,0 +1,36 @@
+{
+  "summary": "This notebook provides a streamlined inference pipeline for the Vesuvius Challenge surface detection task, focusing on a robust post-processing strategy rather than novel architecture changes. It demonstrates how to combine multi-stream sliding window inference with test-time augmentation, followed by a seeded hysteresis thresholding technique that leverages public foreground masks to expand weak prediction regions. The author emphasizes precise sliding window overlap tuning to align public and private leaderboard scores. Readers should learn how to stabilize JAX/Keras inference, handle 3D volumetric data efficiently, and apply topology-aware post-processing to improve ink prediction boundaries.",
+  "purpose": "inference",
+  "competition_flow": "Loads 3D test volumes, runs multi-stream sliding window inference with TTA to generate logits, converts them to probabilities, and applies a seeded hysteresis thresholding with morphological topology constraints to produce final binary ink masks for submission.",
+  "data_reading": [
+    "Reads test IDs from `test.csv` and loads 3D TIFF volumes using `tifffile.imread`, reshaping them to `(1, D, H, W, 1)` float32 tensors."
+  ],
+  "data_processing": [
+    "Applies channel-wise intensity normalization via `medicai.transforms.NormalizeIntensity`."
+  ],
+  "features_engineering": [],
+  "models": [
+    "TransUNet (seresnext50 encoder)"
+  ],
+  "frameworks_used": [
+    "keras",
+    "medicai",
+    "tifffile",
+    "scipy",
+    "scikit-image",
+    "numpy",
+    "pandas"
+  ],
+  "loss_functions": [],
+  "cv_strategy": "",
+  "ensembling": "Averages multiclass logits across TTA variants (flips and rotations) and combines outputs from two different sliding window overlap configurations to stabilize predictions.",
+  "insights": [
+    "Precise sliding window overlap tuning (0.42 for public, 0.43 for private) is critical for matching leaderboard scores.",
+    "Using public foreground masks as a soft expansion boundary improves prediction robustness without leaking private information.",
+    "JAX backend inference requires explicit protobuf environment variables and a warmup step to avoid compilation overhead."
+  ],
+  "critical_findings": [],
+  "what_did_not_work": [],
+  "source_url": "https://www.kaggle.com/code/pankajiitr/inference-vesuvius-challenge",
+  "votes": 281
+}

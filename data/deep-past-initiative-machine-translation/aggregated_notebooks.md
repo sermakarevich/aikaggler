@@ -1,0 +1,155 @@
+# deep-past-initiative-machine-translation: top public notebooks
+
+The community's top-voted notebooks primarily focus on inference optimization and ensemble decoding for Akkadian-to-English machine translation, heavily leveraging character-level models like ByT5. They emphasize advanced decoding strategies such as Minimum Bayes Risk (MBR) with chrF++, extensive regex-based post-processing, and hardware-aware optimizations (BF16, bucket batching, BetterTransformer). A smaller subset explores hybrid rule-neural pipelines, model weight averaging, and baseline training recipes with bidirectional augmentation.
+
+## Common purposes
+- inference
+- ensemble
+- baseline
+
+## Competition flows
+- Loads the test dataset, preprocesses Akkadian transliterations, generates diverse candidates via two ByT5 models using beam search and multi-temperature sampling, applies domain-specific regex postprocessing, selects the best translation using a weighted MBR scorer, and exports the final submission CSV.
+- Loads test data and a pre-trained ByT5 model to generate neural translations, runs a parallel rule-based retrieval and dictionary lookup pipeline, applies a length-aware alignment post-processing step, and saves the combined predictions as a CSV submission.
+- Loads the test CSV, applies domain-specific preprocessing, runs inference with two ByT5 models to generate candidate pools, merges them, selects final translations via chrF++-based MBR, and exports a submission CSV.
+- Loads test transliterations, preprocesses them, generates candidate translations using two pre-trained ByT5 models across three random seeds, selects the consensus translation via MBR decoding with chrF++, applies extensive regex post-processing, and saves the final submission CSV.
+- Loads CSV training and test data, applies heuristic sentence alignment and bidirectional augmentation, tokenizes the data using a character-level tokenizer, fine-tunes ByT5-small with gradient accumulation and label smoothing, and saves the trained model for inference.
+- Loads two fine-tuned ByT5 models, merges their weights using a performance-derived ratio, preprocesses test transliteration text to standardize gaps, runs inference with beam search, and exports the translations to a CSV submission file.
+- Loads a CSV of Akkadian transliterations, applies regex-based text cleaning, runs inference with a pre-trained Seq2Seq model using MBR decoding and aggressive post-processing, and saves the final English translations to a submission CSV.
+- Loads a test CSV of Akkadian transliterations, processes them through a pre-trained Seq2Seq model with optimized decoding and post-processing, and saves the translated outputs to a submission CSV.
+- Loads a test CSV of Akkadian transliterations, processes them with a custom vectorized pipeline, runs inference using an optimized BYT5 model with adaptive beam search and mixed precision, and saves the cleaned translations to a submission CSV.
+- Loads test CSV, applies regex preprocessing, runs inference using a pre-trained ByT5 model with MBR decoding and vectorized post-processing, and exports a submission CSV.
+
+## Data reading
+- pd.read_csv for test.csv and train.csv; text columns loaded as strings.
+- pd.read_csv('/kaggle/input/competitions/deep-past-initiative-machine-translation/test.csv', encoding='utf-8')
+- pd.read_csv loads the test CSV containing 'id' and 'transliteration' columns.
+- Reads the test dataset from a CSV file using pandas.read_csv.
+- Reads test data from a CSV file using pandas.read_csv with UTF-8 encoding, expecting 'id' and 'transliteration' columns.
+- pd.read_csv(config.test_data_path, encoding='utf-8')
+- Loaded via pandas with pd.read_csv(config.test_data_path, encoding='utf-8')
+
+## Data processing
+- Input normalization via regex (diacritics, gap markers, determinatives, fractions)
+- Bucket batching for variable-length sequences
+- BF16 mixed precision inference
+- Extensive output postprocessing (quote normalization, commodity/fraction correction, stray mark removal, repetition/punctuation cleanup)
+- Task-specific prefix added (translate Akkadian to English: ); text normalization including lowercase conversion, removal of Akkadian subscripts/determinants/brackets, Unicode NFKD normalization, gap marker unification, and whitespace cleaning; tokenization with padding/truncation to MAX_LENGTH=512; generation with num_beams=4 and early_stopping=True.
+- Custom preprocessing converts ASCII transliterations to diacritics, unwraps determinatives, normalizes gaps and fractions/decimals, and strips whitespace.
+- Post-processing unifies gaps, handles PN/commodity normalization, removes grammar markers, canonicalizes fractions, and cleans repeated fragments and stray punctuation.
+- Bucketed batching is used during inference to minimize padding overhead.
+- Diacritic normalization, gap tokenization, prompt prefixing, length-based batching, and a 64-step regex post-processing pipeline for punctuation, spacing, fractions, and repetition cleanup.
+- Heuristic sentence alignment splitting documents into parallel sentence pairs based on matching English sentence and Akkadian line counts
+- Filters out strings shorter than 4 characters to remove noise
+- Bidirectional data augmentation by prepending task-specific prefixes (translate Akkadian to English / translate English to Akkadian)
+- Conversion to Hugging Face Dataset format and 90/10 train/validation split
+- Character-level tokenization with truncation at 512 tokens
+- Applies regex-based normalization to replace various forms of ellipsis and gaps (e.g., '.3', 'xx', '…', '...') with standardized tokens ('<big_gap>', '<gap>'), and prepends a task-specific instruction prefix to all inputs.
+- Vectorized regex-based text cleaning replaces ellipses/gaps with <big_gap> and <gap> tokens.
+- Aggressive post-processing normalizes whitespace, removes forbidden characters, fixes punctuation spacing, merges adjacent gaps, removes annotations, converts fractions, and deduplicates repeated words/n-grams.
+- Uses bucket batching for DataLoader to minimize padding overhead.
+- Vectorized regex-based preprocessing to replace ellipses and gaps with placeholder tokens
+- Aggressive vectorized post-processing including gap normalization, annotation removal, punctuation/spacing fixes, repeated word/n-gram removal, fraction conversion, and forbidden character stripping
+- Task prefixing ('translate Akkadian to English: ')
+- Vectorized regex-based preprocessing replaces ellipsis and spacing gaps with special tokens and prepends a task prefix; aggressive vectorized postprocessing normalizes gaps, removes linguistic annotations, converts decimal fractions to Unicode fractions, removes repeated words/n-grams, fixes punctuation spacing, and strips forbidden characters.
+- Regex-based gap normalization, aggressive vectorized post-processing (annotation removal, fraction conversion, repeated word/n-gram deduplication, punctuation spacing fixes), and bucket batching to minimize padding.
+
+## Features engineering
+- Translation memory bank built from training pairs; bidirectional confidence dictionary using a Dice-like coefficient based on token co-occurrence frequencies; TF-IDF vectors (character 3-6 grams and word 1-2 grams) for initial retrieval; length penalty function; SequenceMatcher reranking scores.
+
+## Models
+- ByT5
+- ByT5-small
+- byt5-akkadian-optimized-34x
+- byt5-akkadian-mbr-v2
+
+## Frameworks used
+- torch
+- transformers
+- pandas
+- numpy
+- sacrebleu
+- optimum
+- scikit-learn
+- datasets
+- evaluate
+- tqdm
+
+## CV strategies
+- Holdout split (10% validation via train_test_split)
+
+## Ensembling
+- Combines candidates from two distinct ByT5 models per sample, deduplicates them, and applies a weighted Minimum Bayes Risk scorer (chrF++, BLEU, Jaccard, length bonus) to select the consensus translation.
+- Combines neural and rule-based predictions using a length-based alignment heuristic that appends missing segments from the rule-based output to the neural prediction when the source text is long, followed by period insertion.
+- Combines beam-search and stochastic sampling candidates from two distinct ByT5 models into a unified pool per test sample, then selects the final translation using Minimum Bayes Risk (MBR) optimized with chrF++ as the pairwise similarity metric.
+- Combines candidates from two models across three random seeds (96 total per sample) and selects the final translation using Minimum Bayes Risk decoding with chrF++ as the scoring metric, followed by extensive regex post-processing.
+- Merges two ByT5 models by averaging their state dictionary weights using a 0.94:1.00 ratio derived from relative model performance, rather than averaging logits during inference.
+- Implements Minimum Bayes Risk (MBR) decoding by generating candidates via beam search and sampling, then selecting the output that maximizes the average chrF++ similarity to all other candidates in the pool.
+- Uses Minimum Bayes Risk (MBR) decoding to select the best translation from a pool of beam and sampling candidates by maximizing average chrF++ similarity, followed by aggressive vectorized post-processing.
+
+## Insights
+- Diverse candidate generation via beam search and multi-temperature sampling provides a richer pool for MBR to find high-quality consensus outputs.
+- Aggressive regex postprocessing is essential to prevent MBR from penalizing superficial formatting noise instead of semantic content.
+- A weighted combination of chrF++, BLEU, Jaccard, and length metrics outperforms single-metric MBR for this translation task.
+- Bucket batching effectively stabilizes inference throughput for highly variable-length Akkadian transliterations.
+- Hybrid systems combining neural generation with retrieval-based fallbacks can effectively address vocabulary gaps in historical language translation.
+- Simple length-aware post-processing can recover truncated neural outputs without retraining.
+- Domain-specific text normalization is critical for handling ancient script conventions like determinants, gap markers, and editorial brackets.
+- Cross-model candidate pooling effectively reduces shared failure modes compared to single-model decoding.
+- chrF++ serves as a robust metric for MBR selection in translation tasks where character-level agreement matters more than exact token matches.
+- Domain-specific preprocessing and postprocessing rules are essential for correctly handling Akkadian transliteration conventions, determinatives, and historical economic terms.
+- Stochastic sampling across multiple seeds and temperatures significantly increases candidate diversity, which is crucial for MBR decoding.
+- MBR decoding with chrF++ effectively identifies the most consensus-driven translation from a noisy candidate pool.
+- Rigorous regex post-processing is essential for fixing model artifacts like repetition, spacing errors, and missing punctuation in translation outputs.
+- Character-level tokenization is more robust than word-level models for handling noisy, non-standardized transliterations.
+- Bidirectional data augmentation effectively doubles training samples and improves translation directionality robustness.
+- Gradient accumulation is necessary to maintain an effective batch size when forced to use FP32 due to memory constraints.
+- Simple heuristic alignment based on matching sentence/line counts can safely expand training data without introducing significant noise.
+- Weight averaging of model parameters is a straightforward and effective method to combine models without requiring complex inference-time logit averaging.
+- Normalizing inconsistent gap and ellipsis representations in transliteration data significantly improves model robustness during inference.
+- Adding a clear task-specific prefix to inputs helps guide the sequence-to-sequence model's generation behavior.
+- MBR decoding with a mix of beam search and sampling candidates can significantly improve translation quality over standard greedy or beam search alone.
+- Aggressive, vectorized post-processing is crucial for cleaning translation artifacts like repeated words, forbidden characters, and spacing issues in specialized domains.
+- BF16-only automatic mixed precision with fallback to FP32 provides a safe and effective way to accelerate inference on compatible GPUs without numerical instability.
+- Bucket batching and adaptive beam sizing based on input length can optimize memory usage and inference speed.
+- BF16 mixed precision inference can be safely implemented with a runtime check and FP32 fallback for broader hardware compatibility.
+- BetterTransformer and bucket batching significantly reduce inference latency and memory overhead for variable-length sequences.
+- MBR decoding with chrF++ similarity reliably improves translation quality over standard beam search without requiring additional training.
+- Aggressive, vectorized post-processing is essential for cleaning domain-specific artifacts like repeated words, punctuation spacing, and annotation tags.
+- Vectorized pandas string operations drastically reduce preprocessing and postprocessing overhead compared to iterative Python loops.
+- Bucket batching minimizes padding waste and improves GPU memory efficiency during large-scale inference.
+- Adaptive beam search dynamically adjusts decoding complexity based on input length to balance speed and translation quality.
+- Applying optimum BetterTransformer and mixed precision yields significant inference speedups without requiring model retraining.
+- Domain-specific postprocessing (gap normalization, annotation stripping, fraction conversion) is essential for accurate historical language translation outputs.
+- MBR decoding with chrF++ similarity effectively selects higher-quality translations from beam/sampling candidates.
+- Bucket batching significantly reduces padding overhead and accelerates inference by grouping samples of similar lengths.
+- Vectorized pandas operations for post-processing are substantially faster than iterative Python loops.
+- BF16 mixed precision provides a safe speedup on compatible GPUs without degrading model output quality.
+
+## Critical findings
+- Specific host-verified corrections are required for domain accuracy, such as mapping 5/12 shekel to ⅝ shekel 15 grains and preserving parentheses in test outputs.
+- Commodity regex replacements must enforce word boundaries to avoid corrupting compound terms like 'import-tax'.
+- Stray marks, repeated words, and inconsistent punctuation in raw model outputs severely degrade MBR scores if left uncleaned.
+- FP16 mixed precision causes NaN errors with ByT5, requiring a switch to FP32 and gradient accumulation to compensate for reduced batch sizes.
+- ByT5 generates longer token sequences than standard word-level models, making a 512 token limit sufficient only at the sentence level.
+- The heuristic alignment strategy safely expands data only when English sentence counts exactly match Akkadian line counts, falling back to original documents otherwise.
+
+## Notable individual insights
+- 634 (LB 35.9 with Regex corrections (Public Model)): Aggressive regex postprocessing is essential to prevent MBR from penalizing superficial formatting noise instead of semantic content.
+- 600 (DPC Starter Infer add SentenceAlign): Hybrid systems combining neural generation with retrieval-based fallbacks can effectively address vocabulary gaps in historical language translation.
+- 480 (LB 35.9 Ensembling & Post Processing Baseline): Cross-model candidate pooling effectively reduces shared failure modes compared to single-model decoding.
+- 453 (DPC Starter Train): Character-level tokenization is more robust than word-level models for handling noisy, non-standardized transliterations.
+- 409 (byt-ensemble): Weight averaging of model parameters is a straightforward and effective method to combine models without requiring complex inference-time logit averaging.
+- 398 (deep pasta mbr): BF16-only automatic mixed precision with fallback to FP32 provides a safe and effective way to accelerate inference on compatible GPUs without numerical instability.
+- 364 (BYT-Ensemble | Script): Vectorized pandas string operations drastically reduce preprocessing and postprocessing overhead compared to iterative Python loops.
+
+## Notebooks indexed
+- #634 votes [[notebooks/votes_01_vitorhugobarbedo-lb-35-9-with-regex-corrections-public-model/notebook|LB 35.9 with Regex corrections (Public Model)]] ([kaggle](https://www.kaggle.com/code/vitorhugobarbedo/lb-35-9-with-regex-corrections-public-model))
+- #600 votes [[notebooks/votes_02_qifeihhh666-dpc-starter-infer-add-sentencealign/notebook|DPC Starter Infer add SentenceAlign]] ([kaggle](https://www.kaggle.com/code/qifeihhh666/dpc-starter-infer-add-sentencealign))
+- #480 votes [[notebooks/votes_03_giovannyrodrguez-lb-35-9-ensembling-post-processing-baseline/notebook|LB 35.9 Ensembling & Post Processing Baseline]] ([kaggle](https://www.kaggle.com/code/giovannyrodrguez/lb-35-9-ensembling-post-processing-baseline))
+- #461 votes [[notebooks/votes_04_meenalsinha-hybrid-best-akkadian/notebook|Hybrid best Akkadian]] ([kaggle](https://www.kaggle.com/code/meenalsinha/hybrid-best-akkadian))
+- #453 votes [[notebooks/votes_05_takamichitoda-dpc-starter-train/notebook|DPC Starter Train]] ([kaggle](https://www.kaggle.com/code/takamichitoda/dpc-starter-train))
+- #409 votes [[notebooks/votes_06_jiexusheng20bz-byt-ensemble/notebook|byt-ensemble]] ([kaggle](https://www.kaggle.com/code/jiexusheng20bz/byt-ensemble))
+- #398 votes [[notebooks/votes_07_mattiaangeli-deep-pasta-mbr/notebook|deep pasta mbr]] ([kaggle](https://www.kaggle.com/code/mattiaangeli/deep-pasta-mbr))
+- #382 votes [[notebooks/votes_08_lgregory-akkadiam-exemple/notebook|Akkadiam - Exemple ]] ([kaggle](https://www.kaggle.com/code/lgregory/akkadiam-exemple))
+- #364 votes [[notebooks/votes_09_anthonytherrien-byt-ensemble-script/notebook|BYT-Ensemble | Script]] ([kaggle](https://www.kaggle.com/code/anthonytherrien/byt-ensemble-script))
+- #261 votes [[notebooks/votes_10_baidalinadilzhan-lb-35-2-ensemble/notebook|LB [35.2] Ensemble]] ([kaggle](https://www.kaggle.com/code/baidalinadilzhan/lb-35-2-ensemble))

@@ -1,0 +1,40 @@
+{
+  "summary": "This notebook provides a complete inference pipeline for the Vesuvius Surface 3D Detection competition. It loads five pre-trained TransUNet models (with SEResNeXt50 encoders) and performs sliding-window inference on 3D volumetric TIFF data. The pipeline incorporates extensive test-time augmentation (spatial flips and rotations), averages predictions across all models, and applies topological post-processing (hysteresis thresholding, anisotropic closing, and small object removal) to generate the final submission masks. Readers should understand how to efficiently ensemble multiple 3D segmentation models with TTA and apply domain-specific morphological operations to refine volumetric predictions.",
+  "purpose": "inference",
+  "competition_flow": "Loads 3D test volumes from TIFF files, normalizes them, runs sliding-window inference with TTA across five pre-trained TransUNet models, applies topological post-processing to the averaged logits, and packages the resulting binary masks into a ZIP submission file.",
+  "data_reading": [
+    "Reads test metadata from test.csv",
+    "Loads 3D volumetric TIFF files using tifffile.imread",
+    "Converts data to float32 and adds channel dimension [1, D, H, W, 1]"
+  ],
+  "data_processing": [
+    "Applies NormalizeIntensity (nonzero, channel-wise=False) via medicai.transforms",
+    "Performs sliding-window inference with Gaussian weighting and 48% overlap",
+    "Implements TTA via spatial flips (axes 1, 2, 3) and rotations (axes 2, 3)",
+    "Applies topological post-processing: hysteresis thresholding, anisotropic binary closing, and remove_small_objects (min_size=250)"
+  ],
+  "features_engineering": [],
+  "models": [
+    "TransUNet (SEResNeXt50 encoder)"
+  ],
+  "frameworks_used": [
+    "keras",
+    "medicai",
+    "tifffile",
+    "numpy",
+    "scipy",
+    "scikit-image"
+  ],
+  "loss_functions": [],
+  "cv_strategy": "",
+  "ensembling": "Averages prediction logits across five pre-trained TransUNet models and combines them with extensive test-time augmentation (flips and rotations) before applying topological post-processing.",
+  "insights": [
+    "Sliding-window inference with Gaussian overlap effectively processes large 3D volumes that exceed GPU memory limits.",
+    "Ensembling multiple checkpoints from different training epochs improves prediction robustness and generalization.",
+    "Topological post-processing (hysteresis thresholding and anisotropic closing) effectively removes noise while preserving the structural integrity of 3D surface detections."
+  ],
+  "critical_findings": [],
+  "what_did_not_work": [],
+  "source_url": "https://www.kaggle.com/code/tonyai007/inference-vesuvius-surface-3d-detection-epoch-x5",
+  "votes": 248
+}

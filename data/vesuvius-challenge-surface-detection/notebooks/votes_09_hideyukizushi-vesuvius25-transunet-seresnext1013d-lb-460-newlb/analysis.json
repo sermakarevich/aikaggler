@@ -1,0 +1,38 @@
+{
+  "summary": "This notebook demonstrates an inference pipeline for the Vesuvius 2025 Surface Detection challenge using a pre-trained 3D TransUNet model with a SEResNeXt101 encoder. It focuses on efficiently processing large volumetric TIFF images by applying intensity normalization and sliding window inference to manage VRAM constraints. The author shares model weights and a complete submission generation workflow, highlighting how modern medical imaging libraries like `medicai` and Keras with a JAX backend can streamline 3D segmentation tasks. Readers should take away practical techniques for handling large 3D medical images, configuring sliding window predictions, and packaging outputs for Kaggle submissions. The notebook serves as a reproducible baseline for leveraging pre-trained 3D vision transformers in surface detection tasks.",
+  "purpose": "inference",
+  "competition_flow": "Loads test CSV and TIFF volumes, normalizes pixel intensities, runs 3D TransUNet with sliding window inference, and packages predicted masks into a submission ZIP.",
+  "data_reading": [
+    "Reads test image IDs from `test.csv` using pandas.",
+    "Loads corresponding 3D volumetric TIFF files using `tifffile.imread`, converting them to float32 and adding batch/channel dimensions."
+  ],
+  "data_processing": [
+    "Applies `ScaleIntensityRange` normalization to map raw pixel values from [0, 255] to [0, 1].",
+    "Uses sliding window inference with Gaussian weighting, 52% overlap, and a 160x160x160 ROI size to handle large volumes without OOM errors."
+  ],
+  "features_engineering": [],
+  "models": [
+    "TransUNet",
+    "SEResNeXt1013D"
+  ],
+  "frameworks_used": [
+    "keras",
+    "medicai",
+    "tifffile",
+    "numpy",
+    "pandas",
+    "matplotlib"
+  ],
+  "loss_functions": [],
+  "cv_strategy": "",
+  "ensembling": "",
+  "insights": [
+    "Sliding window inference with Gaussian overlap effectively manages VRAM constraints when processing large 3D medical volumes.",
+    "Normalizing raw TIFF intensities to [0, 1] is sufficient for pre-trained 3D vision transformer models.",
+    "The `medicai` library provides convenient utilities for 3D model definition, transforms, and inference that integrate well with Keras/JAX."
+  ],
+  "critical_findings": [],
+  "what_did_not_work": [],
+  "source_url": "https://www.kaggle.com/code/hideyukizushi/vesuvius25-transunet-seresnext1013d-lb-460-newlb",
+  "votes": 213
+}

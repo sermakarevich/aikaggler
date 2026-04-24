@@ -1,0 +1,93 @@
+{
+  "summary": "The author placed 2nd in the March Machine Learning Mania 2026 competition by constructing a weighted ensemble of XGBoost and Logistic Regression trained on historical NCAA tournament data. Key technical decisions included computing all 35 features as Team1 minus Team2 differences to force relative strength learning, engineering advanced metrics like margin-of-victory Elo and Massey ordinal consensus, and clipping predictions to [0.02, 0.98] to directly minimize Brier score penalties at probability extremes. The pipeline combined separate scaling strategies for each model and validated performance using 10-fold cross-validation on a unified men's and women's dataset.",
+  "extensive_summary": "## Approach Overview\nThe solution targets the March Machine Learning Mania 2026 competition by predicting game win probabilities using historical NCAA tournament results (men's back to 2003, women's to 2010) combined into a single training set. The final submission is a 60/40 weighted ensemble of XGBoost and Logistic Regression, chosen to balance non-linear feature capture with calibrated probability estimates.\n\n## Feature Engineering & Data Pipeline\nAll 35 features are computed as relative differences (Team1 \u2212 Team2), where Team1 is always the lower TeamID. This difference-vector framing forces the model to learn matchup-specific dynamics rather than overfitting to absolute team strengths, improving generalization across eras and genders. Features span basic season stats, advanced efficiency metrics (per 100 possessions), Four Factors (EFG%, TORate, ORPct, FTRate), shooting splits, per-game counting stats, opponent Four Factors, Elo rating differences, seed differences, Massey ordinal consensus (men's only), strength of schedule, and recent form (last-10-game win percentage). Massey ordinals are filtered to the last 14 days of the regular season to capture peak tournament performance, while women's teams default to a rank of 200 due to data limitations.\n\n## Model Architecture & Training\nXGBoost is configured with `n_estimators=300`, `max_depth=4`, `learning_rate=0.05`, `subsample=0.8`, `colsample_bytree=0.8`, and L1/L2 regularization (`reg_alpha=0.1`, `reg_lambda=1.0`). Logistic Regression uses `C=1.0` with the `lbfgs` solver. A critical implementation detail is the separate scaling pipelines: Logistic Regression receives StandardScaler-normalized features to prevent coefficient distortion, while XGBoost receives raw features since tree-based models are scale-invariant. Both models are trained on the same matchup vector and evaluated via 10-fold cross-validation using `neg_brier_score`.\n\n## Post-Processing & Validation Insights\nPredictions are clipped to [0.02, 0.98] before submission, a deliberate Brier-score-aware intervention that reduces loss from extreme wrong predictions across the bracket. The author notes a significant gap between CV estimates (~0.192 men's, ~0.148 women's) and the final competition score (0.1149886), attributing it to small sample variance and a historically low-upset tournament year that natively rewarded conservative models. The approach highlights that deeper trees overfit on the ~1,000 tournament games, and future iterations should explore isotonic calibration, grid-searched blend weights, and gender-specific models.",
+  "rank": 2,
+  "competition_flow": "Historical NCAA regular season and tournament CSVs are parsed with pandas to compute 35 relative matchup features (including Elo, Massey ordinals, and advanced efficiency metrics), which are fed into separate XGBoost and Logistic Regression pipelines, blended at 60/40, clipped to [0.02, 0.98], and submitted as win probabilities.",
+  "data_reading": [
+    "CSV files loaded via pandas/numpy"
+  ],
+  "data_processing": [
+    "Combined men's and women's historical tournament data into a single training set",
+    "Computed all features as Team1 minus Team2 differences",
+    "Applied StandardScaler normalization exclusively for Logistic Regression",
+    "Filtered Massey ordinals to the last 14 days of the regular season",
+    "Assigned default seed 17 for unseeded teams and default Massey rank 200 for women's teams",
+    "Defaulted missing team profiles to 0.5 probability"
+  ],
+  "features_engineering": [
+    "Win percentage, point differential, avg points scored/allowed",
+    "Offensive/defensive/net efficiency per 100 possessions",
+    "Four Factors: EFG%, TORate, ORPct, FTRate",
+    "Shooting splits: FG%, FG3%, FT%, OppFG%",
+    "Per-game counting stats: assists, turnovers, steals, blocks, offensive/defensive rebounds, tempo",
+    "Opponent Four Factors: OppEFGPct, OppTORate, DRPct, OppFTRate",
+    "Elo rating difference",
+    "Seed difference and raw seeds",
+    "Massey ordinal mean/median/min difference (men's only)",
+    "Strength of schedule difference",
+    "Recent form (last-10-game win pct) difference"
+  ],
+  "models": [
+    "XGBoost",
+    "Logistic Regression"
+  ],
+  "frameworks_used": [
+    "xgboost",
+    "scikit-learn",
+    "pandas",
+    "numpy"
+  ],
+  "loss_functions": [
+    "Brier score",
+    "logloss"
+  ],
+  "cv_strategy": "10-fold cross-validation on the combined men's and women's training set, evaluated using neg_brier_score.",
+  "ensembling": "Weighted ensemble blending XGBoost (60%) and Logistic Regression (40%) predictions, followed by clipping probabilities to [0.02, 0.98] to mitigate Brier score penalties at the extremes.",
+  "insights": [
+    "Framing all features as relative differences (Team1 \u2212 Team2) forces the model to learn matchup-specific dynamics rather than overfitting to absolute team strengths, improving cross-era and cross-gender generalization.",
+    "Aggregating multiple Massey ordinal ranking systems into a consensus metric captures team peaking trends more robustly than any single ranking source.",
+    "Incorporating a margin-of-victory multiplier with an autocorrection term into Elo ratings prevents runaway updates for dominant teams and adds predictive texture beyond binary win/loss updates.",
+    "Clipping predicted probabilities to [0.02, 0.98] is a direct, Brier-score-aware intervention that meaningfully reduces loss from extreme wrong predictions across the tournament bracket."
+  ],
+  "critical_findings": [
+    "Deeper XGBoost trees (max_depth=6 or 8) caused clear overfitting on the small tournament dataset, making max_depth=4 the hard ceiling.",
+    "The final competition Brier score significantly outperformed cross-validation estimates due to a combination of small sample variance and a historically low-upset tournament year that rewarded conservative models.",
+    "Women's teams lack access to Massey ordinals in the provided dataset, creating a meaningful information gap that defaults them to a rank of 200 and limits model calibration for that gender."
+  ],
+  "what_did_not_work": [
+    "Deeper XGBoost trees (max_depth=6 and 8) led to worse CV Brier scores due to overfitting on the ~1,000 tournament games.",
+    "Using a single combined model for men's and women's data sacrificed the ability to tune each tournament's dynamics independently.",
+    "Relying on an empirical 60/40 blend ratio instead of a grid search with nested CV was suboptimal.",
+    "The absence of Massey ordinals for women's teams and lack of explicit upset-specific seed-matchup features limited predictive power."
+  ],
+  "github_repos": [
+    {
+      "url": "https://github.com/BrendanCarlin/march-mania-2026-2nd-place",
+      "role": "solution"
+    }
+  ],
+  "papers": [
+    {
+      "title": "XGBoost: A Scalable Tree Boosting System",
+      "url": "https://arxiv.org/abs/1603.02754",
+      "arxiv_id": "1603.02754"
+    },
+    {
+      "title": "Verification of forecasts expressed in terms of probability",
+      "url": "",
+      "arxiv_id": null
+    },
+    {
+      "title": "Basketball on Paper",
+      "url": "",
+      "arxiv_id": null
+    }
+  ],
+  "other_solution_refs": [
+    {
+      "description": "Competition discussion forum",
+      "url": "https://www.kaggle.com/competitions/march-machine-learning-mania-2026/discussion"
+    }
+  ],
+  "source_url": "https://www.kaggle.com/competitions/march-machine-learning-mania-2026/discussion/689537"
+}

@@ -1,0 +1,62 @@
+{
+  "summary": "The author achieved 7th place by implementing a 3-phase ensemble pipeline that sequentially combines Template-Based Modeling (TBM), Protenix, and RNAPro. A key insight was that public leaderboard scores for TBM+Protenix were highly stochastic due to Protenix's diffusion sampling, meaning score variations often reflected lucky sampling rather than true accuracy. To differentiate from the majority of submissions, the author integrated RNAPro as a template-refinement step and introduced dynamic slot allocation based on template quality. This multi-model approach successfully navigated the competition's stochastic scoring environment and strict compute constraints.",
+  "extensive_summary": "## Overview & Motivation\nThe solution addresses the high stochasticity observed in public leaderboard scores for TBM + Protenix submissions. Recognizing that score variations of ~0.02\u20130.03 across reruns were driven by Protenix's diffusion sampling rather than true accuracy, the author integrated RNAPro as a key differentiator to stand out from the majority of participants.\n\n## Phase 1: Template-Based Modeling (TBM)\nThe TBM phase uses pairwise alignment against a template pool (train + validation) to find similar sequences. Instead of a fixed slot allocation, the author introduces dynamic slot allocation based on template quality: targets with high-quality templates (\u226580% identity, \u226590% match rate) get up to 5 TBM slots, medium quality (\u226550% identity) gets up to 3, and low quality gets up to 1. Each TBM slot applies a specific perturbation (Gaussian noise, hinge motion, per-chain jitter, smooth wiggle deformation) followed by stereochemical regularization via `adaptive_rna_constraints()`.\n\n## Phase 2: Protenix (Template-Free)\nFor targets with remaining empty slots, Protenix is run in template-free mode with MSA disabled. The number of Protenix samples is adaptively scaled (2 to 5) depending on the TBM template quality. TBM and Protenix outputs are combined to fill exactly 5 prediction slots per target.\n\n## Phase 3: RNAPro Enhancement\nThe final phase converts the Phase 1-2 predictions into template files and feeds them into RNAPro. For targets \u22641000nt, RNAPro predictions replace slots 1-4, while slot 5 retains the best Phase 1-2 prediction. Targets exceeding 1000nt or failing inference retain the Phase 1-2 outputs entirely. This phase served as the primary score-moving differentiator, leveraging RNAPro's Part 1 winning performance.",
+  "rank": 7,
+  "competition_flow": "Raw test sequences are processed through a sequential 3-phase pipeline (TBM alignment with dynamic slot allocation, adaptive Protenix sampling, and RNAPro template refinement) to generate a final 5-slot submission file.",
+  "data_reading": [],
+  "data_processing": [
+    "Dynamic slot allocation based on template identity/match rate thresholds",
+    "Perturbation strategies (Gaussian noise, hinge motion, per-chain jitter, smooth wiggle deformation) for TBM diversity",
+    "Stereochemical regularization via adaptive_rna_constraints()",
+    "Conversion of Phase 1-2 outputs to .pt template files",
+    "Length-based routing (>1000nt skips RNAPro and retains Phase 1-2 predictions)"
+  ],
+  "features_engineering": [],
+  "models": [
+    "TBM",
+    "Protenix",
+    "RNAPro",
+    "RibonanzaNet2",
+    "Chai-1",
+    "RhoFold+",
+    "DRfold2",
+    "Boltz"
+  ],
+  "frameworks_used": [],
+  "loss_functions": [],
+  "cv_strategy": "",
+  "ensembling": "The solution uses a sequential 3-phase ensemble where TBM and Protenix predictions are combined into 5 slots, then RNAPro replaces slots 1-4 for targets \u22641000nt while slot 5 retains the Phase 1-2 best prediction, with length-based fallback logic for longer sequences.",
+  "insights": [
+    "Public LB scores for TBM+Protenix vary significantly (~0.02-0.03) across reruns due to Protenix's stochastic diffusion, meaning scores often reflect lucky sampling rather than true accuracy.",
+    "Dynamic slot allocation based on template quality (identity/match rate) effectively balances TBM and Protenix contributions per target.",
+    "Integrating RNAPro as a template-refinement step served as the primary differentiator to stand out from the majority of TBM+Protenix submissions."
+  ],
+  "critical_findings": [
+    "Most targets classified as HIGH template quality still had fewer than 5 qualifying templates in practice, making dynamic allocation necessary.",
+    "RNAPro inference is constrained by a 1000nt length limit, requiring explicit fallback logic to retain Phase 1-2 predictions for longer sequences."
+  ],
+  "what_did_not_work": [
+    "Protenix parameter tuning (SDPA/Flash Attention, MSA, multi-chain input, ligand SMILES, seed changes, version upgrades) showed no clear improvement.",
+    "Inference scaling strategies (multi-seed, N_model_seed=2, ranking score-based sample selection) failed to yield gains.",
+    "Template pool expansion with Ribonanza and PDB-RNA data did not improve results.",
+    "Alternative models including Chai-1, RhoFold+, DRfold2, and Boltz were tested but rejected due to poor validation performance or computational constraints."
+  ],
+  "github_repos": [
+    {
+      "url": "https://github.com/NVIDIA-Digital-Bio/RNAPro",
+      "role": "library"
+    },
+    {
+      "url": "https://github.com/bytedance/Protenix",
+      "role": "library"
+    }
+  ],
+  "papers": [],
+  "other_solution_refs": [
+    {
+      "description": "Reference for Phase 3 (RNAPro) pipeline",
+      "url": "https://www.kaggle.com/code/theoviel/stanford-rna-3d-folding-pt2-rnapro-inference"
+    }
+  ],
+  "source_url": "https://www.kaggle.com/competitions/stanford-rna-3d-folding-2/discussion/687180"
+}

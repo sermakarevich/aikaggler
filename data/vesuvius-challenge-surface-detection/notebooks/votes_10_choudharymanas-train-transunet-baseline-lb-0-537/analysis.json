@@ -1,0 +1,46 @@
+{
+  "summary": "This notebook provides a complete training pipeline for a 3D surface detection task, leveraging a TransUNet architecture on Kaggle TPUs. It implements a custom TFRecord-based data loader that applies 3D spatial cropping, flipping, rotation, intensity shifting, and random cuboid occlusions. A key methodological contribution is the derivation of a tubed skeleton auxiliary target from the ground truth mask to guide topology-aware learning. The training objective combines a standard Dice+CE loss with a skeleton recall penalty and a false positive volume penalty to better capture thin, tubular ink structures. Readers should learn how to design custom multi-channel targets, implement topology-aware loss functions, and manage VRAM constraints using sliding window inference and cosine learning rate scheduling.",
+  "purpose": "training",
+  "competition_flow": "Loads TFRecord data, applies 3D augmentations and generates a skeleton target, trains a TransUNet with a custom multi-task loss on TPUs, and saves periodic checkpoints with sliding window validation.",
+  "data_reading": [
+    "Parses TFRecord files using tf.io.parse_single_example",
+    "Decodes raw byte strings to tensors and reshapes them using stored shape metadata"
+  ],
+  "data_processing": [
+    "Adds channel dimensions and casts to float32",
+    "RandSpatialCrop to (160, 160, 160)",
+    "RandFlip across 3 spatial axes (prob=0.5)",
+    "RandRotate90 (prob=0.4)",
+    "RandShiftIntensity (offsets=0.15, prob=0.5)",
+    "ScaleIntensityRange normalization (0-255 to 0-1)",
+    "Custom random cuboid occlusion augmentation that masks random 3D blocks to 0",
+    "Validation path applies only intensity scaling"
+  ],
+  "features_engineering": [],
+  "models": [
+    "TransUNet (seresnext50 encoder)"
+  ],
+  "frameworks_used": [
+    "keras",
+    "tensorflow",
+    "medicai",
+    "numpy",
+    "scikit-image",
+    "scipy"
+  ],
+  "loss_functions": [
+    "SkeletonRecallPlusDiceLoss (combines SparseDiceCELoss, skeleton recall loss, and false positive volume loss)"
+  ],
+  "cv_strategy": "Holdout validation using shard 130 for validation and shards 0-129 for training.",
+  "ensembling": "",
+  "insights": [
+    "Deriving a tubed skeleton from ground truth masks effectively guides the model to learn thin, tubular ink structures.",
+    "Combining recall and false positive penalties in the loss function improves precision without sacrificing recall.",
+    "Sliding window inference is essential for processing 3D volumes that exceed GPU/TPU memory limits.",
+    "Cosine decay with a non-zero alpha prevents the learning rate from collapsing to zero during training."
+  ],
+  "critical_findings": [],
+  "what_did_not_work": [],
+  "source_url": "https://www.kaggle.com/code/choudharymanas/train-transunet-baseline-lb-0-537",
+  "votes": 202
+}

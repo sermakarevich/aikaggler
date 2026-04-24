@@ -1,0 +1,46 @@
+{
+  "summary": "This notebook implements a hybrid inference pipeline for RNA 3D structure prediction, combining homology modeling with diffusion-based de-novo generation. It first attempts Template-Based Modeling (TBM) by aligning test sequences against known training structures, adapting coordinates, and applying physical constraints. For sequences lacking sufficient templates or requiring additional samples, it routes them to the Protenix model, handling long sequences via overlapping chunking and Kabsch-based stitching. Finally, it fills any remaining prediction slots with an idealized A-form helix fallback. Readers should understand how to integrate geometric alignment, diffusion inference, and physical priors to generate complete, physically plausible RNA submissions.",
+  "purpose": "inference",
+  "competition_flow": "Loads test sequences and training structures, generates predictions via a hybrid TBM and Protenix pipeline with chunking and stitching, and exports a formatted CSV submission.",
+  "data_reading": [
+    "Reads test_sequences.csv, train_sequences.csv, validation_sequences.csv, and corresponding _labels.csv files using pandas.read_csv.",
+    "Parses stoichiometry and multi-chain sequences from CSV columns using custom regex/split logic."
+  ],
+  "data_processing": [
+    "Aligns sequences using Biopython's PairwiseAligner with global scoring parameters.",
+    "Adapts template coordinates to query sequences via alignment mapping and linear interpolation for gaps.",
+    "Applies diversity transforms (hinge rotation, chain jitter, spline wiggle) to increase prediction variance.",
+    "Enforces adaptive RNA physical constraints (bond lengths, angles, self-avoidance) via iterative coordinate refinement.",
+    "Chunks long sequences with configurable overlap and stitches them using Kabsch alignment and linear weight blending.",
+    "Clips final coordinates to [-999.999, 9999.999] before CSV export."
+  ],
+  "features_engineering": [],
+  "models": [
+    "Protenix (protenix_base_20250630_v1.0.0)",
+    "Custom TBM pipeline",
+    "Idealized A-form RNA helix fallback"
+  ],
+  "frameworks_used": [
+    "torch",
+    "numpy",
+    "pandas",
+    "biopython"
+  ],
+  "loss_functions": [],
+  "cv_strategy": "",
+  "ensembling": "Combines up to 10 predictions per target by filling slots with TBM results, then Protenix outputs, and finally a de-novo helix fallback, effectively ensembling homology modeling, diffusion generation, and geometric priors.",
+  "insights": [
+    "Homology modeling remains highly effective when templates share sufficient similarity and identity.",
+    "Overlapping chunking with Kabsch alignment and linear blending successfully extends diffusion models beyond their native sequence length limits.",
+    "Adaptive physical constraints significantly improve the geometric plausibility of predicted RNA structures.",
+    "Deterministic seeding and chunk stitching ensure reproducible and artifact-free submissions."
+  ],
+  "critical_findings": [
+    "Collapsed coordinates (where all atoms overlap) are explicitly detected and filtered during Protenix inference.",
+    "Stoichiometry parsing is required to correctly handle multi-chain RNA complexes.",
+    "Sequences with low similarity or identity to the training pool are correctly routed away from TBM to avoid poor adaptations."
+  ],
+  "what_did_not_work": [],
+  "source_url": "https://www.kaggle.com/code/asimandia/stanford-rna-3d-folding",
+  "votes": 597
+}

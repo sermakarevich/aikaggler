@@ -1,0 +1,47 @@
+{
+  "summary": "This notebook implements a hybrid inference pipeline for RNA 3D structure prediction that combines template-based modeling (TBM) with a pre-trained diffusion model (Protenix) and a geometric fallback. It aligns test sequences to training structures, adapts coordinates, applies diversity transforms, and enforces adaptive RNA structural constraints before filling remaining prediction slots with Protenix outputs. The pipeline also includes robust fallback logic using idealized A-form helices and careful atom masking to handle shape mismatches. A key takeaway is that template-based coordinate adaptation alone yields the strongest leaderboard performance, suggesting the deep learning model struggles with this specific data distribution or requires different conditioning. Readers should note the importance of sequence alignment thresholds, coordinate padding strategies, and structural constraint tuning in bio-structure inference.",
+  "purpose": "inference",
+  "competition_flow": "Loads test sequences and training structures, runs a template-based modeling phase to adapt coordinates from similar training targets, fills remaining prediction slots with Protenix inference, and combines all outputs into a submission CSV.",
+  "data_reading": [
+    "pd.read_csv for train/test/validation sequences and labels",
+    "Custom parsing for stoichiometry and FASTA formats",
+    "Symlinked PDB_RNA .cif files for template data"
+  ],
+  "data_processing": [
+    "Global sequence alignment via Bio.Align.PairwiseAligner",
+    "Coordinate mapping and adaptation from templates to query sequences",
+    "Diversity transforms (hinge rotation, chain jittering, spline interpolation)",
+    "Adaptive RNA structural constraints (bond lengths, angles, Laplacian smoothing, self-avoidance)",
+    "C1' atom masking heuristics and coordinate clipping/padding",
+    "Idealized A-form helix generation as de-novo fallback"
+  ],
+  "features_engineering": [],
+  "models": [
+    "Protenix (protenix_base_20250630_v1.0.0)"
+  ],
+  "frameworks_used": [
+    "torch",
+    "numpy",
+    "pandas",
+    "Bio.Align",
+    "tqdm"
+  ],
+  "loss_functions": [],
+  "cv_strategy": "",
+  "ensembling": "Combines up to 5 predictions per target by filling slots with TBM-adapted coordinates, Protenix diffusion outputs, and idealized A-form helix fallbacks.",
+  "insights": [
+    "Template-based modeling effectively captures structural motifs when similar training sequences exist.",
+    "Protenix requires careful C1' atom masking and coordinate padding to avoid model collapse or shape mismatches.",
+    "Geometric diversity transforms significantly improve prediction coverage without requiring model retraining."
+  ],
+  "critical_findings": [
+    "TBM alone achieves the best leaderboard score (0.249), while adding Protenix, MSA, or template features degrades performance to ~0.40.",
+    "Protenix outputs can collapse to identical coordinates if the C1' atom mask selection heuristic is incorrect or when sequence length truncation causes shape mismatches."
+  ],
+  "what_did_not_work": [
+    "Adding MSA, RNA MSA, or template features to Protenix degraded the leaderboard score compared to TBM alone.",
+    "Protenix inference fails or produces collapsed coordinates when the C1' atom mask selection heuristic is incorrect or when sequence length truncation causes shape mismatches."
+  ],
+  "source_url": "https://www.kaggle.com/code/llkh0a/stanford-rna-3d-folding-part-2-protenix-tbm",
+  "votes": 232
+}

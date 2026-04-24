@@ -1,0 +1,47 @@
+{
+  "summary": "The notebook introduces TruthGuard, a post-hoc calibration framework designed to measure and correct the overconfidence of Large Language Models. It demonstrates a complete pipeline that loads the TruthfulQA dataset, extracts log-probabilities from the OPT-1.3b model, and computes Expected Calibration Error (ECE) to quantify reliability. The author then implements temperature scaling optimized via LBFGS to minimize ECE, showing how calibrated confidence scores enable safer model abstention. Cross-lingual evaluation reveals a structural calibration gap where the model is significantly more overconfident in Arabic than in English. Readers learn how to implement reliability diagnostics, apply temperature scaling without retraining, and detect language-specific bias in open-weight models.",
+  "purpose": "tutorial",
+  "competition_flow": "Loads the TruthfulQA validation split, runs OPT-1.3b to extract choice log-probabilities, computes raw ECE, optimizes temperature scaling via LBFGS to calibrate confidence, and compares calibrated vs. raw metrics across English and Arabic prompts.",
+  "data_reading": [
+    "Loads the 'truthful_qa' dataset (multiple_choice split, validation) using Hugging Face `datasets.load_dataset`.",
+    "Manually curates a list of 20 Arabic-translated questions with corresponding choices and correct answer indices."
+  ],
+  "data_processing": [
+    "Truncates input prompts to a maximum length of 128 tokens.",
+    "Pads logit arrays to length 4 using -999.0 as a constant padding value.",
+    "Converts log-probabilities to probabilities using `scipy.special.softmax`.",
+    "Bins confidence scores into 10 equal-width intervals for ECE calculation."
+  ],
+  "features_engineering": [],
+  "models": [
+    "facebook/opt-1.3b",
+    "Gemini 1.5 Flash (via API)"
+  ],
+  "frameworks_used": [
+    "torch",
+    "transformers",
+    "datasets",
+    "scipy",
+    "numpy",
+    "matplotlib",
+    "ipywidgets",
+    "pandas"
+  ],
+  "loss_functions": [
+    "nn.CrossEntropyLoss (used internally to optimize temperature scaling via LBFGS)"
+  ],
+  "cv_strategy": "",
+  "ensembling": "",
+  "insights": [
+    "Post-hoc temperature scaling significantly reduces ECE (often by 50-60%) without requiring model retraining or architectural changes.",
+    "Calibrated confidence scores are essential for implementing reliable abstention thresholds in safety-critical AI deployments.",
+    "Cross-lingual evaluation exposes hidden reliability gaps that accuracy-only metrics fail to capture."
+  ],
+  "critical_findings": [
+    "The OPT-1.3b model exhibits a structural overconfidence gap in Arabic, assigning high raw confidence to hallucinated answers while remaining well-calibrated in English.",
+    "Raw softmax probabilities systematically overestimate true accuracy, making uncalibrated logits unreliable for automated safety gating."
+  ],
+  "what_did_not_work": [],
+  "source_url": "https://www.kaggle.com/code/aminmahmoudalifayed/truthguard",
+  "votes": 56
+}

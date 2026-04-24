@@ -1,0 +1,41 @@
+{
+  "summary": "The author achieved 2nd place in an Akkadian-to-English machine translation competition by treating data construction as the primary engineering challenge rather than focusing on model architecture. They implemented a three-stage LLM pipeline to generate clean sentence-level alignments from official training data and corrupt metadata, and independently mined ~60 external academic PDFs to expand the corpus. A custom text normalization script unified highly variable cuneiform orthography, while document-level chunking and multi-version LLM extraction provided contextual signal and implicit augmentation. The final submission relied on a vanilla ByT5-large model trained on ~90,522 curated pairs, demonstrating that systematic data curation and scale outweighed architectural modifications or post-processing tricks.",
+  "extensive_summary": "## Data-Centric Approach & LLM Alignment Pipeline\nThe competition presented a severe data bottleneck, with only ~6,500 full-document pairs and ~13,456 published texts, many lacking sentence-level alignment or containing corrupt metadata. The author treated data construction as the primary engineering challenge, implementing a three-stage LLM pipeline to partition the official data into non-overlapping sets: **Breaker** (segmenting clean full-text translations into sentence pairs using OARE API word indices as anchors), **Fixer** (re-anchoring corrupt S_meta fragments using normalized word forms and physical line numbers), and **Generator** (attempting to synthesize translations from morphological metadata, which was ultimately discarded due to noise).\n\n## External Data Mining & Augmentation\nThe single largest score improvement came from independently mining ~60 academic publications on Old Assyrian cuneiform from journals and open-access repositories. These PDFs were OCR-processed and extracted, preserving their inherent sentence-level structure. To handle multilingual sources (Turkish, German, French), the extraction pipeline directly translated them into English, expanding the corpus to ~60,654 external sentence pairs. The author implemented a prefer-EN deduplication strategy to avoid conflicting translations for the same tablet, and applied a 2\u00d7 boost to English academic papers to balance exposure against naturally amplified Turkish sources. Multi-version extraction (three separate LLM passes per non-English source) provided implicit data augmentation through translation variance.\n\n## Text Normalization & Training Configuration\nAkkadian transliteration orthography is highly inconsistent, so a custom normalization script unified surface variants (e.g., `sz`/`s` \u2192 `\u0161`, subscript vowels to acute/grave accents, deleting hamza variants, standardizing determinatives). Training utilized a vanilla `google/byt5-large` model with a max sequence length of 768 bytes. Consecutive sentences were concatenated into document-level chunks up to the 768-byte ceiling to provide inter-sentence context and match the model's exact input capacity. The author experimented with Adafactor optimizer settings, discovering that setting `\u03b2\u2081=0.9` stabilized training when using `group_by_length=True`, which otherwise caused non-uniform gradient magnitudes due to length-bucketed batching. Ultimately, the submitted solution relied on ~90,522 clean sentence pairs and standard hyperparameters, proving that systematic data curation and scale outweighed architectural modifications or post-processing tricks.",
+  "rank": 2,
+  "competition_flow": "Raw official CSVs and external academic PDFs were processed through a three-stage LLM alignment pipeline and OCR extraction, normalized for orthographic consistency, chunked into document-level sequences, and trained on a vanilla ByT5-large model with Adafactor to produce the final translation submission.",
+  "data_reading": [
+    "CSV files (train.csv, published_texts.csv, S_meta) parsed via standard tools; academic PDFs OCR-processed and extracted via an LLM-based pipeline; custom dataset generator handles multi-version backups and deduplication."
+  ],
+  "data_processing": [
+    "Three-stage LLM pipeline for sentence alignment (Breaker, Fixer, Generator); OCR extraction of ~60 external academic PDFs; custom text normalization unifying highly variable cuneiform orthography (e.g., sz/s\u2192\u0161, subscript vowels to accents, hamza deletion); prefer-EN deduplication to prevent conflicting translations; 2\u00d7 boosting of English academic papers; multi-version LLM extraction passes for implicit augmentation; concatenation of consecutive sentences into 768-byte document-level chunks; group_by_length batching to minimize padding waste."
+  ],
+  "features_engineering": [],
+  "models": [
+    "ByT5-large"
+  ],
+  "frameworks_used": [],
+  "loss_functions": [],
+  "cv_strategy": "",
+  "ensembling": "No ensembling was used; a fuzzy-matching post-processor for proper names was attempted but discarded due to lack of improvement.",
+  "insights": [
+    "Treating data construction as the primary engineering challenge outweighs architectural modifications for severely data-constrained NMT tasks.",
+    "A widening public/private leaderboard gap signals the need for more diverse external data rather than hyperparameter tuning.",
+    "Using group_by_length batching introduces non-uniform gradient magnitudes that can be stabilized by enabling the first-moment estimate (\u03b2\u2081=0.9) in Adafactor.",
+    "Post-hoc name normalization is unnecessary if the model is trained on sufficient, correctly aligned source data."
+  ],
+  "critical_findings": [
+    "Synthesizing pseudo-translations from morphological metadata alone produced too much noise and actively degraded model performance.",
+    "Adding word-level dictionary translation pairs as training samples provided zero benefit despite intuitive appeal.",
+    "Running the LLM extraction pipeline three separate times on multilingual sources yields slightly different English renditions that serve as effective implicit data augmentation.",
+    "Sources already covered by the official alignment pipeline should be excluded from multi-version extraction to avoid generating near-duplicates that add no new information."
+  ],
+  "what_did_not_work": [
+    "LLM-generated pseudo-translations from morphological metadata alone were too noisy and hurt the score.",
+    "Word-level dictionary augmentation pairs showed no benefit.",
+    "Fuzzy-matching PN/GN post-processor failed to improve scores due to inconsistent name conventions across diverse test sources."
+  ],
+  "github_repos": [],
+  "papers": [],
+  "other_solution_refs": [],
+  "source_url": "https://www.kaggle.com/competitions/deep-past-initiative-machine-translation/discussion/684345"
+}

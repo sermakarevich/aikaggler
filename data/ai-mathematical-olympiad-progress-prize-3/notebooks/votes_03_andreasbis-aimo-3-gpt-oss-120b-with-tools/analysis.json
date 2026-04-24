@@ -1,0 +1,35 @@
+{
+  "summary": "This notebook implements a complete inference pipeline for the AIMO 3 competition using the open-weight GPT-OSS-120B model. It demonstrates how to serve a 120B parameter model on a single Kaggle GPU by leveraging vLLM, fp8 KV cache quantization, and OS page cache preloading. The core innovation is a robust tool-use loop that manages persistent Jupyter kernel sandboxes for stateful Python execution, handles dynamic time budgeting, and aggregates results across multiple generation attempts. Readers should take away practical techniques for running large language models under strict competition constraints, managing stateful tool execution efficiently, and improving answer reliability through entropy-weighted voting and early stopping.",
+  "purpose": "inference",
+  "competition_flow": "Loads GPT-OSS-120B weights, serves them via a local vLLM server, processes test problems through a multi-attempt tool-use loop with persistent Jupyter sandboxes, aggregates results via entropy-weighted voting, and submits predictions using Kaggle's evaluation server.",
+  "data_reading": [
+    "Relies on Kaggle's evaluation framework to parse the test CSV; uses Polars for output DataFrame formatting."
+  ],
+  "data_processing": [
+    "None explicitly shown; focuses entirely on model serving and inference logic."
+  ],
+  "features_engineering": [],
+  "models": [
+    "GPT-OSS-120B"
+  ],
+  "frameworks_used": [
+    "vllm",
+    "openai_harmony",
+    "jupyter_client",
+    "polars",
+    "kaggle_evaluation"
+  ],
+  "loss_functions": [],
+  "cv_strategy": "",
+  "ensembling": "Aggregates answers from 8 parallel generation attempts using entropy-weighted voting, with early stopping triggered when 4 identical answers are found.",
+  "insights": [
+    "Persistent Jupyter kernel pools significantly reduce overhead for stateful tool execution compared to spawning new processes per call.",
+    "Entropy-weighted voting across multiple generation attempts improves answer reliability over simple majority voting.",
+    "Preloading model weights into the OS page cache and using fp8_e4m3 KV cache dtype enables running 120B parameter models on a single Kaggle GPU.",
+    "Dynamic time budgeting per problem based on remaining notebook time prevents timeout failures across the entire test set."
+  ],
+  "critical_findings": [],
+  "what_did_not_work": [],
+  "source_url": "https://www.kaggle.com/code/andreasbis/aimo-3-gpt-oss-120b-with-tools",
+  "votes": 1017
+}

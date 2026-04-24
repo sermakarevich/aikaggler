@@ -1,0 +1,55 @@
+{
+  "summary": "The author leveraged a previous year's codebase with targeted statistical feature engineering and careful data filtering for a March Madness prediction competition. Key strategies included integrating scraped ESPN box scores, refining team and conference quality metrics using point differentials and location adjustments, and implementing a replay-based ELO system. The pipeline heavily relied on Massey ordinals, a Poisson count model for expected wins, and an exponential moving average of historical tournament performance, culminating in a majority-vote bracket feature.",
+  "extensive_summary": "The solution builds upon a previous year's codebase, focusing on statistical feature engineering and careful data filtering rather than complex deep learning architectures. The author starts by enriching the dataset with scraped ESPN box scores, which provide consistent rebound and turnover data, yielding a measurable Brier score improvement. To reduce noise, teams with less than a 33% regular-season win rate are filtered out, and play-in games are explicitly removed from training due to their outlier nature and misleading seed comparisons.\n\nThe core of the approach revolves around advanced team and conference quality metrics. Instead of binary win/loss records, team quality is derived from point differentials, adjusted for missed free throws and game location, and weighted by seed and DayNum. Conference quality is similarly constructed using only inter-conference games. An ELO rating system is implemented with season replays (n=5) to better capture team strength, calculating ratings based on point differentials relative to expected margins rather than simple win/loss outcomes.\n\nFor tournament-specific features, the author extracts Massey ordinals at DayNum=133, specifically using the worst rank among POM, WLK, and MOR. A novel proxy model is trained on men's data to predict women's Massey ranks, proving highly effective. Additional features include a season-by-season fitted Poisson count model for expected wins (`y = 2**num_wins`) and an exponential moving average (half-life=2.5 years) of historical tournament round reach to proxy for team experience. Finally, a bracket feature is constructed via majority vote of seed, quality, and ELO, incorporating expected wins as a feature.",
+  "rank": null,
+  "competition_flow": "Raw competition data and scraped ESPN API box scores are filtered and cleaned, then enriched with statistical team/conference quality metrics, replay-based ELO, Massey ordinals, Poisson expected wins, and tournament experience features before being fed into a proxy model and majority-vote bracket system for final predictions.",
+  "data_reading": [
+    "Scraped ESPN API data merged with competition dataset; no explicit loading library or format mentioned."
+  ],
+  "data_processing": [
+    "Filtered teams with <33% regular season win rate",
+    "Removed play-in games from training",
+    "Adjusted team quality for missed free throws and location",
+    "Applied season replays (n=5) to ELO",
+    "Fitted Poisson model season-by-season to prevent leakage",
+    "Computed EMA of tournament experience with half-life=2.5 years"
+  ],
+  "features_engineering": [
+    "ESPN box scores (rebound/turnover)",
+    "Team quality (point diff + adjustments + sample weights)",
+    "Conference quality (inter-conference only)",
+    "Replay-based ELO",
+    "Massey ordinals (POM, WLK, MOR) at DayNum=133",
+    "Proxy model for women's Massey rank",
+    "Poisson expected wins (y = 2**num_wins)",
+    "EMA of reached tournament rounds",
+    "Majority vote bracket feature"
+  ],
+  "models": [
+    "Poisson count model",
+    "proxy model",
+    "ELO rating system",
+    "Massey ordinals (POM, WLK, MOR)"
+  ],
+  "frameworks_used": [],
+  "loss_functions": [],
+  "cv_strategy": "",
+  "ensembling": "Majority vote of seed, quality, and ELO is used to construct a bracket feature, which is then combined with expected number of wins as a feature for the final model.",
+  "insights": [
+    "Integrating scraped ESPN box scores provides consistent advanced stats and improves the Brier score.",
+    "Point difference adjusted for missed free throws and location is the most impactful feature.",
+    "Massey ordinals at DayNum=133 yield the best results among ordinal methods.",
+    "A proxy model trained on men's data effectively predicts women's Massey ranks.",
+    "Historical tournament experience, measured via EMA of reached rounds, is a highly predictive feature."
+  ],
+  "critical_findings": [
+    "Seed10 vs Seed10 play-in games do not imply equal team strength and heavily skew validation metrics if included in training.",
+    "ELO ratings can decrease even after a win if the victory margin is lower than expected, necessitating point-differential-based updates.",
+    "Fitting the Poisson count model season-by-season is necessary to avoid data leakage across tournament years."
+  ],
+  "what_did_not_work": [],
+  "github_repos": [],
+  "papers": [],
+  "other_solution_refs": [],
+  "source_url": "https://www.kaggle.com/competitions/march-machine-learning-mania-2026/discussion/683033"
+}

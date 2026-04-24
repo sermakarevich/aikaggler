@@ -1,0 +1,43 @@
+{
+  "summary": "This notebook introduces and implements the Executive Function Benchmark, a synthetic evaluation framework designed to test large language models' instruction compliance under conflicting constraints. It programmatically generates 104 tasks across five failure modes and evaluates them using a strict, zero-tolerance accuracy metric that penalizes any format or instruction violation. The author runs deterministic inference on microsoft/phi-2 and compares results against several frontier models to isolate compliance failures from reasoning capabilities. The core takeaway is that high factual accuracy does not guarantee reliable behavior, as models frequently struggle with strict formatting and conflict resolution. Readers should understand that instruction-following is a context-sensitive control problem rather than a unified capability, and that constraint pressure can destabilize compliance even in advanced systems.",
+  "purpose": "other",
+  "competition_flow": "Synthetic tasks are generated and formatted into prompts, passed through deterministic LLM inference pipelines, evaluated against a strict zero-tolerance compliance metric, and analyzed across multiple models to benchmark instruction-following robustness.",
+  "data_reading": [
+    "Data is not loaded from external files but synthetically generated in-memory using Python's random module and collections.Counter, then persisted to JSON format via json.dump."
+  ],
+  "data_processing": [
+    "Prompts are constructed programmatically by concatenating instructions, questions, and format constraints; model outputs are post-processed by stripping the prompt prefix, extracting the first line, normalizing whitespace, and applying regex-based cleaning for strict evaluation."
+  ],
+  "features_engineering": [],
+  "models": [
+    "microsoft/phi-2"
+  ],
+  "frameworks_used": [
+    "transformers",
+    "torch",
+    "pandas",
+    "numpy",
+    "matplotlib",
+    "tqdm",
+    "json",
+    "re"
+  ],
+  "loss_functions": [],
+  "cv_strategy": "",
+  "ensembling": "",
+  "insights": [
+    "High factual accuracy does not guarantee reliable behavior, as models frequently fail strict formatting and conflict-resolution constraints.",
+    "Instruction compliance is highly sensitive to constraint type and prompting conditions rather than model scale alone.",
+    "Failures stem from control and execution limitations rather than reasoning or knowledge deficits.",
+    "Structured output requirements expose significant compliance gaps even when models possess the underlying capability."
+  ],
+  "critical_findings": [
+    "Performance drops by 20% when stricter rules are explicitly enforced, showing that constraint pressure can destabilize compliance.",
+    "Claude Sonnet 4.6 achieves perfect JSON compliance but completely fails multi-instruction and context interference tasks.",
+    "Format constraint tasks show 100% compliance across all models, while JSON constraint tasks reveal the widest performance variance.",
+    "Context interference causes extreme performance variance across models, ranging from 1/21 to 18/21."
+  ],
+  "what_did_not_work": [],
+  "source_url": "https://www.kaggle.com/code/eng20cs0359sriramm/your-model-heard-you-it-just-didn-t-obey",
+  "votes": 69
+}

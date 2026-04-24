@@ -1,0 +1,232 @@
+# stanford-rna-3d-folding-2: cross-solution summary
+
+This competition focused on RNA 3D structure prediction under strict compute constraints, where the scoring metric rewarded structural diversity across five predictions per target rather than single-model accuracy. Winning approaches consistently leveraged length-adaptive multi-model ensembles, combining template-based modeling (TBM) with diffusion/foundation models like Protenix and RNAPro. Key success factors included strategic template reranking, injecting structural priors (e.g., base-pair probabilities), and implementing robust chunking/geometry refinement pipelines to handle long sequences and stochastic scoring environments.
+
+## Competition flows
+- Raw RNA sequences split by length, processed through TBM and Protenix to generate diverse templates, fed into RNAPro for refinement, combined into five final predictions.
+- Raw RNA sequences routed through length-adaptive pipeline of five models, post-processed with geometric constraints and gap-filling, assembled into five-prediction submission.
+- Raw RNA sequences filtered and processed to compute BPP matrices via EternaFold, injected as embeddings into Protenix; predictions combined with TBM and RNAPro into ensemble.
+- Raw data processed into temporal cutoff dataset to train LightGBM TM-score predictor, selects top templates for accelerated RNAPro and Protenix inference with optimized chunking, aggregates five predictions.
+- Raw RNA sequences processed through custom TBM pipeline with secondary structure alignment and multi-chain Hungarian matching, followed by optimized Protenix inference split by length and parallelized, with candidate selection via coordinate filling and RMSD averaging.
+- Raw RNA sequences processed through length-adaptive TBM pipeline with geometry-aware gap filling and TM-score diversity selection, fed into deterministic Protenix diffusion using depth-stratified MSA modes, stitched via quintic smoothstep for multi-chunk long sequences.
+- Inference run iteratively on validation samples across TBM, Protenix, and RNAPro with varying parameters, followed by coordinate QC, sequence chunking, and score tracking to finalize diversified 5-prediction ensemble.
+- Raw test sequences processed through sequential 3-phase pipeline (TBM alignment with dynamic slot allocation, adaptive Protenix sampling, RNAPro template refinement) to generate final 5-slot submission.
+- Raw RNA structure data processed through CUDA-accelerated US-align to generate structural labels, train Cross-Attention reranker to structurally rank templates; reranked templates fill slots 1-3, Protenix and RNAPro fill 4-5, aggregated via fixed 5-slot allocation.
+
+## Data processing
+- Sequence length filtering (>1000 nt vs ≤1000 nt)
+- Truncation to 512 nt for Protenix featurization
+- Global sequence alignment with strong gap penalties
+- Coordinate transfer via linear interpolation/extrapolation for gaps
+- Geometry refinement using adaptive RNA constraints (bond lengths, angles, Laplacian smoothing, steric self-avoidance)
+- Similarity-scaled correction strength
+- Structural transformations for diversity (Gaussian noise, hinge rotation, rigid-body jitter, low-frequency wiggle)
+- Gap filling via linear interpolation for aligned gaps and 5.95 Å extrapolation for chain termini
+- Energy scoring and normalization by median absolute deviation for DRFold2 outputs
+- Sliding-window chunking for sequences >512 nt in Protenix
+- Memory cleanup via torch.cuda.empty_cache() and gc.collect() after every chunk
+- Filtered training/inference data to RNA monomers ≤1000/850 nt, excluding protein/DNA partners
+- Cropped long targets to 850 residues and zero-padded remaining coordinates
+- Defined contacts as C1'-C1' distance < 12 Å for validation quality checks
+- Temporal cutoff applied to train data
+- RNA sequences cropped to max length 768 for alignment
+- Non-RNA inputs limited to 6 per group with a 128-character budget
+- Long RNA sequences split into chains and 448-base chunks with 96-base overlaps
+- MSA depth capped at 2048
+- Diffusion steps reduced to 100 for RNAPro
+- Precomputed RNA secondary structure (SSI) in dot-bracket format using ViennaRNA
+- Split sequence and MSA files per chain for Protenix JSON input
+- Filled missing chain coordinates via downscaled coordinate copying from identical non-missing chains
+- Averaged Kabsch-aligned candidates with average RMSD ≤ 2Å
+- Geometry-aware gap-filling along RNA-like helical trajectories (C1'–C1' step ~5.9 Å)
+- TM-score-based greedy diversity selection
+- Quintic smoothstep function for chunk stitching
+- Kabsch-based reference alignment in 128-nt overlap regions
+- Chunking long RNA sequences into overlapping segments (MAX_SEQ_LEN ≈ 512, CHUNK_OVERLAP ≈ 64) for Protenix
+- Coordinate quality control to reject collapsed/degenerate outputs and pad/repeat valid samples
+- Soft geometric smoothing via adaptive_rna_constraints
+- Aligning and blending overlapping Protenix segments for continuous backbone reconstruction
+- Dynamic slot allocation based on template identity/match rate thresholds
+- Conversion of Phase 1-2 outputs to .pt template files
+- Length-based routing (>1000nt skips RNAPro and retains Phase 1-2 predictions)
+- Length ratio filtering [0.75, 1.25], TM score filtering [0.12, 0.92], negative downsampling to 1/3
+- mmseqs_0.300 clustering for diversity, ligand blacklisting, symmetric trimming for protein chains
+- Overlapping chunking with Kabsch alignment and linear blending for long sequences
+- Adaptive time budgets
+
+## Features engineering
+- Base Pair Probability (BPP) matrix [N, N] computed via EternaFold, passed through linear layer to [N, N, 128], added to initial pair representation z_init
+- Binned BPP into 20-dimensional one-hot vector
+- BppEmbedder with a small 2-block Pairformer in the recycling loop
+- alignment_score, percent_identity, len_diff_ratio
+- Cosine similarity of PubMedBERT text embeddings
+- Protein/dna/ligand_similarity_matrix_(min|mean|max)
+- num_query_(proteins|dna|ligands), num_template_(proteins|dna|ligands)
+- query/template_num_all_chains, query/template_num_unique_chains, chain_counts_match
+- Mapped RNA secondary structure (dot-bracket) to extended 12-character sequence alignment alphabet
+- Context vector with 4 common features (log query length, log template length, length ratio, Levenshtein similarity) and 6 auxiliary legacy features
+- Sequence identity scores
+- mmseqs cluster assignments
+
+## Models
+- TBM (Template-Based Modeling)
+- Protenix (AlphaFold3 architecture)
+- RNAPro
+- Boltz2
+- DRFold2
+- BPP-Protenix
+- Pairformer
+- LightGBM
+- PubMedBERT
+- Parasail
+- ViennaRNA
+- RibonanzaNet2
+- Chai-1
+- RhoFold+
+- Cross-Attention TM predictor
+
+## Frameworks used
+- BioPython
+- PyTorch
+- SciPy
+- CUDA
+- Protenix
+
+## Loss functions
+- BCEWithLogitsLoss(pos_weight)
+
+## CV strategies
+- Combined Kaggle's official validation set with collected PDBs (released 2025-12-03 to 2026-02-18), filtered to RNA monomers ≤1000 nt, resulting in 33 validation records.
+- mmseqs_0.300 cluster-based split; 15% of clusters held out for validation; train pairs must cross clusters, val pairs must involve at least one val-cluster target. Early stopping on validation Spearman correlation.
+- Iterative inference on the 28 validation samples with meticulous tracking of local validation scores and Public LB scores to guide parameter tuning and model allocation.
+
+## Ensembling
+- Five structurally distinct outputs by cross-pollinating TBM and Protenix templates into RNAPro and retaining one raw Protenix prediction, explicitly avoiding coordinate averaging.
+- Five predictions per target assembled by allocating models based on sequence length thresholds (<250, 250–999, ≥1000 nt), with TBM diversified via exponential weighting and duplicate penalties, and Boltz2/DRFold2 selected by normalized energy scores.
+- Ensemble of TBM (1 slot), RNAPro (2 slots), and BPP-Protenix (2 slots), with plain Protenix fallback for targets failing BPP filter; ranked by confidence score (top 2 of 5 samples).
+- Combines two predictions from TBM, two from Protenix, and one from RNAPro for all targets without per-sequence selection logic or threshold tuning.
+- Aggregated candidates from TBM and Protenix by Kabsch-aligning them, averaging those with average RMSD ≤ 2Å, and replacing the 1-2 lowest-scoring TBM candidates with Protenix predictions based on score thresholds.
+- Three-mode inference strategy with independent diffusion sampling across slots to generate diverse structural predictions, combined with diversity hedge using relaxed MSA thresholds, followed by Kabsch-based alignment and quintic smoothstep stitching.
+- 5-slot ensemble (2 TBM, 1 Protenix, 2 RNAPro) with diversity achieved by toggling USE_RNA_MSA flag between true and false for RNAPro predictions, combined with coordinate QC and sequence chunking.
+- Sequential 3-phase ensemble where TBM and Protenix predictions are combined into 5 slots, then RNAPro replaces slots 1-4 for targets ≤1000nt while slot 5 retains Phase 1-2 best prediction, with length-based fallback logic.
+- Fixed 5-slot allocation strategy combining top-1 sequence identity, top-1 Cross-Attention predicted TM, top-1 combined similarity-scored template, Protenix v1, and RNAPro predictions, with cluster-diverse template selection.
+
+## Insights
+- Diversity is as critical as accuracy for the best-of-5 scoring metric.
+- Cross-pollinating outputs from models with different inductive biases effectively explores diverse regions of structure space.
+- Retaining unrefined Protenix predictions prevents overcorrection on targets with close training analogs.
+- Ensembling structurally diverse models is more robust than relying on a single model.
+- TBM serves as a strong backbone for medium/long sequences but should be supplemented with template-free models for short sequences to ensure diversity.
+- Length-adaptive allocation balances inference time and score, with the 250 nt boundary optimizing speed vs. accuracy.
+- Diversity across predictions is critical for handling private leaderboard targets with no close training templates.
+- BPP provides a continuous pairing tendency hint rather than a complete secondary structure, making it robust even when pseudoknots are missed.
+- The 48-block Pairformer can effectively absorb inaccuracies in the injected BPP embeddings.
+- NN-based predictions can match template-based approaches when structural priors are properly integrated.
+- Processing speed is critical to accommodate diverse model predictions within strict runtime constraints.
+- Limiting non-RNA inputs to a fixed length budget and MSA depth effectively balances GPU memory usage with structural modeling capability.
+- Multi-step chunking with overlapping regions and Kabsch alignment successfully handles long RNA sequences and multi-chain targets without complex selection logic.
+- Incorporating RNA secondary structure information directly into sequence alignment significantly enhances template quality and candidate diversity.
+- Splitting sequences and MSAs per chain allows Protenix to handle longer sequences within VRAM limits by leveraging dynamic chunk sizing.
+- Filling missing chain coordinates by shrinking copied identical chains toward their average prevents global alignment distortion during USalign evaluation.
+- Using multiple distinct scoring configurations for template alignment yields necessary candidate diversity, even if individual configurations occasionally produce suboptimal templates.
+- MSA should be treated as a continuous depth signal rather than a binary on/off switch, as depth directly dictates the balance between evolutionary signal and alignment noise.
+- Diversity in diffusion-based structure prediction should be driven by independent stochastic sampling rather than noisy MSA inputs to maintain high-fidelity constraints.
+- Multi-chunk inference for long sequences requires C2-continuous stitching combined with overlap alignment to prevent geometric kinks and preserve global topology.
+- Enforcing full determinism in diffusion pipelines is critical for reliable ablation studies and competition performance, requiring explicit disabling of non-deterministic CUDA backends and inference-time regularization.
+- Diversifying predictions across different models is more effective than generating multiple runs of the same non-deterministic model.
+- RNAPro performs significantly better on local validation than on the Public LB, indicating a potential distribution shift or evaluation metric mismatch.
+- Enabling RNA_MSA boosts local validation scores but can degrade Public LB performance when combined with TBM.
+- Public LB scores for TBM+Protenix vary significantly across reruns due to Protenix's stochastic diffusion, meaning scores often reflect lucky sampling rather than true accuracy.
+- Dynamic slot allocation based on template quality (identity/match rate) effectively balances TBM and Protenix contributions per target.
+- Integrating RNAPro as a template-refinement step served as the primary differentiator to stand out from the majority of TBM+Protenix submissions.
+- GPU-accelerated structural alignment is a prerequisite for cheap, large-scale supervised template reranking.
+- Enforcing mmseqs-cluster diversity across template slots is more impactful than scoring tweaks.
+- Keeping Protenix and RNAPro as independent single-slot de-novo predictions consistently outperforms conditional routing strategies.
+
+## Critical findings
+- Coordinate averaging performed worse than the best-of-5 strategy for this specific metric.
+- Using more than two TBM template slots in RNAPro caused performance to plateau.
+- TBM's performance heavily depends on template similarity, making it less reliable for short sequences or targets without close training matches.
+- Boltz2 and DRFold2 become computationally impractical beyond 250 nt, while TBM scales efficiently to longer sequences.
+- Protenix requires a sliding-window chunking strategy to handle sequences >512 nt without GPU OOM.
+- EternaFold BPP was significantly more accurate than ViennaRNA for predicting 3D contacts (96.2% vs 81.4% at BPP ≥ 0.7).
+- Allowing protein/DNA partners in the BPP filter caused almost no change in the public LB score, suggesting few such targets existed in the test set.
+- BPP-Protenix outperformed plain Protenix even on targets with ground-truth pseudoknots, contrary to initial concerns about EternaFold's inability to predict them.
+- Skipping repeated chain pairs during splitting significantly accelerates prediction for multi-chain targets without sacrificing accuracy.
+- Applying circular overlap between the last and first chains helps capture potential circularity in RNA structure.
+- Solving the multi-chain alignment problem via the linear sum assignment algorithm surprisingly had minimal impact on the final score despite high expectations.
+- Attempting to align copied or truncated chain copies in Protenix consistently worsened scores compared to simply leaving them as missing.
+- Using MSA consensus-based secondary structure prediction was significantly slower and consistently yielded worse scores than computing SSI directly from individual sequences.
+- Below an MSA depth of 700, distant homologs inject alignment noise that actively degrades diffusion quality, making a strict depth cutoff empirically optimal.
+- Standard linear weight ramping at chunk boundaries causes first-derivative discontinuities that manifest as geometric kinks, which a quintic smoothstep function successfully eliminates.
+- Non-deterministic CUDA operations and MC Dropout during inference create hidden variance that can masquerade as algorithmic improvements, necessitating strict reproducibility controls.
+- RNAPro's local validation performance was excellent but its Public LB score was poor, highlighting a critical validation-to-LB discrepancy.
+- Chunking long sequences only helped two specific validation targets (9MME, 9ZCC) but provided consistent local improvement, proving its value for long RNAs.
+- The Public LB appeared heavily dominated by TBM, causing many later notebooks to overlook Protenix integration due to an unaddressed inference bottleneck.
+- Most targets classified as HIGH template quality still had fewer than 5 qualifying templates in practice, making dynamic allocation necessary.
+- RNAPro inference is constrained by a 1000nt length limit, requiring explicit fallback logic to retain Phase 1-2 predictions for longer sequences.
+- Explicit MSA usage provided minimal marginal benefit for Protenix and RNAPro on this evaluation setup.
+- Coordinate-space blending of multiple templates hurt performance on diverse targets compared to picking a single template.
+- Secondary structure features (e.g., ViennaRNA) and advanced chunk-to-chunk blending schemes did not meaningfully improve scores.
+
+## What did not work
+- Running Protenix with MSA provided no benefit and increased compute time.
+- Using more than two TBM template slots in RNAPro yielded no gains.
+- Ensemble averaging of coordinates underperformed the best-of-5 strategy.
+- Methods B (binning BPP into 20 one-hot vectors) and C (adding a BppEmbedder with a 2-block Pairformer in the recycling loop) underperformed compared to the simple linear injection (Method A).
+- Using MSA consensus-based ViennaRNA secondary structure prediction.
+- Relying on MMseqs-based template search.
+- Applying post-processing based on atom distance constraints and trajectory smoothing.
+- Orienting independent chain predictions using templates or truncated multi-chain Protenix candidates.
+- Reranking Protenix samples by model confidence consumed excessive GPU time for minimal score improvement.
+- Finetuning Protenix was attempted but abandoned due to time constraints and preprocessing complexity.
+- Using templates for Protenix yielded absolutely no difference in Public LB or local validation scores.
+- Protenix parameter tuning (SDPA/Flash Attention, MSA, multi-chain input, ligand SMILES, seed changes, version upgrades) showed no clear improvement.
+- Inference scaling strategies (multi-seed, N_model_seed=2, ranking score-based sample selection) failed to yield gains.
+- Template pool expansion with Ribonanza and PDB-RNA data did not improve results.
+- Alternative models including Chai-1, RhoFold+, DRfold2, and Boltz were tested but rejected due to poor validation performance or computational constraints.
+- Coordinate-space blending of multiple templates.
+- Explicit secondary-structure features.
+- Advanced chunk-to-chunk blending schemes.
+- Metadata-based routing of PTX vs. RNAPro slots.
+
+## Notable individual insights
+- rank 6 (6th Place Solution): Diversity is as critical as accuracy for the best-of-5 scoring metric; cross-pollinating outputs from models with different inductive biases effectively explores diverse regions of structure space.
+- rank 2 (2nd Place Solution): BPP provides a continuous pairing tendency hint rather than a complete secondary structure, making it robust even when pseudoknots are missed; EternaFold BPP was significantly more accurate than ViennaRNA for predicting 3D contacts.
+- rank 5 (5th Place Solution): MSA should be treated as a continuous depth signal rather than a binary on/off switch, as depth directly dictates the balance between evolutionary signal and alignment noise.
+- rank 4 (4th Place Solution): GPU-accelerated structural alignment is a prerequisite for cheap, large-scale supervised template reranking; enforcing mmseqs-cluster diversity across template slots is more impactful than scoring tweaks.
+- rank 7 (7th Place Solution): Public LB scores for TBM+Protenix vary significantly across reruns due to Protenix's stochastic diffusion, meaning scores often reflect lucky sampling rather than true accuracy.
+- rank 10 (10th Place Solution): RNAPro's local validation performance was excellent but its Public LB score was poor, highlighting a critical validation-to-LB discrepancy.
+- rank 1 (1st Place Solution): Length-adaptive allocation balances inference time and score, with the 250 nt boundary optimizing speed vs. accuracy for handling unseen targets with low training-set similarity.
+
+## Solutions indexed
+- #1 [[solutions/rank_01/solution|1st Place Solution — Five-Model Ensemble with Length-Adaptive Allocation]]
+- #2 [[solutions/rank_02/solution|2nd Place Solution]]
+- #3 [[solutions/rank_03/solution|3rd Place Solution]]
+- #4 [[solutions/rank_04/solution|4th Place Solution — Cross-Attention Template Reranker + Protenix + RNAPro]]
+- #5 [[solutions/rank_05/solution|5th Place Solution — msa and protenix and TBM]]
+- #6 [[solutions/rank_06/solution|6th Place Solution]]
+- #7 [[solutions/rank_07/solution|7th Place Solution]]
+- #8 [[solutions/rank_08/solution|8th Place Solution - TBM and Protenix]]
+- #10 [[solutions/rank_10/solution|10th Place Solution]]
+
+## GitHub links
+- [bytedance/Protenix](https://github.com/bytedance/Protenix) _(library)_ — from [[solutions/rank_06/solution|6th Place Solution]]
+- [ShindeShivam/Stanford-RNA-3D-Folding](https://github.com/ShindeShivam/Stanford-RNA-3D-Folding) _(reference)_ — from [[solutions/rank_06/solution|6th Place Solution]]
+- [yutarooo216/Stanford-RNA-3D-Folding-Part-2-1st-place](https://github.com/yutarooo216/Stanford-RNA-3D-Folding-Part-2-1st-place) _(solution)_ — from [[solutions/rank_01/solution|1st Place Solution — Five-Model Ensemble with Length-Adaptive Allocation]]
+- [ViennaRNA/ViennaRNA](https://github.com/ViennaRNA/ViennaRNA) _(library)_ — from [[solutions/rank_02/solution|2nd Place Solution]]
+- [WaymentSteeleLab/EternaFold](https://github.com/WaymentSteeleLab/EternaFold) _(library)_ — from [[solutions/rank_02/solution|2nd Place Solution]]
+- [DasLab/arnie](https://github.com/DasLab/arnie) _(library)_ — from [[solutions/rank_02/solution|2nd Place Solution]]
+- [NVIDIA-Digital-Bio/RNAPro](https://github.com/NVIDIA-Digital-Bio/RNAPro) _(reference)_ — from [[solutions/rank_03/solution|3rd Place Solution]]
+- [bytedance/Protenix](https://github.com/bytedance/Protenix) _(reference)_ — from [[solutions/rank_03/solution|3rd Place Solution]]
+- [bytedance/Protenix](https://github.com/bytedance/Protenix) _(library)_ — from [[solutions/rank_08/solution|8th Place Solution - TBM and Protenix]]
+- [jeffdaily/parasail](https://github.com/jeffdaily/parasail) _(library)_ — from [[solutions/rank_08/solution|8th Place Solution - TBM and Protenix]]
+- [ViennaRNA/ViennaRNA](https://github.com/ViennaRNA/ViennaRNA) _(library)_ — from [[solutions/rank_08/solution|8th Place Solution - TBM and Protenix]]
+- [bytedance/Protenix](https://github.com/bytedance/Protenix) _(library)_ — from [[solutions/rank_10/solution|10th Place Solution]]
+- [NVIDIA-Digital-Bio/RNAPro](https://github.com/NVIDIA-Digital-Bio/RNAPro) _(library)_ — from [[solutions/rank_07/solution|7th Place Solution]]
+- [bytedance/Protenix](https://github.com/bytedance/Protenix) _(library)_ — from [[solutions/rank_07/solution|7th Place Solution]]
+
+## Papers cited
+- [RNAdegformer](https://academic.oup.com/bib/article/24/1/bbac581/6986359)
+- [Template-based RNA structure prediction advanced through a blind code competition](https://doi.org/10.64898/2025.12.30.696949)
+- [Protenix-v1: Toward High-Accuracy Open-Source Biomolecular Structure Prediction](https://doi.org/10.64898/2026.02.05.703733)

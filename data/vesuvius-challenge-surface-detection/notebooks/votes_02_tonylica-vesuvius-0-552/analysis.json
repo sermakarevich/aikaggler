@@ -1,0 +1,49 @@
+{
+  "summary": "This notebook implements a single-path inference pipeline for the Vesuvius ink detection challenge, generating submission masks from pre-trained model outputs. It combines a TransUNet with sliding window inference and test-time augmentation to extract multiclass logits, which are then converted to binary probabilities via a custom logsumexp subtraction. The final masks are produced using seeded hysteresis thresholding that anchors expansion to public predictions and enforces 3D morphological topology constraints. The author demonstrates how precise tuning of sliding window overlaps and hysteresis parameters can reliably hit target leaderboard scores without retraining. Readers should learn how to safely leverage public data as weak anchors and calibrate logit-to-probability conversions for 3D histology scans.",
+  "purpose": "inference",
+  "competition_flow": "Loads test volumes, runs a pre-trained TransUNet with sliding window inference and TTA to extract logits, converts them to binary probabilities, applies seeded hysteresis thresholding with public anchors and 3D morphological operations, and zips the output masks for submission.",
+  "data_reading": [
+    "Reads test IDs from a CSV file.",
+    "Loads 3D TIFF volumes using tifffile.imread, converts them to float32, and reshapes to (1, D, H, W, 1)."
+  ],
+  "data_processing": [
+    "Normalizes intensity using medicai.transforms.NormalizeIntensity.",
+    "Applies 3D sliding window inference with Gaussian overlap.",
+    "Aggregates TTA predictions (flips along axes 1,2,3 and rotations in axes 2,3) via mean pooling.",
+    "Converts multiclass logits to binary logits using logsumexp subtraction.",
+    "Applies seeded hysteresis thresholding with public anchors.",
+    "Performs 3D binary closing with anisotropic structuring elements.",
+    "Removes small disconnected components (dust) using skimage.morphology.remove_small_objects."
+  ],
+  "features_engineering": [],
+  "models": [
+    "TransUNet (seresnext50 encoder, 3-class logits)"
+  ],
+  "frameworks_used": [
+    "keras",
+    "jax",
+    "medicai",
+    "tifffile",
+    "scipy",
+    "skimage",
+    "numpy",
+    "pandas"
+  ],
+  "loss_functions": [],
+  "cv_strategy": "",
+  "ensembling": "Aggregates logits across three sliding window overlap configurations and multiple TTA transformations via mean pooling before applying the final thresholding pipeline.",
+  "insights": [
+    "Public predictions can be safely used as weak anchors for hysteresis expansion without introducing data leakage.",
+    "Converting multiclass logits to binary probabilities via logsumexp subtraction preserves calibration better than argmax-based approaches.",
+    "3D anisotropic morphological closing is critical for maintaining continuity in ink trace masks.",
+    "Sliding window overlap thresholds require precise, leaderboard-specific tuning to hit target scores."
+  ],
+  "critical_findings": [
+    "Sliding window overlaps of 0.42 and 0.43 are explicitly required to match the public and private 0.55 scores, respectively.",
+    "Kaggle container protobuf versions often lack MessageFactory.GetPrototype, requiring a manual compatibility patch.",
+    "Model outputs contain significant dust-like false positives that must be filtered with a minimum object size threshold."
+  ],
+  "what_did_not_work": [],
+  "source_url": "https://www.kaggle.com/code/tonylica/vesuvius-0-552",
+  "votes": 458
+}

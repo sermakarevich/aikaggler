@@ -1,0 +1,84 @@
+{
+  "id": 118534,
+  "competitionName": "med-gemma-impact-challenge",
+  "title": "The MedGemma Impact Challenge",
+  "briefDescription": "Build human-centered AI applications with MedGemma and other open models from Google\u2019s Health AI Developer Foundations (HAI-DEF).",
+  "dateEnabled": "2026-01-13T21:00:28.470Z",
+  "deadline": "2026-02-24T23:59:00Z",
+  "leaderboardPercentage": 30,
+  "maxDailySubmissions": 5,
+  "numScoredSubmissions": 2,
+  "numPrizes": 1,
+  "forumId": 9138143,
+  "finalLeaderboardHasBeenVerified": true,
+  "dateCreated": "2025-10-23T14:50:28.921450300Z",
+  "competitionHostSegmentId": 1,
+  "maxTeamSize": 5,
+  "organizationId": 5202,
+  "hasCoverImageUrl": true,
+  "showPrivateLeaderboard": true,
+  "hasScripts": true,
+  "totalTeams": 878,
+  "totalCompetitors": 1251,
+  "totalSubmissions": 878,
+  "rulesRequired": true,
+  "clonedFromCompetitionId": 100890,
+  "categories": [
+    {
+      "id": 11111,
+      "name": "health",
+      "fullPath": "subject > health and fitness > health",
+      "description": "Consider the health tag your data science gym. Get in there and work out those data science muscles on health analytics. Analyze heart disease until you sweat. Then recover with with a nice candy production dataset.",
+      "datasetCount": 23644,
+      "competitionCount": 540,
+      "scriptCount": 8392,
+      "slug": "health",
+      "displayName": "Health"
+    },
+    {
+      "id": 4202,
+      "name": "healthcare",
+      "fullPath": "subject > health and fitness > health > healthcare",
+      "description": "AI in healthcare is a growing interest. One of the major problems is simply converting research into an application. Should be easy, right?",
+      "datasetCount": 2752,
+      "competitionCount": 36,
+      "scriptCount": 2248,
+      "slug": "healthcare",
+      "displayName": "Healthcare"
+    },
+    {
+      "id": 13315,
+      "name": "model comparison",
+      "fullPath": "technique > model comparison",
+      "datasetCount": 336,
+      "competitionCount": 8,
+      "scriptCount": 4167,
+      "slug": "model-comparison",
+      "displayName": "Model Comparison"
+    }
+  ],
+  "organization": {
+    "slug": "google-research",
+    "name": "Google Research",
+    "thumbnailImageUrl": "https://storage.googleapis.com/kaggle-organizations/5202/thumbnail.png?t=2025-10-20-19-14-08",
+    "profileUrl": "/organizations/google-research"
+  },
+  "launched": true,
+  "createdByUserId": 1537731,
+  "license": {
+    "id": 42,
+    "name": "Subject to Competition Rules",
+    "agreementRequired": false
+  },
+  "hostName": "Google Research",
+  "scoreTruncationNumDecimals": 5,
+  "locked": true,
+  "totalJoinedUsers": 6953,
+  "requiresIdentityVerification": true,
+  "submissionSizeLimitMb": 20480,
+  "reward": {
+    "id": "USD",
+    "quantity": 100000
+  },
+  "hackathon": true
+}

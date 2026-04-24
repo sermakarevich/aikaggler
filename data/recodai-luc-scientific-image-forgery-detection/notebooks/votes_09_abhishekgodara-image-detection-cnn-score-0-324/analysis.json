@@ -1,0 +1,53 @@
+{
+  "summary": "This notebook demonstrates a hybrid image forgery detection pipeline that freezes a DINOv2 vision transformer encoder and trains a lightweight CNN decoder on top. It emphasizes preventing overfitting through L2 regularization, temperature-scaled probability calibration, and confidence-weighted test-time augmentation. The author implements an adaptive thresholding strategy based on image brightness and contrast to minimize false positives on authentic images. Readers should learn how to effectively leverage foundation models for segmentation tasks, apply regularization to small decoders, and design robust post-processing logic for detection pipelines.",
+  "purpose": "training",
+  "competition_flow": "Loads image and mask data, splits it into train/validation sets, trains a regularized CNN decoder on top of a frozen DINOv2 encoder for 5 epochs, and generates a submission using calibrated TTA, model ensembling, and adaptive post-processing thresholds.",
+  "data_reading": [
+    "Images loaded via PIL.Image.open and converted to RGB",
+    "Masks loaded via np.load from .npy files",
+    "Paths constructed from Kaggle input directories for train, val, and test sets"
+  ],
+  "data_processing": [
+    "Images resized to 718x718 and normalized to [0,1]",
+    "Masks resized with nearest-neighbor interpolation",
+    "20% holdout validation split applied independently to authentic and forged classes",
+    "Deterministic seeding enabled for reproducibility"
+  ],
+  "features_engineering": [],
+  "models": [
+    "DINOv2-base",
+    "DINOv2-large",
+    "Custom CNN decoder (DinoTinyDecoder/DinoLargeDecoderRegularized)",
+    "Hybrid DinoSegmenter models"
+  ],
+  "frameworks_used": [
+    "pytorch",
+    "transformers",
+    "numpy",
+    "pandas",
+    "opencv-python",
+    "scikit-learn",
+    "matplotlib",
+    "tqdm"
+  ],
+  "loss_functions": [
+    "RegularizedDiceBCELoss (BCE + Dice loss with weight 0.4 + L2 regularization with weight 1e-5)"
+  ],
+  "cv_strategy": "Holdout split (20% validation) applied independently to authentic and forged image lists",
+  "ensembling": "Combines predictions from the trained Large model and a frozen Base model with equal 0.5 weights, applies confidence-weighted TTA (original, H-flip, V-flip), and uses temperature scaling (1.2-1.5) for probability calibration.",
+  "insights": [
+    "Freezing a large foundation model encoder and training only a small CNN decoder prevents overfitting on limited data.",
+    "Confidence-weighted TTA outperforms simple averaging by downweighting uncertain augmentations.",
+    "Adaptive thresholds based on image brightness and contrast significantly reduce false positives on authentic images.",
+    "Temperature scaling improves probability calibration, making model outputs more reliable for thresholding."
+  ],
+  "critical_findings": [
+    "The unregularized Large model previously overfitted and scored lower (0.246) than the simpler Base model (0.324), highlighting the risk of training large architectures on small datasets without regularization.",
+    "Conservative decision logic requiring minimum area, mean probability, and max probability thresholds is necessary to avoid false positives on authentic images."
+  ],
+  "what_did_not_work": [
+    "The unregularized Large model overfitted during training, resulting in a lower validation F1 (0.246) compared to the Base model (0.324), prompting the switch to a regularized decoder and conservative post-processing."
+  ],
+  "source_url": "https://www.kaggle.com/code/abhishekgodara/image-detection-cnn-score-0-324",
+  "votes": 143
+}

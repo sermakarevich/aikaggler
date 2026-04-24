@@ -1,0 +1,79 @@
+{
+  "summary": "The author secured 1st place in a machine translation competition by prioritizing rigorous data curation over architectural complexity. They discarded the official training set and built custom datasets by extracting sentence-level transliteration-translation pairs from PDFs using GLM-OCR and Gemini, generating synthetic data for dictionary gaps, and iteratively cleaning hard samples via cross-validation. An ensemble of 11 quantized `byt5-xl` models was trained on different data combinations, with inference generating diverse candidates via beam search and temperature sampling that were merged using a weighted MBR selector. Key driving insights included using `eval_loss` instead of BLEU/chrf for checkpoint selection to prevent format memorization, avoiding post-processing to minimize overfitting, and recognizing that larger models only outperform smaller ones when trained on sufficiently clean data.",
+  "extensive_summary": "## Data Curation & Iterative Cleaning\nThe team completely discarded the official `train.csv` and constructed custom datasets from PDFs and the OARE database. For well-structured books, they used GLM-OCR for layout analysis and Gemini-3.0-pro-preview for sentence-level extraction, carefully prompting for logical segmentation, 3D tablet continuity, SOV/SVO grammar adaptation, and anchor words (logograms, numbers, names). For poorly-structured texts, they built a custom frontend for manual screenshot extraction. They also generated LLM-labeled data and synthetic data (synth1 for dictionary coverage gaps, synth2 for free generation). Data quality was iteratively improved by training 4-fold CV models, inferring on training folds, and filtering hard samples using `geo_metric < 20` or character length differences > 100.\n\n## Model Training & Checkpoint Selection\nThey trained 11 `byt5-xl` models using `Seq2SeqTrainer` (bs=64, 3 epochs) and one with a custom quality-weighted loss (bs=48, 4 epochs). A critical technical choice was selecting checkpoints based on validation `eval_loss` rather than `eval_bleu` or `chrf`, as generation metrics often masked over-memorization of validation formats. They observed that larger models (`byt5-xl`) significantly outperformed `byt5-large` and `byt5-base`, but only when the training data was sufficiently clean to prevent overfitting.\n\n## Inference & Post-Processing\nModels were pre-compiled and quantized to \"int8-float32\" using `ctranslate2` to fit within the 9-hour time limit. During inference, each model generated 10 candidates via beam search (beam_size=8) and sampling at temperatures [0.60, 0.80, 1.05]. A community-contributed weighted MBR selector combined chrF++, BLEU, Jaccard, and length rewards to pick the final translation. They tested post-processing (cleaning repeated n-grams) but noted it increased overfitting risk, ultimately relying on the MBR approach and minimal post-processing to preserve generalization.",
+  "rank": 1,
+  "competition_flow": "Raw PDFs and OARE database were processed via OCR and LLMs to create curated training datasets, which were used to train an ensemble of quantized `byt5-xl` models; inference generated diverse candidates via beam search and sampling, which were then merged and scored using a weighted MBR selector to produce the final submission.",
+  "data_reading": [],
+  "data_processing": [
+    "Extracted from PDFs using GLM-OCR and Gemini-3.0-pro-preview with prompts for logical segmentation, 3D tablet continuity, grammar adaptation, and anchor words.",
+    "Generated synthetic data for dictionary coverage gaps and free-form sentence pairs.",
+    "Iteratively cleaned data by training 4-fold CV models, inferring on training folds, and filtering hard samples using geo_metric < 20 or character length differences > 100.",
+    "Discarded official train.csv; applied minimal post-processing to avoid overfitting; one variant cleaned repeated n-grams (n=2-7).",
+    "Pre-compiled and quantized models to int8-float32 for inference."
+  ],
+  "features_engineering": [],
+  "models": [
+    "byt5-xl",
+    "byt5-large",
+    "byt5-base"
+  ],
+  "frameworks_used": [
+    "Seq2SeqTrainer",
+    "ctranslate2"
+  ],
+  "loss_functions": [
+    "eval_loss",
+    "custom loss weighted by data quality"
+  ],
+  "cv_strategy": "4-fold cross-validation for data cleaning; 9:1 train/valid split for some models; checkpoint selection based on validation eval_loss.",
+  "ensembling": "The final submission was an ensemble of 11 quantized byt5-xl models, each generating 10 candidates via beam search and temperature sampling, which were merged and scored using a weighted MBR selector combining chrF++, BLEU, Jaccard, and length rewards.",
+  "insights": [
+    "Careful data preprocessing and minimal post-processing are crucial to avoid public LB overfitting.",
+    "Larger models significantly improve scores but require sufficiently clean training data to prevent overfitting.",
+    "eval_loss is a more reliable metric for checkpoint selection than generation metrics like BLEU or chrf, which can mask over-memorization of validation formats.",
+    "Quantization and pre-compilation are essential for fitting large model ensembles within strict inference time limits."
+  ],
+  "critical_findings": [
+    "Relying on eval_bleu or chrf for checkpoint selection is untrustworthy because continuous improvements often indicate the model is memorizing validation set formats rather than generalizing.",
+    "Post-processing techniques like cleaning repeated n-grams can increase overfitting risk and should be avoided unless absolutely necessary.",
+    "Using more quantized models is more effective for inference speed and score than using fewer full-precision models."
+  ],
+  "what_did_not_work": [
+    "Using decoder-only models like Qwen or translate-gemma without sufficient proof of viability.",
+    "Continual Pre-Training (CPT) due to poor quality and difficulty cleaning the pre-training corpus.",
+    "Multilingual training with prefixes to distinguish target languages.",
+    "Using context in the input.",
+    "Test Time Augmentation (TTA) using byt5 outputs for further fine-tuning.",
+    "Pre-processing steps like standardizing Sumerian spelling, determinative formats, or stripping supplementary text in translations.",
+    "Post-processing steps like standardizing names/places according to onomasticon.csv."
+  ],
+  "github_repos": [],
+  "papers": [],
+  "other_solution_refs": [
+    {
+      "description": "MBR candidate diversity strategy",
+      "url": "https://www.kaggle.com/code/ngyzly/lb-35-5-better-candidate-diversity-on-public-model"
+    },
+    {
+      "description": "Post-training Qwen2.5 32B/72B solution",
+      "url": "https://www.kaggle.com/competitions/deep-past-initiative-machine-translation/writeups/25th-post-training-qwen2-5-32b-and-72b-with-gemi"
+    },
+    {
+      "description": "Seq2Seq CPT pseudo-label solution",
+      "url": "https://www.kaggle.com/competitions/deep-past-initiative-machine-translation/writeups/10th-place-solution-seq2seq-cpt-pseudo-label"
+    },
+    {
+      "description": "CPT GRPO no SFT solution",
+      "url": "https://www.kaggle.com/competitions/deep-past-initiative-machine-translation/writeups/23rd-place-cpt-grpo-no-sft"
+    },
+    {
+      "description": "Discussion on using context",
+      "url": "https://www.kaggle.com/competitions/deep-past-initiative-machine-translation/discussion/684270"
+    },
+    {
+      "description": "LLM online learning solution",
+      "url": "https://www.kaggle.com/competitions/deep-past-initiative-machine-translation/writeups/llm-online-learning-is-all-you-need"
+    }
+  ],
+  "source_url": "https://www.kaggle.com/competitions/deep-past-initiative-machine-translation/discussion/684353"
+}

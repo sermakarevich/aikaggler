@@ -1,0 +1,47 @@
+{
+  "summary": "This notebook provides a complete training pipeline for 3D surface detection in the Vesuvius Challenge, leveraging the `medicai` library with a JAX backend on TPUs. It demonstrates an end-to-end workflow including TFRecord data loading, extensive 3D spatial and intensity augmentations, and a SegFormer-based segmentation model. The author highlights advanced training techniques such as combining Dice/CE loss with topology-aware Centerline Dice loss, implementing sliding window inference for memory-efficient prediction, and detailing a deep supervision recipe for faster convergence. Readers should take away practical patterns for handling large 3D volumetric data, managing class imbalance via ignore masks, and structuring reproducible Keras 3 training loops.",
+  "purpose": "training",
+  "competition_flow": "Loads 3D volumetric data from TFRecords, applies geometric and intensity augmentations, trains a SegFormer segmentation model with a combined Dice/CE and CLDice loss, and evaluates predictions using sliding window inference to compute Dice scores.",
+  "data_reading": [
+    "Parses TFRecord files using tf.io.parse_single_example with fixed-length string features for image, label, and their shapes.",
+    "Decodes raw byte strings to uint8 tensors, reshapes to (D, H, W), casts to float32, and appends a channel dimension to form (D, H, W, 1)."
+  ],
+  "data_processing": [
+    "Training augmentations via medicai.transforms.Compose: RandSpatialCrop, RandFlip (3 axes), RandRotate90, RandRotate, NormalizeIntensity, RandShiftIntensity, and RandCutOut.",
+    "Validation uses only NormalizeIntensity.",
+    "Inference employs SlidingWindowInference with Gaussian weighting, 0.5 overlap, and ROI size matching input shape."
+  ],
+  "features_engineering": [],
+  "models": [
+    "SegFormer (mit_b0 encoder)",
+    "UPerNet (commented)",
+    "UNETRPlusPlus (commented)",
+    "TransUNet (commented)",
+    "Custom ConvNeXtV2Tiny + TransUNet (commented)"
+  ],
+  "frameworks_used": [
+    "keras",
+    "tensorflow",
+    "medicai",
+    "numpy",
+    "pandas",
+    "matplotlib",
+    "PIL"
+  ],
+  "loss_functions": [
+    "SparseDiceCELoss",
+    "SparseCenterlineDiceLoss"
+  ],
+  "cv_strategy": "Holdout validation using the last TFRecord file as the validation set and all preceding files as training data.",
+  "ensembling": "",
+  "insights": [
+    "Deep supervision with auxiliary decoder losses mitigates gradient vanishing and accelerates convergence in 3D segmentation.",
+    "Combining standard Dice/CE with topology-aware CLDice loss improves surface and boundary detection accuracy.",
+    "Sliding window inference is essential for processing large 3D volumes within hardware constraints.",
+    "TFRecords combined with tf.data parallel mapping significantly reduce I/O bottlenecks during training."
+  ],
+  "critical_findings": [],
+  "what_did_not_work": [],
+  "source_url": "https://www.kaggle.com/code/ipythonx/train-vesuvius-surface-3d-detection-on-tpu",
+  "votes": 266
+}

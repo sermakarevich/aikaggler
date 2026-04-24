@@ -1,0 +1,79 @@
+{
+  "summary": "The author combined Template-Based Modeling (TBM) and Protenix to solve an RNA 3D folding competition, focusing on optimizing validation and public leaderboard scores within strict GPU and time constraints. Key innovations included enhancing TBM by encoding RNA secondary structure information directly into the sequence alignment alphabet and solving multi-chain alignment via the Hungarian algorithm. For Protenix, the author optimized inference for varying sequence lengths by dynamically adjusting chunk sizes, splitting chains per JSON record, and parallelizing across two T4 GPUs. Final scores were improved through strategic post-processing, including filling missing chain coordinates via downscaled coordinate copying and averaging Kabsch-aligned candidates with low RMSD.",
+  "extensive_summary": "## Template-Based Modeling (TBM)\nThe author built a custom TBM pipeline using Parasail for sequence alignment and ViennaRNA for secondary structure information (SSI). Instead of standard alignment, SSI in dot-bracket format was computed per chain and mapped to an extended 12-character alphabet (e.g., 'A' + '.' -> 'A', 'A' + '(' -> 'P'). This allowed the alignment to simultaneously score sequence matches and secondary structure matches using a 12x12 distance matrix. Two distinct scoring configurations were run to maximize candidate diversity, with top candidates selected via round-robin. Multi-chain alignment was addressed by computing all N x M chain alignments and solving the linear sum assignment problem via scipy, though the author noted this had surprisingly minimal score impact.\n\n## Protenix Inference Optimization\nProtenix inference was heavily constrained by a 2xT4 GPU setup and an 8-hour time limit. For sequences \u2264768, the author leveraged Protenix's dynamic chunk size feature, reducing the chunk size from 256 to 128 to fit within 16GB VRAM, and split sequences/MSAs per chain in the input JSON. For sequences >768, chains were predicted independently with 256bp overlapping splits and aligned via Kabsch. Chain copies were intentionally left as missing rather than copied or truncated, as alignment attempts consistently worsened scores. Inference was deterministic, enabled with MSA and template switches, and managed via strict time budgets that limited diffusion samples and seed iterations.\n\n## Post-processing and Candidate Selection\nThe final pipeline focused on refining candidate quality before submission. Missing chain coordinates were filled by copying identical non-missing chains and shrinking them toward their average position to prevent global alignment distortion during USalign evaluation. Candidates were Kabsch-aligned and averaged if their average RMSD was \u2264 2\u00c5. Up to five TBM candidates were selected, and the 1-2 lowest-scoring ones were replaced with Protenix predictions based on score thresholds (0.5/0.8) and candidate availability. Distance-constraint post-processing and trajectory smoothing were tested but abandoned due to lack of improvement.",
+  "rank": 8,
+  "competition_flow": "Raw RNA sequences were processed through a custom TBM pipeline incorporating secondary structure alignment and multi-chain Hungarian matching, followed by optimized Protenix inference split by sequence length and parallelized across two T4 GPUs, with final candidate selection involving coordinate filling, RMSD-based averaging, and threshold-driven replacement.",
+  "data_reading": [],
+  "data_processing": [
+    "Precomputed RNA secondary structure (SSI) in dot-bracket format using ViennaRNA for each chain independently.",
+    "Split sequence and MSA files per chain for Protenix JSON input.",
+    "Filled missing chain coordinates via downscaled coordinate copying from identical non-missing chains.",
+    "Averaged Kabsch-aligned candidates with average RMSD \u2264 2\u00c5."
+  ],
+  "features_engineering": [
+    "Mapped RNA secondary structure (dot-bracket) to an extended 12-character sequence alignment alphabet to enable simultaneous sequence and SSI scoring in Parasail."
+  ],
+  "models": [
+    "Parasail",
+    "ViennaRNA",
+    "Protenix"
+  ],
+  "frameworks_used": [
+    "scipy",
+    "Protenix"
+  ],
+  "loss_functions": [],
+  "cv_strategy": "",
+  "ensembling": "Aggregated candidates from TBM and Protenix by Kabsch-aligning them, averaging those with average RMSD \u2264 2\u00c5, and replacing the 1-2 lowest-scoring TBM candidates with Protenix predictions based on score thresholds.",
+  "insights": [
+    "Incorporating RNA secondary structure information directly into sequence alignment significantly enhances template quality and candidate diversity.",
+    "Splitting sequences and MSAs per chain allows Protenix to handle longer sequences within VRAM limits by leveraging dynamic chunk sizing.",
+    "Filling missing chain coordinates by shrinking copied identical chains toward their average prevents global alignment distortion during USalign evaluation.",
+    "Using multiple distinct scoring configurations for template alignment yields necessary candidate diversity, even if individual configurations occasionally produce suboptimal templates."
+  ],
+  "critical_findings": [
+    "Solving the multi-chain alignment problem via the linear sum assignment algorithm surprisingly had minimal impact on the final score despite high expectations.",
+    "Attempting to align copied or truncated chain copies in Protenix consistently worsened scores compared to simply leaving them as missing.",
+    "Using MSA consensus-based secondary structure prediction was significantly slower and consistently yielded worse scores than computing SSI directly from individual sequences."
+  ],
+  "what_did_not_work": [
+    "Using MSA consensus-based ViennaRNA secondary structure prediction.",
+    "Relying on MMseqs-based template search.",
+    "Applying post-processing based on atom distance constraints and trajectory smoothing.",
+    "Orienting independent chain predictions using templates or truncated multi-chain Protenix candidates."
+  ],
+  "github_repos": [
+    {
+      "url": "https://github.com/bytedance/Protenix",
+      "role": "library"
+    },
+    {
+      "url": "https://github.com/jeffdaily/parasail",
+      "role": "library"
+    },
+    {
+      "url": "https://github.com/ViennaRNA/ViennaRNA",
+      "role": "library"
+    }
+  ],
+  "papers": [],
+  "other_solution_refs": [
+    {
+      "description": "Kaggle discussion on multi-chain alignment",
+      "url": "https://www.kaggle.com/competitions/stanford-rna-3d-folding-2/discussion/680551"
+    },
+    {
+      "description": "MMseqs+TBM+Parasail notebook",
+      "url": "https://www.kaggle.com/code/theoviel/stanford-rna-3d-folding-pt2-templates"
+    },
+    {
+      "description": "Protenix top-1 solution notebook",
+      "url": "https://www.kaggle.com/code/sigmaborov/stanford-rna-3d-folding-top-1-solution"
+    },
+    {
+      "description": "MMseqs2 3D RNA template identification notebook",
+      "url": "https://www.kaggle.com/code/rhijudas/mmseqs2-3d-rna-template-identification-part-2"
+    }
+  ],
+  "source_url": "https://www.kaggle.com/competitions/stanford-rna-3d-folding-2/discussion/687113"
+}

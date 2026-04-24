@@ -1,0 +1,34 @@
+{
+  "id": "baidalinadilzhan/lb-35-2-ensemble",
+  "id_no": 108435184,
+  "title": "LB [35.2] Ensemble",
+  "code_file": "lb-35-2-ensemble.ipynb",
+  "language": "python",
+  "kernel_type": "notebook",
+  "is_private": false,
+  "enable_gpu": true,
+  "enable_tpu": false,
+  "enable_internet": false,
+  "keywords": [
+    "gpu"
+  ],
+  "dataset_sources": [
+    "",
+    "llkh0a/byt5-akkadian-model",
+    "jeanjean111/byt5-base-big-data2",
+    "assiaben/final-byt5",
+    "qifeihhh666/train-gap-all-2"
+  ],
+  "kernel_sources": [
+    "packagemanager/pm-108435184-at-02-19-2026-03-55-09"
+  ],
+  "competition_sources": [
+    "deep-past-initiative-machine-translation"
+  ],
+  "model_sources": [
+    "mattiaangeli/byt5-akkadian-mbr/PyTorch/default/6",
+    "google/gemma-3/Transformers/gemma-3-4b-it/1"
+  ],
+  "docker_image": "gcr.io/kaggle-private-byod/python@sha256:58f63ed194fa7d5c55181f1e8ec0be141e9211efa23bc7501c1c865f7e00057d",
+  "machine_shape": "NvidiaTeslaT4"
+}

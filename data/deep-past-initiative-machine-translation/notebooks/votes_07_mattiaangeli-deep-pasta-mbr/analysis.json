@@ -1,0 +1,38 @@
+{
+  "summary": "This notebook implements a highly optimized inference pipeline for a specialized machine translation task (Akkadian to English) using a pre-trained Seq2Seq model. It demonstrates advanced decoding strategies, specifically Minimum Bayes Risk (MBR) selection, by combining beam search and sampling candidates to maximize average chrF++ similarity. The code showcases performance optimizations like BF16-only automatic mixed precision, Hugging Face's BetterTransformer, bucket batching, and aggressive vectorized post-processing to handle translation artifacts. Readers should take away practical techniques for maximizing inference speed and output quality in low-resource or specialized translation competitions without retraining.",
+  "purpose": "inference",
+  "competition_flow": "Loads a CSV of Akkadian transliterations, applies regex-based text cleaning, runs inference with a pre-trained Seq2Seq model using MBR decoding and aggressive post-processing, and saves the final English translations to a submission CSV.",
+  "data_reading": [
+    "Reads test data from a CSV file using pandas.read_csv with UTF-8 encoding, expecting 'id' and 'transliteration' columns."
+  ],
+  "data_processing": [
+    "Vectorized regex-based text cleaning replaces ellipses/gaps with <big_gap> and <gap> tokens.",
+    "Aggressive post-processing normalizes whitespace, removes forbidden characters, fixes punctuation spacing, merges adjacent gaps, removes annotations, converts fractions, and deduplicates repeated words/n-grams.",
+    "Uses bucket batching for DataLoader to minimize padding overhead."
+  ],
+  "features_engineering": [],
+  "models": [
+    "ByT5 (via AutoModelForSeq2SeqLM)"
+  ],
+  "frameworks_used": [
+    "pytorch",
+    "transformers",
+    "pandas",
+    "numpy",
+    "sacrebleu",
+    "optimum"
+  ],
+  "loss_functions": [],
+  "cv_strategy": "",
+  "ensembling": "Implements Minimum Bayes Risk (MBR) decoding by generating candidates via beam search and sampling, then selecting the output that maximizes the average chrF++ similarity to all other candidates in the pool.",
+  "insights": [
+    "MBR decoding with a mix of beam search and sampling candidates can significantly improve translation quality over standard greedy or beam search alone.",
+    "Aggressive, vectorized post-processing is crucial for cleaning translation artifacts like repeated words, forbidden characters, and spacing issues in specialized domains.",
+    "BF16-only automatic mixed precision with fallback to FP32 provides a safe and effective way to accelerate inference on compatible GPUs without numerical instability.",
+    "Bucket batching and adaptive beam sizing based on input length can optimize memory usage and inference speed."
+  ],
+  "critical_findings": [],
+  "what_did_not_work": [],
+  "source_url": "https://www.kaggle.com/code/mattiaangeli/deep-pasta-mbr",
+  "votes": 398
+}

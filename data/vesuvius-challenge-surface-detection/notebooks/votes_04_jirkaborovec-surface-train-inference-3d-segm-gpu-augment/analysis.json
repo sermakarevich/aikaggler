@@ -1,0 +1,43 @@
+{
+  "summary": "This notebook implements a complete 3D surface segmentation pipeline for the Vesuvius Challenge, emphasizing computational efficiency and reproducibility. It demonstrates how to bypass slow TIFF decoding by loading pre-saved `.npy`/`.npz` volumes and applying GPU-accelerated augmentations via MONAI to minimize CPU-GPU transfer overhead. The training loop leverages PyTorch Lightning with a 3D SegResNet, combining DiceCE and Tversky losses to address foreground/background imbalance, alongside mixed precision and gradient clipping for stability. Inference handles variable-sized test volumes by resizing predictions back to original dimensions and optionally applying 3D morphological operations. Readers should take away practical strategies for optimizing 3D medical/structural segmentation workflows, particularly custom Lightning hooks for variable batch sizes and GPU-native data pipelines.",
+  "purpose": "baseline",
+  "competition_flow": "Loads 3D image/label volumes from disk, applies GPU-accelerated augmentations and dynamic resizing, trains a 3D SegResNet with PyTorch Lightning using combined DiceCE/Tversky loss, and generates binary segmentation masks for test fragments via inference and post-processing.",
+  "data_reading": [
+    "Custom `SurfaceDataset3D` scans directories for `.npy`, `.npz`, or `.tif` files, loads them with `numpy`/`tifffile`/`imagecodecs`, and returns raw `(D, H, W)` arrays; labels are loaded from a parallel directory if available."
+  ],
+  "data_processing": [
+    "Dynamic resizing to `(160, 160, 160)` via MONAI `Resized`.",
+    "GPU-accelerated augmentations: 3D `RandFlipd`, `RandRotated`, `RandShiftIntensityd`, `RandGaussianNoised`.",
+    "Validation only resizes.",
+    "Custom collate returns lists to defer stacking until GPU transfer.",
+    "Mixed precision (`16-mixed`) used during training."
+  ],
+  "features_engineering": [],
+  "models": [
+    "SegResNet"
+  ],
+  "frameworks_used": [
+    "pytorch",
+    "pytorch_lightning",
+    "monai",
+    "scikit-image",
+    "tifffile",
+    "imagecodecs"
+  ],
+  "loss_functions": [
+    "DiceCELoss",
+    "TverskyLoss (alpha=0.7, beta=0.3)"
+  ],
+  "cv_strategy": "Holdout 80/20 train/val split (random seed 42)",
+  "ensembling": "",
+  "insights": [
+    "GPU-accelerated augmentations via MONAI drastically reduce training time by avoiding CPU-GPU data transfers.",
+    "Pre-computed `.npy`/`.npz` volumes bypass slow TIFF decoding and improve data throughput.",
+    "Custom collate functions combined with `on_after_batch_transfer` enable efficient handling of variable-sized 3D batches.",
+    "Mixed precision and gradient clipping are essential for stable 3D volume training."
+  ],
+  "critical_findings": [],
+  "what_did_not_work": [],
+  "source_url": "https://www.kaggle.com/code/jirkaborovec/surface-train-inference-3d-segm-gpu-augment",
+  "votes": 321
+}

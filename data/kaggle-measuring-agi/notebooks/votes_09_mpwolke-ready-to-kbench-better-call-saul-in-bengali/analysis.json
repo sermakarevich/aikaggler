@@ -1,0 +1,36 @@
+{
+  "summary": "This notebook serves as a personal tutorial and exploratory benchmark for Kaggle's new `kaggle_benchmarks` (kbench) platform. It demonstrates how to define custom LLM evaluation tasks using the `@task` decorator, run them on model placeholders, and apply both deterministic keyword checks and LLM-as-a-judge assertions. The author tests the framework across English, Bengali, and prompt-injection scenarios to verify cross-lingual support and evaluation robustness. Readers should learn how to quickly structure, run, and publish custom cognitive benchmarks on Kaggle without writing complex training pipelines. The key takeaway is that kbench simplifies benchmark creation by abstracting model swapping and evaluation logic into a unified, declarative API.",
+  "purpose": "tutorial",
+  "competition_flow": "The notebook defines custom benchmark tasks using the kaggle_benchmarks library, runs them on placeholder and specific LLMs, applies keyword and LLM-judge assertions, and demonstrates cross-lingual and prompt-injection evaluation capabilities on Kaggle's benchmark platform.",
+  "data_reading": [],
+  "data_processing": [],
+  "features_engineering": [],
+  "models": [
+    "kbench.llm (placeholder)",
+    "google/gemini-2.5-flash",
+    "google-gemini-3.1-flash-lite"
+  ],
+  "frameworks_used": [
+    "kaggle_benchmarks",
+    "requests",
+    "re"
+  ],
+  "loss_functions": [],
+  "cv_strategy": "",
+  "ensembling": "",
+  "insights": [
+    "The kaggle_benchmarks library simplifies custom LLM evaluation by wrapping prompts and assertions in a simple @task decorator.",
+    "Evaluation pipelines can effectively combine fast, deterministic keyword checks with flexible LLM-as-a-judge assessments for nuanced criteria.",
+    "The platform supports seamless model swapping via kbench.llm, allowing benchmark tasks to run across different frontier models without code modifications.",
+    "Cross-lingual prompts and complex prompt-injection scenarios can be reliably tested using the same task structure and assertion framework."
+  ],
+  "critical_findings": [
+    "Advanced models like Gemini 3.1 Flash-lite failed to recognize the author's public Kaggle identity despite years of platform activity.",
+    "The LLM judge and keyword assertions performed reliably for Bengali prompts, confirming strong cross-lingual evaluation support within the framework."
+  ],
+  "what_did_not_work": [
+    "The author notes that Gemini 3.1 Flash-lite failed to recognize their Kaggle identity, and the 'Better Call Saul' prompt injection test yielded unclear or unexpected results."
+  ],
+  "source_url": "https://www.kaggle.com/code/mpwolke/ready-to-kbench-better-call-saul-in-bengali",
+  "votes": 29
+}

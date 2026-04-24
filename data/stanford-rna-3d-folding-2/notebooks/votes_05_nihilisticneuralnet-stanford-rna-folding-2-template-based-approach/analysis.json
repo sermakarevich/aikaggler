@@ -1,0 +1,36 @@
+{
+  "summary": "This notebook implements a template-based, rule-driven approach for predicting RNA 3D structures without training a neural network. It retrieves homologous training sequences using global sequence alignment, adapts their known 3D coordinates to the query sequence via gap handling and interpolation, and enforces physical constraints like sequential bond lengths, steric clashes, and base-pairing distances. The method generates five structural variants per target by combining template adaptation with lightweight de novo folding and stochastic perturbations, ultimately submitting an ensemble of coordinates. Readers should understand how sequence homology, geometric constraints, and simple structural priors can serve as a strong, interpretable baseline for biomolecular structure prediction when deep learning resources are unavailable.",
+  "purpose": "baseline",
+  "competition_flow": "Loads training sequences and 3D coordinates, aligns them to test sequences to extract structural templates, applies geometric constraints and stochastic perturbations to generate five coordinate predictions per target, and formats the results into a competition submission CSV.",
+  "data_reading": [
+    "Reads CSV files for training/validation/test sequences and labels using pandas.",
+    "Processes labels into a dictionary mapping target IDs to 3D coordinate arrays by grouping on ID prefix and extracting x_1, y_1, z_1 columns."
+  ],
+  "data_processing": [
+    "Performs global sequence alignment using Biopython's pairwise2.",
+    "Filters templates by length difference (>50% skipped) and temporal cutoffs.",
+    "Adapts template coordinates to query sequences via alignment mapping and linear interpolation for gaps.",
+    "Enforces physical constraints (sequential distance, steric clash prevention, base-pair targeting) with adaptive strength based on alignment similarity."
+  ],
+  "features_engineering": [],
+  "models": [],
+  "frameworks_used": [
+    "pandas",
+    "numpy",
+    "scipy",
+    "biopython",
+    "scikit-learn"
+  ],
+  "loss_functions": [],
+  "cv_strategy": "",
+  "ensembling": "Generates five structural predictions per target by combining top template adaptations with de novo generated structures, applies varying levels of constraint strength and stochastic noise based on template confidence, and outputs all five coordinate sets per residue for submission.",
+  "insights": [
+    "Sequence homology combined with simple geometric constraints can produce physically plausible RNA structures without training.",
+    "Adaptive constraint strength based on template similarity balances fidelity to known structures with flexibility for novel folds.",
+    "Linear interpolation and directional stepping effectively handle gaps in sequence alignment for coordinate mapping."
+  ],
+  "critical_findings": [],
+  "what_did_not_work": [],
+  "source_url": "https://www.kaggle.com/code/nihilisticneuralnet/stanford-rna-folding-2-template-based-approach",
+  "votes": 297
+}

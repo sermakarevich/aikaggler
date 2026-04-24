@@ -1,0 +1,111 @@
+{
+  "overall_summary": "The community's top notebooks focus almost exclusively on hybrid inference pipelines for RNA 3D structure prediction, combining template-based modeling (TBM), diffusion-based generative models, and geometric fallbacks. Rather than training new architectures, participants leverage classical sequence alignment, coordinate adaptation, and adaptive physical constraints to generate diverse, submission-ready conformations. A recurring theme is robust handling of long sequences via overlapping chunking and Kabsch-aligned stitching, alongside careful stoichiometry parsing for multi-chain complexes.",
+  "common_purposes": [
+    "inference",
+    "baseline"
+  ],
+  "competition_flows": [
+    "Hybrid TBM + Protenix + de-novo fallback pipeline with chunking/stitching and CSV export",
+    "Template-based coordinate adaptation with physical constraint enforcement and multi-sample CSV export",
+    "TBM + Protenix inference with gap-filling via de-novo helix and fixed sample count export",
+    "Classical alignment-driven template matching with stochastic perturbations and multi-variant CSV export",
+    "Custom TBM + RNAPro integration with conditional long-sequence replacement and CSV export",
+    "Homology template selection with fixed-weight averaging and geometric refinement before CSV export"
+  ],
+  "data_reading": [
+    "pandas.read_csv for test, train, and validation sequence/label CSVs",
+    "Custom parsing for stoichiometry, chain segmentation, and FASTA headers",
+    "JSON serialization for model input formatting",
+    "Symlinked PDB_RNA .cif files for template data",
+    "Grouping training labels by target ID to extract initial 3D coordinates"
+  ],
+  "data_processing": [
+    "Global sequence alignment via Biopython PairwiseAligner",
+    "Template coordinate adaptation via alignment mapping and linear interpolation",
+    "Overlapping chunk splitting for long sequences",
+    "Kabsch alignment and linear weight blending for chunk stitching",
+    "Adaptive RNA physical constraints (bond lengths, angles, Laplacian smoothing, self-avoidance)",
+    "Diversity transforms (hinge rotation, chain jitter, spline wiggle)",
+    "Coordinate clipping to [-999.999, 9999.999]",
+    "C1' atom masking and coordinate padding/heuristics",
+    "Template filtering by length difference and similarity thresholds",
+    "Confidence-weighted Gaussian noise injection for ensemble diversity",
+    "Merging submissions by ID matching and conditional replacement",
+    "Filling gaps with fixed helical steps or random walk fallbacks"
+  ],
+  "features_engineering": [
+    "Domain-derived geometric constraints (backbone bond lengths, i-i+2 distances, Laplacian smoothing, self-avoidance)",
+    "Stoichiometry parsing for multi-chain complex handling",
+    "Idealized A-form helix coordinates for de-novo fallback",
+    "Confidence-weighted diversity transforms",
+    "Sequence-level features (length, GC/AU content, alphabet complexity)",
+    "Alignment scores, percent identity, and length ratio as similarity metrics"
+  ],
+  "models": [
+    "Protenix",
+    "Template-Based Modeling (TBM)",
+    "de-novo A-form RNA helix fallback",
+    "RNAPro",
+    "USalign"
+  ],
+  "frameworks_used": [
+    "torch",
+    "numpy",
+    "pandas",
+    "biopython",
+    "rdkit",
+    "tqdm",
+    "scipy",
+    "scikit-learn",
+    "Bio.Align",
+    "biotite",
+    "RNAPro",
+    "json",
+    "pathlib",
+    "sys",
+    "os",
+    "time",
+    "random",
+    "warnings",
+    "contextlib"
+  ],
+  "loss_functions": [],
+  "cv_strategies": [],
+  "ensembling": [
+    "Filling prediction slots sequentially with TBM, Protenix, and de-novo helix fallbacks",
+    "Concatenating TBM, Protenix, and de-novo outputs without weighted averaging",
+    "Combining top template adaptations with de novo structures using confidence-weighted stochastic noise",
+    "Conditionally replacing deep learning coordinates with TBM results for long sequences (>1000 residues)",
+    "Applying fixed weights to top homologous templates before filling remaining slots with generative models",
+    "Stacking multiple coordinate sets into a fixed sample dimension for submission"
+  ],
+  "insights": [
+    "Homology modeling remains highly effective when templates share sufficient similarity and identity.",
+    "Overlapping chunking with Kabsch alignment and linear blending successfully extends diffusion models beyond their native sequence length limits.",
+    "Adaptive physical constraints significantly improve the geometric plausibility of predicted RNA structures.",
+    "Deterministic seeding and chunk stitching ensure reproducible and artifact-free submissions.",
+    "Hybrid inference pipelines that leverage training data templates significantly reduce the need for pure de-novo prediction.",
+    "Collapsed coordinate outputs from Protenix must be explicitly detected and discarded to prevent submission errors.",
+    "Stoichiometry and chain segmentation must be parsed per-target to correctly apply constraints to multi-chain complexes."
+  ],
+  "critical_findings": [
+    "Collapsed coordinates (where all atoms overlap) are explicitly detected and filtered during Protenix inference.",
+    "Stoichiometry parsing is required to correctly handle multi-chain RNA complexes.",
+    "Sequences with low similarity or identity to the training pool are correctly routed away from TBM to avoid poor adaptations.",
+    "TBM alone achieves the best leaderboard score (0.249), while adding Protenix, MSA, or template features degrades performance to ~0.40.",
+    "Protenix outputs can collapse to identical coordinates if the C1' atom mask selection heuristic is incorrect or when sequence length truncation causes shape mismatches.",
+    "Chunk stitching relies on a minimum overlap length (\u22653 residues) to compute reliable Kabsch alignments; shorter overlaps are skipped."
+  ],
+  "what_did_not_work": [
+    "Adding MSA, RNA MSA, or template features to Protenix degraded the leaderboard score compared to TBM alone.",
+    "Protenix inference fails or produces collapsed coordinates when the C1' atom mask selection heuristic is incorrect or when sequence length truncation causes shape mismatches."
+  ],
+  "notable_individual_insights": [
+    "votes 232 (Stanford RNA 3D Folding Part 2|Protenix+TBM): TBM alone achieves the best leaderboard score (0.249), while adding Protenix, MSA, or template features degrades performance to ~0.40.",
+    "votes 232 (RNAPro inference with TBM): Long RNA sequences (>1000 residues) may benefit from classical structural methods over deep learning models in this competition setting.",
+    "votes 209 (Stanford RNA 3D | TaBM Optimized | Stable LB-0.371): Confidence-weighted noise effectively diversifies ensemble predictions while preserving high-confidence matches.",
+    "votes 203 ([0.409] Stanford RNA Folding 2: Protenix+ Template): Multi-chain stoichiometry parsing is critical for correctly mapping coordinates across complex RNA assemblies.",
+    "votes 597 (Stanford RNA 3D Folding): Overlapping chunking with Kabsch alignment and linear blending successfully extends diffusion models beyond their native sequence length limits.",
+    "votes 232 (Stanford RNA 3D Folding Part 2|Protenix+TBM): Protenix outputs can collapse to identical coordinates if the C1' atom mask selection heuristic is incorrect or when sequence length truncation causes shape mismatches."
+  ]
+}

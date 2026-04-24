@@ -1,0 +1,62 @@
+{
+  "summary": "This notebook establishes a systematic baseline for predicting NCAA tournament outcomes by combining historical Elo ratings, Dean Oliver's Four Factors efficiency metrics, and contextual signals like strength of schedule, late-season momentum, and coach experience. It validates the approach on a temporal holdout (2022\u20132025 tournaments), trains three gradient boosting models, and averages their probabilities to generate calibrated submissions. Readers learn how to construct pairwise matchup features from team-season statistics, handle temporal validation correctly, and evaluate probabilistic forecasts using Brier score and calibration diagnostics. The key takeaway is that engineered efficiency and context features, paired with a simple gradient boosting ensemble, form a robust and interpretable starting point for tournament prediction competitions.",
+  "purpose": "baseline",
+  "competition_flow": "Loads historical CSVs, computes Elo and advanced efficiency/context features per team-season, constructs pairwise matchup features, trains LightGBM/XGBoost/CatBoost on a temporal holdout, averages probabilities, and outputs calibrated Stage 1/Stage 2 submissions.",
+  "data_reading": [
+    "Reads multiple CSV files via pandas (e.g., compact/detailed results, seeds, conferences, coaches, sample submissions).",
+    "Parses seed strings to integers via slicing (str[1:3]).",
+    "Loads temporal coverage and row counts for inventory."
+  ],
+  "data_processing": [
+    "Splits data temporally: training on seasons prior to 2022, validation on 2022\u20132025 tournament games.",
+    "Imputes missing values with domain defaults (e.g., seed=8.5, Elo=1500, momentum=0.5).",
+    "Clips final probabilities to [0.02, 0.98].",
+    "Processes large submission sets in batches of 50,000."
+  ],
+  "features_engineering": [
+    "Elo ratings with margin-of-victory scaling (log-transformed), home court adjustment, and 75% between-season mean reversion.",
+    "Dean Oliver's Four Factors (eFG%, TO%, OR%, FTR) plus offensive/defensive efficiency, pace, assist rate, and rim protection.",
+    "Strength of schedule (average opponent Elo across regular season).",
+    "Late-season momentum (win rate in final 10 regular season games).",
+    "Conference strength (mean Elo of conference teams per season).",
+    "Coach experience (tournament appearances and tenure at current program).",
+    "All team features converted to pairwise differences for matchup prediction."
+  ],
+  "models": [
+    "LightGBM",
+    "XGBoost",
+    "CatBoost"
+  ],
+  "frameworks_used": [
+    "pandas",
+    "numpy",
+    "matplotlib",
+    "seaborn",
+    "lightgbm",
+    "xgboost",
+    "catboost",
+    "scikit-learn"
+  ],
+  "loss_functions": [
+    "LogLoss (CatBoost eval metric)",
+    "Brier score (evaluation)",
+    "LogLoss (evaluation)"
+  ],
+  "cv_strategy": "Temporal holdout split: training on seasons prior to 2022, validation on 2022\u20132025 tournament games.",
+  "ensembling": "Simple arithmetic mean of predicted probabilities from LightGBM, XGBoost, and CatBoost, clipped to [0.02, 0.98].",
+  "insights": [
+    "Seed difference is the strongest predictor of tournament outcomes.",
+    "Home court advantage remains stable around 58\u201360% across decades.",
+    "Raw scoring trends fluctuate, making efficiency-adjusted metrics more reliable than point totals.",
+    "Conference strength and schedule difficulty help distinguish record inflation from true team quality.",
+    "Late-season momentum and coach experience provide marginal but useful contextual signals."
+  ],
+  "critical_findings": [
+    "Stage 1 leaderboard scores are trivially achievable via data leakage since historical results are included in the dataset.",
+    "The women\u2019s tournament is significantly more 'chalk' (higher seeds win more often) than the men\u2019s tournament.",
+    "Upsets are rare when seed gaps exceed 10 lines but become common in similarly seeded matchups."
+  ],
+  "what_did_not_work": [],
+  "source_url": "https://www.kaggle.com/code/ibrahimqasimi/ncaa-2026-eda-elo-ratings-and-gradient-esemble",
+  "votes": 114
+}

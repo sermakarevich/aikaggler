@@ -1,0 +1,44 @@
+{
+  "summary": "This notebook provides a baseline training recipe for a machine translation competition involving noisy Akkadian transliterations. It demonstrates how character-level models like ByT5 effectively handle transliteration noise without relying on word-level tokenization. The author implements a heuristic sentence alignment technique to split multi-sentence documents into parallel pairs, effectively doubling the training data. Bidirectional data augmentation is applied to the training set to improve model robustness across translation directions. Readers should learn how to adapt Hugging Face's Seq2SeqTrainer for character-level translation, manage memory constraints with gradient accumulation, and compute custom evaluation metrics like the geometric mean of chrF and SacreBLEU.",
+  "purpose": "baseline",
+  "competition_flow": "Loads CSV training and test data, applies heuristic sentence alignment and bidirectional augmentation, tokenizes the data using a character-level tokenizer, fine-tunes ByT5-small with gradient accumulation and label smoothing, and saves the trained model for inference.",
+  "data_reading": [
+    "pd.read_csv from /kaggle/input/deep-past-initiative-machine-translation/ for train.csv and test.csv"
+  ],
+  "data_processing": [
+    "Heuristic sentence alignment splitting documents into parallel sentence pairs based on matching English sentence and Akkadian line counts",
+    "Filters out strings shorter than 4 characters to remove noise",
+    "Bidirectional data augmentation by prepending task-specific prefixes (translate Akkadian to English / translate English to Akkadian)",
+    "Conversion to Hugging Face Dataset format and 90/10 train/validation split",
+    "Character-level tokenization with truncation at 512 tokens"
+  ],
+  "features_engineering": [],
+  "models": [
+    "ByT5-small"
+  ],
+  "frameworks_used": [
+    "transformers",
+    "datasets",
+    "torch",
+    "scikit-learn",
+    "evaluate",
+    "sacrebleu"
+  ],
+  "loss_functions": [],
+  "cv_strategy": "Holdout split (10% validation via train_test_split)",
+  "ensembling": "",
+  "insights": [
+    "Character-level tokenization is more robust than word-level models for handling noisy, non-standardized transliterations.",
+    "Bidirectional data augmentation effectively doubles training samples and improves translation directionality robustness.",
+    "Gradient accumulation is necessary to maintain an effective batch size when forced to use FP32 due to memory constraints.",
+    "Simple heuristic alignment based on matching sentence/line counts can safely expand training data without introducing significant noise."
+  ],
+  "critical_findings": [
+    "FP16 mixed precision causes NaN errors with ByT5, requiring a switch to FP32 and gradient accumulation to compensate for reduced batch sizes.",
+    "ByT5 generates longer token sequences than standard word-level models, making a 512 token limit sufficient only at the sentence level.",
+    "The heuristic alignment strategy safely expands data only when English sentence counts exactly match Akkadian line counts, falling back to original documents otherwise."
+  ],
+  "what_did_not_work": [],
+  "source_url": "https://www.kaggle.com/code/takamichitoda/dpc-starter-train",
+  "votes": 453
+}

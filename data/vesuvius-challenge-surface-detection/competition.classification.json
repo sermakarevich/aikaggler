@@ -1,0 +1,13 @@
+{
+  "description": "Participants build models to virtually unwrap ancient scrolls by detecting ink on X-ray CT scan images. The task requires segmenting the inked surfaces from the surrounding scroll material. Performance is measured using a custom competition metric on a held-out test set.",
+  "data_modality": "image",
+  "task_type": "segmentation",
+  "label_structure": "unknown",
+  "metric": "Vesuvius 2025 Metric",
+  "test_split": "unknown",
+  "format": "standard",
+  "dataset_scale": "unknown",
+  "domain": "archaeology",
+  "data_challenges": [],
+  "constraints": []
+}

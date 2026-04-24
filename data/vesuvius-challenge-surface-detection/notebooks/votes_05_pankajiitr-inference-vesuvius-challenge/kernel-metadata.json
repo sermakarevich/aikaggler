@@ -1,0 +1,35 @@
+{
+  "id": "pankajiitr/inference-vesuvius-challenge",
+  "id_no": 108405054,
+  "title": "[Inference] Vesuvius Challenge ",
+  "code_file": "inference-vesuvius-challenge.ipynb",
+  "language": "python",
+  "kernel_type": "notebook",
+  "is_private": false,
+  "enable_gpu": true,
+  "enable_tpu": false,
+  "enable_internet": false,
+  "keywords": [],
+  "dataset_sources": [
+    "pankajiitr/vesuvius-surface-tpu"
+  ],
+  "kernel_sources": [
+    "ipythonx/vsdetection-packages-offline-installer-only"
+  ],
+  "competition_sources": [
+    "vesuvius-challenge-surface-detection"
+  ],
+  "model_sources": [
+    "ipythonx/vsd-model/Keras/segformer.mit.b4/1",
+    "ipythonx/vsd-model/Keras/default/1",
+    "ipythonx/vsd-model/Keras/segformer.mit.b2/2",
+    "ipythonx/vsd-model/Keras/segformer.mit.b2/1",
+    "ipythonx/vsd-model/Keras/transunetseresnext/1",
+    "ipythonx/vsd-model/Keras/transunet/2",
+    "ipythonx/vsd-model/Keras/default/2",
+    "ipythonx/vsd-model/Keras/transunetseresnext/2",
+    "ipythonx/vsd-model/Keras/transunet/3"
+  ],
+  "docker_image": "gcr.io/kaggle-private-byod/python@sha256:7a9d2a6b13b3566aa6cc5a22447f3b3f99acf55dce44408deb90584b6d4b0dde",
+  "machine_shape": "Gpu"
+}

@@ -1,0 +1,50 @@
+{
+  "summary": "The notebook implements a multi-phase inference pipeline for the Stanford RNA Folding 2 competition. It combines homology-based template matching, geometric constraint refinement, and the Protenix deep learning model to generate 3D RNA structures. The pipeline selects top templates based on sequence alignment and feature similarity, adapts their coordinates to query sequences, and applies iterative geometric constraints. For targets lacking suitable templates, it falls back to Protenix inference or de novo helical generation. Readers learn how to integrate external structural biology tools, handle multi-chain stoichiometry, and construct a robust submission pipeline without training a model from scratch.",
+  "purpose": "inference",
+  "competition_flow": "Loads RNA sequence and label CSVs, selects homologous templates or runs the Protenix model, refines coordinates with geometric constraints, and outputs a submission CSV with five predicted coordinate sets per residue.",
+  "data_reading": [
+    "Reads train/validation/test sequence and label CSVs via pandas.",
+    "Manually parses FASTA and stoichiometry strings.",
+    "Extracts C1' atom coordinates from CIF files using biotite.structure.io.pdbx."
+  ],
+  "data_processing": [
+    "Aligns query and template sequences using BioPython PairwiseAligner.",
+    "Adapts template coordinates to query sequences via alignment mapping, filling gaps with linear interpolation or fixed 3.8 \u00c5 helical steps.",
+    "Applies iterative geometric constraints (bond lengths, angles, Laplacian smoothing, distance restraints) to refine coordinates.",
+    "Fills remaining prediction slots with de novo helical generation."
+  ],
+  "features_engineering": [
+    "Computes sequence-level features: length, GC content, AU content, and alphabet complexity.",
+    "Uses alignment scores, percent identity, and length ratio as similarity metrics for template selection."
+  ],
+  "models": [
+    "Protenix",
+    "USalign"
+  ],
+  "frameworks_used": [
+    "pandas",
+    "numpy",
+    "biopython",
+    "biotite",
+    "json",
+    "pathlib",
+    "sys",
+    "os",
+    "time",
+    "random",
+    "warnings",
+    "contextlib"
+  ],
+  "loss_functions": [],
+  "cv_strategy": "",
+  "ensembling": "Combines up to 5 top homologous templates using fixed weights [0.40, 0.25, 0.15, 0.12, 0.08], applies geometric constraints to the weighted average, and fills remaining prediction slots with Protenix outputs or de novo helical structures.",
+  "insights": [
+    "Template-based homology modeling combined with geometric constraints can effectively generate RNA structures without training a model.",
+    "Multi-chain stoichiometry parsing is critical for correctly mapping coordinates across complex RNA assemblies.",
+    "Filling prediction slots with a mix of template ensembles, deep learning models, and de novo generation ensures robust coverage across diverse sequence lengths."
+  ],
+  "critical_findings": [],
+  "what_did_not_work": [],
+  "source_url": "https://www.kaggle.com/code/nihilisticneuralnet/0-409-stanford-rna-folding-2-protenix-template",
+  "votes": 203
+}

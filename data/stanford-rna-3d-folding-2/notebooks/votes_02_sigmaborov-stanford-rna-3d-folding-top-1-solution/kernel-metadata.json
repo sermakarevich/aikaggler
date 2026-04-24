@@ -1,0 +1,29 @@
+{
+  "id": "sigmaborov/stanford-rna-3d-folding-top-1-solution",
+  "id_no": 111080711,
+  "title": "Stanford RNA 3D Folding \u2014 Top 1 Solution ",
+  "code_file": "stanford-rna-3d-folding-top-1-solution.ipynb",
+  "language": "python",
+  "kernel_type": "notebook",
+  "is_private": false,
+  "enable_gpu": true,
+  "enable_tpu": false,
+  "enable_internet": false,
+  "keywords": [
+    "gpu"
+  ],
+  "dataset_sources": [
+    "kami1976/biopython-cp312",
+    "amirrezaaleyasin/biotite",
+    "qiweiyin/protenix-v1-adjusted",
+    "amirrezaaleyasin/rdkit-2025-9-5",
+    "metric/usalign"
+  ],
+  "kernel_sources": [],
+  "competition_sources": [
+    "stanford-rna-3d-folding-2"
+  ],
+  "model_sources": [],
+  "docker_image": "gcr.io/kaggle-private-byod/python@sha256:9fa0da194fad2241d3f01a80581cbecbd3a258b4d1b695e2cbbbc62a0fd205ac",
+  "machine_shape": "Gpu"
+}

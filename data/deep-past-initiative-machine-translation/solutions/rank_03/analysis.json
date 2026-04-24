@@ -1,0 +1,60 @@
+{
+  "summary": "The author achieved 3rd place by prioritizing high-quality data preparation and a two-stage training pipeline for ByT5 models. They generated extensive synthetic drills (vocab, grammar, slot-fill, contrastive pairs) using LLMs to teach Old Assyrian language fundamentals, combined with real tablet data extracted via multimodal LLMs and OCR. The pipeline involved Continued Pre-training (CPT) on synthetic data followed by Fine-tuning (FT) on high-quality scholar translations, with a pairwise Reward Model used for ensembling.",
+  "extensive_summary": "## Core Strategy & Data-Centric Approach\nThe solution is fundamentally data-driven, with the majority of effort spent curating high-quality training data. The authors generated diverse synthetic tasks using `Claude 4.5 Sonnet` to teach foundational Old Assyrian (OA) language mechanics (vocabulary, grammar, morphology) to `ByT5` models. This synthetic data was combined with real tablet translations extracted from competition CSVs, academic PDFs, and OCR publications.\n\n## Synthetic Data Generation\nSynthetic data was constructed through multiple targeted drills:\n- **Vocab Drills**: ~90k examples generated from ~1k lemmas in CAD/eSAD dictionaries, with polysemous lemmas concatenated to force context-based sense disambiguation.\n- **Grammar Drills**: ~50k examples created by applying ~500 extracted grammar rules to seed sentences via LLM transformations.\n- **Slot-Fill Templates**: ~150k pairs generated from 600+ typed templates filled programmatically with curated onomasticon data.\n- **PN vs Word Contrastive & Other Drills**: A seed dataset of ambiguous forms was expanded via LLM, alongside weight conversion drills and coherent multi-sentence synthetic tablets.\n\n## Real Data Extraction & Curation\nReal tablet data was sourced from competition CSVs, K\u00fcltepe Tablets PDFs, and OCR publications. PDFs were processed using `Gemini-3.0-Pro` multimodal capabilities at 576 DPI, with carefully iterated prompts emphasizing visual layout recognition, marker alignment, and strict anti-hallucination constraints. Sentence-level splitting and alignment were performed using `Gemini 3 Pro` with CoT, followed by an LLM judge for quality scoring. Synthetic translations were generated for unlabeled tablets, with dynamic few-shot examples retrieved via `NVIDIA NV-Embed` instead of random sampling. Pseudo-labeling was applied using fine-tuned ByT5 models on unlabeled data.\n\n## Training Pipeline\nTraining followed a two-stage approach:\n- **Stage 1 (CPT)**: Continued seq2seq pre-training on the synthetic datamix with a long warmup, gradient clipping, and AWP. Checkpoint selection was guided by qualitative analysis, revealing that steps 0-6K rapidly learned Sumerograms and formulas, 6K-14K refined specialized vocabulary, and beyond 14K caused regression due to name frequency bias.\n- **Stage 2 (FT)**: Fine-tuning on high-quality scholar translations and pseudo-labeled data using cosine decay LR, name swap augmentation, AWP, EMA, and label smoothing.\n\n## Inference & Ensembling\nInference utilized beam search (8 beams). The final submission ensembled `ByT5-Large` and `ByT5-XL` outputs, with a fine-tuned `Qwen3-8B` pairwise Reward Model selecting the superior translation per sentence.",
+  "rank": 3,
+  "competition_flow": "Raw competition CSVs, academic PDFs, and OCR texts were cleaned, deduplicated, and augmented with LLM-generated synthetic drills and pseudo-labels; this curated dataset was used for a two-stage training pipeline (CPT then FT) on ByT5 models, with outputs ensembled via a Qwen3-8B pairwise Reward Model and beam search decoding.",
+  "data_reading": [
+    "CSV files (train.csv, Sentences_Oare, published_texts.csv, publications.csv, onomasticon.csv) and PDF documents parsed via multimodal LLMs and OCR pipelines."
+  ],
+  "data_processing": [
+    "Deduplication by oare_id",
+    "LLM-based sentence splitting and alignment (Gemini 3 Pro with CoT)",
+    "LLM judge quality scoring (high/medium/low)",
+    "Deterministic normalization for transliteration and translation",
+    "Upsampling high-quality subsets (2x)",
+    "Name swap augmentation",
+    "Embedding-based few-shot retrieval (NVIDIA NV-Embed)",
+    "Synthetic data generation (vocab/grammar drills, slot-fill templates, PN vs word contrastive, weight conversion, synthetic tablets)",
+    "Pseudo-labeling with fine-tuned ByT5 models"
+  ],
+  "features_engineering": [],
+  "models": [
+    "ByT5-Large",
+    "ByT5-XL",
+    "Qwen3-8B"
+  ],
+  "frameworks_used": [],
+  "loss_functions": [],
+  "cv_strategy": "",
+  "ensembling": "The solution ensembles a ByT5-Large and a ByT5-XL model, using a fine-tuned Qwen3-8B pairwise Reward Model to select the better translation per sentence, with beam search (8 beams) used during inference.",
+  "insights": [
+    "Synthetic data generation via LLMs is highly effective for teaching foundational language rules to seq2seq models before fine-tuning on scarce real data.",
+    "Careful checkpoint selection during continued pre-training is critical, as training too long causes regression in rare names and vocabulary due to frequency bias.",
+    "Using embedding-based retrieval for dynamic few-shot examples significantly improves translation quality over random sampling.",
+    "Multimodal LLMs with explicit visual layout instructions and strict anti-hallucination prompts are necessary for accurate extraction of academic PDFs containing specialized diacritics."
+  ],
+  "critical_findings": [
+    "Training beyond 14k steps during CPT led to regression, where previously correct rare names and vocabulary suddenly regressed toward frequent neighbors or hallucinated new names.",
+    "Silently skipping damaged tablets was a major data loss risk; explicit include ALL lines instructions were required to recover ~30% of pairs.",
+    "Concatenating examples from different senses of polysemous lemmas forces the model to learn sense disambiguation from context, effectively repurposing synthetic data."
+  ],
+  "what_did_not_work": [],
+  "github_repos": [],
+  "papers": [
+    {
+      "title": "Kouwenberg 2017 GOA book",
+      "url": "https://www.kaggle.com/datasets/deeppast/old-assyrian-grammars-and-other-resources?select=Kouwenberg_2017_GOA_HdO118.pdf"
+    }
+  ],
+  "other_solution_refs": [
+    {
+      "description": "Demo notebook for PDF extraction pipeline",
+      "url": "https://www.kaggle.com/code/darraghdog/k-ltepe-tablets-with-gemini-flash"
+    },
+    {
+      "description": "Inference notebook with Reward Model",
+      "url": "https://www.kaggle.com/code/conjuring92/dpc-a08-inference-rm?scriptVersionId=305681862"
+    }
+  ],
+  "source_url": "https://www.kaggle.com/competitions/deep-past-initiative-machine-translation/discussion/684425"
+}

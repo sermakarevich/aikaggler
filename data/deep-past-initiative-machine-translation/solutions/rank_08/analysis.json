@@ -1,0 +1,63 @@
+{
+  "summary": "The author secured 8th place by implementing a two-stage supervised fine-tuning pipeline on ByT5-XL for Akkadian transliteration-to-translation. The core strategy involved training on ~350k noisy, automatically generated pairs to establish a broad translation prior, followed by a single epoch of fine-tuning on ~65k high-quality, curated pairs to prevent model collapse. High-quality data extraction was achieved through layout-specific OCR and vision-language model pipelines, utilizing a sliding-window context to resolve cross-page misalignments in PDFs. The approach relied entirely on open-source models and deliberately avoided complex alignment, augmentation, or reinforcement learning methods that failed to improve scores.",
+  "extensive_summary": "## Model Selection\nThe author evaluated NLLB and mT5 but ultimately selected ByT5-XL due to its byte-level tokenization, which handles Akkadian script more effectively than subword tokenizers. This architectural choice yielded a 1 to 1.5 GM score improvement.\n\n## Two-Stage Fine-Tuning Strategy\nThe pipeline was split into two distinct supervised fine-tuning (SFT) stages. Stage 1 trained for 3 epochs on ~350k noisy pairs (including single-word dictionary entries and partial sentences) using a global batch size of 128 in bf16 across 2 devices. Stage 2 fine-tuned on ~65k high-quality pairs for exactly 1 epoch in fp32. The author noted that exceeding one epoch in Stage 2 consistently caused model collapse and LB score drops.\n\n## Data Extraction and Layout Handling\nHost recommendations favored sticking to provided sources. Publications were processed through Mistral 14B for multilingual normalization to English, later upgraded to GPT-OSS-120B in fp4 with few-shot prompting. PDFs required layout-specific pipelines: regular text layouts used GLM-OCR combined with a sliding window (previous, current, next pages) fed into GPT-OSS-120B to bridge page boundaries. Columnar layouts required a VLM approach; Qwen3.5-VL 35B was initially tested but pivoted to GLM4.7V-Flash for better throughput. Rerunning the VLM pipeline with vLLM later actually degraded LB scores, so the original GLM4.7V-Flash outputs were retained. Model selection across extraction tasks relied on vibe-testing rather than benchmarks.\n\n## Validation and Lessons Learned\nCross-validation proved unreliable, showing no consistent correlation with the LB. The author settled on the first 500 training pairs as a CV set, which consistently scored 42 to 43.5 across 40+ models. The entire pipeline was built on a 100% open-source stack, replicable on a single A100 or 2x RTX 6000.",
+  "rank": 8,
+  "competition_flow": "Raw PDFs and publication texts were processed through layout-specific OCR and VLM pipelines to generate high-quality Akkadian-English translation pairs, which were then used in a two-stage supervised fine-tuning process on ByT5-XL to produce the final submission.",
+  "data_reading": [],
+  "data_processing": [
+    "Layout detection for PDFs (regular text vs. columnar)",
+    "OCR via GLM-OCR",
+    "VLM extraction for columnar layouts",
+    "Sliding-window context feeding (previous, current, next pages) to GPT-OSS-120B",
+    "Few-shot prompting for alignment",
+    "Multilingual normalization to English",
+    "Manual curation of ~65k high-quality pairs",
+    "Strict epoch limiting to prevent model collapse"
+  ],
+  "features_engineering": [],
+  "models": [
+    "ByT5-XL",
+    "NLLB",
+    "mT5",
+    "Mistral 14B",
+    "GPT-OSS-120B",
+    "GLM-OCR",
+    "Qwen3.5-VL 35B",
+    "GLM4.7V-Flash"
+  ],
+  "frameworks_used": [
+    "vLLM"
+  ],
+  "loss_functions": [],
+  "cv_strategy": "Used the first 500 pairs from the training set as a validation set due to inconsistent correlation with the LB; CV scores consistently ranged from 42 to 43.5 across 40+ models.",
+  "ensembling": "",
+  "insights": [
+    "Byte-level tokenization is essential for scripts that do not tokenize cleanly with subword tokenizers.",
+    "A two-stage fine-tuning approach combining noisy broad pretraining with clean targeted fine-tuning effectively builds a translation prior without overfitting.",
+    "Layout-specific extraction pipelines are necessary when processing PDFs with mixed formatting.",
+    "LLMs used for data extraction should be selected via practical throughput and vibe-testing rather than benchmarks when ground truth is unavailable."
+  ],
+  "critical_findings": [
+    "Training for more than one epoch in Stage 2 consistently caused model collapse and LB score drops.",
+    "Rerunning the VLM extraction pipeline with higher throughput via vLLM actually yielded worse LB scores than the initial lower-throughput version.",
+    "Automated sentence alignment methods failed to consistently align sentences, making manual or heuristic approaches unreliable."
+  ],
+  "what_did_not_work": [
+    "Dictionary and RAG-based reconstruction for pseudo-labeling samples without ground truth.",
+    "Name and commodity augmentation (both online and offline variants).",
+    "Automated sentence alignment methods.",
+    "Training for more than 1 epoch in Stage 2.",
+    "LLM post-processing.",
+    "RL-based methods (DPO, minimum risk training, PPO, and GRPO adapted for Seq2Seq).",
+    "Cross-validation correlation with the LB."
+  ],
+  "github_repos": [
+    {
+      "url": "https://github.com/Hrithik2212/Kaggle-DPC-NMT-Akkadin2English-Rank8",
+      "role": "solution"
+    }
+  ],
+  "papers": [],
+  "other_solution_refs": [],
+  "source_url": "https://www.kaggle.com/competitions/deep-past-initiative-machine-translation/discussion/684329"
+}

@@ -1,0 +1,30 @@
+{
+  "summary": "This notebook implements a structured evaluation pipeline for auditing large language models against adversarial prompts designed to trigger hallucinations. It constructs three distinct benchmark datasets covering temporal/factual traps, mathematical/logical fallacies, and complex game-theory rule violations. Each dataset is processed through strict JSON-constrained prompting that forces the model to identify impossible premises or illegal moves rather than generate plausible but incorrect answers. The pipeline uses programmatic assertions to validate both factual detection and self-reported confidence scores. Readers should understand how structured output constraints and metacognitive confidence checks can rigorously audit LLM reliability and logical consistency.",
+  "purpose": "other",
+  "competition_flow": "The notebook defines three adversarial prompt datasets, formats them into pandas DataFrames, and iteratively evaluates a Kaggle-hosted LLM using strict JSON-constrained prompts and programmatic assertions to verify logical rejection of impossible premises.",
+  "data_reading": [
+    "Hardcoded Python lists of dictionaries containing questions and category labels are converted into pandas DataFrames (df_tasks, df_math, df_yugi)."
+  ],
+  "data_processing": [
+    "Raw LLM responses are post-processed by stripping markdown code block wrappers (````json) and whitespace before JSON parsing."
+  ],
+  "features_engineering": [],
+  "models": [],
+  "frameworks_used": [
+    "kaggle-benchmarks",
+    "pydantic",
+    "pandas"
+  ],
+  "loss_functions": [],
+  "cv_strategy": "",
+  "ensembling": "",
+  "insights": [
+    "Structured JSON constraints and explicit confidence scoring effectively filter out conversational filler and force models to self-audit their logical reasoning.",
+    "Programmatic assertions on both detection flags and confidence thresholds provide a rigorous, machine-readable audit of LLM reliability.",
+    "Adversarial prompts targeting domain-specific constraints reveal specific failure modes that standard factual benchmarks might miss."
+  ],
+  "critical_findings": [],
+  "what_did_not_work": [],
+  "source_url": "https://www.kaggle.com/code/mah20050/the-oracle-s-sieve",
+  "votes": 32
+}

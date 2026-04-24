@@ -1,0 +1,15 @@
+{
+  "description": "Participants design evaluation benchmarks to assess the reasoning, decision-making, and judgment capabilities of frontier AI models. The competition focuses on creating tasks that move beyond simple pattern recall to measure genuine cognitive progress. Success is determined by the quality and effectiveness of the submitted benchmarks in distinguishing model capabilities.",
+  "data_modality": "text",
+  "task_type": "generation",
+  "label_structure": "none",
+  "metric": "unknown",
+  "test_split": "unknown",
+  "format": "standard",
+  "dataset_scale": "unknown",
+  "domain": "ai_research",
+  "data_challenges": [],
+  "constraints": [
+    "limited_submissions"
+  ]
+}

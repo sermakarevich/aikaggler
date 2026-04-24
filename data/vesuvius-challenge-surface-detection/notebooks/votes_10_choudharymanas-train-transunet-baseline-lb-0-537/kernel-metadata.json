@@ -1,0 +1,34 @@
+{
+  "id": "choudharymanas/train-transunet-baseline-lb-0-537",
+  "id_no": 103970509,
+  "title": "[Train] TransUNet Baseline [LB 0.537]",
+  "code_file": "train-transunet-baseline-lb-0-537.ipynb",
+  "language": "python",
+  "kernel_type": "notebook",
+  "is_private": false,
+  "enable_gpu": false,
+  "enable_tpu": true,
+  "enable_internet": true,
+  "keywords": [
+    "tpu"
+  ],
+  "dataset_sources": [
+    "ipythonx/vesuvius-tfrecords"
+  ],
+  "kernel_sources": [
+    "ipythonx/vsdetection-packages-offline-installer-only",
+    "choudharymanas/train-transunet-baseline-lb-0-537"
+  ],
+  "competition_sources": [
+    "vesuvius-challenge-surface-detection"
+  ],
+  "model_sources": [
+    "",
+    "",
+    "",
+    "ipythonx/vsd-model/Keras/transunet/2",
+    "ipythonx/vsd-model/Keras/transunetseresnext/2"
+  ],
+  "docker_image": "gcr.io/kaggle-private-byod/python-tpuvm@sha256:faf5c1271481db7d75ee51028e9c7e458d5fe12ff48b138fe38cd60f4b9b7b68",
+  "machine_shape": "TpuV5E8"
+}

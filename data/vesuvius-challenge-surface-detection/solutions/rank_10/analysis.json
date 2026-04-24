@@ -1,0 +1,102 @@
+{
+  "summary": "The author developed a multi-stage 3D segmentation pipeline for the Vesuvius Challenge to detect ancient scroll surfaces. They initialized three complementary models (ResEnc-L UNet, Primus-B, and Primus-B V2) pretrained on external scroll data, then fine-tuned them with a custom combination of segmentation losses. Predictions were sequentially refined through an ensemble network, two correction stages, and a novel diffeomorphic warping module that predicts a stationary velocity field to fix topology and thickness. The pipeline leveraged dynamic thresholding, targeted augmentations, and metric-aware validation to secure a 10th place finish.",
+  "extensive_summary": "## Initial Segmentation & Pretraining\nThe pipeline began with three independent models: a standard nnUNet-style residual encoder UNet (ResEnc-L), a transformer-based Primus-B, and an improved Primus-B V2. All models were pretrained on approximately 1,600 annotated images from external scrolls, which significantly accelerated convergence during fine-tuning. Training was conducted at a 160\u00b3 patch size using AdamW with mixed precision for roughly 400 epochs. Losses combined Dice, Cross-Entropy, Skeleton Recall, and a modified Surface Dice Loss adapted for 3D manifolds.\n\n## Ensemble & Refinement Stages\nTo exploit model complementarity, a second-stage ResEnc-L UNet was trained on a 4-channel input containing the original image and binary masks from the initial models. The author introduced random thresholding during training (0.1 to 0.7) to teach the ensemble network to handle varying confidence levels, settling on 0.3 at inference. Two subsequent refinement stages followed the same pattern, using the previous stage's binary mask as additional input. Strong `randCoarseDropout` was applied to force the networks to learn structural continuity and repair broken sheets.\n\n## Diffeomorphic Warping Stage\nThe most impactful component was a diffeomorphic network designed for shape calibration and thickness modification. Inspired by Tom's PCGAN paper and FlowNet2, this stage predicts a stationary velocity field (SVF) rather than a direct mask. The author found that applying a hard mask followed by Gaussian blur was crucial for providing useful gradients and improving topology. The SVF logits were bounded via tanh and transformed into a deformation field using scaling and squaring (Lie exponential). To prevent the folding issues common in optical flow methods, a topology-aware correction mechanism was added, predicting a shift in the Signed Distance Field (SDF) space. This was regularized with sparsity, total variation, and boundary losses to ensure edits remained sparse and surface-localized.\n\n## Validation & Post-Processing\nThe author ran extensive simulation trials comparing two diffeomorphic implementations (Tom vs. Sergio), discovering that metric preferences diverged significantly between them. Hypothesis testing revealed that the public leaderboard was disproportionately influenced by a few samples, highlighting the risk of favorable sampling effects. Final post-processing relied heavily on median filtering (x7 proved optimal), while attempts like enforced minimum sheet thickness or binary closing degraded topology and score.",
+  "rank": 10,
+  "competition_flow": "Raw 3D scroll volumes were processed through a five-stage pipeline comprising initial multi-model segmentation, ensemble learning, two refinement stages, and a diffeomorphic warping stage, followed by median filtering and morphological post-processing to produce the final surface detection masks.",
+  "data_reading": [],
+  "data_processing": [
+    "Pretraining on ~1,600 external scroll images from https://dl.ash2txt.org/datasets/seg-derived-recto-surfaces/",
+    "Training at 160\u00b3 patch size with mixed precision",
+    "Random thresholding on the fly during training (0.1 to 0.7) and fixed 0.3 threshold at inference",
+    "Strong randCoarseDropout augmentation to learn continuity and fix holes",
+    "Hard mask generation followed by Gaussian blur (kernel_size=3, sigma=5) for diffeomorphic stage input",
+    "Post-processing with median filtering (x7 best), binary closing, cavity filling, and component size filtering"
+  ],
+  "features_engineering": [],
+  "models": [
+    "ResEnc-L UNet",
+    "Primus-B",
+    "Primus-B V2",
+    "Diffeomorphic Network"
+  ],
+  "frameworks_used": [
+    "nnUNet",
+    "dynamic-network-architectures"
+  ],
+  "loss_functions": [
+    "Dice Loss",
+    "Cross-Entropy Loss",
+    "Skeleton Recall Loss",
+    "Surface Dice Loss",
+    "SVF Smoothing Loss",
+    "Jacobian Log Barrier Loss",
+    "Sparsity Loss",
+    "Total Variation Loss",
+    "Boundary Loss",
+    "SoftSDFLoss"
+  ],
+  "cv_strategy": "",
+  "ensembling": "Initial predictions from three models were combined via a second-stage ResEnc-L UNet trained on a 4-channel input to learn complementarity, followed by two refinement stages and a diffeomorphic warping stage, with final post-processing using median filtering and morphological operations.",
+  "insights": [
+    "Pretraining on external scroll data significantly accelerated convergence during fine-tuning.",
+    "Intentionally introducing errors via low thresholds and Gaussian blur helps the diffeomorphic model learn to correct topology and thickness.",
+    "The diffeomorphic stage's topology-aware correction using SDF shift prediction effectively prevents flow folding issues common in optical flow methods.",
+    "Public leaderboard metrics can be heavily influenced by favorable sampling effects, making metric-specific validation crucial before final submission."
+  ],
+  "critical_findings": [
+    "Using a hard mask alone fails to provide useful gradients; warping a blurred mask significantly improves topology and VOI performance.",
+    "The public subset's scoring distribution was disproportionately boosted by a small number of samples, causing a discrepancy between public and private leaderboard performance.",
+    "Different diffeomorphic implementations optimized for different metrics (Surface Dice vs. Topology/VOI), highlighting the need for metric-specific validation."
+  ],
+  "what_did_not_work": [
+    "Enforced minimum sheet thickness destroyed topology and failed on small samples.",
+    "Binary closing and closing+hole patching+cavity fill yielded lower scores than median filtering."
+  ],
+  "github_repos": [
+    {
+      "url": "https://github.com/Sersasj/vesuvius-challenge-10th-solution",
+      "role": "solution"
+    },
+    {
+      "url": "https://github.com/MIC-DKFZ/dynamic-network-architectures",
+      "role": "library"
+    },
+    {
+      "url": "https://github.com/TaWald/dynamic-network-architectures",
+      "role": "reference"
+    },
+    {
+      "url": "https://github.com/tom99763/10th-place-solution-Vesuvius-Challenge-Surface-Detection",
+      "role": "reference"
+    }
+  ],
+  "papers": [
+    {
+      "title": "Primus: Enforcing Attention Usage for 3D Medical Image Segmentation",
+      "url": "https://openreview.net/forum?id=YWwGmmObri",
+      "arxiv_id": null
+    },
+    {
+      "title": "MemBrain v2: An end-to-end tool for the analysis of membranes in cryo-electron tomography",
+      "url": "https://www.biorxiv.org/content/10.1101/2024.01.05.574336v1.full.pdf",
+      "arxiv_id": null
+    },
+    {
+      "title": "Skeleton Recall Loss for Connectivity Conserving and Resource Efficient Segmentation of Thin Tubular Structures",
+      "url": "https://www.ecva.net/papers/eccv_2024/papers_ECCV/papers/09904.pdf",
+      "arxiv_id": null
+    },
+    {
+      "title": "Perceptual Contrastive Generative Adversarial Network based on image warping for unsupervised image-to-image translation",
+      "url": "https://www.sciencedirect.com/science/article/abs/pii/S0893608023003684",
+      "arxiv_id": null
+    },
+    {
+      "title": "FlowNet 2.0: Evolution of Optical Flow Estimation with Deep Networks",
+      "url": "https://arxiv.org/abs/1612.01925",
+      "arxiv_id": "1612.01925"
+    }
+  ],
+  "other_solution_refs": [],
+  "source_url": "https://www.kaggle.com/competitions/vesuvius-challenge-surface-detection/discussion/679227"
+}

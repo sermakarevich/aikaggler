@@ -1,0 +1,37 @@
+{
+  "summary": "This notebook introduces and evaluates a custom Cognitive Geometry Score (CGS v6.0) framework to assess the spatial and geometric reasoning capabilities of 20+ AI models. Instead of training new architectures, it derives cognitive dimension proxies from published benchmark scores (e.g., ARC-AGI-2, MMLU, GSM8K) and applies a weighted mathematical formula to quantify geometric integrity, abstraction, and topological reasoning. The author visualizes model performance through radar charts, Pareto efficiency fronts, and error gap analyses to highlight the disconnect between abstract reasoning and actual geometric manipulation. Readers should understand how to construct robust, cost-aware evaluation metrics for spatial intelligence and recognize the limitations of current LLMs in handling true geometric transformations.",
+  "purpose": "other",
+  "competition_flow": "Loads hardcoded benchmark scores for 20 models \u2192 derives cognitive dimension proxies using weighted mappings \u2192 calculates custom CGS metrics and Pareto efficiency \u2192 visualizes rankings, geometric integrity gaps, and cost-performance trade-offs.",
+  "data_reading": [
+    "Data is hardcoded directly in Python dictionaries (`PUBLISHED_BENCHMARKS`) and DataFrames; no external file loading, CSV parsing, or live API calls are executed in the provided code."
+  ],
+  "data_processing": [
+    "Benchmark scores are weighted and mapped to derive proxy cognitive dimensions; custom CGS formulas apply coordinate normalization, Shannon entropy calculation, and geometric distance metrics to compute final scores."
+  ],
+  "features_engineering": [],
+  "models": [],
+  "frameworks_used": [
+    "pandas",
+    "numpy",
+    "matplotlib",
+    "seaborn",
+    "ipywidgets",
+    "plotly",
+    "IPython"
+  ],
+  "loss_functions": [],
+  "cv_strategy": "",
+  "ensembling": "",
+  "insights": [
+    "Mid-tier models like Llama 4 Maverick offer a 40% better cost-performance ROI for geometric reasoning tasks than frontier models.",
+    "Standard LLMs fail significantly under axis flips or color changes, proving they rely on visual pattern matching rather than true logical reasoning.",
+    "Topological relationships like containment and connectivity remain the primary bottleneck for current AI spatial reasoning capabilities."
+  ],
+  "critical_findings": [
+    "High abstraction scores paired with low geometry scores serve as a reliable indicator of hallucinated or fake reasoning rather than genuine spatial understanding.",
+    "ARC-AGI-2 performance data is largely estimated or unreported across the industry, revealing a critical gap in standardized spatial reasoning benchmarks."
+  ],
+  "what_did_not_work": [],
+  "source_url": "https://www.kaggle.com/code/aminmahmoudalifayed/truth-guard-you-cannot-fake-geometry",
+  "votes": 26
+}

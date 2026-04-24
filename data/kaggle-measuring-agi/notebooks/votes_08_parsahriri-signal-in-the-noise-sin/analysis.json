@@ -1,0 +1,44 @@
+{
+  "summary": "The notebook introduces and evaluates a synthetic benchmark called Signal in the Noise (SiN) designed to measure selective attention in language models. It procedurally generates 200 narratives across four difficulty levels and five cue types, embedding signal facts within emotionally salient distractors. Instead of training a model, it simulates responses from six hypothetical model archetypes using predefined behavioral parameters for recall and intrusion. The evaluation computes custom metrics, notably the SiN Score (Recall \u00d7 (1 \u2212 Intrusion)), to demonstrate that high recall alone does not equate to attention, as models that retrieve everything fail the selectivity test. Readers should understand how procedural generation isolates attention from memorization and why joint recall-intrusion metrics better capture selective focus.",
+  "purpose": "utility",
+  "competition_flow": "Procedurally generates 200 synthetic narratives with signal and distractor facts, simulates responses from six model archetypes using behavioral parameters, computes custom attention metrics, and outputs a ranked submission CSV.",
+  "data_reading": [
+    "Procedurally generated in-memory using Python's random and numpy libraries; structured into a pandas DataFrame without external file loading."
+  ],
+  "data_processing": [
+    "Procedural story generation with randomized entity pools, difficulty-based concealment depths, and noise ratio computation; no traditional cleaning or tokenization."
+  ],
+  "features_engineering": [],
+  "models": [
+    "GPT4_Unfocused",
+    "Claude3_Selective",
+    "Gemini_Balanced",
+    "Llama3_Cautious",
+    "Mistral_Scattered",
+    "Perfect_Attention"
+  ],
+  "frameworks_used": [
+    "numpy",
+    "pandas",
+    "matplotlib",
+    "random",
+    "itertools"
+  ],
+  "loss_functions": [],
+  "cv_strategy": "",
+  "ensembling": "",
+  "insights": [
+    "High recall without selectivity results in zero attention, as models that retrieve all distractors fail the core task.",
+    "Procedural generation with randomized entities and dates effectively isolates attention from memorization.",
+    "The SiN Score (Recall \u00d7 (1 \u2212 Intrusion)) successfully penalizes both under-retrieval and over-retrieval to capture selective focus.",
+    "Performance degrades predictably with increasing noise ratio and difficulty, but models with lower base intrusion rates maintain higher composite scores."
+  ],
+  "critical_findings": [
+    "GPT-4 achieves high raw recall (71.3%) but fails the attention test with a 68% distractor intrusion rate, proving retrieval abundance does not equal cognitive selectivity.",
+    "Llama 3 ranks lower on recall but outperforms GPT-4 on the SiN Score by prioritizing selectivity over completeness.",
+    "Current models treat attention tasks like full-document summarization rather than targeted extraction, as shown by Mistral's 70.8% intrusion rate."
+  ],
+  "what_did_not_work": [],
+  "source_url": "https://www.kaggle.com/code/parsahriri/signal-in-the-noise-sin",
+  "votes": 31
+}

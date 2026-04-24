@@ -1,0 +1,51 @@
+{
+  "summary": "The author optimized LLM inference for a mathematical olympiad competition by implementing streaming inference and dynamic termination strategies to maximize throughput and score. Key techniques included interrupting completions upon finding a valid answer, using verification prompts to avoid trivial outputs, and implementing a weighted voting system that prioritizes larger numerical answers. The approach leveraged a vLLM server with an OpenAI-compatible API to efficiently manage GPU resources and benchmark multiple models.",
+  "extensive_summary": "## Streaming Inference & Dynamic Termination\nThe core innovation revolves around streaming completions via the OpenAI-compatible API provided by a vLLM server. Instead of waiting for full completions, the pipeline streams text and terminates generation immediately upon receiving a submitted answer. This interrupts the vLLM server, freeing GPU capacity for subsequent questions and significantly improving throughput.\n\n## Prompt Engineering & Answer Validation\nTo combat trivial or premature outputs, the author introduced verification prompts to force the model to think harder, successfully avoiding incorrect shortcuts like `2^20!`. Additionally, a fallback mechanism was implemented to prompt the model to guess after a certain token limit, ensuring answers are returned even when the model stalls.\n\n## Resource Management & Voting Logic\nEarly iterations relied on terminating generation when GPU KV cache usage hit 100%, but this was abandoned in favor of a \"go deep, not wide\" strategy where preemption is acceptable. The final submission used a custom voting mechanism to select the best answer from multiple generations. Larger numerical answers were weighted more heavily, as smaller outputs were empirically observed to be guesses when the model gave up. Points thresholds were tuned by analyzing local logs.\n\n## Infrastructure & Observability\nThe workflow was fully API-ified, allowing easy model benchmarking and remote GPU usage. Comprehensive logging was maintained to track generated tokens, answer scores, GPU throughput, and KV cache usage, enabling rapid iteration and failure mode analysis.",
+  "rank": 5,
+  "competition_flow": "Raw mathematical problems are fed into a vLLM server via an OpenAI-compatible API, where streaming inference dynamically terminates upon answer generation, followed by a weighted voting mechanism that selects the final submission based on empirical score logs.",
+  "data_reading": [],
+  "data_processing": [],
+  "features_engineering": [],
+  "models": [
+    "GPT-OSS"
+  ],
+  "frameworks_used": [
+    "vLLM",
+    "OpenAI API"
+  ],
+  "loss_functions": [],
+  "cv_strategy": "",
+  "ensembling": "A custom weighted voting system selects the final answer from multiple generations, applying point thresholds and prioritizing larger numerical outputs to filter out premature guesses.",
+  "insights": [
+    "Streaming inference and immediate termination upon finding an answer drastically improves GPU throughput and allows deeper exploration of the solution space.",
+    "Adding verification prompts prevents the model from outputting trivial or shortcut answers, forcing more rigorous reasoning.",
+    "Implementing a token-limit fallback ensures the model always returns a guess rather than stalling indefinitely.",
+    "API-ifying the inference server simplifies model benchmarking and enables the use of remote GPUs.",
+    "Logging generation metrics and answer scores is critical for identifying failure modes and tuning inference parameters."
+  ],
+  "critical_findings": [
+    "GPU KV cache usage hitting 100% causes generation failures, necessitating request throttling or termination.",
+    "Smaller numerical answers are highly correlated with the model giving up, so weighting larger answers higher in voting yields better scores."
+  ],
+  "what_did_not_work": [
+    "Terminating generation based on GPU KV cache usage hitting 100% was abandoned in favor of allowing preemption.",
+    "The complex vote manipulation logic (weighting by answer size and point thresholds) lost relevance as model reasoning capabilities improved."
+  ],
+  "github_repos": [],
+  "papers": [],
+  "other_solution_refs": [
+    {
+      "description": "Notebook by huxingyu that resubmitted and scored 24/50",
+      "url": "https://www.kaggle.com/code/huxingyu/streaming-inference1"
+    },
+    {
+      "description": "Competition discussion thread mentioning remote GPUs",
+      "url": "https://www.kaggle.com/competitions/ai-mathematical-olympiad-progress-prize-3/discussion/643580"
+    },
+    {
+      "description": "Baseline notebook by theunforgiven7 using GPT-OSS-20B",
+      "url": "https://www.kaggle.com/code/theunforgiven7/aimo-3-baseline-gpt-oss-20b?scriptVersionId=280576466"
+    }
+  ],
+  "source_url": "https://www.kaggle.com/competitions/ai-mathematical-olympiad-progress-prize-3/discussion/637882"
+}

@@ -1,0 +1,37 @@
+{
+  "summary": "This notebook implements a high-efficiency inference pipeline for a mathematical Olympiad competition using a locally hosted 120B-parameter open-weight model. It demonstrates a custom Tool-Integrated Reasoning framework that dynamically allocates time budgets across problems, pools stateful Jupyter kernels for reliable Python tool execution, and runs parallel sampling with early stopping. The approach proves that combining dynamic resource allocation, majority voting, and strict wall-clock management can maximize accuracy within strict competition time limits without traditional model training. Readers should take away how to structure LLM inference for constrained environments, manage tool execution safely, and optimize latency through parallel sampling and budget rollover.",
+  "purpose": "inference",
+  "competition_flow": "Loads competition questions from a CSV, serves a local 120B-parameter LLM via vLLM, solves each problem using parallel tool-integrated reasoning with dynamic time budgeting, and submits answers via the Kaggle evaluation server.",
+  "data_reading": [
+    "Loads questions and optional ground truth from /kaggle/input/ai-mathematical-olympiad-progress-prize-3/reference.csv using pandas."
+  ],
+  "data_processing": [
+    "Drops the answer column from the reference CSV to prepare the submission format; no other preprocessing or cleaning is applied."
+  ],
+  "features_engineering": [],
+  "models": [
+    "gpt-oss-120b"
+  ],
+  "frameworks_used": [
+    "vllm",
+    "transformers",
+    "openai",
+    "openai_harmony",
+    "jupyter_client",
+    "polars",
+    "pandas",
+    "numpy"
+  ],
+  "loss_functions": [],
+  "cv_strategy": "",
+  "ensembling": "Majority voting across 8 parallel samples from the same model, with early stopping triggered when a threshold of identical answers is reached, followed by tie-breaking by selecting the largest answer.",
+  "insights": [
+    "Dynamic time budgeting with rollover from early stops efficiently redistributes saved time to remaining problems.",
+    "Pooling stateful Jupyter kernels ensures reliable, low-overhead Python tool execution for mathematical verification.",
+    "Parallel sampling with early majority voting significantly reduces inference latency while preserving answer accuracy."
+  ],
+  "critical_findings": [],
+  "what_did_not_work": [],
+  "source_url": "https://www.kaggle.com/code/shreyansh01m/41-50-same-as-parthenos-s-no-modifications",
+  "votes": 404
+}

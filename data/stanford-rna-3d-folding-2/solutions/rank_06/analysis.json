@@ -1,0 +1,55 @@
+{
+  "summary": "The author focused on prediction diversity alongside accuracy, recognizing that the competition metric scores the best of five predictions. They combined Template-Based Modeling (TBM) for cheap, diverse structural hypotheses with Protenix (in no-MSA, no-template mode) to generate independent neural predictions. These outputs were cross-pollinated as templates for RNAPro, which refined them using MSA and RibonanzaNet embeddings. The key insight was leveraging different inductive biases across models to explore diverse regions of structure space, rather than relying on a single pipeline or coordinate averaging.",
+  "extensive_summary": "## Core Strategy\nThe author prioritized prediction diversity alongside accuracy, recognizing that the competition metric scores the best of five predictions. Rather than relying on a single pipeline or coordinate averaging, the strategy centered on cross-pollinating structural hypotheses from different models to explore diverse regions of structure space.\n\n## Pipeline Architecture\nSequences were split by length, with those \u22641000 nt processed through a multi-stage pipeline. First, Template-Based Modeling (TBM) generated five diverse structural hypotheses using global alignment with strong gap penalties, coordinate transfer via linear interpolation, and geometry refinement with adaptive RNA constraints. Correction strength was dynamically scaled by template similarity. To maximize diversity, the TBM output underwent structural transformations including Gaussian noise, hinge rotation, rigid-body jitter, and low-frequency wiggles.\n\n## Model Integration & Refinement\nProtenix was run in no-MSA, no-template mode on truncated sequences (\u2264512 nt) to produce independent neural predictions. The top two Protenix outputs and two TBM outputs were combined into a 4-slot template file and fed into RNAPro, which refined each using MSA and RibonanzaNet2 embeddings over 10 recycling cycles and 200 diffusion steps. The fifth prediction was kept as raw Protenix output to prevent overcorrection on targets with close training analogs. Sequences >1000 nt bypassed RNAPro and relied entirely on TBM.\n\n## Key Lessons\nThe cross-pollination of Protenix and RNAPro proved highly effective due to their distinct inductive biases. The author explicitly noted that coordinate averaging underperformed the best-of-5 strategy, and that running Protenix with MSA or using more than two TBM template slots yielded no gains.",
+  "rank": 6,
+  "competition_flow": "Raw RNA sequences are split by length, processed through Template-Based Modeling and Protenix to generate diverse structural templates, which are then fed into RNAPro for refinement and combined into five final predictions for submission.",
+  "data_reading": [],
+  "data_processing": [
+    "Sequence length filtering (>1000 nt vs \u22641000 nt)",
+    "Truncation to 512 nt for Protenix featurization",
+    "Global sequence alignment with strong gap penalties (open: -8, extend: -0.4)",
+    "Coordinate transfer via linear interpolation/extrapolation for gaps",
+    "Geometry refinement using adaptive RNA constraints (bond lengths, angles, Laplacian smoothing, steric self-avoidance)",
+    "Similarity-scaled correction strength",
+    "Structural transformations for diversity (Gaussian noise, hinge rotation, rigid-body jitter, low-frequency wiggle)"
+  ],
+  "features_engineering": [],
+  "models": [
+    "Protenix (no-MSA, no-template mode)",
+    "RNAPro (with RibonanzaNet2 embeddings)",
+    "Template-Based Modeling (TBM)"
+  ],
+  "frameworks_used": [
+    "BioPython"
+  ],
+  "loss_functions": [],
+  "cv_strategy": "",
+  "ensembling": "The competition metric scores the best of 5 predictions, so the author generated five structurally distinct outputs by cross-pollinating TBM and Protenix templates into RNAPro and retaining one raw Protenix prediction, explicitly avoiding coordinate averaging.",
+  "insights": [
+    "Diversity is as critical as accuracy for the best-of-5 scoring metric.",
+    "Cross-pollinating outputs from models with different inductive biases (Protenix and RNAPro) effectively explores diverse regions of structure space.",
+    "Retaining unrefined Protenix predictions prevents overcorrection on targets with close training analogs."
+  ],
+  "critical_findings": [
+    "Coordinate averaging performed worse than the best-of-5 strategy for this specific metric.",
+    "Using more than two TBM template slots in RNAPro caused performance to plateau."
+  ],
+  "what_did_not_work": [
+    "Running Protenix with MSA provided no benefit and increased compute time.",
+    "Using more than two TBM template slots in RNAPro yielded no gains.",
+    "Ensemble averaging of coordinates underperformed the best-of-5 strategy."
+  ],
+  "github_repos": [
+    {
+      "url": "https://github.com/bytedance/Protenix",
+      "role": "library"
+    },
+    {
+      "url": "https://github.com/ShindeShivam/Stanford-RNA-3D-Folding",
+      "role": "reference"
+    }
+  ],
+  "papers": [],
+  "other_solution_refs": [],
+  "source_url": "https://www.kaggle.com/competitions/stanford-rna-3d-folding-2/discussion/686777"
+}

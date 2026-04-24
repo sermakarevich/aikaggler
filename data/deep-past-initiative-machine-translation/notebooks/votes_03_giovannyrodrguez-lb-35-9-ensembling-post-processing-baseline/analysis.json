@@ -1,0 +1,38 @@
+{
+  "summary": "This notebook implements an inference pipeline for the Deep Past Challenge, focusing on translating Akkadian transliterations to English. It leverages two pre-trained ByT5 models to generate diverse candidate outputs via beam search and stochastic sampling. These candidates are merged across models and scored using Minimum Bayes Risk (MBR) with chrF++ to select the most consistent translation. The pipeline incorporates extensive domain-specific preprocessing for Akkadian orthography and post-processing rules for historical commodities and grammar markers. Readers should understand how cross-model candidate pooling mitigates shared decoding failures and why chrF++-based MBR is effective for consensus selection in low-resource translation.",
+  "purpose": "ensemble",
+  "competition_flow": "Loads the test CSV, applies domain-specific preprocessing, runs inference with two ByT5 models to generate candidate pools, merges them, selects final translations via chrF++-based MBR, and exports a submission CSV.",
+  "data_reading": [
+    "pd.read_csv('/kaggle/input/competitions/deep-past-initiative-machine-translation/test.csv', encoding='utf-8')"
+  ],
+  "data_processing": [
+    "Custom preprocessing converts ASCII transliterations to diacritics, unwraps determinatives, normalizes gaps and fractions/decimals, and strips whitespace.",
+    "Post-processing unifies gaps, handles PN/commodity normalization, removes grammar markers, canonicalizes fractions, and cleans repeated fragments and stray punctuation.",
+    "Bucketed batching is used during inference to minimize padding overhead."
+  ],
+  "features_engineering": [],
+  "models": [
+    "byt5-akkadian-optimized-34x",
+    "byt5-akkadian-mbr-v2"
+  ],
+  "frameworks_used": [
+    "pytorch",
+    "transformers",
+    "sacrebleu",
+    "pandas",
+    "numpy",
+    "optimum"
+  ],
+  "loss_functions": [],
+  "cv_strategy": "",
+  "ensembling": "Combines beam-search and stochastic sampling candidates from two distinct ByT5 models into a unified pool per test sample, then selects the final translation using Minimum Bayes Risk (MBR) optimized with chrF++ as the pairwise similarity metric.",
+  "insights": [
+    "Cross-model candidate pooling effectively reduces shared failure modes compared to single-model decoding.",
+    "chrF++ serves as a robust metric for MBR selection in translation tasks where character-level agreement matters more than exact token matches.",
+    "Domain-specific preprocessing and postprocessing rules are essential for correctly handling Akkadian transliteration conventions, determinatives, and historical economic terms."
+  ],
+  "critical_findings": [],
+  "what_did_not_work": [],
+  "source_url": "https://www.kaggle.com/code/giovannyrodrguez/lb-35-9-ensembling-post-processing-baseline",
+  "votes": 480
+}

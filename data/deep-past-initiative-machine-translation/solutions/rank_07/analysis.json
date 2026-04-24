@@ -1,0 +1,43 @@
+{
+  "summary": "The author achieved 7th place by prioritizing data expansion and model scaling over complex engineering. They expanded the initial training set fourfold using Turkish-to-English translation, external PDF sources, and pseudolabeling of deduplicated text. The final submission relied on a byt5-xl model fine-tuned as a CasualLM, with experiments showing that larger byt5 variants consistently outperformed smaller ones and alternative LLMs.",
+  "extensive_summary": "## Data Expansion Strategy\nThe author spent significant time initially on manual sentence alignment but found its impact low. Instead, they focused on scaling the dataset, expanding the initial training set to 4x its original size. This was achieved through three main avenues: translating Turkish-to-English for shared non-English AKTs (~6k samples), retrieving transliterations and translations from external PDFs like `Innaya_v2.pdf` and historical geography texts (~6k samples), and deduplicating `published_texts.csv` against existing data, splitting the remainder into ~30-word strings, and pseudolabeling them (~18k samples). The final training set contained ~36k samples of varying lengths.\n\n## Model Selection and Formulation\nThe author experimented across multiple byt5 variants and observed a clear scaling law: byt5-small << byt5-base << byt5-large ~< byt5-xl. They formulated the task as a CasualLM rather than a Seq2Seq problem. Fine-tuning other LLMs like Mistral and Qwen yielded worse results than byt5, though they remained competitive enough for the gold zone. Other T5 variants performed significantly worse. The final submission used a byt5-xl model trained for 3 epochs, with byt5-large used for faster iteration during experimentation.",
+  "rank": 7,
+  "competition_flow": "The author expanded the training data fourfold using translation, external PDFs, and pseudolabeling, then fine-tuned a byt5-xl model as a CasualLM for three epochs to produce the final submission.",
+  "data_reading": [],
+  "data_processing": [
+    "Expanded initial training set 4x by translating Turkish->English for shared non-English AKTs, retrieving transliterations/translations from external PDFs, deduplicating `published_texts.csv`, splitting into ~30-word strings, and pseudolabeling the remainder."
+  ],
+  "features_engineering": [],
+  "models": [
+    "byt5-small",
+    "byt5-base",
+    "byt5-large",
+    "byt5-xl",
+    "Mistral",
+    "Qwen",
+    "T5 variants",
+    "T5-Gemma"
+  ],
+  "frameworks_used": [],
+  "loss_functions": [],
+  "cv_strategy": "",
+  "ensembling": "",
+  "insights": [
+    "Model size is a critical driver of performance, with byt5-xl outperforming smaller byt5 variants.",
+    "Formulating the task as a CasualLM yields better results than treating it as a Seq2Seq problem.",
+    "Fine-tuning other LLMs like Mistral and Qwen is less effective than fine-tuning byt5 for this task."
+  ],
+  "critical_findings": [
+    "Manual sentence alignment consumed significant time but delivered low impact compared to data scaling.",
+    "Pseudolabeling deduplicated text split into ~30-word strings successfully added ~18k high-quality samples to the training set."
+  ],
+  "what_did_not_work": [
+    "Manual sentence alignment had low impact despite extensive effort.",
+    "Fine-tuning other LLMs like Mistral and Qwen performed worse than byt5 fine-tuning.",
+    "Other T5 variants performed much worse than the byt5 family."
+  ],
+  "github_repos": [],
+  "papers": [],
+  "other_solution_refs": [],
+  "source_url": "https://www.kaggle.com/competitions/deep-past-initiative-machine-translation/discussion/684215"
+}

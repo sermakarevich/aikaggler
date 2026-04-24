@@ -1,0 +1,44 @@
+{
+  "summary": "The notebook provides a self-contained baseline for 3D semantic segmentation using nnUNetv2 to detect papyrus surfaces in CT scan volumes for the Vesuvius Challenge. It demonstrates how to adapt nnUNet to native 3D TIFF formats without NIfTI conversion, leverage its built-in ignore label mechanism for partially labeled data, and configure training/inference pipelines efficiently on Kaggle GPUs. Readers should learn how to set up symlinks for fast data preparation, utilize nnUNet's auto-configured hyperparameters, and generate submission-ready prediction masks. The notebook emphasizes practical workflow optimization, such as caching preprocessed data and using fold=all for faster submission generation.",
+  "purpose": "baseline",
+  "competition_flow": "Loads 3D TIFF CT volumes and labels, converts them to nnUNet format via symlinks, runs preprocessing and training with nnUNetv2, performs inference on test volumes, and packages the binary segmentation masks into a submission ZIP.",
+  "data_reading": [
+    "Reads 3D TIFF files directly using tifffile and a custom SimpleTiffIO reader",
+    "Creates JSON sidecars for voxel spacing information",
+    "Uses symlinks to avoid copying large competition files"
+  ],
+  "data_processing": [
+    "nnUNet auto-preprocessing (resampling, normalization)",
+    "Isotropic voxel spacing (1.0, 1.0, 1.0) via JSON sidecars",
+    "Ignore label (2) masking to exclude unlabeled regions from loss computation"
+  ],
+  "features_engineering": [],
+  "models": [
+    "nnUNet (nnUNetPlannerResEncM / ResNet encoder variant)"
+  ],
+  "frameworks_used": [
+    "nnunetv2",
+    "torch",
+    "tifffile",
+    "nibabel",
+    "numpy",
+    "pandas",
+    "matplotlib",
+    "tqdm"
+  ],
+  "loss_functions": [
+    "nnUNet partial loss (excludes label 2/ignore regions from gradient computation)"
+  ],
+  "cv_strategy": "fold='all' (trains on all training data without cross-validation)",
+  "ensembling": "",
+  "insights": [
+    "nnUNet automatically configures critical hyperparameters like patch size, batch size, and learning rate schedule, making manual tuning unnecessary.",
+    "Using the nnUNetPlannerResEncM planner with a ResNet encoder often yields 1-2% better accuracy than the default U-Net planner.",
+    "Reducing epochs to 250-500 is sufficient if the training progress curve indicates early convergence.",
+    "Symlink-based data preparation and preprocessed data caching significantly reduce setup time and disk usage on Kaggle."
+  ],
+  "critical_findings": [],
+  "what_did_not_work": [],
+  "source_url": "https://www.kaggle.com/code/jirkaborovec/surface-nnunet-training-inference-with-2xt4",
+  "votes": 263
+}

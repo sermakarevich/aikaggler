@@ -1,0 +1,17 @@
+{
+  "description": "Participants build machine translation models to convert Old Assyrian Cuneiform texts into English. The dataset contains historical language pairs, requiring competitors to address limited parallel data and significant linguistic domain shifts. Model performance is evaluated using a custom DPI BLEU / chrF++ metric on a held-out test set.",
+  "data_modality": "text",
+  "task_type": "generation",
+  "label_structure": "unknown",
+  "metric": "DPI BLEU / chrF++",
+  "test_split": "unknown",
+  "format": "standard",
+  "dataset_scale": "small",
+  "domain": "nlp_translation",
+  "data_challenges": [
+    "label_noise",
+    "limited_parallel_data",
+    "data_quality_issues"
+  ],
+  "constraints": []
+}

@@ -1,0 +1,39 @@
+{
+  "summary": "The notebook demonstrates a practical inference pipeline for a segmentation competition, focusing on understanding the RLE submission format and establishing a baseline using an 'authentic-only' strategy. It walks through custom RLE encoding, loads two pre-trained models (a custom CNN and a DINOv2-based segmenter), and applies test-time augmentation during inference. Post-processing steps include adaptive thresholding, morphological operations, and confidence/area filtering to generate final masks. The author emphasizes that submitting 'authentic' for all images is a valid starting point for highly imbalanced datasets to quickly validate the submission pipeline and understand the scoring metric.",
+  "purpose": "inference",
+  "competition_flow": "Loads test images, runs inference with TTA on two pre-trained models, applies adaptive thresholding and morphological post-processing, filters by area and confidence, encodes masks to RLE format, and saves a CSV submission.",
+  "data_reading": [
+    "Reads test images from a local directory using PIL.Image and os.listdir, converts to RGB, and resizes to 512x512.",
+    "Loads sample submission CSV with pandas."
+  ],
+  "data_processing": [
+    "Resizes images to 512x512 and normalizes pixel values to [0, 1].",
+    "Applies test-time augmentation (horizontal flip, vertical flip, 90-degree rotation) during inference.",
+    "Applies Gaussian blur, adaptive thresholding (mean + 0.3 * std), and morphological closing/opening operations to post-process predictions."
+  ],
+  "features_engineering": [],
+  "models": [
+    "Custom CNN encoder-decoder",
+    "DINOv2-based segmenter (DinoSegmenter with Decoder head)"
+  ],
+  "frameworks_used": [
+    "pytorch",
+    "transformers",
+    "numpy",
+    "pandas",
+    "opencv",
+    "pillow"
+  ],
+  "loss_functions": [],
+  "cv_strategy": "",
+  "ensembling": "Averages predictions from two models (custom CNN and DINOv2) using a mean strategy, followed by adaptive thresholding, morphological filtering, and area/confidence checks before RLE encoding.",
+  "insights": [
+    "Submitting 'authentic' for all images is a fast, effective baseline for highly imbalanced segmentation tasks to validate pipelines and understand metric behavior.",
+    "Test-time augmentation (flips and rotations) reliably improves prediction stability without retraining.",
+    "Adaptive thresholding based on local mean and standard deviation outperforms fixed thresholds for post-processing segmentation masks."
+  ],
+  "critical_findings": [],
+  "what_did_not_work": [],
+  "source_url": "https://www.kaggle.com/code/antonoof/rle-metric-simple-submission",
+  "votes": 212
+}

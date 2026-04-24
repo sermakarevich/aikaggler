@@ -1,0 +1,30 @@
+{
+  "id": "tonyai007/inference-vesuvius-surface-3d-detection-epoch-x5",
+  "id_no": 108179645,
+  "title": "[Inference] Vesuvius Surface 3D Detection_Epoch_X5",
+  "code_file": "inference-vesuvius-surface-3d-detection-epoch-x5.ipynb",
+  "language": "python",
+  "kernel_type": "notebook",
+  "is_private": false,
+  "enable_gpu": true,
+  "enable_tpu": false,
+  "enable_internet": false,
+  "keywords": [],
+  "dataset_sources": [],
+  "kernel_sources": [
+    "ipythonx/vsdetection-packages-offline-installer-only",
+    "tonyai007/train-vesuvius-seresnext50-comboloss",
+    "tonyai007/train-vesuvius-seresnext50-comboloss-2",
+    "tonyai007/train-vesuvius-seresnext50-comboloss-3",
+    "tonyai007/train-vesuvius-seresnext50-comboloss-4",
+    "tonyai007/train-vesuvius-seresnext50-comboloss-5"
+  ],
+  "competition_sources": [
+    "vesuvius-challenge-surface-detection"
+  ],
+  "model_sources": [
+    "ipythonx/vsd-model/Keras/transunet/3"
+  ],
+  "docker_image": "gcr.io/kaggle-private-byod/python@sha256:7a9d2a6b13b3566aa6cc5a22447f3b3f99acf55dce44408deb90584b6d4b0dde",
+  "machine_shape": "Gpu"
+}

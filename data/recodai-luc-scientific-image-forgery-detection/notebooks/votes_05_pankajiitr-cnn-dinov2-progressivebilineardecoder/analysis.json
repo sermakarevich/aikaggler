@@ -1,0 +1,47 @@
+{
+  "summary": "This notebook demonstrates a hybrid image forgery detection pipeline that combines frozen DINOv2 self-supervised vision transformer features with a custom CNN-based Progressive Bilinear Decoder for pixel-level segmentation. It loads a pretrained model, processes images through a fixed-size resize and normalization pipeline, and applies a gradient-enhanced adaptive thresholding strategy to refine segmentation masks. The workflow concludes by generating a Kaggle submission with RLE-encoded masks for forged regions or an 'authentic' label, accompanied by diagnostic metrics like mask area and mean probability. Readers should understand how to leverage frozen self-supervised features for dense prediction tasks, design lightweight decoder architectures, and implement robust post-processing to suppress false positives on authentic images.",
+  "purpose": "inference",
+  "competition_flow": "Loads train/test images and masks, extracts frozen DINOv2 features, passes them through a CNN decoder to generate probability maps, applies gradient-enhanced adaptive thresholding and morphological refinement, and outputs a Kaggle submission CSV with RLE-encoded masks or 'authentic' labels.",
+  "data_reading": [
+    "Images are loaded via PIL.Image.open and converted to RGB.",
+    "Masks are loaded via np.load from .npy files, with 3D masks collapsed using np.max(..., axis=0).",
+    "Paths are constructed using pathlib.Path and sorted lists."
+  ],
+  "data_processing": [
+    "Images are resized to 518x518, normalized to [0, 1], and permuted to CHW format.",
+    "Masks are resized using cv2.INTER_NEAREST.",
+    "During inference, a gradient enhancement step combines the probability map with Sobel gradient magnitude, followed by Gaussian blurring, adaptive thresholding based on mean + 0.3*std, and morphological closing/opening operations."
+  ],
+  "features_engineering": [
+    ""
+  ],
+  "models": [
+    "DINOv2 (base)",
+    "ProgressiveBilinearDecoder (custom CNN)",
+    "DinoSegmenter (hybrid wrapper)"
+  ],
+  "frameworks_used": [
+    "torch",
+    "transformers",
+    "numpy",
+    "pandas",
+    "opencv",
+    "PIL",
+    "scikit-learn",
+    "matplotlib"
+  ],
+  "loss_functions": [
+    ""
+  ],
+  "cv_strategy": "Holdout split: 20% validation set via train_test_split with random_state=42 for both authentic and forged classes.",
+  "ensembling": "",
+  "insights": [
+    "Freezing a large self-supervised vision transformer and attaching a lightweight CNN decoder effectively adapts global representations to dense prediction tasks without heavy compute.",
+    "Gradient-enhanced adaptive thresholding significantly improves mask boundary precision compared to static global thresholds.",
+    "Combining morphological operations with area and mean probability filters effectively suppresses false positives on authentic images."
+  ],
+  "critical_findings": [],
+  "what_did_not_work": [],
+  "source_url": "https://www.kaggle.com/code/pankajiitr/cnn-dinov2-progressivebilineardecoder",
+  "votes": 217
+}

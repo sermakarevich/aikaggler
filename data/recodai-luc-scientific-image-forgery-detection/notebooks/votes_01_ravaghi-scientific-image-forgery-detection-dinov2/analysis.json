@@ -1,0 +1,36 @@
+{
+  "summary": "This notebook demonstrates an inference pipeline for detecting forged regions in scientific images by leveraging a frozen DINOv2 encoder paired with a lightweight custom decoder. It extracts spatial features from the pre-trained vision transformer, processes them through a small convolutional head, and applies test-time augmentation to stabilize predictions. The author emphasizes a practical post-processing strategy that combines gradient enhancement, adaptive thresholding, and morphological operations to refine raw segmentation masks. Readers should learn how to effectively repurpose frozen foundation models for specialized segmentation tasks without fine-tuning, and how to implement robust TTA and confidence-based filtering to minimize false positives in competition submissions.",
+  "purpose": "inference",
+  "competition_flow": "Loads test images, extracts frozen DINOv2 features, passes them through a lightweight decoder, applies TTA and gradient-based post-processing, and outputs RLE-encoded masks or \"authentic\" labels for submission.",
+  "data_reading": [
+    "Images are loaded with PIL, resized to 512x512, converted to float32, normalized by 255, permuted to CHW tensor format, and moved to the target device."
+  ],
+  "data_processing": [
+    "Resizing to 512x512, normalization, TTA via horizontal and vertical flips, gradient enhancement using Sobel filters, Gaussian blurring, adaptive thresholding (mean + 0.3*std), morphological closing/opening, and resizing masks back to original image dimensions."
+  ],
+  "features_engineering": [],
+  "models": [
+    "DINOv2 (base)",
+    "DinoTinyDecoder (custom lightweight convolutional decoder)"
+  ],
+  "frameworks_used": [
+    "pytorch",
+    "transformers",
+    "opencv-python",
+    "pandas",
+    "numpy",
+    "PIL"
+  ],
+  "loss_functions": [],
+  "cv_strategy": "",
+  "ensembling": "Test-time augmentation (TTA) with horizontal and vertical flips is applied, and predictions are averaged across augmented views before post-processing.",
+  "insights": [
+    "Frozen foundation models like DINOv2 can serve as strong feature extractors for specialized tasks without requiring encoder fine-tuning.",
+    "Combining gradient-based enhancement with adaptive thresholding and morphological operations effectively refines raw segmentation outputs.",
+    "Confidence filtering based on mask area and mean probability significantly reduces false positives for authentic images."
+  ],
+  "critical_findings": [],
+  "what_did_not_work": [],
+  "source_url": "https://www.kaggle.com/code/ravaghi/scientific-image-forgery-detection-dinov2",
+  "votes": 462
+}

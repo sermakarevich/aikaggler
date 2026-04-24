@@ -1,0 +1,58 @@
+{
+  "summary": "The notebook introduces TruthGuard, a post-hoc calibration middleware that detects and corrects overconfident hallucinations in large language models without retraining weights. It constructs a synthetic dataset of 1,200+ questions across 12 knowledge domains to simulate six foundation models with varying confidence and accuracy profiles. The author computes novel evaluation metrics like Expected Calibration Error (ECE), Unknown-Unknowns rate, and Misconception Trap rate, then applies temperature scaling to align model confidence with actual accuracy. Through cross-validation and leakage simulations, it demonstrates how preprocessing data leakage artificially inflates scores and why calibration metrics are critical for safe AI deployment. Readers learn that high accuracy does not guarantee reliability, and that post-hoc calibration can significantly improve trustworthiness at near-zero computational cost.",
+  "purpose": "tutorial",
+  "competition_flow": "Synthetically generates a 1,200-question multi-domain dataset \u2192 simulates six foundation models and applies temperature scaling calibration \u2192 outputs ECE, safety scores, and leakage detection reports.",
+  "data_reading": [],
+  "data_processing": [
+    "Synthetic features clipped to [0,1] ranges using np.clip",
+    "Misconception flags sampled via np.random.binomial",
+    "Answerability perturbed with Gaussian noise and bounded to [0.0, 1.0]"
+  ],
+  "features_engineering": [
+    "difficulty (computed as 1.0 - answerability)",
+    "ECE (Expected Calibration Error)",
+    "Unknown-Unknowns rate (confident predictions on unanswerable questions)",
+    "Misconception Trap rate (confidently wrong on myth/pseudoscience categories)",
+    "AGI Safety Score (composite metric weighting calibration, safety, accuracy, and misconception rates)"
+  ],
+  "models": [
+    "GPT4_Overconfident (simulated)",
+    "Claude3_Cautious (simulated)",
+    "Gemini_Balanced (simulated)",
+    "Llama3_Uncertain (simulated)",
+    "Mistral_Erratic (simulated)",
+    "PerfectAGI (simulated)",
+    "LogisticRegression (sklearn)"
+  ],
+  "frameworks_used": [
+    "numpy",
+    "pandas",
+    "matplotlib",
+    "seaborn",
+    "scipy",
+    "scikit-learn",
+    "ipywidgets",
+    "plotly"
+  ],
+  "loss_functions": [
+    "None (ECE minimized via scipy.optimize.minimize_scalar for calibration; NLL used conceptually for visualization only)"
+  ],
+  "cv_strategy": "StratifiedKFold(n_splits=5, shuffle=True, random_state=2026) on synthetic features (answerability, difficulty, is_misconception)",
+  "ensembling": "",
+  "insights": [
+    "High accuracy combined with high confidence is dangerous if the model is miscalibrated.",
+    "Post-hoc temperature scaling can significantly reduce Expected Calibration Error without retraining.",
+    "Data leakage during preprocessing (e.g., fitting scalers on full data) artificially inflates validation scores and masks true generalization gaps.",
+    "A model that correctly abstains on unanswerable questions is safer than one that confidently hallucinates.",
+    "Calibration metrics like ECE and Unknown-Unknowns rates should be reported alongside accuracy for reliable AI deployment."
+  ],
+  "critical_findings": [
+    "Simulated overconfident models exhibit high Unknown-Unknowns rates, confidently answering impossible questions.",
+    "Leaked models show artificially low train-val gaps and inflated public scores but collapse on private/unseen distributions.",
+    "Optimal temperature scaling values vary significantly across models, with some requiring T > 1 to soften overconfidence and others needing T < 1.",
+    "The Misconception Trap Rate reveals that models are most confidently wrong on pseudoscience and conspiracy theory categories."
+  ],
+  "what_did_not_work": [],
+  "source_url": "https://www.kaggle.com/code/aminmahmoudalifayed/truth-guard-your-model-is-lying",
+  "votes": 37
+}

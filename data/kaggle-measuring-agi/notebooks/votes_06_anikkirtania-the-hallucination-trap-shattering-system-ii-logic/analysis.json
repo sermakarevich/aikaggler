@@ -1,0 +1,46 @@
+{
+  "summary": "This notebook constructs a synthetic benchmark to evaluate the logical routing and arithmetic execution capabilities of three Google LLMs. It generates 100 complex algebraic-transcendental problems with conditional branching and base-conversion modifiers, then runs them through the models using a custom strict and relaxed grading pipeline. By extracting telemetry logs, the author computes novel cognitive metrics like Implicit Calibration Error (ICE) and Compute Yield Ratio (CYR) to quantify failure modes such as mode collapse and test-time compute scaling. The analysis demonstrates that accuracy alone masks underlying executive function flaws, revealing how models handle logical traps and floating-point approximation limits. Readers should understand that scaling test-time compute does not guarantee correctness, and that executive function metrics provide a more nuanced evaluation of model robustness.",
+  "purpose": "other",
+  "competition_flow": "Generates a synthetic algebraic-transcendental math dataset, evaluates three Google LLMs using strict and relaxed grading, extracts telemetry logs, computes novel cognitive metrics, and visualizes performance versus compute allocation.",
+  "data_reading": [
+    "Synthetic dataset generated in-memory via Python loops and pandas DataFrame.",
+    "Benchmark telemetry logs parsed from /kaggle/working/*run.json using json.load."
+  ],
+  "data_processing": [
+    "Generates 100 math problems with conditional routing and transcendental functions.",
+    "Parses JSON logs to extract answers, targets, latency, tokens, and costs.",
+    "Applies regex to isolate numeric outputs from model responses.",
+    "Implements strict (1e-7) and relaxed (1e-4) tolerance grading.",
+    "Computes novel cognitive metrics (ICE, DSC, CYR, Rambling Index) from telemetry."
+  ],
+  "features_engineering": [],
+  "models": [
+    "Gemma 3 12B",
+    "Gemini 2.5 Flash",
+    "Gemini 3.1 Pro"
+  ],
+  "frameworks_used": [
+    "kaggle_benchmarks",
+    "pandas",
+    "numpy",
+    "matplotlib",
+    "seaborn"
+  ],
+  "loss_functions": [],
+  "cv_strategy": "",
+  "ensembling": "",
+  "insights": [
+    "LLMs optimized for linear prediction suffer from mode collapse when facing complex logical traps, often repeating identical hallucinations.",
+    "Test-time compute scaling reveals a heavy-tailed distribution for reasoning models, contrasting with the rigid, low-variance inference of fast models.",
+    "Accuracy metrics mask underlying arithmetic limitations; relaxing tolerance thresholds exposes the FPU Ceiling where models understand routing but fail floating-point approximation.",
+    "Executive function metrics provide a more nuanced view of model capability than accuracy alone, highlighting working memory decay and cognitive flexibility."
+  ],
+  "critical_findings": [
+    "Fast models exhibit severe mode collapse despite lower compute, indicating blind guessing rather than reasoning.",
+    "Even frontier reasoning models fail arithmetic execution due to token approximation, proving that scaling compute alone cannot overcome the lack of a deterministic FPU.",
+    "Models struggle with abrupt domain switches, causing massive compute waste and logic breakdown when transitioning between continuous math and discrete string manipulation."
+  ],
+  "what_did_not_work": [],
+  "source_url": "https://www.kaggle.com/code/anikkirtania/the-hallucination-trap-shattering-system-ii-logic",
+  "votes": 34
+}

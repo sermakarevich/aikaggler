@@ -1,0 +1,56 @@
+{
+  "summary": "The authors leveraged an autonomous Kaggle agent called Qgentic-AI to rapidly design and execute a translation pipeline under severe time constraints. Instead of cleaning the provided competition training data, they generated high-quality transliteration/translation pairs using Gemini OCR on PDFs and by splitting published texts. They post-trained Qwen2.5-32B and Qwen2.5-72B models with LoRA on this synthetic data, alongside a ByT5-Base model, achieving a competitive rank through careful preprocessing, post-processing deduplication, and iterative agent-driven experimentation.",
+  "extensive_summary": "## Solution Design & Agent-Driven Workflow\nThe team operated under extreme time constraints (70-75 hour work weeks) and delegated high-level solution design to an autonomous Kaggle agent they developed, Qgentic-AI. The agent iteratively ran experiments, tuned hyperparameters, and distilled the workflow into structured Markdown files. This approach allowed them to compete effectively with only 6 days of active grinding.\n\n## Data Generation & Strategy\nA core strategic decision was explicitly rejecting the competition's provided training data, which the agent initially struggled to process. Instead, the authors generated approximately 55,000 high-quality transliteration/translation pairs through two main channels: splitting published texts into sentences and generating translations via Gemini, and feeding PDF pages directly into Gemini for OCR-based extraction. After manual cleaning and LLM-as-a-judge filtering, they created bidirectional training sets (~110,000 pairs total) for ENG -> AKK and AKK -> ENG translation.\n\n## Model Training & Architecture\nThe primary models were Qwen2.5-32B and Qwen2.5-72B, post-trained for 3 epochs on 8x B200 GPUs using LoRA with rank 64 and alpha 128. A ByT5-Base model was also trained for 15 epochs at a learning rate of 3e-4. The agent handled parameter tuning, significantly reducing manual overhead.\n\n## Preprocessing & Postprocessing\nPreprocessing followed the host's discussion guidelines, fixing specific formatting bugs like converting \"5/12 shekels\" to \"2/3 shekel 15 grains\". The code heavily normalizes Roman numerals, decimals, ASCII fractions, and subscript numbers into Unicode equivalents, while standardizing gap markers (`<gap>`). Postprocessing involved removing repetitive phrases from model outputs using a custom prompt directed at the base Qwen2.5-72B model, acting as a text editor to clean translations without altering meaning.\n\n## Validation & Limitations\nValidation relied on a perturbed version of `train.csv` that removed samples with significant length mismatches between training and validation sets. The authors acknowledge data leakage in this CV setup (CV score ~43) and do not rely on it exclusively for model selection. Several approaches were explicitly abandoned, including larger ByT5 models, MBR, using the competition train data, Arabic intermediate translation, and training a separate judge model.",
+  "rank": 24,
+  "competition_flow": "Raw PDFs and published texts were processed via Gemini OCR to generate synthetic transliteration/translation pairs, which were cleaned and used to post-train Qwen2.5 and ByT5 models with LoRA, followed by regex-based normalization and LLM-assisted deduplication before final submission.",
+  "data_reading": [
+    "PDF pages and published texts were fed into Gemini for OCR and sentence splitting; competition CSV data was loaded via pandas for validation perturbation."
+  ],
+  "data_processing": [
+    "External data generated via Gemini OCR on PDFs and published texts (~55k pairs).",
+    "Preprocessing fixed formatting bugs (e.g., fractions, Roman months, subscript numbers) and standardized gap markers using regex.",
+    "Postprocessing removed repetitions using a base Qwen2.5-72B prompt.",
+    "Validation set was perturbed by removing samples with large train/val length mismatches."
+  ],
+  "features_engineering": [],
+  "models": [
+    "Qwen2.5-32B",
+    "Qwen2.5-72B",
+    "ByT5-Base"
+  ],
+  "frameworks_used": [],
+  "loss_functions": [],
+  "cv_strategy": "Perturbed version of train.csv removing all bad samples where the training and validation lengths are way off.",
+  "ensembling": "The solution relies on post-training two Qwen2.5 variants and a ByT5-Base model, with final outputs cleaned via regex normalization and LLM-assisted repetition removal rather than explicit model ensembling.",
+  "insights": [
+    "Leveraging an autonomous agent for iterative experimentation drastically reduced development time under severe constraints.",
+    "Generating high-quality synthetic data via Gemini OCR and published texts outperformed attempting to clean the noisy competition training data.",
+    "Post-processing model outputs with a dedicated deduplication prompt significantly improved translation quality without retraining."
+  ],
+  "critical_findings": [
+    "The competition's provided training data was deemed too confusing and was explicitly abandoned in favor of synthetic data.",
+    "Larger ByT5 models (>= Large) failed to improve results, contrary to typical scaling expectations.",
+    "Relying solely on the perturbed validation set was risky due to inherent data leakage, necessitating cautious model selection."
+  ],
+  "what_did_not_work": [
+    "Any ByT5 model >= Large",
+    "MBR",
+    "Using competition training data",
+    "Translating Akkadian -> Arabic -> English",
+    "Training a judge model to grade the quality of the translations"
+  ],
+  "github_repos": [
+    {
+      "url": "https://github.com/bogoconic1/Qgentic-AI",
+      "role": "library"
+    }
+  ],
+  "papers": [],
+  "other_solution_refs": [
+    {
+      "description": "Host's discussion thread referenced for preprocessing guidelines",
+      "url": "https://www.kaggle.com/competitions/deep-past-initiative-machine-translation/discussion/678899"
+    }
+  ],
+  "source_url": "https://www.kaggle.com/competitions/deep-past-initiative-machine-translation/discussion/684189"
+}

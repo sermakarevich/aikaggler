@@ -18,7 +18,7 @@ Rules:
 - 'critical_findings': counterintuitive observations, data quirks, or score-moving discoveries the author explicitly highlights as lessons (distinct from general insights — these are surprising / non-obvious). One sentence each.
 - 'what_did_not_work': extract ONLY if the author explicitly lists failed attempts.
 - 'github_repos': classify role as 'solution' (author's own code for THIS competition), 'library' (third-party dependency), or 'reference' (mentioned for context, not a dep).
-- 'papers': include title and URL (both REQUIRED). Prefer arxiv URLs of form 'https://arxiv.org/abs/XXXX.XXXXX'. Set 'arxiv_id' ONLY if an explicit arxiv number appears. Copy title verbatim — NEVER invent one from the URL alone. If only a URL is present, omit the paper.
+- 'papers': extract ANY reference to an academic/technical paper — NOT just arxiv. Journal articles (sciencedirect, springer, nature, elsevier, IEEE, ACM, Wiley, MDPI), conference proceedings (NeurIPS/NIPS, CVPR/ICCV/ECCV via openaccess.thecvf.com, ACL/EMNLP via aclanthology.org, ICML via proceedings.mlr.press), preprint servers (arxiv, biorxiv, medrxiv, ssrn, openreview), DOI links, PubMed, Semantic Scholar, and informal references ('X et al., 2019', 'the SwAV paper') that identify a paper. Include 'title' and 'url' (both REQUIRED) — copy the title verbatim from the writeup; NEVER invent one from a URL. Set 'arxiv_id' ONLY when an explicit arxiv number (e.g. '2103.14030' or 'arXiv:2103.14030') is given; otherwise leave null. If only a URL is present with no identifiable title, omit the paper.
 - 'other_solution_refs': links to OTHER kaggle kernels/discussions. Only include if an actual URL appears.
 
 Title: {title}

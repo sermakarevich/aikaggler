@@ -1,0 +1,13 @@
+{
+  "description": "Participants predict continuous structural properties of RNA molecules directly from their nucleotide sequences. The competition focuses on modeling complex molecular folding patterns, with top solutions leveraging multiple sequence alignments and template-based neural networks. Performance is evaluated using a custom Ribonanza TM-Score PermuteChains metric on a private test set.",
+  "data_modality": "text",
+  "task_type": "regression",
+  "label_structure": "single_label",
+  "metric": "Ribonanza TM-Score PermuteChains",
+  "test_split": "unknown",
+  "format": "two_stage",
+  "dataset_scale": "unknown",
+  "domain": "structural_biology",
+  "data_challenges": [],
+  "constraints": []
+}

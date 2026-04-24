@@ -1,0 +1,92 @@
+{
+  "summary": "This report synthesizes the methodologies, training strategies, and inference optimizations of the top-performing teams in the Kaggle AI Mathematical Olympiad Progress Prize 2. The authors highlight how successful solutions balanced mathematical reasoning capability with strict inference time constraints by leveraging quantized 14B and 32B LLMs. Key technical drivers included multi-stage fine-tuning (SFT, DPO, GRPO), speculative decoding, dynamic token budget allocation, and custom early-stopping mechanisms to maximize throughput within the 5-hour limit.",
+  "extensive_summary": "## Competition Overview & Core Challenge\nThe AIMO 2 competition required teams to solve 50 mathematical problems within a strict 5-hour inference window. The primary bottleneck was the excessive token generation length of base models like DeepSeek R1, which prevented completion of all problems. Top solutions pivoted toward optimizing inference efficiency without sacrificing reasoning accuracy.\n\n## Model Training & Alignment\nSuccessful teams predominantly used the DeepSeek-R1-Distill-Qwen-14B or Qwen2.5-14B architectures. Training strategies focused on reducing reasoning redundancy through multi-stage pipelines: initial Supervised Fine-Tuning (SFT) on Chain-of-Thought (CoT) data, followed by alignment techniques like Direct Preference Optimization (DPO) or Good Reasoner Preference Optimization (GRPO). GRPO was specifically leveraged to penalize long correct traces and encourage shorter, more efficient reasoning paths. Some teams also employed logits distillation from larger 32B models and linear checkpoint merging (e.g., CoT * 0.3 + TIR * 0.7) to recover accuracy lost during length-reduction training.\n\n## Inference Acceleration & Resource Management\nInference optimization was critical. Teams heavily utilized quantization (4-bit AWQ, 8-bit KV Cache/W4KV8) and specialized engines like TensorRT-LLM, lmdeploy (TurboMind), and SGLang over standard vLLM for higher throughput. Speculative decoding via ReDrafter yielded ~1.8X speedups. To manage the 5-hour constraint, dynamic time allocation and token budgeting were implemented, often using lightweight predictors like ModernBERT to estimate problem difficulty. Early stopping mechanisms were highly customized, terminating rollouts based on Self-Consistency convergence, divergence thresholds, or invalid response counts.\n\n## Reasoning & Post-Processing Strategies\nRather than relying solely on text-based CoT, several solutions forced code generation and execution, incorporating error-fixing loops when code failed. Answer aggregation moved beyond simple majority voting to weighted algorithms that prioritized consensus between boxed answers and executable code. Phased branch duplication and prefix caching were used to maintain solution diversity while minimizing redundant KV cache computation.",
+  "rank": null,
+  "competition_flow": "Raw mathematical problems are processed through quantized LLMs (primarily 14B/32B variants of DeepSeek/Qwen) using multi-stage fine-tuning (SFT/DPO/GRPO), followed by highly optimized inference with speculative decoding, dynamic token budgeting, and custom early-stopping, culminating in code-assisted answer extraction and weighted voting for final submissions.",
+  "data_reading": [],
+  "data_processing": [],
+  "features_engineering": [],
+  "models": [
+    "DeepSeek R1 series (7B, 14B, 32B)",
+    "DeepSeek-R1-Distill-Qwen-14B",
+    "Qwen2.5-14B",
+    "ModernBERT"
+  ],
+  "frameworks_used": [
+    "TensorRT-LLM",
+    "lmdeploy",
+    "vLLM",
+    "SGLang",
+    "ReDrafter"
+  ],
+  "loss_functions": [
+    "GRPO reward function (Cosine reward for length penalty)"
+  ],
+  "cv_strategy": "",
+  "ensembling": "Weighted voting algorithms prioritizing consensus between boxed answers and code outputs, combined with linear checkpoint merging of SFT and TIR/GRPO models and Self-Consistency early stopping to aggregate multiple generations.",
+  "insights": [
+    "Balancing model reasoning capability with inference efficiency is more critical than raw model size for time-constrained math competitions.",
+    "Multi-stage fine-tuning combining SFT for foundational knowledge and DPO/GRPO for alignment effectively reduces reasoning redundancy.",
+    "Quantization (AWQ, KV Cache) and specialized inference engines (TensorRT-LLM, lmdeploy) provide substantial throughput gains over standard setups.",
+    "Dynamic time allocation and difficulty prediction allow teams to allocate computational budgets adaptively across problems of varying complexity."
+  ],
+  "critical_findings": [
+    "The 14B model's length penalty severely hurt accuracy during GRPO training, requiring its removal to maintain performance.",
+    "Standard vLLM was outperformed by TensorRT-LLM, lmdeploy, and SGLang in high-throughput scenarios.",
+    "Forcing code generation and implementing an LLM-driven error-fixing loop significantly improved solution reliability over pure text reasoning.",
+    "Model merging successfully recovered accuracy lost during aggressive length-reduction fine-tuning."
+  ],
+  "what_did_not_work": [
+    "The 14B model's length penalty severely hurt accuracy during GRPO training, requiring its removal.",
+    "Simple majority voting was outperformed by carefully designed weighted algorithms that penalized short code or small answer values."
+  ],
+  "github_repos": [],
+  "papers": [],
+  "other_solution_refs": [
+    {
+      "description": "1st Place (NemoSkills)",
+      "url": "https://www.kaggle.com/competitions/ai-mathematical-olympiad-progress-prize-2/writeups/nemoskills-1st-place-solution-nemoskills"
+    },
+    {
+      "description": "2nd Place (imagination-research)",
+      "url": "https://www.kaggle.com/competitions/ai-mathematical-olympiad-progress-prize-2/writeups/imagination-research-2nd-place-solution-team-imagi"
+    },
+    {
+      "description": "3rd Place (Aliev)",
+      "url": "https://www.kaggle.com/competitions/ai-mathematical-olympiad-progress-prize-2/writeups/aliev-3rd-place-solution-report"
+    },
+    {
+      "description": "4th Place (sravn)",
+      "url": "https://www.kaggle.com/competitions/ai-mathematical-olympiad-progress-prize-2/writeups/sravn-4th-place-solution"
+    },
+    {
+      "description": "5th Place (usernam)",
+      "url": "https://www.kaggle.com/competitions/ai-mathematical-olympiad-progress-prize-2/writeups/usernam-5th-place-solution"
+    },
+    {
+      "description": "9th Place (Fast-Math-R1-14B)",
+      "url": "https://www.kaggle.com/competitions/ai-mathematical-olympiad-progress-prize-2/writeups/fast-math-r1-14b-lb-pub-29-pvt-28-enhancing-the-ef"
+    },
+    {
+      "description": "11th Place (farsail)",
+      "url": "https://www.kaggle.com/competitions/ai-mathematical-olympiad-progress-prize-2/writeups/farsail-11th-place-solution"
+    },
+    {
+      "description": "17th/18th Place (ippeiogawa)",
+      "url": "https://www.kaggle.com/competitions/ai-mathematical-olympiad-progress-prize-2/writeups/ippeiogawa-private27-public28-solution-for-17th-to"
+    },
+    {
+      "description": "20th Place (Arek Paterek)",
+      "url": "https://www.kaggle.com/competitions/ai-mathematical-olympiad-progress-prize-2/writeups/arek-paterek-20th-place-solution-generate-lots-of-"
+    },
+    {
+      "description": "21st Place (JK-Piece)",
+      "url": "https://www.kaggle.com/competitions/ai-mathematical-olympiad-progress-prize-2/writeups/jk-piece-21st-place-solution"
+    },
+    {
+      "description": "49th Place (So\u2026 We cooked a model \ud83e\udd37)",
+      "url": "https://www.kaggle.com/competitions/ai-mathematical-olympiad-progress-prize-2/writeups/so-we-cooked-a-model"
+    }
+  ],
+  "source_url": "https://www.kaggle.com/competitions/ai-mathematical-olympiad-progress-prize-3/discussion/638787"
+}

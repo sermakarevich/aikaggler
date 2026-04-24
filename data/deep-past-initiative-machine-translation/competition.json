@@ -1,0 +1,113 @@
+{
+  "id": 121150,
+  "competitionName": "deep-past-initiative-machine-translation",
+  "title": "Deep Past Challenge - Translate Akkadian to English",
+  "briefDescription": "Bringing Bronze Age Voices Back to Life \u2013 Machine Translation of Old Assyrian Cuneiform",
+  "dateEnabled": "2025-12-16T19:57:18.657Z",
+  "deadline": "2026-03-23T23:59:00Z",
+  "hasLeaderboard": true,
+  "leaderboardPercentage": 34,
+  "maxDailySubmissions": 5,
+  "numScoredSubmissions": 2,
+  "hasSolution": true,
+  "numPrizes": 6,
+  "forumId": 9344890,
+  "finalLeaderboardHasBeenVerified": true,
+  "userRankMultiplier": 1,
+  "dateCreated": "2025-11-14T20:14:29.459249700Z",
+  "competitionHostSegmentId": 1,
+  "maxTeamSize": 5,
+  "medalsAllowed": true,
+  "enableTeamFiles": true,
+  "teamFileDeadline": "2026-04-25T00:00:00Z",
+  "teamMergerExplicitDeadline": "2026-03-16T23:59:00Z",
+  "prohibitNewEntrantsExplicitDeadline": "2026-03-16T23:59:00Z",
+  "kernelsPublishingDisabledDeadline": "2026-03-09T23:59:00Z",
+  "organizationId": 5215,
+  "hasCoverImageUrl": true,
+  "showPrivateLeaderboard": true,
+  "hasScripts": true,
+  "onlyAllowKernelSubmissions": true,
+  "totalTeams": 2673,
+  "totalCompetitors": 3311,
+  "totalSubmissions": 68136,
+  "rulesRequired": true,
+  "usesSynchronousReruns": true,
+  "maxCpuRuntimeMinutes": 540,
+  "maxGpuRuntimeMinutes": 540,
+  "rowIdColumnName": "id",
+  "requiredSubmissionFilename": "submission.csv",
+  "evaluationAlgorithm": {
+    "id": 5543,
+    "name": "DPI BLEU / chrF++",
+    "isMax": true,
+    "environmentRenderType": "ENVIRONMENT_RENDER_TYPE_JSON",
+    "kernelId": 104289443,
+    "latestCompetitionMetricVersionId": 56649,
+    "state": "AVAILABLE",
+    "allowInternet": true
+  },
+  "categories": [
+    {
+      "id": 16726,
+      "name": "translation",
+      "fullPath": "task > translation",
+      "description": "",
+      "datasetCount": 202,
+      "competitionCount": 8,
+      "scriptCount": 201,
+      "slug": "translation",
+      "displayName": "Translation"
+    },
+    {
+      "id": 9109,
+      "name": "history",
+      "fullPath": "subject > people and society > social science > history",
+      "description": "History is generally the study of past events that have shaped the world. Here on Kaggle, you'll find historical records and analyses on topics like Bitcoin data, UFO sightings, and sports tournaments.",
+      "datasetCount": 2645,
+      "competitionCount": 5,
+      "scriptCount": 351,
+      "slug": "history",
+      "displayName": "History"
+    },
+    {
+      "id": 14104,
+      "name": "text",
+      "fullPath": "data type > text",
+      "datasetCount": 10256,
+      "competitionCount": 185,
+      "scriptCount": 4976,
+      "slug": "text-data",
+      "displayName": "Text"
+    },
+    {
+      "name": "custom metric",
+      "description": "This competition's metric is defined under the 'Evaluation' tab",
+      "displayName": "Custom Metric"
+    }
+  ],
+  "organization": {
+    "slug": "deep-past-initiative",
+    "name": "Deep Past Initiative",
+    "thumbnailImageUrl": "https://storage.googleapis.com/kaggle-organizations/5215/thumbnail.jpg?t=2025-10-29-16-03-51",
+    "profileUrl": "/organizations/deep-past-initiative"
+  },
+  "launched": true,
+  "createdByUserId": 1537731,
+  "license": {
+    "id": 8,
+    "name": "CC BY-SA 4.0",
+    "url": "https://creativecommons.org/licenses/by-sa/4.0/",
+    "agreementRequired": false
+  },
+  "hostName": "Deep Past Initiative",
+  "scoreTruncationNumDecimals": 4,
+  "locked": true,
+  "totalJoinedUsers": 10740,
+  "requiresIdentityVerification": true,
+  "submissionSizeLimitMb": 20480,
+  "reward": {
+    "id": "USD",
+    "quantity": 50000
+  }
+}

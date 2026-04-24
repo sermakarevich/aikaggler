@@ -1,0 +1,32 @@
+{
+  "summary": "This notebook implements a multi-run, multi-model inference pipeline for Akkadian-to-English translation. It generates a large pool of candidate translations per test sample by running two pre-trained ByT5 models across three different random seeds, utilizing beam search and multi-temperature sampling. The final translation is selected via Minimum Bayes Risk (MBR) decoding using chrF++ as the consensus metric. The pipeline emphasizes stochastic diversity and rigorous post-processing to maximize translation quality and robustness without requiring model retraining. Readers should understand how candidate pooling and MBR decoding can effectively boost inference performance in challenging translation tasks.",
+  "purpose": "ensemble",
+  "competition_flow": "Loads test transliterations, preprocesses them, generates candidate translations using two pre-trained ByT5 models across three random seeds, selects the consensus translation via MBR decoding with chrF++, applies extensive regex post-processing, and saves the final submission CSV.",
+  "data_reading": [
+    "pd.read_csv loads the test CSV containing 'id' and 'transliteration' columns."
+  ],
+  "data_processing": [
+    "Diacritic normalization, gap tokenization, prompt prefixing, length-based batching, and a 64-step regex post-processing pipeline for punctuation, spacing, fractions, and repetition cleanup."
+  ],
+  "features_engineering": [],
+  "models": [
+    "ByT5"
+  ],
+  "frameworks_used": [
+    "torch",
+    "transformers",
+    "sacrebleu"
+  ],
+  "loss_functions": [],
+  "cv_strategy": "",
+  "ensembling": "Combines candidates from two models across three random seeds (96 total per sample) and selects the final translation using Minimum Bayes Risk decoding with chrF++ as the scoring metric, followed by extensive regex post-processing.",
+  "insights": [
+    "Stochastic sampling across multiple seeds and temperatures significantly increases candidate diversity, which is crucial for MBR decoding.",
+    "MBR decoding with chrF++ effectively identifies the most consensus-driven translation from a noisy candidate pool.",
+    "Rigorous regex post-processing is essential for fixing model artifacts like repetition, spacing errors, and missing punctuation in translation outputs."
+  ],
+  "critical_findings": [],
+  "what_did_not_work": [],
+  "source_url": "https://www.kaggle.com/code/meenalsinha/hybrid-best-akkadian",
+  "votes": 461
+}

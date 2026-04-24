@@ -1,0 +1,44 @@
+{
+  "summary": "The author reframed NCAA tournament game outcome prediction as a regression problem on point differential rather than a binary win/loss classification to capture a richer training signal and encode result strength. A comprehensive feature set was engineered from regular season box score data, including possession-based efficiency metrics, shooting profiles, venue splits, Elo ratings, and Gaussian GLM-derived team quality scores. An XGBoost regressor was trained using leave-one-season-out cross-validation, with hyperparameters and feature subsets jointly optimized via Optuna. Final win probabilities were obtained by calibrating raw margin predictions and averaging across a six-seed ensemble.",
+  "extensive_summary": "### Core Modeling Paradigm Shift\nThe solution fundamentally reframes tournament prediction from a binary classification task to a regression problem on point differential. By predicting the margin of victory, the model captures a richer training signal that naturally encodes the strength of a result, which binary labels inherently discard. Raw regression outputs are later converted to win probabilities through a post-hoc calibration step.\n\n### Feature Engineering Pipeline\nAll features are derived from regular season box score data and aggregated at the season level per team. The author constructs complementary feature groups: season-averaged box score statistics (adjusted for overtime), possession-based efficiency metrics (offensive/defensive/net rating), shooting profiles (eFG%, TS%, 3PA rate, FT rate), and rebounding percentages. Additional features include venue splits (home, road, recent games with fallback logic for small samples), Elo ratings trained per season, and a latent team quality score derived from a Gaussian GLM with team fixed effects. The numeric tournament seed difference is also included to encode committee judgment.\n\n### Training and Validation Strategy\nXGBoost serves as the base learner for the regression task. The validation scheme strictly respects temporal structure via a leave-one-season-out cross-validation from 2003 onward, producing unbiased out-of-fold (OOF) margin predictions. Optuna drives joint hyperparameter optimization and feature selection, using the OOF Brier score as the objective. To maximize diversity, the entire pipeline is executed across six distinct random seeds, each yielding unique Optuna studies, feature subsets, and calibrated models.\n\n### Probability Calibration and Inference\nSince XGBoost outputs raw point differentials, a calibrator is fitted on each seed's OOF margin predictions against the binary win indicator. A symmetric clipping (trim) is applied to raw margins before calibration, with the trim value itself optimized via Optuna. At inference, the same trim is applied to test predictions before calibration, and probabilities are clipped to the unit interval. The final submission is the mean probability across all seeds and season-specific models.",
+  "rank": 10,
+  "competition_flow": "Regular season box score data is aggregated into season-level features, fed into an XGBoost regressor predicting point differential via leave-one-season-out CV, calibrated to probabilities, and averaged across a six-seed ensemble for final tournament predictions.",
+  "data_reading": [],
+  "data_processing": [
+    "Box score totals adjusted to normalize for overtime length",
+    "Venue splits computed with fallback logic for small sample sizes",
+    "Symmetric clipping (trim) applied to raw margin predictions before calibration",
+    "Final probabilities clipped to the unit interval"
+  ],
+  "features_engineering": [
+    "Season-averaged box score statistics (adjusted for overtime)",
+    "Possession-based efficiency metrics (offensive/defensive/net rating)",
+    "Shooting profile metrics (eFG%, TS%, 3PA rate, FT rate)",
+    "Rebounding percentages",
+    "Venue splits (home/road/recent with small-sample fallback)",
+    "Elo ratings per season",
+    "Gaussian GLM latent team quality scores",
+    "Tournament seed difference"
+  ],
+  "models": [
+    "XGBoost"
+  ],
+  "frameworks_used": [
+    "XGBoost",
+    "Optuna"
+  ],
+  "loss_functions": [],
+  "cv_strategy": "Leave-one-season-out cross-validation over all seasons from 2003 onward, holding out one complete tournament season per fold to produce unbiased out-of-fold margin predictions.",
+  "ensembling": "Raw margin predictions were averaged across six distinct random seeds, calibrated to probabilities via a symmetric trim, and clipped to the unit interval before averaging into the final submission.",
+  "insights": [
+    "Reframing game outcome prediction as a regression problem on point differential captures a richer training signal and encodes result strength better than binary classification.",
+    "Using a Gaussian GLM with team fixed effects to derive latent quality scores provides a principled statistical baseline for team strength.",
+    "Jointly optimizing hyperparameters and feature selection via Optuna with a Brier score objective effectively balances model complexity and calibration quality."
+  ],
+  "critical_findings": [],
+  "what_did_not_work": [],
+  "github_repos": [],
+  "papers": [],
+  "other_solution_refs": [],
+  "source_url": "https://www.kaggle.com/competitions/march-machine-learning-mania-2026/discussion/689044"
+}

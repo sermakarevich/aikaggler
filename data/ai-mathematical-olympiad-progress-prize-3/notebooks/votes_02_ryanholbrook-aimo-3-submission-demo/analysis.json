@@ -1,0 +1,32 @@
+{
+  "summary": "This notebook provides a minimal submission template for the AI Mathematical Olympiad Progress Prize 3 competition. It demonstrates how to structure a Kaggle submission script using the official inference server wrapper, handling both local testing and competition runtime environments. The code shows how to unpack input data, generate predictions, and format the output as a DataFrame. Readers learn the required interface for competition submissions, including lazy loading patterns and environment detection via the KAGGLE_IS_COMPETITION_RERUN flag.",
+  "purpose": "inference",
+  "competition_flow": "The script reads test data via the Kaggle inference server wrapper, passes problem text to a dummy prediction function, and returns a formatted DataFrame for submission.",
+  "data_reading": [
+    "The inference server wrapper handles loading the test CSV; the predict function unpacks single-row inputs using polars Series methods."
+  ],
+  "data_processing": [
+    "None explicitly shown; raw problem text is passed directly to the prediction function without preprocessing."
+  ],
+  "features_engineering": [],
+  "models": [
+    "None (dummy model that always returns 0)"
+  ],
+  "frameworks_used": [
+    "kaggle_evaluation.aimo_3_inference_server",
+    "pandas",
+    "polars"
+  ],
+  "loss_functions": [],
+  "cv_strategy": "",
+  "ensembling": "",
+  "insights": [
+    "The notebook demonstrates the exact interface required for competition submissions, emphasizing lazy model loading to avoid timeout limits during initialization.",
+    "It shows how to safely detect the execution environment to switch between local testing and production submission.",
+    "Readers learn that the predict function must handle single-row inputs and return a properly formatted DataFrame."
+  ],
+  "critical_findings": [],
+  "what_did_not_work": [],
+  "source_url": "https://www.kaggle.com/code/ryanholbrook/aimo-3-submission-demo",
+  "votes": 1363
+}

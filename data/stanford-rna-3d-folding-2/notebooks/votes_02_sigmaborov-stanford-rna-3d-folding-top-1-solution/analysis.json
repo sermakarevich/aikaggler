@@ -1,0 +1,44 @@
+{
+  "summary": "This notebook implements a hybrid inference pipeline for the Stanford RNA 3D Folding competition, combining template-based modeling, a specialized diffusion model, and a geometric fallback to generate 3D coordinates for test sequences. It demonstrates how to handle variable-length RNA chains by splitting them into overlapping chunks, aligning them via the Kabsch algorithm, and blending coordinates with linear weights. The author shows that enforcing soft physical constraints (bond lengths, self-avoidance, Laplacian smoothing) during post-processing significantly improves structural plausibility without retraining. Readers should take away that a multi-stage prediction strategy leveraging training data templates and geometric priors can outperform single-model approaches in structural biology tasks.",
+  "purpose": "inference",
+  "competition_flow": "Loads test sequences and training structures, predicts 3D coordinates via a hybrid pipeline of template-based modeling and Protenix inference with chunk stitching, applies physical RNA constraints, and exports a formatted submission CSV.",
+  "data_reading": [
+    "Loads test, train, and validation CSVs via pandas.read_csv.",
+    "Parses stoichiometry and chain segmentation strings into coordinate masks and segment maps."
+  ],
+  "data_processing": [
+    "Splits long sequences into overlapping chunks (512 nt) with 256 nt overlap.",
+    "Aligns overlapping chunks using the Kabsch algorithm and blends coordinates with linear weight ramps.",
+    "Applies adaptive RNA physical constraints (bond lengths, i-i+2 distances, Laplacian smoothing, self-avoidance).",
+    "Clips final coordinates to [-999.999, 9999.999] before export."
+  ],
+  "features_engineering": [
+    ""
+  ],
+  "models": [
+    "Protenix (protenix_base_20250630_v1.0.0)"
+  ],
+  "frameworks_used": [
+    "torch",
+    "numpy",
+    "pandas",
+    "biopython",
+    "rdkit"
+  ],
+  "loss_functions": [],
+  "cv_strategy": "",
+  "ensembling": "Combines up to five predictions per target by filling slots with template-based modeling outputs, Protenix diffusion samples, and a de-novo A-form helix fallback.",
+  "insights": [
+    "Hybrid inference pipelines that leverage training data templates significantly reduce the need for pure de-novo prediction.",
+    "Chunking with Kabsch alignment and linear weight blending preserves global RNA geometry while respecting model context limits.",
+    "Applying soft physical constraints during post-processing improves structural plausibility without retraining."
+  ],
+  "critical_findings": [
+    "Collapsed coordinate outputs from Protenix must be explicitly detected and discarded to prevent submission errors.",
+    "Sequence alignments with >30% length difference or low identity scores are filtered out to avoid propagating poor structural templates.",
+    "Stoichiometry and chain segmentation must be parsed per-target to correctly apply constraints to multi-chain complexes."
+  ],
+  "what_did_not_work": [],
+  "source_url": "https://www.kaggle.com/code/sigmaborov/stanford-rna-3d-folding-top-1-solution",
+  "votes": 440
+}

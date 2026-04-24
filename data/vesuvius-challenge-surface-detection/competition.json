@@ -1,0 +1,113 @@
+{
+  "id": 117682,
+  "competitionName": "vesuvius-challenge-surface-detection",
+  "title": "Vesuvius Challenge - Surface Detection",
+  "briefDescription": "Build a model to virtually unwrap ancient scrolls. ",
+  "dateEnabled": "2025-11-13T17:44:07.847Z",
+  "deadline": "2026-02-27T23:59:00Z",
+  "hasLeaderboard": true,
+  "leaderboardPercentage": 20,
+  "maxDailySubmissions": 3,
+  "numScoredSubmissions": 2,
+  "hasSolution": true,
+  "numPrizes": 10,
+  "forumId": 9067129,
+  "finalLeaderboardHasBeenVerified": true,
+  "userRankMultiplier": 1,
+  "dateCreated": "2025-10-14T21:20:26.934928100Z",
+  "competitionHostSegmentId": 2,
+  "maxTeamSize": 5,
+  "medalsAllowed": true,
+  "enableTeamFiles": true,
+  "teamFileDeadline": "2026-03-31T00:00:00Z",
+  "teamMergerExplicitDeadline": "2026-02-06T23:59:00Z",
+  "prohibitNewEntrantsExplicitDeadline": "2026-02-06T23:59:00Z",
+  "kernelsPublishingDisabledDeadline": "2026-02-06T23:59:59Z",
+  "organizationId": 3836,
+  "hasCoverImageUrl": true,
+  "showPrivateLeaderboard": true,
+  "hasScripts": true,
+  "onlyAllowKernelSubmissions": true,
+  "totalTeams": 1391,
+  "totalCompetitors": 1626,
+  "totalSubmissions": 30824,
+  "rulesRequired": true,
+  "usesSynchronousReruns": true,
+  "maxCpuRuntimeMinutes": 540,
+  "maxGpuRuntimeMinutes": 540,
+  "rowIdColumnName": "id",
+  "requiredSubmissionFilename": "submission.zip",
+  "evaluationAlgorithm": {
+    "id": 5124,
+    "name": "Vesuvius 2025 Metric",
+    "isMax": true,
+    "environmentRenderType": "ENVIRONMENT_RENDER_TYPE_JSON",
+    "kernelId": 96973679,
+    "latestCompetitionMetricVersionId": 58755,
+    "state": "AVAILABLE"
+  },
+  "categories": [
+    {
+      "id": 9109,
+      "name": "history",
+      "fullPath": "subject > people and society > social science > history",
+      "description": "History is generally the study of past events that have shaped the world. Here on Kaggle, you'll find historical records and analyses on topics like Bitcoin data, UFO sightings, and sports tournaments.",
+      "datasetCount": 2645,
+      "competitionCount": 5,
+      "scriptCount": 351,
+      "slug": "history",
+      "displayName": "History"
+    },
+    {
+      "id": 16717,
+      "name": "image segmentation",
+      "fullPath": "task > image-segmentation",
+      "description": "",
+      "datasetCount": 900,
+      "competitionCount": 44,
+      "scriptCount": 468,
+      "slug": "image-segmentation",
+      "displayName": "Image Segmentation"
+    },
+    {
+      "id": 17143,
+      "name": "segmentation",
+      "fullPath": "task > segmentation",
+      "description": "",
+      "datasetCount": 389,
+      "competitionCount": 7,
+      "scriptCount": 397,
+      "slug": "segmentation",
+      "displayName": "Segmentation"
+    },
+    {
+      "name": "custom metric",
+      "description": "This competition's metric is defined under the 'Evaluation' tab",
+      "displayName": "Custom Metric"
+    }
+  ],
+  "organization": {
+    "slug": "scrollprize",
+    "name": "Vesuvius Challenge",
+    "thumbnailImageUrl": "https://storage.googleapis.com/kaggle-media/competitions/Vesuvius%20Challenge/icon.jpg",
+    "profileUrl": "/organizations/scrollprize"
+  },
+  "launched": true,
+  "createdByUserId": 1132983,
+  "license": {
+    "id": 14,
+    "name": "Attribution-NonCommercial 4.0 International (CC BY-NC 4.0)",
+    "url": "https://creativecommons.org/licenses/by-nc/4.0/",
+    "agreementRequired": false
+  },
+  "hostName": "Vesuvius Challenge",
+  "scoreTruncationNumDecimals": 3,
+  "locked": true,
+  "totalJoinedUsers": 7759,
+  "requiresIdentityVerification": true,
+  "submissionSizeLimitMb": 20480,
+  "reward": {
+    "id": "USD",
+    "quantity": 200000
+  }
+}

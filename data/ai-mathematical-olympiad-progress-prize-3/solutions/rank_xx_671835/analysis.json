@@ -1,0 +1,47 @@
+{
+  "summary": "The author shares a high-concurrency inference pipeline for a math competition using a 120B parameter model with code execution. Instead of manually orchestrating the reasoning loop, they leverage vLLM's response endpoint with integrated tool calling via the GPT-OSS Harmony protocol. They patched both vLLM and GPT-OSS to support concurrent, request-scoped Jupyter kernel sessions, enabling parallel processing of multiple questions. Robustness was improved through output truncation, internal timeouts, automatic kernel restarts, and regex post-processing for answer formatting.",
+  "extensive_summary": "## Architecture & Inference Pipeline\nThe solution leverages a 120B parameter model served via **vLLM** with the `tool-server=\"demo\"` parameter enabled. This setup allows the model to perform chain-of-thought reasoning, call Python tools, observe outputs, and continue reasoning in a loop automatically. Rather than orchestrating this loop in a standard inference notebook, the author utilizes vLLM's response endpoint to handle integrated tool calling through the Harmony protocol (GPT-OSS).\n\n## Concurrent Stateful Jupyter Sessions\nA major bottleneck in the default tool server implementation is its stateless or single-session nature. To process 50 competition questions efficiently within the time limit, the author implemented parallel execution where each question maintains its own persistent Jupyter kernel state. This was achieved by monkey-patching `vllm/tools.py` to inject the `request_id` into the `author.name` field of the message payload. On the GPT-OSS side, the `PythonTool` was modified to read this field, routing requests to existing sessions or spawning new ones as needed.\n\n## Robustness & Execution Safeguards\nTo mimic the reliability of production chat applications, several infrastructure patches were applied:\n- **Output Truncation:** Massive dataframes or infinite loops are truncated to the first and last 300 characters to prevent context window overflow.\n- **Internal Timeouts:** Code execution is wrapped with a custom `timeoutify` decorator using `signal.setitimer`, enforcing hard timeouts inside the container before the external ZMQ socket times out.\n- **Auto-Restart:** The system detects `KernelDeadError` (e.g., from segfaults) and transparently tears down and recreates the affected session.\n- **Formatting Fixes:** A regex post-processor handles edge cases where the model outputs `\\displaystyle` instead of the expected `\\boxed` format.\n\n## Time Management & Selection Strategy\nThe author opted for a simple time allocation strategy: a flat 10 minutes per question with up to 4 attempts. Final answers are selected using majority voting on non-trivial results, ignoring 0/1 unless they are the only options.\n\n## Evaluation & Performance\nStability was validated on a subset of **IMO-Bench (AnswerBench)** containing 226 questions with positive integer answers. Running on a single B200 GPU (192GB) with 8 attempts per question, the pipeline completed in under 5 hours. A baseline majority voting approach achieved 83.2% accuracy, while voting weighted by the number of tool calls pushed performance to 84%+. The author also released full raw logs for community analysis.",
+  "rank": null,
+  "competition_flow": "Raw competition questions are routed through a patched vLLM + GPT-OSS inference pipeline that executes code in concurrent, stateful Jupyter sessions, applies timeout and crash safeguards, and aggregates final answers via majority voting across multiple attempts.",
+  "data_reading": [],
+  "data_processing": [],
+  "features_engineering": [],
+  "models": [
+    "120B model",
+    "GPT-OSS"
+  ],
+  "frameworks_used": [
+    "vLLM",
+    "GPT-OSS"
+  ],
+  "loss_functions": [],
+  "cv_strategy": "",
+  "ensembling": "Final answers are aggregated using majority voting across up to 4 attempts per question, with a fallback to selecting the most frequent non-trivial result while ignoring 0/1 unless they are the only options.",
+  "insights": [
+    "Leveraging vLLM's response endpoint with integrated tool calling simplifies the orchestration of reasoning-and-code loops compared to manual notebook management.",
+    "Maintaining persistent, request-scoped Jupyter kernel states is critical for achieving high concurrency and low latency in tool-use inference pipelines.",
+    "Hard timeouts and automatic kernel restarts are essential for stabilizing code execution environments that may encounter segfaults or infinite loops."
+  ],
+  "critical_findings": [
+    "Voting by the number of tool calls rather than simple majority voting can push accuracy from ~83% to 84%+ on the validation set.",
+    "The model frequently outputs \\displaystyle instead of \\boxed, requiring a regex post-processor to capture valid answers correctly."
+  ],
+  "what_did_not_work": [],
+  "github_repos": [],
+  "papers": [],
+  "other_solution_refs": [
+    {
+      "description": "Dec 7 version code used to reach rank 39",
+      "url": "https://www.kaggle.com/code/yiyangzheng/fork-of-v1207-rc-39-longest-leaderboard"
+    },
+    {
+      "description": "Dec 9 version code used to reach rank 40",
+      "url": "https://www.kaggle.com/code/yiyangzheng/fork-of-v1209-rc-40-longest-leaderboard"
+    },
+    {
+      "description": "Siancy's code used to reach rank 41-50",
+      "url": "https://www.kaggle.com/code/shreyansh01m/41-50-same-as-parthenos-s-no-modifications"
+    }
+  ],
+  "source_url": "https://www.kaggle.com/competitions/ai-mathematical-olympiad-progress-prize-3/discussion/671835"
+}

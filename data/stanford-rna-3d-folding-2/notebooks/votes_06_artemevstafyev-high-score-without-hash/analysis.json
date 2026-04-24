@@ -1,0 +1,40 @@
+{
+  "summary": "The notebook implements a hybrid inference pipeline for the Stanford RNA 3D Folding competition, combining template-based modeling (TBM) with a pre-trained diffusion model (Protenix) to predict RNA coordinates. It routes sequences through a similarity search against a training template pool, applies structural constraints and diversity transforms to generate multiple candidate structures per target, and falls back to a de-novo A-form helix generator when templates or the model fail. The author demonstrates that a carefully orchestrated combination of homology search, geometric constraints, and model fallbacks can produce high-quality submissions without relying on complex hashing or extensive retraining. Readers should learn how to bridge sequence alignment with 3D coordinate adaptation, enforce physical RNA constraints, and handle model collapse or tokenization mismatches robustly.",
+  "purpose": "inference",
+  "competition_flow": "Loads test sequences and training structures, runs a template-based modeling phase to find similar sequences and adapt their coordinates, fills remaining prediction slots with a pre-trained Protenix model, applies physical constraints and diversity transforms, and exports a CSV submission with multiple coordinate samples per residue.",
+  "data_reading": [
+    "Loads CSV files for test sequences, validation sequences, and training/validation labels using pandas.",
+    "Parses stoichiometry and chain segment information from string columns using custom regex/split logic.",
+    "Groups training labels by target ID to extract initial x_1, y_1, z_1 coordinates."
+  ],
+  "data_processing": [
+    "Aligns query sequences to templates using Bio.Align.PairwiseAligner with custom global scoring parameters.",
+    "Adapts template coordinates to query sequences via alignment mapping and linear interpolation for gaps.",
+    "Applies adaptive RNA constraints (bond lengths, i-i+2 distances, Laplacian smoothing, self-avoidance) and diversity transforms (hinge rotation, chain jittering, spline wiggle) as structural augmentations.",
+    "Clips final coordinates to [-999.999, 9999.999] before export."
+  ],
+  "features_engineering": [],
+  "models": [
+    "protenix_base_20250630_v1.0.0",
+    "de-novo A-form RNA helix generator"
+  ],
+  "frameworks_used": [
+    "torch",
+    "numpy",
+    "pandas",
+    "biopython",
+    "tqdm"
+  ],
+  "loss_functions": [],
+  "cv_strategy": "",
+  "ensembling": "Combines up to 5 predictions per target by sequentially filling slots with TBM-adapted templates, Protenix diffusion samples, and de-novo fallback structures, then stacks them into a fixed sample dimension for submission.",
+  "insights": [
+    "Template similarity and percent identity thresholds effectively filter usable homology structures.",
+    "Protenix can fail on certain sequences (model collapse or mask mismatches), requiring robust fallback logic.",
+    "Physical RNA constraints (bond lengths, self-avoidance) significantly improve coordinate realism when applied post-prediction."
+  ],
+  "critical_findings": [],
+  "what_did_not_work": [],
+  "source_url": "https://www.kaggle.com/code/artemevstafyev/high-score-without-hash",
+  "votes": 274
+}

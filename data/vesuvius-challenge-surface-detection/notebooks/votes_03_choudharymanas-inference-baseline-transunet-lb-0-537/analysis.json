@@ -1,0 +1,40 @@
+{
+  "summary": "This notebook provides an end-to-end inference pipeline for the Vesuvius Challenge Surface Detection task, demonstrating how to load 3D TIFF volumes, apply intensity normalization, and generate predictions using a pre-trained TransUNet model via the `medicai` library. It highlights practical techniques for handling large 3D medical images on limited GPU memory, including sliding window inference, 4x rotation test-time augmentation, and 3D morphological post-processing. Readers should learn how to efficiently deploy a segmentation model for submission while managing memory constraints and refining predictions through spatial post-processing.",
+  "purpose": "inference",
+  "competition_flow": "Loads test TIFF volumes and metadata, normalizes intensities, runs sliding window inference with rotation TTA on a pre-trained TransUNet, applies 3D morphological post-processing, and packages the binary masks into a submission ZIP file.",
+  "data_reading": [
+    "Reads test.csv for image IDs and paths.",
+    "Loads .tif files with tifffile.imread, converts to float32, and reshapes to (1, D, H, W, 1) for model input."
+  ],
+  "data_processing": [
+    "Intensity scaling to [0, 1] using ScaleIntensityRange.",
+    "Sliding window inference with 160\u00b3 ROI, 50% overlap, and Gaussian blending.",
+    "4x rotation TTA with inverse rotation alignment and averaging.",
+    "3D hysteresis thresholding, anisotropic closing, and small object removal."
+  ],
+  "features_engineering": [],
+  "models": [
+    "TransUNet (seresnext50 encoder, 3 classes, softmax activation)"
+  ],
+  "frameworks_used": [
+    "keras (JAX backend)",
+    "medicai",
+    "numpy",
+    "pandas",
+    "tifffile",
+    "scipy.ndimage",
+    "scikit-image"
+  ],
+  "loss_functions": [],
+  "cv_strategy": "",
+  "ensembling": "Averages model predictions across four 90-degree clockwise rotations, applying inverse rotations to align outputs before averaging.",
+  "insights": [
+    "Sliding window inference with Gaussian blending is essential for processing large 3D volumes within limited GPU memory.",
+    "Rotation test-time augmentation effectively captures orientation-invariant features for 3D surface detection.",
+    "3D morphological post-processing, including hysteresis thresholding and anisotropic closing, significantly refines noisy segmentation masks for submission."
+  ],
+  "critical_findings": [],
+  "what_did_not_work": [],
+  "source_url": "https://www.kaggle.com/code/choudharymanas/inference-baseline-transunet-lb-0-537",
+  "votes": 358
+}

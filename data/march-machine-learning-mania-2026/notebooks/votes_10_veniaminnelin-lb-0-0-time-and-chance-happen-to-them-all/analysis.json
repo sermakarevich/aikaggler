@@ -1,0 +1,32 @@
+{
+  "summary": "This notebook demonstrates a simple data leakage trick to achieve a perfect public leaderboard score in the March Mania competition. By mapping historical regular-season and tournament matchup results directly to the test set, the author fills predictions with known outcomes where they overlap with historical data and defaults to 0.5 otherwise. The exercise proves that the public leaderboard evaluation set heavily overlaps with past results, making it an unreliable indicator of true model generalization. Readers should take away the critical lesson that leaderboard scores in this competition should be interpreted with extreme caution, as they can be gamed without any actual predictive modeling.",
+  "purpose": "other",
+  "competition_flow": "Loads historical matchup results and the sample submission, merges them by season and team IDs to extract known outcomes, fills missing values with 0.5, and saves the resulting predictions as a submission file.",
+  "data_reading": [
+    "Reads SampleSubmissionStage2.csv and multiple historical compact result CSVs using pandas.read_csv.",
+    "Parses submission IDs by splitting strings and extracting integer columns for Season, Team1, and Team2."
+  ],
+  "data_processing": [
+    "Normalizes historical results by sorting team IDs and extracting the winner/loser relationship.",
+    "Groups by season and team pair to keep the most recent outcome, merges with the submission dataframe, and fills NaN values with 0.5."
+  ],
+  "features_engineering": [],
+  "models": [],
+  "frameworks_used": [
+    "pandas"
+  ],
+  "loss_functions": [],
+  "cv_strategy": "",
+  "ensembling": "",
+  "insights": [
+    "The public leaderboard evaluation set in this competition overlaps almost entirely with historical matchups that have known outcomes.",
+    "A perfect public score can be achieved without training any predictive model by simply looking up past results.",
+    "Leaderboard scores in this competition should not be trusted as a measure of true model performance or generalization."
+  ],
+  "critical_findings": [
+    "The public evaluation uses approximately 1% of the test data, which currently overlaps almost entirely with historical matchups that have known outcomes."
+  ],
+  "what_did_not_work": [],
+  "source_url": "https://www.kaggle.com/code/veniaminnelin/lb-0-0-time-and-chance-happen-to-them-all",
+  "votes": 114
+}

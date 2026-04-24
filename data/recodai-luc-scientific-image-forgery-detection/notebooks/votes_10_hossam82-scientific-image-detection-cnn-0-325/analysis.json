@@ -1,0 +1,46 @@
+{
+  "summary": "This notebook demonstrates a hybrid deep learning pipeline for scientific image forgery detection, combining a frozen DINOv2 vision transformer encoder with a lightweight custom CNN decoder for pixel-wise segmentation. It introduces Error Level Analysis (ELA) to amplify JPEG compression artifacts, fusing ELA predictions and heatmaps with standard RGB model outputs via weighted averaging. The pipeline applies gradient-based adaptive thresholding and morphological operations to generate binary masks, which are then RLE-encoded for submission. Readers should learn how forensic image analysis techniques can be effectively integrated with foundation models to improve forgery localization, particularly when dealing with subtle compression inconsistencies.",
+  "purpose": "inference",
+  "competition_flow": "Loads test images, applies Error Level Analysis and a frozen DINOv2-based segmentation model to generate probability maps, fuses them with ELA signals, applies adaptive thresholding and morphological post-processing, and exports RLE-encoded masks to a CSV submission file.",
+  "data_reading": [
+    "Reads images from the test directory using PIL.Image.open, converts them to RGB, and loads the sample submission CSV for merging."
+  ],
+  "data_processing": [
+    "Resizes images to 518x518 and normalizes pixel values to [0,1].",
+    "Computes ELA by re-compressing at JPEG quality 90, calculating absolute differences, scaling, and converting to heatmaps.",
+    "Optionally applies test-time augmentation (TTA) via horizontal and vertical flips.",
+    "Post-processing includes gradient magnitude computation, Gaussian blurring, and morphological close/open operations for mask refinement."
+  ],
+  "features_engineering": [
+    "Domain-derived ELA heatmap and compression artifact score, plus gradient magnitude features from the probability map used for adaptive thresholding."
+  ],
+  "models": [
+    "DINOv2-base",
+    "Custom CNN Decoder (DinoTinyDecoder)"
+  ],
+  "frameworks_used": [
+    "pytorch",
+    "transformers",
+    "opencv",
+    "numpy",
+    "pandas",
+    "PIL",
+    "matplotlib",
+    "tqdm"
+  ],
+  "loss_functions": [],
+  "cv_strategy": "",
+  "ensembling": "Combines RGB model predictions, ELA model predictions, and direct ELA heatmaps using a weighted sum, with optional test-time augmentation by averaging predictions from original and flipped inputs.",
+  "insights": [
+    "ELA effectively highlights compression inconsistencies that correlate with image forgery.",
+    "Fusing forensic signals with deep features improves localization over using either alone.",
+    "Gradient-based adaptive thresholding outperforms fixed thresholds for mask generation."
+  ],
+  "critical_findings": [
+    "ELA is only reliable for images originally saved as JPEGs, as applying it to lossless images introduces artifacts.",
+    "The author empirically determined a hidden JPEG detection threshold of 1.2 and an ELA compression quality of 90 for optimal artifact amplification."
+  ],
+  "what_did_not_work": [],
+  "source_url": "https://www.kaggle.com/code/hossam82/scientific-image-detection-cnn-0-325",
+  "votes": 126
+}

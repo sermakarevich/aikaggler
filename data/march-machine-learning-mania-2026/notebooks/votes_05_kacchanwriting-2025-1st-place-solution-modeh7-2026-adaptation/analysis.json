@@ -1,0 +1,43 @@
+{
+  "summary": "This notebook adapts a previous winning solution to predict NCAA basketball tournament outcomes by modeling point differential rather than win probability directly. It demonstrates a structured feature engineering pipeline combining seed differences, regular season box score averages, custom Elo ratings, and GLM-derived team quality metrics. The author trains an XGBoost regressor on point differential, then applies a spline transformation to calibrate predictions into win probabilities. Readers should learn how to handle overtime-adjusted stats, construct team-level aggregations, and use leave-one-season-out validation for temporal data. The key takeaway is that statistically derived team quality often outperforms traditional seeding, and direct regression on point differential followed by probability calibration yields robust tournament predictions.",
+  "purpose": "training",
+  "competition_flow": "Loads men's and women's regular season and tournament CSVs, filters by season, engineers seed, Elo, and GLM-based team quality features, trains a leave-one-season-out XGBoost regressor on point differential, converts outputs to win probabilities via spline, and generates a tournament bracket submission.",
+  "data_reading": [
+    "Reads multiple CSV files (MRegularSeasonDetailedResults.csv, MNCAATourneyDetailedResults.csv, MNCAATourneySeeds.csv, and corresponding women's datasets) from a local Kaggle input directory using pandas.read_csv, then concatenates men's and women's data."
+  ],
+  "data_processing": [
+    "Filters data to seasons >= 2003, adjusts box score statistics for overtime duration using a linear scaling factor, doubles the dataset by swapping home/away team positions to balance features, calculates point differential and binary win labels, and flags men's/women's games."
+  ],
+  "features_engineering": [
+    "Seed difference, regular season average box scores for both teams and their opponents, custom Elo ratings updated iteratively per season, and GLM-derived team quality scores using statsmodels with Gaussian family; all features are aggregated per season and merged into the tournament dataset."
+  ],
+  "models": [
+    "XGBoost (reg:squarederror, gbtree)"
+  ],
+  "frameworks_used": [
+    "numpy",
+    "pandas",
+    "matplotlib",
+    "seaborn",
+    "xgboost",
+    "statsmodels",
+    "scipy",
+    "scikit-learn"
+  ],
+  "loss_functions": [
+    "reg:squarederror"
+  ],
+  "cv_strategy": "Leave-one-season-out cross-validation (trains on all seasons except one, validates on the held-out season, iterates over all unique seasons)",
+  "ensembling": "Trains a separate XGBoost model for each season during validation, then averages the spline-calibrated probability predictions across all season models to produce the final submission.",
+  "insights": [
+    "Statistically derived team quality consistently matches or outperforms traditional seeding in predicting tournament outcomes.",
+    "Direct regression on point differential followed by spline calibration produces better-calibrated win probabilities than direct classification.",
+    "Overtime adjustments are necessary to prevent stat inflation when comparing regular season performance."
+  ],
+  "critical_findings": [
+    "GLM team quality shows higher or equal AUC compared to seed difference across all seasons, indicating that statistical performance metrics are more reliable than tournament seeding for predicting upsets."
+  ],
+  "what_did_not_work": [],
+  "source_url": "https://www.kaggle.com/code/kacchanwriting/2025-1st-place-solution-modeh7-2026-adaptation",
+  "votes": 138
+}

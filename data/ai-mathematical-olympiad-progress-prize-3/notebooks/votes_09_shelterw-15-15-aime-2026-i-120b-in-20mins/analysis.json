@@ -1,0 +1,37 @@
+{
+  "summary": "This notebook implements a high-throughput inference pipeline for the AIME 2026 I competition using a locally served 120B parameter open-weight model. It demonstrates a custom tool-use framework where the LLM interacts with a persistent Jupyter sandbox to execute Python code for mathematical verification and computation. The pipeline leverages parallel multi-attempt generation, dynamic time budgeting, and entropy-weighted answer aggregation to maximize accuracy within strict time limits. Readers should learn how to orchestrate local LLM serving, manage stateful execution environments, and implement robust post-processing for mathematical reasoning tasks.",
+  "purpose": "inference",
+  "competition_flow": "Reads competition questions from a parquet/CSV file, processes them through a locally served 120B LLM with parallel tool-use attempts and entropy-based answer selection, and outputs predictions via a Kaggle inference server wrapper.",
+  "data_reading": [
+    "Loads competition data using pandas and polars from a parquet file, extracting problem indices and question text; ground truth answers are loaded into a dictionary for local accuracy tracking."
+  ],
+  "data_processing": [
+    "Drops the answer column for submission formatting, renames columns, and constructs prompts by concatenating the raw question with a structured system prompt, tool configuration, and mathematical preference instructions."
+  ],
+  "features_engineering": [],
+  "models": [
+    "gpt-oss-120b"
+  ],
+  "frameworks_used": [
+    "vllm",
+    "transformers",
+    "openai",
+    "polars",
+    "pandas",
+    "openai_harmony",
+    "kaggle_evaluation"
+  ],
+  "loss_functions": [],
+  "cv_strategy": "",
+  "ensembling": "Aggregates answers from up to 8 parallel generation attempts per problem using an entropy-weighted voting scheme, with an early stopping mechanism triggered when a threshold of identical answers is reached.",
+  "insights": [
+    "Parallel multi-attempt generation with dynamic time budgeting significantly improves mathematical reasoning accuracy under strict time constraints.",
+    "Using a persistent Jupyter sandbox for tool execution allows the LLM to perform reliable symbolic and numerical verification without external API dependencies.",
+    "Entropy-weighted voting outperforms simple majority voting by downweighting low-confidence (high-entropy) model outputs during answer selection.",
+    "Preloading model weights into the OS page cache and using fp8 kv-cache dtype reduces inference latency and memory overhead on a single GPU."
+  ],
+  "critical_findings": [],
+  "what_did_not_work": [],
+  "source_url": "https://www.kaggle.com/code/shelterw/15-15-aime-2026-i-120b-in-20mins",
+  "votes": 413
+}

@@ -1,0 +1,60 @@
+{
+  "summary": "The authors secured 3rd place by implementing a highly customized nnU-Net v2 framework for 3D image segmentation. Their approach hinges on an asymmetric patch size strategy (128 for training, 192 for inference), a two-stage cascade pipeline where Stage 2 refines Stage 1 predictions using spatial priors, and a topology-aware post-processing pipeline leveraging 3D Hessian ridge detection. They also introduced custom Test Time Augmentation with in-plane rotations and trained directly on the full dataset to maximize generalization.",
+  "extensive_summary": "## Pipeline & Data Strategy\nThe solution employs a two-stage cascade 3D segmentation architecture. Stage 1 (3D Fullres) generates initial probability maps, which are then fed into Stage 2 (3D Cascade Fullres) as spatial priors for refined prediction. To maximize generalization, the authors abandoned traditional K-Fold cross-validation and trained the final models on the entire dataset. They experimented with pseudo-labeling using external unlabeled data but abandoned it due to negligible gains. Training augmentations include full-axis flipping (Mirror Axes: 0, 1, 2) and high-probability rotation (0.4-0.8).\n\n## Model Architecture & Training\nThe core model is a deeply customized nnU-Net v2 trainer. A key innovation is the asymmetric patch size strategy: 128 during training to maintain batch efficiency, and 192 during inference to expand the receptive field and improve global consistency. The authors replaced standard learning rate schedulers with the `RAdamScheduleFree` optimizer for smoother convergence and faster training. To address the task's heavy reliance on structural connectivity, they integrated clDice Loss alongside the default Dice + CE loss, specifically optimizing skeleton-level topology for tubular and mesh-like structures. Cascade training strictly follows a coarse-to-fine paradigm, training the Lowres model first before initializing the Cascade model.\n\n## Inference & TTA\nInference logic was rewritten in `predict_from_raw_data.py` to support asymmetric patch sizing and stage fusion. Custom TTA combines conventional mirror flipping with in-plane rotation (\u00b115\u00b0 via Affine Grid Sample). The authors found that \u00b115\u00b0 TTA rotation was optimal, as it aligns with the \u00b130\u00b0 training augmentation range, while larger training rotations actually degraded performance. Multi-GPU parallel extraction of `.npz` probability maps is followed by equal-weight or weighted fusion across checkpoints from different iteration steps or configurations.\n\n## Post-processing\nA topology-level post-processing pipeline drives significant score improvements. It begins with inverse EDT dilation on binarized results, followed by 3D Hessian ridge detection to extract tubular structures and filter background noise using eigenvalues. Z-axis consistency pruning removes inter-slice outlier noise by checking adjacent slices. Finally, 2D morphological closing and anisotropic 3D closing in the XY plane repair fractures, while small-volume discrete noise is filtered out.",
+  "rank": 3,
+  "competition_flow": "Raw 3D volumes undergo full-axis flipping and high-probability rotation augmentations, are fed into a two-stage nnU-Net v2 cascade pipeline trained on the full dataset, processed through custom TTA with in-plane rotations and multi-model checkpoint fusion, and finally refined via a topology-aware post-processing pipeline using 3D Hessian ridge detection and distance transform to produce the submission.",
+  "data_reading": [],
+  "data_processing": [
+    "Full-axis flipping (Mirror Axes: 0, 1, 2)",
+    "High-probability rotation augmentation (0.4-0.8)",
+    "Custom TTA: mirror flipping and in-plane rotation (\u00b115\u00b0 via Affine Grid Sample)"
+  ],
+  "features_engineering": [],
+  "models": [
+    "nnU-Net v2",
+    "3D Fullres",
+    "3D Cascade Fullres",
+    "Lowres"
+  ],
+  "frameworks_used": [
+    "nnU-Net"
+  ],
+  "loss_functions": [
+    "Dice + CE",
+    "clDice Loss"
+  ],
+  "cv_strategy": "Trained on entire dataset (abandoned K-Fold CV)",
+  "ensembling": "Multi-model ensemble fuses equal-weight or weighted probability maps from checkpoints across different iteration steps, combined with custom TTA (mirror flipping and \u00b115\u00b0 in-plane rotation) and a topology-aware post-processing pipeline using 3D Hessian ridge detection and distance transform.",
+  "insights": [
+    "Asymmetric patch sizing effectively balances training batch efficiency with a larger inference receptive field.",
+    "Integrating clDice Loss alongside standard losses significantly improves the preservation of complex tubular and mesh-like topological structures.",
+    "Training directly on the entire dataset yields more robust generalization than traditional K-Fold cross-validation for this task.",
+    "Custom TTA with \u00b115\u00b0 in-plane rotation aligns optimally with the \u00b130\u00b0 training augmentation range."
+  ],
+  "critical_findings": [
+    "Pseudo-labeling with external unlabeled data provided no significant performance improvement and was ultimately abandoned.",
+    "Increasing training rotation augmentations beyond \u00b130\u00b0 actually degraded performance, making \u00b115\u00b0 TTA the optimal choice."
+  ],
+  "what_did_not_work": [
+    "Pseudo-labeling with external/unlabeled data did not bring significant performance improvements.",
+    "Larger rotation augmentations during training led to performance degradation."
+  ],
+  "github_repos": [
+    {
+      "url": "https://github.com/ScrollPrize/villa",
+      "role": "reference"
+    },
+    {
+      "url": "https://github.com/arunodhayan/Vesuvius-Challenge---Surface-Detection",
+      "role": "solution"
+    }
+  ],
+  "papers": [],
+  "other_solution_refs": [
+    {
+      "description": "Kaggle discussion forum post referenced for post-processing inspiration",
+      "url": "https://www.kaggle.com/competitions/vesuvius-challenge-surface-detection/discussion/651532#3365613"
+    }
+  ],
+  "source_url": "https://www.kaggle.com/competitions/vesuvius-challenge-surface-detection/discussion/679236"
+}

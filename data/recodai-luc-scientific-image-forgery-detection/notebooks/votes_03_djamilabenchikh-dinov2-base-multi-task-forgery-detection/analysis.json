@@ -1,0 +1,44 @@
+{
+  "summary": "This notebook demonstrates a multi-task image forgery detection pipeline that uses a frozen DINOv2-Base vision transformer as a shared feature extractor for two lightweight heads: a convolutional decoder for segmentation and a linear layer for classification. The author trains the segmentation head first, then the classification head, using minimal epochs to show how foundation models can be efficiently adapted without full fine-tuning. The pipeline handles `.npy` ground truth masks, resizes inputs, and formats predictions into Kaggle-compatible RLE strings for submission. Readers should learn how to structure a dual-output CV task, manage frozen backbone inference, and implement standard evaluation metrics like IoU and Dice. The notebook serves as a practical baseline for localization and authenticity detection in image forgery competitions.",
+  "purpose": "training",
+  "competition_flow": "Loads authentic and forged images with corresponding `.npy` masks, extracts frozen DINOv2 features, trains a multi-task model with separate segmentation and classification heads, evaluates using IoU/Dice/Accuracy, and generates a Kaggle submission with RLE-encoded masks or authenticity labels.",
+  "data_reading": [
+    "Reads image paths from `train_images/authentic`, `train_images/forged`, and `test_images` directories using `os.listdir` and `Path`.",
+    "Loads ground truth masks from `.npy` files using `np.load`, automatically handling 3D arrays by taking the maximum over the channel axis."
+  ],
+  "data_processing": [
+    "Resizes all input images to 256x256 using bilinear interpolation and masks using nearest-neighbor interpolation.",
+    "Normalizes pixel values to [0, 1] before passing them to DINOv2's `AutoImageProcessor` for mean/std normalization.",
+    "Creates zero-filled masks for authentic images and handles missing mask files gracefully."
+  ],
+  "features_engineering": [],
+  "models": [
+    "DINOv2-Base (frozen)",
+    "DinoTinyDecoder (3-layer Conv-ReLU-Conv)",
+    "Linear classification head"
+  ],
+  "frameworks_used": [
+    "pytorch",
+    "transformers",
+    "scikit-learn",
+    "numpy",
+    "pandas",
+    "pillow",
+    "opencv"
+  ],
+  "loss_functions": [
+    "BCEWithLogitsLoss",
+    "CrossEntropyLoss"
+  ],
+  "cv_strategy": "Single 80/20 train/validation holdout split using sklearn's train_test_split with random_state=42, applied independently to authentic and forged image lists.",
+  "ensembling": "",
+  "insights": [
+    "Freezing a large foundation model and training only lightweight task-specific heads is a compute-efficient strategy for dual-output tasks.",
+    "Sequentially training segmentation and classification heads allows independent optimization of localization and authenticity prediction without gradient interference.",
+    "RLE encoding provides a compact and standard format for submitting pixel-wise manipulation masks in Kaggle competitions."
+  ],
+  "critical_findings": [],
+  "what_did_not_work": [],
+  "source_url": "https://www.kaggle.com/code/djamilabenchikh/dinov2-base-multi-task-forgery-detection",
+  "votes": 288
+}

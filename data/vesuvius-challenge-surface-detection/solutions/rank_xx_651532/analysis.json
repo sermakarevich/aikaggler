@@ -1,0 +1,65 @@
+{
+  "summary": "The author proposes shifting from traditional volume segmentation to instance segmentation by leveraging strong boundary clues for multi-class pixel labeling. They emphasize that optimizing the topology score is paramount, as high volume IOU does not guarantee continuous, hole-free scroll surfaces. The approach progresses through three gap-filling strategies: image processing (CED/directional blur), temporal consistency (tracking/Z-sweep), and mathematical fitting (parametric/vector fitting). The writeup also highlights the weak supervision nature of the ground truth, which focuses on surfaces and sometimes extends into the air.",
+  "extensive_summary": "The core insight is that strong boundary clues allow practitioners to bypass semantic segmentation and jump directly to instance segmentation via multi-class pixel labeling. This shift fundamentally changes the task from volume segmentation to \"scroll object\" detection, where maintaining continuous surfaces without holes or stuck regions is critical. The author stresses that the topology score is the most important metric, as traditional volume IOU is insufficient for evaluating surface continuity.\n\nTo address topological errors, the author outlines a three-level progression of gap-filling techniques. Level 1 relies on image processing methods like CED and directional blur to fix gaps. Level 2 introduces temporal consistency through tracking and Z-sweep approaches. Level 3 employs mathematical rigor via parametric and vector fitting to explicitly forbid gaps. Throughout the pipeline, careful handling of unlabelled data and regions is required, particularly because the ground truth is weakly supervised, focusing on the surface and one side of the scroll while occasionally \"eating into the air.\" Evaluating results involves understanding Betti matching to identify connected components designated as false positives or false negatives.",
+  "rank": null,
+  "competition_flow": "The pipeline shifts from volume segmentation to instance segmentation driven by boundary clues, applying progressive gap-filling techniques (image processing, temporal tracking, and mathematical fitting) to optimize topology and surface metrics while accounting for weakly supervised ground truth.",
+  "data_reading": [],
+  "data_processing": [
+    "CED / Directional Blur",
+    "Tracking / Z-Sweep",
+    "Parametric / Vector Fitting",
+    "post processing of hole filling",
+    "separating stuck scrolls",
+    "joining disintegrated ones",
+    "handling unlabelled data and regions"
+  ],
+  "features_engineering": [],
+  "models": [],
+  "frameworks_used": [],
+  "loss_functions": [],
+  "cv_strategy": "",
+  "ensembling": "",
+  "insights": [
+    "Strong boundary clues enable a direct jump to instance segmentation via multi-class pixel labeling, avoiding semantic segmentation pitfalls.",
+    "The task is fundamentally scroll object detection where continuous surfaces without holes are critical, making the topology score the most important metric.",
+    "Ground truth is weakly supervised, focusing on the surface and one side of the scroll, sometimes extending into the air."
+  ],
+  "critical_findings": [
+    "High volume IOU does not guarantee a good topology score, as the task requires continuous surface objects rather than just volumetric overlap.",
+    "Ground truth annotations can eat into the air, indicating weak supervision that requires careful handling of unlabelled regions."
+  ],
+  "what_did_not_work": [],
+  "github_repos": [
+    {
+      "url": "https://github.com/ryanchesler/ants",
+      "role": "library"
+    },
+    {
+      "url": "https://github.com/pmh47/spiral-fitting",
+      "role": "reference"
+    },
+    {
+      "url": "https://github.com/ScrollPrize/villa",
+      "role": "solution"
+    },
+    {
+      "url": "https://github.com/HuXiaoling/TopoLoss",
+      "role": "reference"
+    },
+    {
+      "url": "https://github.com/nstucki/Betti-Matching-3D",
+      "role": "reference"
+    },
+    {
+      "url": "https://github.com/HuXiaoling/awesome-topology-driven-image-analysis",
+      "role": "reference"
+    },
+    {
+      "url": "https://github.com/MIC-DKFZ/Skeleton-Recall",
+      "role": "reference"
+    }
+  ],
+  "papers": [],
+  "other_solution_refs": [],
+  "source_url": "https://www.kaggle.com/competitions/vesuvius-challenge-surface-detection/discussion/651532"
+}

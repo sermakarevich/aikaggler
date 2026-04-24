@@ -1,0 +1,50 @@
+{
+  "summary": "This notebook provides a baseline pipeline for predicting NCAA basketball tournament outcomes by modeling point differentials and converting them to win probabilities. It demonstrates a comprehensive feature engineering strategy that combines raw box scores, seasonal team averages, custom ELO ratings, and GLM-derived team quality metrics. The author validates the approach using a leave-one-season-out cross-validation scheme and applies spline-based calibration to align predicted point spreads with actual win rates. Readers should take away how historical game data can be systematically transformed into predictive team strength indicators and how calibration bridges the gap between regression outputs and classification targets.",
+  "purpose": "baseline",
+  "competition_flow": "Loads historical NCAA basketball results and seeds, engineers seasonal averages, custom ELO, and GLM-derived team quality features, trains leave-one-season-out XGBoost models to predict point differentials, calibrates outputs to win probabilities via splines, and generates a tournament submission.",
+  "data_reading": [
+    "Reads multiple CSV files for men's and women's regular season results, tournament results, and tournament seeds using pandas.",
+    "Concatenates men's and women's datasets together and filters all data by season >= 2003."
+  ],
+  "data_processing": [
+    "Adjusts box score statistics for overtime duration by dividing by a time-scaling factor of (40 + 5 * NumOT) / 40.",
+    "Doubles the dataset by swapping team positions to ensure consistent feature orientation.",
+    "Calculates point differentials, binary win labels, and a men/women flag.",
+    "Clips predicted point differentials to [-30, 30] during calibration and submission."
+  ],
+  "features_engineering": [
+    "Seasonal mean aggregations of box score stats (FGM, FGA, FGM3, etc.) for both teams and their opponents.",
+    "Custom ELO ratings calculated per season with base 1000, width 400, and k=100.",
+    "GLM-derived team quality scores using statsmodels Gaussian family to capture mixed-effects team strength.",
+    "Seed differentials and overtime-adjusted point differentials."
+  ],
+  "models": [
+    "XGBoost (gbtree)",
+    "GLM (statsmodels Gaussian family)"
+  ],
+  "frameworks_used": [
+    "xgboost",
+    "statsmodels",
+    "scipy",
+    "scikit-learn",
+    "pandas",
+    "numpy"
+  ],
+  "loss_functions": [
+    "reg:squarederror"
+  ],
+  "cv_strategy": "Leave-one-season-out cross-validation (train on all seasons except one, validate on the held-out season)",
+  "ensembling": "Averages predictions across leave-one-season-out models and applies post-processing calibration using a UnivariateSpline to map point differentials to win probabilities, with probability clipping between 0.02 and 0.98.",
+  "insights": [
+    "GLM-derived team quality metrics often match or outperform official tournament seeds in predictive power.",
+    "Overtime significantly inflates box score statistics, necessitating time-based normalization for fair comparison.",
+    "Swapping team positions effectively doubles the training data and ensures consistent feature orientation for both home and away teams."
+  ],
+  "critical_findings": [
+    "The author explicitly compares seed-based vs quality-based predictive power per season, noting that statistical quality often matches or beats expert seeding.",
+    "The notebook highlights that overtime games accumulate extra stats, which must be normalized to avoid biasing team strength estimates."
+  ],
+  "what_did_not_work": [],
+  "source_url": "https://www.kaggle.com/code/ravi20076/ncaa2026-public-baseline-v1",
+  "votes": 129
+}

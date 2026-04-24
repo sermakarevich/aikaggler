@@ -1,0 +1,35 @@
+{
+  "summary": "This notebook implements a complete inference pipeline for the AIMO 3 competition, leveraging a locally hosted 120B parameter model to solve mathematical Olympiad problems. It demonstrates a structured reasoning protocol that dynamically invokes a Python sandbox via Jupyter kernels for verification, while managing computational budgets through time-aware scheduling and early stopping. The pipeline aggregates results from multiple parallel generation attempts using entropy-weighted voting and applies a final model-based correctness check before submission. Readers should understand how to orchestrate local LLM inference, implement robust multi-step reasoning loops, and optimize GPU memory and latency for high-stakes mathematical tasks.",
+  "purpose": "inference",
+  "competition_flow": "Reads test problems from a CSV file, processes each through a locally hosted LLM with a multi-attempt reasoning and verification loop, and outputs predictions in the required Kaggle submission format.",
+  "data_reading": [
+    "Loads test data from `/kaggle/input/ai-mathematical-olympiad-progress-prize-3/test.csv` using Polars, extracting the `id` and `question` columns to feed into the inference function."
+  ],
+  "data_processing": [],
+  "features_engineering": [],
+  "models": [
+    "gpt-oss-120b"
+  ],
+  "frameworks_used": [
+    "vllm",
+    "openai_harmony",
+    "openai",
+    "transformers",
+    "polars",
+    "pandas",
+    "jupyter_client"
+  ],
+  "loss_functions": [],
+  "cv_strategy": "",
+  "ensembling": "Combines up to 12 parallel generation attempts per problem, filters candidates using entropy-weighted voting, applies early stopping upon unanimous agreement, and runs a final model-based verification step before returning the result.",
+  "insights": [
+    "Multi-attempt generation with entropy weighting improves answer reliability over single-pass inference.",
+    "Dynamic tool use via Jupyter kernels allows the model to verify calculations without external APIs.",
+    "Time budgeting and early stopping are critical for managing GPU memory and meeting competition submission deadlines.",
+    "Entropy-based voting outperforms simple majority voting by penalizing high-uncertainty predictions."
+  ],
+  "critical_findings": [],
+  "what_did_not_work": [],
+  "source_url": "https://www.kaggle.com/code/amanatar/ans-verifys",
+  "votes": 752
+}

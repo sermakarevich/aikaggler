@@ -1,0 +1,43 @@
+{
+  "summary": "This notebook implements a segmentation pipeline for scientific image forgery detection using a hybrid architecture that combines a frozen DINOv2 visual encoder with a lightweight CNN decoder. It processes paired forged images with binary masks and authentic images with zero masks, training only the decoder head with BCEWithLogitsLoss. During inference, it applies gradient-enhanced adaptive thresholding and morphological refinement to generate precise forgery masks, followed by area and mean-probability filters to classify images as authentic or forged. The solution demonstrates how self-supervised embeddings can be efficiently adapted for pixel-level manipulation localization without full model fine-tuning.",
+  "purpose": "training",
+  "competition_flow": "Loads authentic and forged scientific images with corresponding binary masks, trains a frozen DINOv2 encoder with a trainable CNN decoder using a 20% holdout split, and generates pixel-level segmentation masks with adaptive post-processing for a Kaggle submission.",
+  "data_reading": [
+    "Reads image paths from /train_images/authentic and /train_images/forged directories, loads .npy binary masks from /train_masks, and handles test images from /test_images.",
+    "Masks are loaded via np.load, converted to binary with (m > 0).astype(np.uint8), and resized using cv2.resize."
+  ],
+  "data_processing": [
+    "Resizes all images and masks to 256\u00d7256, normalizes pixel values to [0,1], and applies cv2.INTER_NEAREST for mask resizing.",
+    "Inference includes Sobel gradient extraction, Gaussian blurring, morphological closing/opening, and dynamic thresholding (mean + 0.3*std)."
+  ],
+  "features_engineering": [],
+  "models": [
+    "DINOv2 (frozen ViT encoder)",
+    "DinoTinyDecoder (CNN: 768\u2192256\u219264\u21921)",
+    "DinoSegmenter"
+  ],
+  "frameworks_used": [
+    "pytorch",
+    "transformers",
+    "opencv",
+    "numpy",
+    "pandas",
+    "scikit-learn",
+    "pillow",
+    "matplotlib"
+  ],
+  "loss_functions": [
+    "BCEWithLogitsLoss"
+  ],
+  "cv_strategy": "holdout 20%",
+  "ensembling": "",
+  "insights": [
+    "Freezing a self-supervised ViT encoder while training only a lightweight CNN decoder reduces memory usage and training time without sacrificing segmentation quality.",
+    "Gradient-aware adaptive thresholding combined with morphological operations produces sharper and more accurate forgery masks than raw model outputs.",
+    "Filtering predictions by detected area and mean probability inside the mask effectively reduces false positives on authentic images."
+  ],
+  "critical_findings": [],
+  "what_did_not_work": [],
+  "source_url": "https://www.kaggle.com/code/maheenriaz1122/cnn-dinov2-hybrid-c0bb37",
+  "votes": 206
+}

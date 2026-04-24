@@ -1,0 +1,29 @@
+{
+  "id": "artemevstafyev/high-score-without-hash",
+  "id_no": 110183619,
+  "title": "High Score Without Hash",
+  "code_file": "high-score-without-hash.ipynb",
+  "language": "python",
+  "kernel_type": "notebook",
+  "is_private": false,
+  "enable_gpu": true,
+  "enable_tpu": false,
+  "enable_internet": false,
+  "keywords": [
+    "gpu"
+  ],
+  "dataset_sources": [
+    "kami1976/biopython-cp312",
+    "qiweiyin/protenix-v1-adjusted",
+    "metric/usalign"
+  ],
+  "kernel_sources": [
+    "packagemanager/pm-110183619-at-02-21-2026-16-41-00"
+  ],
+  "competition_sources": [
+    "stanford-rna-3d-folding-2"
+  ],
+  "model_sources": [],
+  "docker_image": "gcr.io/kaggle-private-byod/python@sha256:58f63ed194fa7d5c55181f1e8ec0be141e9211efa23bc7501c1c865f7e00057d",
+  "machine_shape": "Gpu"
+}

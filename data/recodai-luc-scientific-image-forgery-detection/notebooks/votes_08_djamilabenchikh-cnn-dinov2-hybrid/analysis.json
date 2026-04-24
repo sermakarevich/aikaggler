@@ -1,0 +1,47 @@
+{
+  "summary": "This notebook implements a segmentation-driven pipeline for scientific image forgery detection, combining a frozen DINOv2 self-supervised encoder with a trainable lightweight CNN decoder. It processes paired forged images with binary masks and authentic images with zero masks, training only the decoder head using BCEWithLogitsLoss. During inference, it applies adaptive gradient-based refinement and dynamic thresholding to generate binary masks, followed by area and mean-intensity filters to classify images as authentic or forged. The author demonstrates the pipeline on a validation set using F1-score and provides visualization tools for both forged and authentic samples. Readers should understand how to leverage frozen foundation models for feature extraction, train a compact decoder for pixel-level localization, and apply post-processing heuristics to refine segmentation outputs.",
+  "purpose": "training",
+  "competition_flow": "Loads scientific image forgery detection data, extracts DINOv2 features with a frozen encoder, trains a lightweight CNN decoder on binary masks, applies adaptive gradient-based post-processing and heuristic filtering, and generates a CSV submission with RLE-encoded masks or \"authentic\" labels.",
+  "data_reading": [
+    "Reads image paths from train_images/authentic and train_images/forged directories using os.listdir and Path.",
+    "Loads binary masks from train_masks as .npy files, handling 3D masks by taking the max channel.",
+    "Authentic samples are assigned empty zero masks."
+  ],
+  "data_processing": [
+    "Resizes all images and masks to 256\u00d7256 pixels.",
+    "Normalizes pixel values to [0, 1] by dividing by 255.",
+    "Uses cv2.INTER_NEAREST for mask resizing.",
+    "Applies adaptive gradient enhancement (Sobel + Gaussian blur), dynamic thresholding (\u03bc + 0.3\u03c3), and morphological operations (close/open) during post-processing."
+  ],
+  "features_engineering": [],
+  "models": [
+    "DINOv2 (frozen encoder)",
+    "Custom CNN decoder (768\u2192256\u219264\u21921)",
+    "DinoSegmenter (hybrid architecture)"
+  ],
+  "frameworks_used": [
+    "pytorch",
+    "transformers",
+    "scikit-learn",
+    "opencv-python",
+    "numpy",
+    "pandas",
+    "matplotlib",
+    "tqdm"
+  ],
+  "loss_functions": [
+    "BCEWithLogitsLoss"
+  ],
+  "cv_strategy": "Holdout split using train_test_split with test_size=0.2 and random_state=42 applied separately to authentic and forged image lists.",
+  "ensembling": "",
+  "insights": [
+    "Freezing a large self-supervised foundation model and training only a lightweight decoder head is memory-efficient and effective for pixel-level forgery localization.",
+    "Combining semantic embeddings with spatial CNN decoding improves mask precision and localization accuracy.",
+    "Adaptive gradient-based thresholding and morphological refinement significantly clean up raw segmentation outputs.",
+    "Heuristic filters based on predicted mask area and mean intensity effectively reduce false positives on authentic images."
+  ],
+  "critical_findings": [],
+  "what_did_not_work": [],
+  "source_url": "https://www.kaggle.com/code/djamilabenchikh/cnn-dinov2-hybrid",
+  "votes": 195
+}

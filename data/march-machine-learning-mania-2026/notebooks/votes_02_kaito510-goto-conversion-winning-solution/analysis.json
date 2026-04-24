@@ -1,0 +1,18 @@
+{
+  "summary": "This notebook serves as a redirect page for a competition-winning solution focused on basketball and sports tabular classification, likely related to gambling markets. It contains no code, data pipeline details, or model architecture, instead directing readers to a newer version of the solution and a Substack article for the full methodology. Readers should understand that the technical implementation, training recipe, and performance insights are hosted externally rather than in this notebook.",
+  "purpose": "other",
+  "competition_flow": "",
+  "data_reading": [],
+  "data_processing": [],
+  "features_engineering": [],
+  "models": [],
+  "frameworks_used": [],
+  "loss_functions": [],
+  "cv_strategy": "",
+  "ensembling": "",
+  "insights": [],
+  "critical_findings": [],
+  "what_did_not_work": [],
+  "source_url": "https://www.kaggle.com/code/kaito510/goto-conversion-winning-solution",
+  "votes": 353
+}

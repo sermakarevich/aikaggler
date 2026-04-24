@@ -1,0 +1,35 @@
+{
+  "summary": "This notebook implements a custom Elo rating system for college basketball teams across regular seasons and tournaments for both men's and women's competitions. It calculates dynamic team ratings based on match outcomes, margin of victory (with a tunable alpha parameter), and configurable match weights. The computed ratings are aggregated into summary statistics (mean, median, std, min, max, last, trend) per team per season and exported as CSVs. It also demonstrates how to directly convert these ratings into match win probabilities for a baseline submission, highlighting Elo ratings as a strong foundational feature for predictive modeling.",
+  "purpose": "feature_engineering",
+  "competition_flow": "Loads compact match results and team IDs for men's and women's tournaments, computes dynamic Elo ratings with configurable weights and margin-of-victory scaling, aggregates them into per-team seasonal statistics, and converts the final ratings into pairwise win probabilities for a direct submission.",
+  "data_reading": [
+    "Reads CSV files directly from Kaggle input paths using pd.read_csv(), including regular season results, tournament results, team rosters, and the sample submission template."
+  ],
+  "data_processing": [
+    "Concatenates regular season and tournament data, adds a tourney flag (0/1) and a weight column (1.0 for regular season, 0.75/0.95 for tournament depending on gender), sorts by Season and DayNum, resets index, and filters out tournament rows before aggregating ratings."
+  ],
+  "features_engineering": [
+    "Computes Elo ratings with configurable K-factor, width, and margin-of-victory multiplier (alpha). Aggregates ratings into per-team per-season statistics: Rating_Mean, Rating_Median, Rating_Std, Rating_Min, Rating_Max, Rating_Last, and Rating_Trend (linear regression slope over time)."
+  ],
+  "models": [],
+  "frameworks_used": [
+    "numpy",
+    "pandas",
+    "scipy",
+    "tqdm",
+    "matplotlib"
+  ],
+  "loss_functions": [],
+  "cv_strategy": "",
+  "ensembling": "",
+  "insights": [
+    "Elo ratings can be effectively adapted for sports prediction by tuning the K-factor, rating width, and match weights.",
+    "Margin of victory can be incorporated into rating updates via a tunable alpha parameter to control score sensitivity.",
+    "Aggregating temporal ratings into summary statistics captures team form, volatility, and directional momentum.",
+    "Elo-derived probabilities serve as a strong, interpretable baseline feature for tournament prediction."
+  ],
+  "critical_findings": [],
+  "what_did_not_work": [],
+  "source_url": "https://www.kaggle.com/code/lennarthaupts/calculate-elo-ratings",
+  "votes": 309
+}

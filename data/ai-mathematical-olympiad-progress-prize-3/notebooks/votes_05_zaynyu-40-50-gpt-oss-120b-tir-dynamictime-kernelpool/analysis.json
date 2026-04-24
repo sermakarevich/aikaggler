@@ -1,0 +1,33 @@
+{
+  "summary": "This notebook implements a high-throughput inference pipeline for solving mathematical Olympiad problems using the GPT-OSS-120B model. It introduces a custom tool-use framework that isolates Python code execution within a pooled Jupyter kernel sandbox to prevent state leakage and runtime crashes. The solver dynamically allocates time budgets per problem, runs multiple parallel attempts with early stopping, and aggregates results via majority voting. Readers should understand that robust mathematical reasoning at scale relies on safe tool integration, dynamic resource management, and ensemble-like voting rather than single-pass generation.",
+  "purpose": "inference",
+  "competition_flow": "Loads reference CSV data, initializes a vLLM server for GPT-OSS-120B, processes each math problem through a dynamic time-budgeted solver with parallel attempts and tool-use, and returns predictions via a Kaggle inference server.",
+  "data_reading": [
+    "Reads reference.csv using pandas, extracts ground truth answers if available, and uses polars for input/output DataFrames."
+  ],
+  "data_processing": [],
+  "features_engineering": [],
+  "models": [
+    "GPT-OSS-120B"
+  ],
+  "frameworks_used": [
+    "vllm",
+    "openai",
+    "transformers",
+    "polars",
+    "pandas",
+    "kaggle_evaluation"
+  ],
+  "loss_functions": [],
+  "cv_strategy": "",
+  "ensembling": "Aggregates answers from 8 parallel attempts per problem using majority voting, with Python execution count as a secondary tiebreaker, and implements early stopping once a majority threshold is reached.",
+  "insights": [
+    "Parallelizing multiple attempts with dynamic time allocation improves solution reliability over single-pass generation.",
+    "Isolating code execution in a pooled Jupyter kernel sandbox prevents state leakage and prevents runtime errors from crashing the main solver.",
+    "Majority voting combined with execution metrics effectively filters out hallucinated or unverified answers."
+  ],
+  "critical_findings": [],
+  "what_did_not_work": [],
+  "source_url": "https://www.kaggle.com/code/zaynyu/40-50-gpt-oss-120b-tir-dynamictime-kernelpool",
+  "votes": 615
+}

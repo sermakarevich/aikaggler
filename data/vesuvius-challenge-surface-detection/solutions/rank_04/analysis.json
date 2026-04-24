@@ -1,0 +1,47 @@
+{
+  "summary": "The author achieved 4th place by leveraging nnUNet for 3D segmentation, followed by a multi-stage topological post-processing pipeline. Key techniques included PCA-based hole filling for both large and local topological errors, alongside a metric-hacking strategy that manipulated Betti-2 counts to optimize the final score. The approach prioritized robust inference with TTA and aggressive component filtering over complex architectural changes.",
+  "extensive_summary": "The solution centers on a straightforward yet effective segmentation pipeline built entirely around nnUNet. The author trained a large nnUNet model (Resenc UNet with 7 convolutional stages) for 2000 epochs without modifying the architecture or training recipe. During inference, the nnUNetPredictor was configured with a `tile_step_size` of 0.5 and test-time augmentation via mirroring to produce smooth, robust predictions. A preliminary post-processing step applied a 0.2 probability threshold and removed small components under 1000 voxels.\n\nThe core innovation lies in a two-stage topological post-processing and metric-hacking pipeline. Stage 1 addresses large topological loops (Betti-1 errors) by projecting 3D connected components onto XY, YZ, and ZX planes to find isolated background holes. These holes are refined using PCA to fit a 2D plane, filled via `binary_fill_holes`, and mapped back to 3D. Stage 2 applies a more granular Betti-matching approach using a C++ library (`betti_matching`) on 20x20x20 volume chunks to seal local gaps.\n\nFinally, the author implements a metric-hacking strategy targeting Betti-2 counts. This involves automatically filling enclosed background cavities and, in cases of high Betti-0 or Betti-1 errors, manually creating a Betti-2 hole by zeroing a fully enclosed voxel. Ablations confirm that adding these post-processing stages and metric hacks improved the private LB score from 0.609 to 0.622. The author notes that separating adhering sheets remains an unsolved challenge and acknowledges the solution's lack of elegance but practical effectiveness.",
+  "rank": 4,
+  "competition_flow": "Raw 3D data is segmented using a heavily trained nnUNet model, followed by thresholding and component filtering, then refined through two PCA-based topological hole-filling stages and a Betti-2 metric-hacking step before final submission.",
+  "data_reading": [],
+  "data_processing": [
+    "Thresholding predictions at 0.2",
+    "Removing connected components smaller than 1000 voxels",
+    "Test-time augmentation via mirroring during inference"
+  ],
+  "features_engineering": [],
+  "models": [
+    "nnUNet (Resenc UNet with 7 stages convolution)"
+  ],
+  "frameworks_used": [
+    "nnUNet",
+    "betti_matching (C++)"
+  ],
+  "loss_functions": [],
+  "cv_strategy": "",
+  "ensembling": "",
+  "insights": [
+    "nnUNet demonstrates exceptional generalization capabilities for segmentation tasks.",
+    "The topological score is extremely sensitive to minor structural holes.",
+    "Manipulating Betti-2 counts can effectively balance topological metrics despite official claims of limited impact.",
+    "Separating adhering sheets remains a significant unresolved challenge in this domain."
+  ],
+  "critical_findings": [
+    "The topological score suffers a disproportionate drop from even a small hole, making precise topological correction critical.",
+    "A metric hack involving manually zeroing a fully enclosed voxel to create a Betti-2 hole successfully improved scores, contradicting the host's claim that such bugs have limited practical impact at the top end.",
+    "PCA-based hole filling fails completely when applied to adhering sheets, requiring alternative approaches."
+  ],
+  "what_did_not_work": [
+    "PCA-based hole filling fails on adhering sheets.",
+    "End-to-end RBF function training and point cloud separation models were considered but not implemented."
+  ],
+  "github_repos": [],
+  "papers": [],
+  "other_solution_refs": [
+    {
+      "description": "Submission notebook",
+      "url": "https://www.kaggle.com/code/shtljw/vcsd-4th-place-solution"
+    }
+  ],
+  "source_url": "https://www.kaggle.com/competitions/vesuvius-challenge-surface-detection/discussion/679222"
+}

@@ -1,0 +1,39 @@
+{
+  "summary": "This notebook implements a lightweight LightGBM pipeline to predict NCAA tournament game outcomes using historical regular season and tournament data. It constructs team-level performance metrics, then creates symmetric pairwise features by duplicating match records and swapping team roles to ensure consistent learning. The author validates the approach using a strict temporal cross-validation scheme to prevent data leakage, ultimately averaging predictions across folds for the final submission. Readers should learn how to properly engineer symmetric match features and apply time-based validation to sports prediction problems.",
+  "purpose": "baseline",
+  "competition_flow": "Loads historical CSV data, engineers team and pairwise features, trains a LightGBM classifier with temporal cross-validation, averages fold predictions, and exports a CSV submission.",
+  "data_reading": [
+    "Reads men's and women's tournament seeds, regular season results, and tournament compact results via pd.read_csv, concatenates them, and parses team IDs and seasons from string columns."
+  ],
+  "data_processing": [
+    "Drops irrelevant columns (NumOT, WLoc), fills missing feature values with training medians, applies min-max rescaling computed on training data, and defaults missing tournament seeds to W01."
+  ],
+  "features_engineering": [
+    "Computes per-team season win counts, loss counts, and average score gaps, derives win ratios and weighted score gaps, creates symmetric match features by duplicating and swapping team roles, and calculates pairwise differences for seeds, win ratios, and score gaps."
+  ],
+  "models": [
+    "LightGBM"
+  ],
+  "frameworks_used": [
+    "lightgbm",
+    "scikit-learn",
+    "pandas",
+    "numpy",
+    "matplotlib",
+    "seaborn"
+  ],
+  "loss_functions": [
+    "binary_logloss"
+  ],
+  "cv_strategy": "Temporal validation: trains on all prior seasons and validates on each subsequent season sequentially, iterating through recent years.",
+  "ensembling": "Averages the test predictions from each temporal fold using np.mean before generating the final submission.",
+  "insights": [
+    "Symmetric feature engineering ensures the model learns consistent pairwise relationships regardless of which team wins.",
+    "Temporal cross-validation is essential to prevent data leakage in sports prediction tasks.",
+    "Binary classification outperformed regression for predicting score gaps during validation."
+  ],
+  "critical_findings": [],
+  "what_did_not_work": [],
+  "source_url": "https://www.kaggle.com/code/jiaoyouzhang/ncaa-2026-final-lightgbm",
+  "votes": 261
+}

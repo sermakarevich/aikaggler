@@ -1,0 +1,33 @@
+{
+  "summary": "This notebook demonstrates a practical approach to combining two fine-tuned ByT5 models via weight averaging to improve Akkadian-to-English machine translation. It walks through loading two pre-trained models, computing a performance-based weight ratio, and merging their state dictionaries into a single model. The author then implements a custom inference pipeline that normalizes inconsistent gap/ellipsis tokens in the transliteration text and applies beam search decoding. Readers should learn how to efficiently implement model weight merging for inference and handle domain-specific text normalization quirks without retraining.",
+  "purpose": "ensemble",
+  "competition_flow": "Loads two fine-tuned ByT5 models, merges their weights using a performance-derived ratio, preprocesses test transliteration text to standardize gaps, runs inference with beam search, and exports the translations to a CSV submission file.",
+  "data_reading": [
+    "Reads the test dataset from a CSV file using pandas.read_csv."
+  ],
+  "data_processing": [
+    "Applies regex-based normalization to replace various forms of ellipsis and gaps (e.g., '.3', 'xx', '\u2026\u2026', '...') with standardized tokens ('<big_gap>', '<gap>'), and prepends a task-specific instruction prefix to all inputs."
+  ],
+  "features_engineering": [],
+  "models": [
+    "ByT5"
+  ],
+  "frameworks_used": [
+    "torch",
+    "transformers",
+    "pandas",
+    "tqdm"
+  ],
+  "loss_functions": [],
+  "cv_strategy": "",
+  "ensembling": "Merges two ByT5 models by averaging their state dictionary weights using a 0.94:1.00 ratio derived from relative model performance, rather than averaging logits during inference.",
+  "insights": [
+    "Weight averaging of model parameters is a straightforward and effective method to combine models without requiring complex inference-time logit averaging.",
+    "Normalizing inconsistent gap and ellipsis representations in transliteration data significantly improves model robustness during inference.",
+    "Adding a clear task-specific prefix to inputs helps guide the sequence-to-sequence model's generation behavior."
+  ],
+  "critical_findings": [],
+  "what_did_not_work": [],
+  "source_url": "https://www.kaggle.com/code/jiexusheng20bz/byt-ensemble",
+  "votes": 409
+}

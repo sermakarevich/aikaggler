@@ -1,0 +1,67 @@
+{
+  "summary": "The authors secured 1st place by implementing a length-adaptive five-model ensemble for RNA 3D structure prediction. They strategically allocated predictions from TBM, Boltz2, RNAPro, DRFold2, and Protenix based on sequence length thresholds to maximize structural diversity. Key technical choices include exponential weighting for template sampling, geometric post-processing with adaptive constraints, and a sliding-window chunking strategy to handle long sequences without GPU OOM. This approach prioritized diversity over template dependency, proving highly effective on unseen targets with low training-set similarity.",
+  "extensive_summary": "## Ensemble Strategy & Length-Adaptive Allocation\nThe core innovation is a length-adaptive five-model ensemble that maximizes structural diversity rather than relying on a single architecture. Predictions are allocated based on sequence length thresholds (<250, 250\u2013999, \u22651000 nt), balancing inference time against score. For short sequences, template-free models (Boltz2, DRFold2, Protenix) are prioritized to avoid TBM dependency, while medium/long sequences leverage TBM as a backbone. The overlay pipeline structure allowed incremental tuning of model allocation without retraining.\n\n## Template-Based Modeling (TBM) Pipeline\nTBM serves as the primary predictor for sequences \u2265250 nt. Templates are retrieved using BioPython's `PairwiseAligner` in global mode, filtered to within 30% of the query length, and scored. Diversity is enforced by sampling from the top-12 templates with exponential weighting and applying a 0.1\u00d7 weight penalty to already-used templates. Gaps are filled via linear interpolation between nearest valid C1' coordinates, with one-sided termini extended by 5.95 \u00c5 steps. Post-processing applies `adaptive_rna_constraints`, scaling bond length correction (i\u2192i+1 \u2192 5.95 \u00c5), angle correction (i\u2192i+2 \u2192 10.2 \u00c5), Laplacian smoothing, and steric self-avoidance (3.2 \u00c5 threshold) by `(1 \u2212 template_similarity)`.\n\n## Deep Learning Models & Configuration\n- **DRFold2 (cfg97)**: Contributes to short sequences (<250 nt) with model count scaling by length. Outputs are scored via bond lengths, angles, and stacking, normalized by median absolute deviation, and top-5 are selected.\n- **RNAPro**: Used for sequences <1000 nt with MSA enabled, pre-computed TBM templates, RibonanzaNet2 embeddings, and N_STEP=200, N_CYCLE=10, N_SAMPLE=1. It refines TBM templates into independent structures.\n- **Boltz2**: Primary for <250 nt, generates `diffusion_samples = 10` structures, and selects top-5 by combined plddt + confidence. Ligand SMILES are included, and `use_all_chains = False` prevents OOM on multi-chain targets.\n- **Protenix**: Handles short sequences and \u22651000 nt targets. RNA MSA is enabled. For sequences >512 nt, a sliding-window chunking strategy (`split_sequence` with max_len=512, overlap=128) processes overlapping windows independently. C1' atoms are extracted via `res_id` and `atom_name == \"C1'\"`, with a two-stage fallback using `centre_atom_mask` and `atom_to_tokatom_idx == 12`. Coordinates are assembled into a pre-allocated array, overwriting overlaps, with `torch.cuda.empty_cache()` and `gc.collect()` called per chunk.\n\n## Key Insights & Lessons\nDiversity across predictions proved more valuable than template dependency, especially for private leaderboard targets lacking close training matches. The 250 nt boundary optimally balances the speed of Boltz2/DRFold2 against the scalability of TBM. The overlay pipeline structure allowed incremental tuning of model allocation without retraining.",
+  "rank": 1,
+  "competition_flow": "Raw RNA sequences are routed through a length-adaptive pipeline of five structure prediction models, post-processed with geometric constraints and gap-filling, and assembled into a five-prediction submission per target.",
+  "data_reading": [],
+  "data_processing": [
+    "Gap filling via linear interpolation for aligned gaps and 5.95 \u00c5 extrapolation for chain termini",
+    "Post-processing with `adaptive_rna_constraints` (bond length/angle correction, Laplacian smoothing, steric self-avoidance)",
+    "Energy scoring and normalization by median absolute deviation for DRFold2 outputs",
+    "Sliding-window chunking for sequences >512 nt in Protenix",
+    "Memory cleanup via `torch.cuda.empty_cache()` and `gc.collect()` after every chunk"
+  ],
+  "features_engineering": [],
+  "models": [
+    "TBM (Template-Based Modeling)",
+    "Boltz2",
+    "RNAPro",
+    "DRFold2 (cfg97)",
+    "Protenix (AlphaFold3 architecture)"
+  ],
+  "frameworks_used": [
+    "bioPython",
+    "pytorch"
+  ],
+  "loss_functions": [],
+  "cv_strategy": "",
+  "ensembling": "Five predictions per target are assembled by allocating models based on sequence length thresholds (<250, 250\u2013999, \u22651000 nt), with TBM predictions diversified via exponential weighting and duplicate penalties, and Boltz2/DRFold2 outputs selected by normalized energy scores.",
+  "insights": [
+    "Ensembling structurally diverse models (Boltz, Protenix, DRFold2, RNAPro) is more robust than relying on a single model.",
+    "TBM serves as a strong backbone for medium/long sequences but should be supplemented with template-free models for short sequences to ensure diversity.",
+    "Length-adaptive allocation balances inference time and score, with the 250 nt boundary optimizing speed vs. accuracy.",
+    "Diversity across predictions is critical for handling private leaderboard targets with no close training templates."
+  ],
+  "critical_findings": [
+    "TBM's performance heavily depends on template similarity, making it less reliable for short sequences or targets without close training matches.",
+    "Boltz2 and DRFold2 become computationally impractical beyond 250 nt, while TBM scales efficiently to longer sequences.",
+    "Protenix requires a sliding-window chunking strategy to handle sequences >512 nt without GPU OOM."
+  ],
+  "what_did_not_work": [],
+  "github_repos": [
+    {
+      "url": "https://github.com/yutarooo216/Stanford-RNA-3D-Folding-Part-2-1st-place",
+      "role": "solution"
+    }
+  ],
+  "papers": [],
+  "other_solution_refs": [
+    {
+      "description": "Part 1 solution (25th place)",
+      "url": "https://www.kaggle.com/competitions/stanford-rna-3d-folding/writeups/25th-place-solution"
+    },
+    {
+      "description": "Part 2 solution discussion",
+      "url": "https://www.kaggle.com/competitions/stanford-rna-3d-folding-2/discussion/668412"
+    },
+    {
+      "description": "Protenix v1 inference notebook",
+      "url": "https://www.kaggle.com/code/qiweiyin/protenix-v1-inference-2026"
+    },
+    {
+      "description": "Beginner-to-advanced RNA 3D structure prediction",
+      "url": "https://www.kaggle.com/code/qamarmath/beginner-to-advanced-rna-3d-structure-predicti"
+    }
+  ],
+  "source_url": "https://www.kaggle.com/competitions/stanford-rna-3d-folding-2/discussion/689386"
+}

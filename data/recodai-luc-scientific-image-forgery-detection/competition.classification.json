@@ -1,0 +1,16 @@
+{
+  "description": "Participants analyze biomedical research images to identify and localize copy-move forgeries, which are regions where parts of an image have been duplicated and pasted elsewhere. The task requires producing pixel-level segmentation masks that highlight these manipulated areas. Success is measured using a custom F1-based scoring function called RecodAI F1 on a held-out test set.",
+  "data_modality": "image",
+  "task_type": "segmentation",
+  "label_structure": "unknown",
+  "metric": "RecodAI F1",
+  "test_split": "unknown",
+  "format": "two_stage",
+  "dataset_scale": "unknown",
+  "domain": "biomedical_research",
+  "data_challenges": [
+    "class_imbalance",
+    "domain_shift"
+  ],
+  "constraints": []
+}

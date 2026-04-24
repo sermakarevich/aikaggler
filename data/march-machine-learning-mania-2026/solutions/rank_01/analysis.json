@@ -1,0 +1,67 @@
+{
+  "summary": "The author secured 1st place in the March Machine Learning Mania 2026 competition by building a minimalist feature set centered on seeding differentials, a hand-tuned custom rating, and quality wins differentials. They incorporated manual injury adjustments for the men's tournament and applied a 2% trimmed mean to calculate season-long net efficiency metrics. The core model was an XGBoost regressor trained with a leave-one-season-out cross-validation scheme, followed by isotonic regression calibration and a strategic \"sharpening of edges\" post-processing step to maximize tournament bracket scoring.",
+  "extensive_summary": "## Philosophy & Approach\nThe solution adopts a minimalist philosophy, deliberately avoiding complex feature engineering in favor of a few high-signal metrics. The pipeline begins with calculating team efficiency metrics (pace, offensive/defensive efficiency, net efficiency, rebound rate, and free throw rate) from raw box score data. Instead of using all of these, the author filters out rebound and free throw rates, focusing on a custom rating (`harry_Rating`) that combines a 2% trimmed mean season average of net efficiency with hand-tuned multipliers for strength of schedule, power conference status, and AP Poll rankings from Week 6. These components are scaled using MinMax scalers with gender-specific ranges to inject subjective team quality assessments.\n\n## Data Preparation & Feature Engineering\nFor the men's tournament, the author manually adjusts team ratings based on player injuries sourced from Rotowire and EvanMiya.com, applying status-based weight deductions to the net rating. The women's tournament receives no injury adjustments. Feature selection is driven by correlation analysis, ultimately retaining seed differential, quality wins differential, and the custom rating differential for both brackets, with avg. blocks differential added for women. Each feature is calculated as a differential between Team 1 and Team 2.\n\n## Modeling & Validation\nModeling is handled by a single `XGBRegressor` with conservative hyperparameters (max_depth=2, low learning rate, high regularization) and an RMSE evaluation metric. Validation uses a strict Leave-One-Season-Out scheme across 2003\u20132025. Raw predictions are calibrated using `IsotonicRegression` to align with the Brier score objective, yielding measurable CV improvements (e.g., Men's CV Brier drops from 0.1850 to 0.1822). The final step involves a deliberate post-processing gamble: predictions >=97% and <=3% are rounded to 100% and 0% respectively (\"sharpening the edges\"). This negative expected value play is justified as a marginal gain strategy for tournament bracket scoring, where extreme confidence in high-probability games outweighs the risk of a single upset.",
+  "rank": 1,
+  "competition_flow": "Raw box score and tournament data are processed to compute efficiency metrics and a hand-tuned custom rating, which are fed into an XGBoost regressor with leave-one-season-out validation, calibrated via isotonic regression, and post-processed by sharpening extreme probability edges before final submission.",
+  "data_reading": [],
+  "data_processing": [
+    "Calculated pace, offensive/defensive/net efficiency, rebound rate, and free throw rate from box scores.",
+    "Applied a 2% trimmed mean to compute season averages.",
+    "Manually prorated injury deductions for men's teams based on Rotowire status weights.",
+    "Applied MinMax scaling to strength of schedule, power conference, and AP poll features with gender-specific ranges.",
+    "Filtered out rebound and free throw rate features."
+  ],
+  "features_engineering": [
+    "Seed differential",
+    "Custom harry_Rating differential (combining trimmed net efficiency with hand-tuned multipliers for strength of schedule, power conference status, and AP Poll Week 6 top 12 ranking)",
+    "Quality wins differential (sum of opponent quality points for wins)",
+    "Average blocks differential"
+  ],
+  "models": [
+    "XGBRegressor"
+  ],
+  "frameworks_used": [
+    "xgboost",
+    "numpy",
+    "pandas",
+    "scikit-learn"
+  ],
+  "loss_functions": [
+    "RMSE"
+  ],
+  "cv_strategy": "Leave One Season Out (2003-2025)",
+  "ensembling": "No ensembling was used; the author applied isotonic regression calibration to raw XGBoost predictions and sharpened probability edges (rounding >=97% to 100% and <=3% to 0%) to maximize tournament bracket scoring.",
+  "insights": [
+    "Trust the selection committee's seeding differential as a strong baseline.",
+    "Treat men's and women's tournaments as separate entities with gender-specific tuning.",
+    "A minimalist feature set consistently outperforms complex engineering in this domain.",
+    "Sharpening edges in post-processing is a valid negative-expected-value strategy for tournament bracket scoring."
+  ],
+  "critical_findings": [
+    "Including rebound and free throw rate features degraded model performance.",
+    "Rewarding recent performance did not improve results.",
+    "Skipping injury adjustments for the women's tournament likely limited bracket accuracy."
+  ],
+  "what_did_not_work": [
+    "Features other than seed differential, quality wins differential, and harry_Rating differential.",
+    "Rebound rate, free throw rate, and rewarding recent performance specifically hurt model performance."
+  ],
+  "github_repos": [
+    {
+      "url": "https://github.com/harrisonhoran/kaggle-march-mania-2026-1st-place",
+      "role": "solution"
+    }
+  ],
+  "papers": [],
+  "other_solution_refs": [
+    {
+      "description": "raddar's 2025 kaggle model",
+      "url": "https://www.kaggle.com/code/raddar/vilnius-ncaa"
+    },
+    {
+      "description": "Discussion on sharpening edges strategy",
+      "url": "https://www.kaggle.com/competitions/march-machine-learning-mania-2026/discussion/684446"
+    }
+  ],
+  "source_url": "https://www.kaggle.com/competitions/march-machine-learning-mania-2026/discussion/689528"
+}

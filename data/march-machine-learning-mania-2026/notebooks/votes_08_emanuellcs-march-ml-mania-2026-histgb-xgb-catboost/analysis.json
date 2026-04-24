@@ -1,0 +1,65 @@
+{
+  "summary": "This notebook demonstrates a specialized stacking ensemble for predicting NCAA tournament game outcomes by minimizing the Brier score. It partitions the feature space across three gradient boosting models (HistGB, XGBoost, CatBoost) to force diversity, then blends their out-of-fold predictions using a logistic regression meta-learner. The pipeline emphasizes strict temporal walk-forward cross-validation to prevent future data leakage and applies isotonic calibration to correct probability miscalibration. Readers should learn how feature isolation reduces model correlation, how log-odds transformation improves meta-learner linearity, and why temporal splitting is critical for tournament prediction tasks.",
+  "purpose": "ensemble",
+  "competition_flow": "Loads historical NCAA game results, seeds, and ranking systems to compute team-season and matchup-level features, trains three specialized gradient boosting models with temporal walk-forward validation, blends their predictions via a logistic regression meta-learner, and outputs a calibrated submission file.",
+  "data_reading": [
+    "Reads CSV files for teams, seeds, compact/detailed regular season and tournament results, and Massey ordinal rankings using pandas.read_csv.",
+    "Dynamically loads supplementary Massey system files via glob and concatenates them.",
+    "Parses alphanumeric seed strings into numeric values using regex."
+  ],
+  "data_processing": [
+    "Fills numeric feature NaNs with column medians.",
+    "Clips estimated possessions to a minimum of 1 to prevent division by zero.",
+    "Handles missing Massey systems gracefully by checking existence before loading.",
+    "Clips final submission probabilities to [0.015, 0.985] to avoid extreme predictions.",
+    "Uses joblib.Parallel and ThreadPoolExecutor for parallel feature construction and concurrent model inference."
+  ],
+  "features_engineering": [
+    "Team-season level stats: win rate, average scoring margin, average points for/against.",
+    "Dean Oliver's Four Factors + efficiency: possessions (0.44 multiplier), ORTG, DRTG, NetRtg, eFG%, TO%, ORB%, FTR, ThreePAr, ASTpct.",
+    "Strength of Schedule: average opponent win rate over the regular season.",
+    "Rolling form: win rate and average margin over the final 10 regular-season games.",
+    "Massey ordinal aggregations: mean, median, std, best, worst rank per team-season, plus pivoted individual system ranks.",
+    "Game-by-game Elo ratings with home-court adjustment, log-damped margin-of-victory multiplier, and 75/25 regression to the mean between seasons.",
+    "Historical seed upset probability lookup table (excluding matchups with <5 observed seasons).",
+    "Interaction features: SeedDiff \u00d7 EloDiff and SeedDiff\u00b2."
+  ],
+  "models": [
+    "HistGradientBoostingClassifier",
+    "XGBClassifier",
+    "CatBoostClassifier",
+    "LogisticRegression"
+  ],
+  "frameworks_used": [
+    "pandas",
+    "numpy",
+    "scikit-learn",
+    "xgboost",
+    "catboost",
+    "optuna",
+    "joblib",
+    "matplotlib",
+    "seaborn",
+    "scipy"
+  ],
+  "loss_functions": [
+    "Brier Score",
+    "Log Loss"
+  ],
+  "cv_strategy": "Temporal walk-forward cross-validation (leave-one-season-out) from 2018 to 2025, training on all prior seasons and validating on the current season to prevent future data leakage.",
+  "ensembling": "Base model predictions are converted to log-odds and stacked with SeedDiff into a logistic regression meta-learner, followed by isotonic regression calibration on out-of-fold predictions to correct systematic over/under-confidence.",
+  "insights": [
+    "Strict feature partitioning across tree-based models significantly reduces inter-model correlation, enabling effective stacking.",
+    "Converting probabilities to log-odds before meta-learning creates a more linear input space for the logistic regression.",
+    "Temporal walk-forward validation is essential for tournament prediction to avoid inflated scores from future data leakage.",
+    "Isotonic calibration on OOF predictions reliably tightens probability distributions without overfitting."
+  ],
+  "critical_findings": [
+    "Standard stratified k-fold validation artificially inflates CV scores in tournament prediction by mixing future games into training folds.",
+    "Historical seed matchup data with fewer than 5 observed seasons introduces noise and is explicitly excluded from the lookup table.",
+    "The meta-learner learns context-aware blending, heavily weighting XGBoost for Women's games while balancing CatBoost and HistGB for Men's chaotic matchups."
+  ],
+  "what_did_not_work": [],
+  "source_url": "https://www.kaggle.com/code/emanuellcs/march-ml-mania-2026-histgb-xgb-catboost",
+  "votes": 119
+}

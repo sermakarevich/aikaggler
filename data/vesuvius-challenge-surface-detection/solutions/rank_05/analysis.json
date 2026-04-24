@@ -1,0 +1,59 @@
+{
+  "summary": "The author developed a 3D medical image segmentation solution that regresses signed distance fields (SDFs) instead of binary masks to better optimize topology and boundary metrics. They combined multiple 3D U-Net variants, primarily a custom SEResNeXt152 encoder with an Attention UNet decoder, trained with a novel weighted SDF L1 and SDF-based Dice loss. The pipeline concludes with thresholding the averaged SDF predictions and applying an iterative persistence-homology-based tunnel-filling post-processing step to correct topological defects. This approach effectively balances sheet separation, continuity, and precise skeleton extraction.",
+  "extensive_summary": "## Core Approach & Loss Design\nThe solution pivots away from traditional binary segmentation by training models to regress a signed distance field (SDF). SDF targets are computed on-the-fly via GPU Euclidean distance transforms, with the loss combining a Gaussian-weighted SDF L1 component and a continuous SDF-based Dice loss. The Gaussian weighting concentrates supervision near the skeleton region while heavily downweighting distant background voxels, providing both local boundary precision and global volumetric overlap signals.\n\n## Model Architectures & Training\nThe primary architecture is a custom pure-PyTorch SEResNeXt152 encoder paired with an Attention UNet decoder, leveraging attention gates on skip connections and gradient checkpointing for memory efficiency. Additional ensemble members include ResNet152-based UNets with skip maxpooling and deep supervision, as well as earlier models trained with external scroll data marked via a binary mask channel. Training uses 160^3 random crops, Adam optimizer with cosine annealing, bfloat16 mixed precision, and targeted augmentations (3D flips, 90-degree rotations). CutMix was abandoned for the final models as it yielded no gains.\n\n## Inference & Post-Processing\nInference is performed on full 320x320x320 volumes to avoid sliding-window topological artifacts, with predictions averaged across checkpoints and up to 8 TTA flips. The averaged SDF logits are thresholded at 0.3, followed by dust removal and an iterative H1 tunnel-filling pipeline. This pipeline uses persistence homology to identify tunnels crossing the binarization surface, estimates adaptive fill radii from background EDT, applies bridge detection to prevent accidental merges, and fills spherical balls at death coordinates. The combination of SDF regression, careful ensemble averaging, and topological post-processing drives the final score.",
+  "rank": 5,
+  "competition_flow": "Raw 3D volumes are loaded from npy files, cropped into 160^3 patches, and used to train 3D U-Net variants to regress signed distance fields; predictions are averaged across checkpoints and TTA flips, thresholded, and refined via a persistence-homology tunnel-filling pipeline before submission.",
+  "data_reading": [
+    "npy files containing 320x320x320 volumes"
+  ],
+  "data_processing": [
+    "Random 160^3 ROI cropping from 320^3 volumes",
+    "On-the-fly SDF target computation via GPU Euclidean distance transforms",
+    "Random 3D flips (p=0.5) and 90-degree rotations in (axis-1, axis-2) plane (p=0.5)",
+    "CutMix (beta=1.0) disabled for final models",
+    "TTA with up to 8 flips (identity + triple-flip for large models, full 8-flip for smaller)",
+    "External data handled via a binary mask channel indicating label quality"
+  ],
+  "features_engineering": [],
+  "models": [
+    "SEResNeXt152 + Attention UNet",
+    "ResNet152 + skip maxpool",
+    "ResNet152 + UNet",
+    "SwinUNETR",
+    "UNETR++",
+    "MedNeXt",
+    "SegFormer3D",
+    "ConvNeXt V2",
+    "U-Mamba",
+    "SEResNeXt200"
+  ],
+  "frameworks_used": [
+    "pytorch",
+    "keras"
+  ],
+  "loss_functions": [
+    "Weighted SDF L1 loss",
+    "SDF-based Dice loss",
+    "deep supervision auxiliary losses"
+  ],
+  "cv_strategy": "4-fold cross-validation tracking Surface Dice, VOI, and topology score on 10x downsampled size.",
+  "ensembling": "Raw SDF logits are averaged across all model checkpoints and TTA augmentations per sample, then thresholded at 0.3 and refined with an iterative persistence-homology tunnel-filling pipeline.",
+  "insights": [
+    "SDF regression outperforms binary classification for optimizing topology and boundary metrics.",
+    "Gaussian weighting effectively concentrates supervision near the skeleton while downweighting distant background.",
+    "Iterative tunnel filling with bridge detection is the most impactful post-processing step for improving topology scores."
+  ],
+  "critical_findings": [
+    "Local CV and public LB did not correlate well with the private LB, complicating submission selection.",
+    "Inferring on full 320x320x320 volumes instead of sliding windows prevents topological artifacts.",
+    "CutMix improved scores in earlier model families but provided no benefit for the final SEResNeXt152 runs."
+  ],
+  "what_did_not_work": [
+    "SwinUNETR, UNETR++, MedNeXt, SegFormer3D, ConvNeXt V2, U-Mamba, and SEResNeXt200 did not surpass the SEResNeXt152 + AttUNet architecture.",
+    "Topology-aware loss variants like persistence diagram matching and Euler characteristic loss were too slow to train effectively."
+  ],
+  "github_repos": [],
+  "papers": [],
+  "other_solution_refs": [],
+  "source_url": "https://www.kaggle.com/competitions/vesuvius-challenge-surface-detection/discussion/679360"
+}

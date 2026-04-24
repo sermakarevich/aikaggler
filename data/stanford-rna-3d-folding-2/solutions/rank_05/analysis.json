@@ -1,0 +1,55 @@
+{
+  "summary": "The author achieved 5th place by optimizing a Protenix diffusion pipeline for RNA structure prediction, focusing on template-based modeling (TBM) and MSA depth management. They implemented a geometry-aware gap-filling procedure and TM-score-based greedy diversity selection to populate TBM slots without redundancy. A key insight was treating MSA as a continuous depth signal rather than a binary switch, using a depth \u2265 700 cutoff to balance evolutionary signal and noise, which informed a three-mode inference strategy. The pipeline ensures full reproducibility by disabling non-deterministic CUDA operations and MC Dropout, and uses a quintic smoothstep function for seamless multi-chunk stitching in long sequences.",
+  "extensive_summary": "## Template-Based Modeling & Diversity Strategy\nThe pipeline begins by searching the combined training and validation sets using Biopython's PairwiseAligner with RNA-tuned gap penalties. Atomic coordinates are transferred to the query via a geometry-aware gap-filling procedure that interpolates missing residues along RNA-like helical trajectories (C1'\u2013C1' step ~5.9 \u00c5) instead of using zero or NaN placeholders. Diversity transforms\u2014hinge rotations, chain jitter, and smooth wiggle\u2014are applied slot-by-slot from the same template source, followed by RNA geometry constraint refinement (bond-length correction, Laplacian smoothing, and self-avoidance). To prevent slot redundancy, TM-score-based greedy diversity selection is used to maximize a quality-diversity trade-off, ensuring TBM slots are structurally distinct. Slot allocation is length-adaptive: sequences \u2264 512 nt receive up to 2 TBM slots, while longer sequences (> 512 nt) prioritize TBM with up to 5 slots if templates exist.\n\n## MSA Depth as a Continuous Signal\nThe author challenges the mainstream binary MSA on/off approach, arguing it discards valuable structural signals. Analysis of 28 test targets revealed a clear depth distribution, with depth \u2265 700 emerging as the empirically optimal cutoff. Below this threshold, distant homologs inject alignment noise that degrades diffusion quality; above it, evolutionary co-variation provides reliable constraints. This led to a three-mode inference design: slots 3 and 4 use `msa700` (depth \u2265 700) with independent diffusion sampling to generate diversity without MSA noise, while slot 5 uses `msa_full` (depth \u2265 1) as a deliberate diversity hedge. For long sequences, only `msa700` is used with N_sample=3, sharing expensive feature computation across independent diffusion samples.\n\n## Long Sequence Handling & Reproducibility\nMulti-chunk inference for sequences > 512 nt replaces the standard linear weight ramp with a quintic smoothstep function to guarantee C2 curvature continuity, eliminating geometric kinks at chunk boundaries. This is combined with Kabsch-based reference alignment in 128-nt overlap regions to preserve global topology. Finally, the author enforces full reproducibility by disabling FlashAttention and memory-efficient attention, setting `mc_dropout_apply_rate=0.0`, and forcing torch-native LayerNorm and triangle attention kernels over non-deterministic cuDNN/cuEquivariance backends, ensuring ablation studies reflect true algorithmic gains rather than RNG variance.",
+  "rank": 5,
+  "competition_flow": "Raw RNA sequences are processed through a length-adaptive TBM pipeline with geometry-aware gap filling and TM-score diversity selection, fed into a deterministic Protenix diffusion model using depth-stratified MSA modes, and stitched via quintic smoothstep functions for multi-chunk long sequences before final submission.",
+  "data_reading": [],
+  "data_processing": [
+    "geometry-aware gap-filling along RNA-like helical trajectories (C1'\u2013C1' step ~5.9 \u00c5)",
+    "diversity transforms: hinge rotations, chain jitter, smooth wiggle",
+    "RNA geometry constraint refinement: bond-length correction + Laplacian smoothing + self-avoidance",
+    "TM-score-based greedy diversity selection",
+    "quintic smoothstep function for chunk stitching",
+    "Kabsch-based reference alignment in 128-nt overlap regions"
+  ],
+  "features_engineering": [],
+  "models": [
+    "Protenix"
+  ],
+  "frameworks_used": [
+    "Biopython",
+    "PyTorch"
+  ],
+  "loss_functions": [],
+  "cv_strategy": "",
+  "ensembling": "The pipeline uses a three-mode inference strategy with independent diffusion sampling across slots to generate diverse structural predictions, combined with a diversity hedge using relaxed MSA thresholds, followed by Kabsch-based alignment and quintic smoothstep stitching for long sequences.",
+  "insights": [
+    "MSA should be treated as a continuous depth signal rather than a binary on/off switch, as depth directly dictates the balance between evolutionary signal and alignment noise.",
+    "Diversity in diffusion-based structure prediction should be driven by independent stochastic sampling rather than noisy MSA inputs to maintain high-fidelity constraints.",
+    "Multi-chunk inference for long sequences requires C2-continuous stitching combined with overlap alignment to prevent geometric kinks and preserve global topology.",
+    "Enforcing full determinism in diffusion pipelines is critical for reliable ablation studies and competition performance, requiring explicit disabling of non-deterministic CUDA backends and inference-time regularization."
+  ],
+  "critical_findings": [
+    "Below an MSA depth of 700, distant homologs inject alignment noise that actively degrades diffusion quality, making a strict depth cutoff empirically optimal.",
+    "Standard linear weight ramping at chunk boundaries causes first-derivative discontinuities that manifest as geometric kinks, which a quintic smoothstep function successfully eliminates.",
+    "Non-deterministic CUDA operations and MC Dropout during inference create hidden variance that can masquerade as algorithmic improvements, necessitating strict reproducibility controls."
+  ],
+  "what_did_not_work": [],
+  "github_repos": [],
+  "papers": [],
+  "other_solution_refs": [
+    {
+      "description": "Protenix v1 inference notebook",
+      "url": "https://www.kaggle.com/code/qiweiyin/protenix-v1-inference-2026"
+    },
+    {
+      "description": "Stanford RNA folding 2 Protenix template solution",
+      "url": "https://www.kaggle.com/code/nihilisticneuralnet/0-409-stanford-rna-folding-2-protenix-template"
+    },
+    {
+      "description": "Protenix v1 solution",
+      "url": "https://www.kaggle.com/code/alexxanderlarko/protenix-v1"
+    }
+  ],
+  "source_url": "https://www.kaggle.com/competitions/stanford-rna-3d-folding-2/discussion/688036"
+}

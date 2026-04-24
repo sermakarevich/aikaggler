@@ -1,0 +1,56 @@
+{
+  "summary": "The author achieved 9th place by fine-tuning the competition's baseline nnUNet model (`nnUNetTrainerMedialSurfaceRecall`) with a patch size of 192 and running inference on a single fold with TTA. The core contribution lies in a highly iterative, multi-stage post-processing pipeline designed to repair topological breaks and thin sheet artifacts in the predictions. Key steps include removing small components, line normalization via skeletonization and EDT, iterative gap filling with diagonal repair, Gaussian smoothing, and targeted 2x2 diagonal bridging. The author emphasizes that repeated application of morphological repairs yields consistent linear score improvements, while more complex adhesion-separation methods were ultimately abandoned due to instability.",
+  "extensive_summary": "## Model Training & Inference\nThe solution builds on the competition's baseline model, `nnUNetTrainerMedialSurfaceRecall`, trained using YOLO26's MUSGD. The author tuned the patch size to 192, noting that larger patches (224/256) improved Dice scores but degraded Topo scores. Training utilized Group Norm (group=32) and GELU activations. Inference was conducted on a single fold with Test-Time Augmentation (TTA) and a tile size of 0.4.\n\n## Post-Processing Pipeline\nThe bulk of the score improvement came from a systematic, iterative post-processing sequence:\n1. **Component Filtering:** Initial removal of 6-connected components smaller than 5000 voxels.\n2. **Line Normalization:** To fix thin sheet predictions causing topological errors, the author skeletonized each Z-axis slice, reconstructed it via Euclidean Distance Transform (EDT) to a uniform radius of 1.5, processed it in 8x160x160x160 blocks (ignoring border pixels to avoid mask artifacts), and OR-ed the result back into the original mask.\n3. **Iterative Gap & Diagonal Repair:** A two-stage morphological process was run in a loop. Stage 1 fills axis-aligned gaps by checking for solid anchor pixels on both sides. Stage 2 uses 3x3x3 kernels to fill diagonal breaks. Experiments showed linear score gains up to 5 iterations, as each pass exposed new breaks for the next.\n4. **Gaussian Smoothing & Final Cleanup:** A Gaussian filter (sigma=1) was applied to the boolean mask and re-thresholded. This was followed by a second small component removal (<5000), block-wise removal (<10), and a targeted 2x2 diagonal bridging technique adapted from a community discussion.\n\n## Abandoned Methods\nThe author details two complex unused methods: a marker-controlled watershed approach for separating touching objects (limited by seed dependency and rigid gap generation) and a 2D slice line interpolation method using PCA/DFS for endpoint pairing. The latter was abandoned during the competition due to negative feedback on certain cases, highlighting the risk of over-engineering post-processing.",
+  "rank": 9,
+  "competition_flow": "Raw data is processed into 192x192 patches, fed into a single-fold nnUNet baseline with TTA and 0.4 tile size inference, followed by a multi-stage iterative post-processing pipeline (component removal, line normalization, gap/diagonal repair, Gaussian smoothing, and diagonal bridging) to produce the final submission.",
+  "data_reading": [],
+  "data_processing": [
+    "Training patch size set to 192; inference tile size set to 0.4.",
+    "Iterative removal of small 6-connected components (<5000 and <10 voxels).",
+    "Line normalization via skeletonization, EDT reconstruction to radius 1.5, and block-wise processing (8x160x160x160) with border exclusion.",
+    "Gap filling and diagonal repair loops (up to 5+ iterations).",
+    "Gaussian filtering (sigma=1) on boolean mask followed by >0.5 thresholding.",
+    "Targeted 2x2 diagonal bridging morphological repair."
+  ],
+  "features_engineering": [],
+  "models": [
+    "nnUNetTrainerMedialSurfaceRecall"
+  ],
+  "frameworks_used": [
+    "nnUNet",
+    "YOLO26",
+    "MUSGD"
+  ],
+  "loss_functions": [],
+  "cv_strategy": "Single fold validation and training.",
+  "ensembling": "Single fold inference combined with Test-Time Augmentation (TTA); no model ensembling was applied.",
+  "insights": [
+    "Iterative application of gap filling and diagonal repair yields consistent linear score gains up to at least 5 iterations.",
+    "Gaussian filtering on a boolean mask followed by thresholding is a surprisingly effective and simple smoothing trick.",
+    "Larger training patch sizes improve Dice scores but can degrade Topo scores, requiring careful balancing.",
+    "Targeted 2x2 diagonal bridging effectively repairs specific prediction patterns with minimal risk of score drops."
+  ],
+  "critical_findings": [
+    "Increasing patch size to 224 or 256 improved Dice but caused Topo to drop, making 192 the optimal balance.",
+    "The line normalization step must ignore pixels within 8 voxels of block borders to avoid artifacts near ignore masks.",
+    "Complex adhesion-separation methods relying on high-confidence seeds fail when the model already merges distinct objects into single components."
+  ],
+  "what_did_not_work": [
+    "2D slice line interpolation/endpoint pairing was abandoned during the competition because it made predictions worse on certain cases.",
+    "The marker-controlled watershed adhesion separation method suffered from seed dependency when high-confidence predictions were already merged, and its fixed 2-pixel gap removal introduced more holes than it resolved."
+  ],
+  "github_repos": [
+    {
+      "url": "https://github.com/TingYi028/Kaggle-vesuvius-9th",
+      "role": "solution"
+    }
+  ],
+  "papers": [],
+  "other_solution_refs": [
+    {
+      "description": "Kaggle competition discussion thread referenced for 2x2 diagonal bridging technique",
+      "url": "https://www.kaggle.com/competitions/vesuvius-challenge-surface-detection/discussion/672447"
+    }
+  ],
+  "source_url": "https://www.kaggle.com/competitions/vesuvius-challenge-surface-detection/discussion/679241"
+}

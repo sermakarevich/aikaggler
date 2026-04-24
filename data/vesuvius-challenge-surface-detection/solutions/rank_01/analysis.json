@@ -1,0 +1,50 @@
+{
+  "summary": "The author achieved first place in the Vesuvius Challenge Surface Detection Competition by training and ensembling multiple nnU-Net models with varying patch sizes and training schedules. A key technical contribution was a multi-step post-processing pipeline designed to repair holes and cavities in the predicted 3D masks, significantly boosting the Dice score. The approach also involved careful ensemble weighting and threshold tuning, with the final submission relying on logits fusion and larger thresholds that were counterintuitive based on public leaderboard performance.",
+  "extensive_summary": "## Approach Overview\nThe solution centers on an ensemble of nnU-Net models followed by a detailed post-processing pipeline. Training began with a baseline nnU-Net model using a 128-patch size, 2 batch size, and 4000 epochs. This baseline was then fine-tuned with larger patch sizes (192 and 256) for 250 epochs each. To increase model diversity, additional models were trained from scratch with patch sizes of 160, 192, and 224 over 4000 epochs.\n\n## Ensemble Strategy\nTwo distinct 4-model ensembles were constructed using weighted averaging of post-softmax probabilities. The models combined baseline 128-patch, fine-tuned 192-patch, fine-tuned 256-patch, and from-scratch 192-patch variants. Weights were carefully assigned to balance contributions, with the final submission selecting the ensemble that maximized private leaderboard performance.\n\n## Post-Processing Pipeline\nA critical component of the solution was a five-step post-processing routine aimed at minimizing holes and cavities in the predicted 3D masks. The pipeline first removed small mask components (<20K voxels). For each connected component (sheet), it applied scipy.ndimage.binary_closing() with a spherical footprint of radius 3. Larger holes were repaired by representing the sheet as a height map and filling gaps via linear interpolation along the x and y axes. A custom 2 x 2 x 2 neighborhood lookup table was then used to plug remaining 1-voxel holes while avoiding the voxel over-addition typical of standard dilation. Finally, scipy.ndimage.binary_fill_holes() was applied to the entire mask to close arbitrary cavities. An additional check was implemented to discard patches that introduced new holes due to high curvature.\n\n## Key Insights & Lessons\nThe author noted that relying on probability fusion and smaller thresholds (0.20-0.26) optimized for the public leaderboard actually hurt private performance. Switching to logits fusion and larger thresholds (0.35-0.40) yielded better results. Additionally, the post-processing pipeline demonstrated massive score gains, with the cumulative effect pushing the private score from 0.596 to 0.627. The team also leveraged AI-assisted coding to overcome GPU memory and disk space constraints, enabling a 4-model ensemble.",
+  "rank": 1,
+  "competition_flow": "Raw 3D volumetric data was fed into multiple nnU-Net models trained with varying patch sizes and schedules, producing probability maps that were fused via weighted averaging, thresholded, and refined through a multi-step morphological post-processing pipeline to generate the final surface detection masks.",
+  "data_reading": [],
+  "data_processing": [],
+  "features_engineering": [],
+  "models": [
+    "nnU-Net"
+  ],
+  "frameworks_used": [
+    "nnU-Net",
+    "scipy",
+    "scikit-image"
+  ],
+  "loss_functions": [],
+  "cv_strategy": "",
+  "ensembling": "The final submission used a weighted ensemble of four nnU-Net models fused via post-softmax probabilities (with a note that logits fusion performed better), followed by threshold tuning and a five-step morphological post-processing pipeline to repair holes and cavities in the predicted masks.",
+  "insights": [
+    "A multi-step post-processing pipeline targeting holes and cavities was essential for maximizing the Dice score.",
+    "Optimizing for the public leaderboard can be misleading; larger thresholds and logits fusion proved superior for the private leaderboard.",
+    "AI-assisted coding can effectively resolve resource constraints, enabling more complex ensemble pipelines."
+  ],
+  "critical_findings": [
+    "Probability fusion and smaller thresholds (0.20-0.26) optimized for the public leaderboard actually degraded private leaderboard performance compared to logits fusion and larger thresholds (0.35-0.40).",
+    "Standard dilation plugs holes but adds too many voxels, degrading the Dice score, whereas a custom 2 x 2 x 2 neighborhood lookup table successfully plugs 1-voxel holes without over-adding."
+  ],
+  "what_did_not_work": [
+    "The team could not find an effective solution to the problem of touching sheets and had to rely on the model to minimize their occurrence."
+  ],
+  "github_repos": [
+    {
+      "url": "https://github.com/Paul-G2/VesuviusSurfaceDetection",
+      "role": "solution"
+    }
+  ],
+  "papers": [],
+  "other_solution_refs": [
+    {
+      "description": "nnU-Net training/inference notebook used as starting point",
+      "url": "https://www.kaggle.com/code/jirkaborovec/surface-nnunet-training-inference-with-2xt4"
+    },
+    {
+      "description": "Alternative 0.627 solution notebook",
+      "url": "https://www.kaggle.com/code/tonylica/nnunet-4-model-7-5-2-1-final-submit-so-long?scriptVersionId=300373304"
+    }
+  ],
+  "source_url": "https://www.kaggle.com/competitions/vesuvius-challenge-surface-detection/discussion/679238"
+}

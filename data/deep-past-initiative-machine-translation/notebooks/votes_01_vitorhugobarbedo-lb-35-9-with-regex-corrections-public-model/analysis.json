@@ -1,0 +1,41 @@
+{
+  "summary": "This notebook implements an optimized inference pipeline for the Deep Past Challenge, focusing on Akkadian-to-English machine translation. It demonstrates how combining diverse candidate generation (beam search and multi-temperature sampling) with a weighted Minimum Bayes Risk (MBR) scorer significantly improves translation quality. The author emphasizes that extensive regex-based postprocessing is crucial to strip formatting noise, allowing the MBR algorithm to evaluate meaningful content rather than superficial inconsistencies. Readers should learn how cross-model candidate pooling, careful metric weighting, and domain-specific text normalization can boost leaderboard scores without retraining.",
+  "purpose": "inference",
+  "competition_flow": "Loads the test dataset, preprocesses Akkadian transliterations, generates diverse candidates via two ByT5 models using beam search and multi-temperature sampling, applies domain-specific regex postprocessing, selects the best translation using a weighted MBR scorer, and exports the final submission CSV.",
+  "data_reading": [],
+  "data_processing": [
+    "Input normalization via regex (diacritics, gap markers, determinatives, fractions)",
+    "Bucket batching for variable-length sequences",
+    "BF16 mixed precision inference",
+    "Extensive output postprocessing (quote normalization, commodity/fraction correction, stray mark removal, repetition/punctuation cleanup)"
+  ],
+  "features_engineering": [],
+  "models": [
+    "ByT5 (two custom checkpoints loaded via AutoModelForSeq2SeqLM)"
+  ],
+  "frameworks_used": [
+    "torch",
+    "transformers",
+    "pandas",
+    "numpy",
+    "sacrebleu",
+    "optimum"
+  ],
+  "loss_functions": [],
+  "cv_strategy": "",
+  "ensembling": "Combines candidates from two distinct ByT5 models per sample, deduplicates them, and applies a weighted Minimum Bayes Risk scorer (chrF++, BLEU, Jaccard, length bonus) to select the consensus translation.",
+  "insights": [
+    "Diverse candidate generation via beam search and multi-temperature sampling provides a richer pool for MBR to find high-quality consensus outputs.",
+    "Aggressive regex postprocessing is essential to prevent MBR from penalizing superficial formatting noise instead of semantic content.",
+    "A weighted combination of chrF++, BLEU, Jaccard, and length metrics outperforms single-metric MBR for this translation task.",
+    "Bucket batching effectively stabilizes inference throughput for highly variable-length Akkadian transliterations."
+  ],
+  "critical_findings": [
+    "Specific host-verified corrections are required for domain accuracy, such as mapping 5/12 shekel to \u2153 shekel 15 grains and preserving parentheses in test outputs.",
+    "Commodity regex replacements must enforce word boundaries to avoid corrupting compound terms like 'import-tax'.",
+    "Stray marks, repeated words, and inconsistent punctuation in raw model outputs severely degrade MBR scores if left uncleaned."
+  ],
+  "what_did_not_work": [],
+  "source_url": "https://www.kaggle.com/code/vitorhugobarbedo/lb-35-9-with-regex-corrections-public-model",
+  "votes": 634
+}

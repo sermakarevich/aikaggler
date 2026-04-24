@@ -1,0 +1,44 @@
+{
+  "summary": "This notebook demonstrates a hybrid image forgery detection pipeline that combines a frozen DINOv2 vision transformer encoder with a custom lightweight CNN decoder for pixel-level segmentation. It focuses on inference, threshold tuning, and post-processing rather than training from scratch. The author implements test-time augmentation and an adaptive masking strategy that combines gradient magnitude with local statistics to refine forged region predictions. A grid search optimizes area and mean intensity thresholds to maximize validation F1 score. Readers should learn how to effectively deploy pretrained self-supervised models for forensic segmentation and tune post-processing rules for robust binary decisions.",
+  "purpose": "inference",
+  "competition_flow": "Loads train/test images and masks, extracts DINOv2 features through a frozen encoder and CNN decoder, applies TTA and adaptive gradient-based masking, optimizes decision thresholds via grid search, and generates an RLE-encoded submission CSV.",
+  "data_reading": [
+    "Images are loaded via PIL.Image.open and converted to RGB",
+    "Masks are loaded from .npy files using np.load, with 3D masks reduced by taking the maximum over the channel axis",
+    "Paths are constructed using pathlib and os"
+  ],
+  "data_processing": [
+    "Images are resized to 518x518 and normalized to [0,1]",
+    "Masks are resized with nearest-neighbor interpolation",
+    "Test-time augmentation applies horizontal and vertical flips averaged during inference",
+    "Post-processing uses Sobel gradient enhancement, Gaussian blurring, adaptive thresholding (mean + 0.3*std), and morphological closing/opening operations"
+  ],
+  "features_engineering": [],
+  "models": [
+    "DINOv2 (base, frozen)",
+    "DinoTinyDecoder (custom CNN with Conv2d, ReLU, Dropout2d, bilinear upsampling)"
+  ],
+  "frameworks_used": [
+    "pytorch",
+    "transformers",
+    "opencv-python",
+    "numpy",
+    "pandas",
+    "scikit-learn",
+    "matplotlib",
+    "tqdm",
+    "pillow"
+  ],
+  "loss_functions": [],
+  "cv_strategy": "Holdout split (80% train, 20% validation) via train_test_split with random_state=42",
+  "ensembling": "Test-time augmentation (TTA) averages predictions from the original image, horizontally flipped input, and vertically flipped input; post-processing combines gradient-enhanced probability maps with adaptive statistical thresholding and morphological refinement.",
+  "insights": [
+    "Freezing a large self-supervised vision transformer and attaching a lightweight CNN decoder is an efficient way to adapt pre-trained representations for forensic segmentation tasks.",
+    "Gradient magnitude enhancement significantly improves mask boundary precision compared to raw probability maps.",
+    "Adaptive thresholding based on local statistics (mean + 0.3*std) is more robust than fixed global thresholds for forgery detection."
+  ],
+  "critical_findings": [],
+  "what_did_not_work": [],
+  "source_url": "https://www.kaggle.com/code/pankajiitr/scientific-forensics-dinov2-cnn-ipynb",
+  "votes": 345
+}

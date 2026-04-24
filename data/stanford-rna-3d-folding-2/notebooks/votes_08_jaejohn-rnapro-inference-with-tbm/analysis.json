@@ -1,0 +1,44 @@
+{
+  "summary": "This notebook implements a hybrid inference pipeline for the Stanford RNA 3D Folding competition, combining a custom template-based modeling (TBM) approach with the RNAPro deep learning model. It first generates coordinate predictions by aligning query sequences to training structures, adapting coordinates via gap mapping and interpolation, and applying RNA-specific geometric constraints. It then runs RNAPro inference using a provided checkpoint and configuration script. Finally, it merges the two submissions by replacing RNAPro predictions for long sequences (>1000 residues) with TBM results. Readers learn how to integrate classical structural biology techniques with neural network inference to handle length-dependent prediction failures.",
+  "purpose": "inference",
+  "competition_flow": "Loads test sequences and training coordinates, generates predictions via a custom TBM script and the RNAPro model, merges the outputs by replacing long-sequence predictions from RNAPro with TBM results, and saves a final submission CSV.",
+  "data_reading": [
+    "Reads CSV files for test/train sequences and labels using pandas",
+    "Processes label DataFrames to extract and group 3D coordinates by target ID",
+    "Loads sample submission format"
+  ],
+  "data_processing": [
+    "Aligns sequences using Biopython's PairwiseAligner",
+    "Maps template coordinates to query sequences via alignment gaps",
+    "Fills coordinate gaps via linear interpolation and random walk fallback",
+    "Applies adaptive RNA geometric constraints (sequential distance, steric clash prevention)",
+    "Handles NaN/placeholder values",
+    "Merges submissions by ID matching and conditional replacement"
+  ],
+  "features_engineering": [],
+  "models": [
+    "RNAPro",
+    "TBM (custom template-based modeling)"
+  ],
+  "frameworks_used": [
+    "pandas",
+    "numpy",
+    "scipy",
+    "biopython",
+    "torch",
+    "biotite",
+    "RNAPro"
+  ],
+  "loss_functions": [],
+  "cv_strategy": "",
+  "ensembling": "Merges two prediction sources by conditionally replacing RNAPro coordinates with TBM coordinates for test targets exceeding 1000 residues in length.",
+  "insights": [
+    "Template-based coordinate adaptation with gap interpolation can effectively predict structures for sequences with high similarity to training data.",
+    "RNA geometric constraints (sequential distance and steric clash prevention) improve the physical plausibility of predicted coordinates.",
+    "Long RNA sequences (>1000 residues) may benefit from classical structural methods over deep learning models in this competition setting."
+  ],
+  "critical_findings": [],
+  "what_did_not_work": [],
+  "source_url": "https://www.kaggle.com/code/jaejohn/rnapro-inference-with-tbm",
+  "votes": 232
+}

@@ -1,0 +1,54 @@
+{
+  "summary": "This notebook demonstrates a comprehensive baseline for NCAA basketball tournament prediction by combining traditional seeding, Elo ratings, and GLM-derived team quality metrics. It walks through data preparation, including overtime adjustments and symmetric home/away feature creation, followed by extensive feature engineering. The author trains leave-one-season-out XGBoost models to predict point differentials, then applies spline-based calibration to convert margins into win probabilities. Readers should learn how to construct robust temporal features, calibrate regression outputs for classification tasks, and evaluate predictor stability across seasons.",
+  "purpose": "baseline",
+  "competition_flow": "Loads NCAA basketball CSVs, computes Elo and GLM-based team quality metrics, trains leave-one-season-out XGBoost models on point differentials, calibrates predictions with splines, and averages fold predictions to generate a submission.",
+  "data_reading": [
+    "Reads multiple CSVs (MRegularSeasonDetailedResults.csv, MNCAATourneyDetailedResults.csv, MNCAATourneySeeds.csv, etc.) using pd.read_csv.",
+    "Concatenates men's and women's datasets and filters rows by a minimum season year (>= 2003)."
+  ],
+  "data_processing": [
+    "Adjusts overtime stats by dividing by (40 + 5 * NumOT) / 40 to normalize accumulated statistics.",
+    "Creates symmetric T1/T2 features by swapping home/away roles and concatenating.",
+    "Calculates point differentials, merges seed/Elo/quality data, clips predictions to [-30, 30], and applies spline calibration."
+  ],
+  "features_engineering": [
+    "Season averages for box score stats (FGM, FGA, OR, DR, Blk, PF, etc.) for both teams and opponents.",
+    "Elo ratings calculated per season using standard win/loss update rules.",
+    "GLM-based team quality scores using fixed-effects regression on point differentials.",
+    "Differences in seeds, Elo, and quality; men/women indicator."
+  ],
+  "models": [
+    "XGBoost (reg:squarederror, gbtree)"
+  ],
+  "frameworks_used": [
+    "numpy",
+    "pandas",
+    "matplotlib",
+    "seaborn",
+    "statsmodels",
+    "xgboost",
+    "scipy",
+    "scikit-learn"
+  ],
+  "loss_functions": [
+    "reg:squarederror (MSE)"
+  ],
+  "cv_strategy": "Leave-one-season-out cross-validation (trains on all seasons except one, validates on the held-out season)",
+  "ensembling": "Averages predictions from leave-one-season-out models and applies manual alpha blending for extreme probabilities (>0.9 or <0.1).",
+  "insights": [
+    "GLM-derived team quality consistently outperforms seed difference as a predictor across multiple seasons.",
+    "Spline calibration significantly improves probability calibration (Brier score) over raw point differentials.",
+    "Overtime accumulation skews raw stats, requiring normalization to prevent feature leakage.",
+    "Symmetric feature engineering doubles the effective training data and stabilizes model inputs."
+  ],
+  "critical_findings": [
+    "Raw overtime statistics accumulate disproportionately, necessitating a specific adjustment factor.",
+    "Seed difference remains a surprisingly strong baseline, but GLM quality surpasses it in most years.",
+    "Several box score metrics were commented out, suggesting they may not add predictive value or were omitted for brevity."
+  ],
+  "what_did_not_work": [
+    ""
+  ],
+  "source_url": "https://www.kaggle.com/code/asimandia/not-this-year-s-raddar-notebook",
+  "votes": 125
+}

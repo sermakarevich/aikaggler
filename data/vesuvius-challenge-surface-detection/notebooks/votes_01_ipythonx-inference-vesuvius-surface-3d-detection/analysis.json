@@ -1,0 +1,36 @@
+{
+  "summary": "The notebook provides a complete inference pipeline for the Vesuvius Challenge Surface Detection task, leveraging a Keras-JAX backend and the medicai library. It loads pre-trained 3D segmentation models (TransUNet and SegFormer), applies test-time augmentation through spatial flips and axial rotations, and processes large volumes using sliding window inference. Predictions are refined with a custom 3D post-processing routine that combines hysteresis thresholding, anisotropic morphological closing, and dust removal before packaging results into a submission ZIP. Readers should learn how to efficiently structure 3D inference, apply TTA for robustness, and use domain-specific morphological operations to clean segmentation outputs.",
+  "purpose": "inference",
+  "competition_flow": "Loads test TIFF volumes, normalizes intensities, runs sliding window inference with TTA on two pre-trained 3D models, applies 3D morphological post-processing, and exports the final masks as a submission ZIP.",
+  "data_reading": [
+    "Reads test.csv for image IDs using pandas.",
+    "Loads 3D TIFF files with tifffile.imread, converts to np.float32, and expands dimensions to (1, D, H, W, 1)."
+  ],
+  "data_processing": [
+    "Applies NormalizeIntensity (nonzero=True, channel_wise=False) via medicai.transforms.Compose."
+  ],
+  "features_engineering": [],
+  "models": [
+    "TransUNet (seresnext50 encoder)",
+    "SegFormer (mit_b4 encoder)"
+  ],
+  "frameworks_used": [
+    "keras",
+    "medicai",
+    "numpy",
+    "scipy",
+    "scikit-image"
+  ],
+  "loss_functions": [],
+  "cv_strategy": "",
+  "ensembling": "A weighted ensemble averages the logits from both models using weights [0.8, 0.2], applies softmax, and takes the argmax to generate final predictions.",
+  "insights": [
+    "Sliding window inference with Gaussian overlap enables processing large 3D volumes within limited VRAM.",
+    "Test-time augmentation via spatial flips and axial rotations improves prediction stability without additional training.",
+    "3D hysteresis thresholding combined with anisotropic morphological closing effectively connects fragmented surface predictions and removes noise."
+  ],
+  "critical_findings": [],
+  "what_did_not_work": [],
+  "source_url": "https://www.kaggle.com/code/ipythonx/inference-vesuvius-surface-3d-detection",
+  "votes": 568
+}

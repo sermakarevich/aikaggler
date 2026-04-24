@@ -1,0 +1,27 @@
+{
+  "id": "hossam82/scientific-image-detection-cnn-0-325",
+  "id_no": 106244298,
+  "title": "\ud83d\udd25 Scientific image detection  | CNN | 0.325",
+  "code_file": "scientific-image-detection-cnn-0-325.ipynb",
+  "language": "python",
+  "kernel_type": "notebook",
+  "is_private": false,
+  "enable_gpu": true,
+  "enable_tpu": false,
+  "enable_internet": false,
+  "keywords": [
+    "gpu"
+  ],
+  "dataset_sources": [
+    "pankajiitr/cnndinov2-pbd"
+  ],
+  "kernel_sources": [],
+  "competition_sources": [
+    "recodai-luc-scientific-image-forgery-detection"
+  ],
+  "model_sources": [
+    "metaresearch/dinov2/PyTorch/base/1"
+  ],
+  "docker_image": "gcr.io/kaggle-private-byod/python@sha256:536e3d9752ddf933ae83b0a0c3ea67d38e6236db11a1cd47d84927a0b8d2c440",
+  "machine_shape": "NvidiaTeslaT4"
+}

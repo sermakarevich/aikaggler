@@ -1,0 +1,74 @@
+{
+  "summary": "The author achieved 3rd place by combining a Logistic Regression model trained on team-level differential features with a tiered blend of prediction market probabilities (ESPN BPI, Vegas moneylines, and Kalshi futures). The core insight was that LR generalizes significantly better than gradient-boosted trees on the small, unseen Stage 2 dataset (~650 games) due to lower variance, while prediction markets provide crucial orthogonal information for early-round matchups. Aggressive feature pruning, custom rating systems (Colley Matrix, SRS, carry-over Elo), and strategic market weighting based on game tier drove the final score of 0.1160374.",
+  "extensive_summary": "## Core Modeling Strategy\nThe solution pivoted from an initial XGBoost baseline to a **Logistic Regression** model optimized for Stage 2 (unseen tournament games). The author found that LR dramatically outperformed XGBoost on cross-validation Brier scores (0.124 vs 0.157) because the true relationship in the small-data regime (~650 rows) is approximately logistic, and LR's lower variance prevents overfitting to the ~536 known training games. Separate models were built for men's and women's tournaments, with men's using 25 features and women's using 11, reflecting the higher seed-predictability in women's basketball.\n\n## Feature Engineering & Rating Systems\nAll features were computed as **differentials** (`feature_Team1 - feature_Team2`) to ensure symmetric pairwise learning. The pipeline incorporated external data sources like Barttorvik, Massey Ordinals, KenPom, and AP Polls. A major breakthrough came from aggressive backward elimination, pruning men's features from 33 to 23 and women's from 19 to 11, which removed multicollinearity noise. The author engineered custom rating systems including **Carry-over Elo** (with a 75% season carryover and margin-of-victory multiplier), **Colley Matrix**, **Simple Rating System (SRS)**, and **GLM Quality** via maximum likelihood estimation. Feature interactions like `SeedNum \u00d7 massey_rank` and `srs \u00d7 ap_rank` were added to capture non-linear relationships that LR cannot model directly.\n\n## Market Probability Blend & Post-Processing\nThe final submission utilized a **triple-market probability blend** structured in tiers to maximize early-round accuracy. For Round 1 games, a consensus of Vegas no-vig moneylines (60%) and ESPN BPI (40%) was weighted heavily (90% for men, 75% for women) alongside LR predictions. For later rounds, Bradley-Terry conversions of championship probabilities from ESPN BPI and Kalshi futures were blended at lower weights (15-25%). This tiered approach leveraged real-time market efficiency for injury and lineup data while relying on statistical models for deeper tournament matchups. The pipeline required no GPU, ran in under 30 seconds, and relied on `numpy`, `pandas`, and `scikit-learn`.",
+  "rank": 3,
+  "competition_flow": "Raw regular-season and tournament data were merged with external stats (Barttorvik, Massey, KenPom) to compute team-level differentials and custom ratings, which were fed into a Logistic Regression model and then blended with a tiered market probability consensus (Vegas, ESPN BPI, Kalshi) to generate final game win probabilities.",
+  "data_reading": [
+    "Competition data loaded via Kaggle CLI and unzipped",
+    "External datasets (Barttorvik, KenPom, AP Poll, Kalshi odds, WNCAA NET) loaded as CSVs/JSON from local external/ directory",
+    "Team ID mapping files used to align disparate naming conventions across sources"
+  ],
+  "data_processing": [
+    "Features computed as team differentials (feature_Team1 - feature_Team2)",
+    "Missing values handled with SimpleImputer(strategy='median')",
+    "Features scaled with StandardScaler()",
+    "Aggressive backward elimination for feature pruning",
+    "Predictions clipped to [0.03, 0.97] for men and [0.005, 0.995] for women",
+    "Vegas moneylines converted to no-vig implied probabilities",
+    "Championship odds converted via Bradley-Terry formula"
+  ],
+  "features_engineering": [
+    "Team-level differentials: tournament seed, win percentage, adjusted efficiency metrics (adjoe, adjde, adjt), WAB, SOS, efg_pct, tov_pct, oreb_pct, fg3_pct, AP poll rank, preseason efficiency margin change, GLM quality, Colley Matrix rank, non-conference SOS, SRS, coach performance above seed expectation (PASE)",
+    "Feature interactions: SeedNum \u00d7 pt_diff, massey_rank \u00d7 barthag, close_win_pct \u00d7 pt_diff, srs \u00d7 ap_rank, and multi-way interactions for women's model"
+  ],
+  "models": [
+    "LogisticRegression",
+    "XGBoost",
+    "LightGBM",
+    "Bradley-Terry"
+  ],
+  "frameworks_used": [
+    "scikit-learn",
+    "numpy",
+    "pandas",
+    "scipy"
+  ],
+  "loss_functions": [
+    "log loss (cross-entropy)",
+    "Brier score (MSE of probabilities)",
+    "binary:logistic"
+  ],
+  "cv_strategy": "Leave-One-Season-Out (LOSO) cross-validation using GroupKFold(n_splits=10) grouped by season.",
+  "ensembling": "Final predictions were generated via a tiered blend of Logistic Regression outputs and prediction market probabilities (Vegas moneylines, ESPN BPI, Kalshi futures) weighted by game tier, with no additional threshold tuning or calibration applied.",
+  "insights": [
+    "Logistic Regression generalizes significantly better than gradient-boosted trees on small, unseen tournament datasets due to lower variance.",
+    "Prediction markets provide crucial orthogonal information for early-round games by capturing real-time injury and lineup data.",
+    "Aggressive feature pruning is essential to remove multicollinearity noise and prevent overfitting in low-sample regimes.",
+    "Carrying over 75% of end-of-season Elo ratings captures multi-year program strength better than resetting annually."
+  ],
+  "critical_findings": [
+    "XGBoost won the Stage 1 leaderboard by memorizing known training games but performed terribly on Stage 2 generalization.",
+    "Ensembling LR and XGBoost worsened both CV and LB scores, proving that blending fundamentally different model types on small data is detrimental.",
+    "Recency weighting improved XGBoost but hurt LR because downweighting older seasons unnecessarily reduced the effective sample size for a low-variance model.",
+    "Using all available Massey Ordinal systems (~28) for the composite ranking outperformed hand-picking a curated subset."
+  ],
+  "what_did_not_work": [
+    "XGBoost/LightGBM for Stage 2 generalization",
+    "Ensembling LR + XGB",
+    "Stacking individually-helpful features (multicollinearity)",
+    "Recency weighting for LR",
+    "Extended training data pre-2015 (distributional shift from NaNs)",
+    "Isotonic calibration (trained on OOF vs full-model distribution mismatch)",
+    "MSE objective for XGBoost (binary:logistic was better)",
+    "Polynomial features, ElasticNet, Bagging, KNN blend, Tier-split by seed"
+  ],
+  "github_repos": [
+    {
+      "url": "https://github.com/kevin1000/march-mania-2026-3rd-place",
+      "role": "solution"
+    }
+  ],
+  "papers": [],
+  "other_solution_refs": [],
+  "source_url": "https://www.kaggle.com/competitions/march-machine-learning-mania-2026/discussion/689321"
+}

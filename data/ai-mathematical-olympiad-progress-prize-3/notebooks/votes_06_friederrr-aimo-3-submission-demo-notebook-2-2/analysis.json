@@ -1,0 +1,35 @@
+{
+  "summary": "This notebook provides an educational baseline for the AIMO3 competition, demonstrating how to construct a vLLM-based inference pipeline for the Qwen3-32B-FP8 model. It implements a multi-round prompting strategy with five distinct system prompts, extracts both boxed numerical answers and executable Python code from model outputs, and combines them via majority voting to produce a final 5-digit submission. The author explicitly positions it as a tutorial for newcomers rather than a high-scoring solution, encouraging readers to adapt parameters and prompting strategies. Readers should learn how to structure a Kaggle inference server, manage LLM sampling parameters, and implement tool-augmented reasoning with sandboxed code execution.",
+  "purpose": "tutorial",
+  "competition_flow": "Loads test problems via Kaggle's inference server, processes them through a multi-round vLLM inference pipeline with Python code execution and prompt ensembling, and returns a single integer prediction per problem.",
+  "data_reading": [
+    "Receives input via Kaggle's inference server as `pl.DataFrame` objects containing `id` and `question` columns; extracts the raw problem string using `.item(0)`."
+  ],
+  "data_processing": [
+    "Applies regex extraction to parse `\boxed{}` answers and Python code blocks from model outputs; prepends standard mathematical imports (`math`, `numpy`, `sympy`) to extracted code snippets before execution."
+  ],
+  "features_engineering": [],
+  "models": [
+    "Qwen3-32B-FP8"
+  ],
+  "frameworks_used": [
+    "vllm",
+    "transformers",
+    "torch",
+    "polars",
+    "kaggle_evaluation"
+  ],
+  "loss_functions": [],
+  "cv_strategy": "",
+  "ensembling": "Combines outputs from five distinct system prompts and multiple inference rounds via majority voting over both boxed text answers and Python execution results, with a fallback to a default guess if no valid answers are extracted.",
+  "insights": [
+    "Using multiple distinct system prompts creates diverse reasoning paths that improve answer extraction reliability.",
+    "Executing generated Python code via a sandboxed subprocess significantly boosts accuracy for mathematical problems compared to relying solely on text generation.",
+    "Majority voting across heterogeneous answer sources effectively mitigates single-completion hallucinations.",
+    "vLLM's `max_num_seqs` and `gpu_memory_utilization` parameters must be tuned to balance throughput and OOM risks on Kaggle GPUs."
+  ],
+  "critical_findings": [],
+  "what_did_not_work": [],
+  "source_url": "https://www.kaggle.com/code/friederrr/aimo-3-submission-demo-notebook-2-2",
+  "votes": 615
+}

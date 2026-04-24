@@ -1,0 +1,60 @@
+{
+  "summary": "This notebook introduces and evaluates the CASK benchmark, which measures LLMs' metacognitive capacity to express uncertainty when faced with misleading context. It runs 17 models across three tasks: baseline calibration, context awareness, and calibration under adversarial pressure. The analysis reveals that most models completely collapse their confidence variance under misleading prompts, outputting 100% certainty regardless of correctness. Only Claude Sonnet 4.6 and Opus 4.6 successfully recalibrate confidence while maintaining accuracy. Readers should learn that standard calibration metrics like ECE can mask metacognitive failures when confidence variance is zero, and that metacognitive honesty is distinct from contextual robustness.",
+  "purpose": "other",
+  "competition_flow": "Loads a JSON dataset of 100 domain-stratified problems, prompts 17 LLMs via kaggle-benchmarks with bare and adversarial context templates, parses JSON responses, computes accuracy and calibration metrics, and outputs tiered rankings with visualizations.",
+  "data_reading": [
+    "Reads candidates.json from Kaggle inputs (/kaggle/input/cask-dataset/ or /kaggle/input/datasets/darovalos/cask-dataset/) and parses it into a list of dictionaries containing questions, answers, aliases, and verification types."
+  ],
+  "data_processing": [
+    "Applies stratified round-robin ordering by domain with seed 42, splits data into POOL_A (30 problems for T1/T3) and POOL_B (65 problems for T2), cyclically assigns context types (helpful/irrelevant/misleading) to POOL_B, and uses regex-based JSON parsing with fallback string matching for LLM responses."
+  ],
+  "features_engineering": [],
+  "models": [
+    "Gemini 3.1 Pro Preview",
+    "Claude Sonnet 4.6",
+    "Gemini 3 Pro Preview",
+    "Claude Opus 4.6",
+    "Gemini 2.5 Pro",
+    "GLM-5",
+    "Qwen 3 Next 80B Thinking",
+    "DeepSeek V3.1",
+    "DeepSeek V3.2",
+    "Gemini 2.5 Flash",
+    "Qwen 3 Next 80B Instruct",
+    "Gemini 3.1 Flash-Lite Preview",
+    "Qwen 3 Coder 480B",
+    "DeepSeek-R1",
+    "Gemma 3 27B",
+    "Gemma 3 12B",
+    "Gemma 3 4B"
+  ],
+  "frameworks_used": [
+    "kaggle-benchmarks",
+    "matplotlib",
+    "numpy",
+    "pandas",
+    "json",
+    "re",
+    "os",
+    "time",
+    "collections"
+  ],
+  "loss_functions": [],
+  "cv_strategy": "",
+  "ensembling": "",
+  "insights": [
+    "Most frontier LLMs completely lose metacognitive capacity under misleading context, outputting constant 100% confidence regardless of correctness.",
+    "Metacognitive honesty (expressing uncertainty) is decoupled from contextual robustness (maintaining accuracy under pressure).",
+    "Standard calibration metrics like ECE can be misleading when confidence variance is zero, as they reduce to accuracy shifts rather than true recalibration.",
+    "Claude Sonnet 4.6 and Opus 4.6 are the only evaluated models that successfully recalibrate confidence while maintaining high accuracy under adversarial context."
+  ],
+  "critical_findings": [
+    "11 of 17 models output exactly confidence=100 on every T3 problem, showing zero variance and an inability to express uncertainty.",
+    "Gemini 3 Pro Preview's apparent recalibration is a mathematical artifact of constant confidence reducing 1-ECE to accuracy.",
+    "Gemma models collapse catastrophically on misleading context (accuracy < 5%) while maintaining 100% confidence across a 7x parameter range.",
+    "DeepSeek-R1's T1 anomaly stems from prompt format non-compliance rather than a knowledge deficit."
+  ],
+  "what_did_not_work": [],
+  "source_url": "https://www.kaggle.com/code/darovalos/16-llms-fail-adversarial-context-one-survives",
+  "votes": 41
+}

@@ -1,0 +1,36 @@
+{
+  "summary": "This notebook implements a template-based structural prediction pipeline for RNA 3D folding, bypassing deep learning in favor of classical sequence alignment and coordinate transfer. It aligns test sequences against training structures using Biopython, maps 3D coordinates via optimal alignment segments, and fills missing residues through linear interpolation. The method enforces RNA backbone distance constraints and injects confidence-weighted noise to generate an ensemble of five diverse predictions per residue. Readers should understand how geometric refinement and alignment-driven template matching can serve as effective, interpretable baselines for structural biology tasks without requiring neural network training.",
+  "purpose": "baseline",
+  "competition_flow": "Loads training sequences and coordinates, aligns test sequences to the top-5 most similar training structures using Biopython, transfers and interpolates 3D coordinates, applies backbone constraints and noise, and outputs a submission CSV with five coordinate sets per residue.",
+  "data_reading": [
+    "Reads train_sequences.csv, test_sequences.csv, and train_labels.csv via pandas",
+    "Manually parses FASTA headers and sequences with a custom fallback parser",
+    "Extracts chain stoichiometry and segment boundaries from metadata columns"
+  ],
+  "data_processing": [
+    "Global sequence alignment with custom match/mismatch/gap scores via Biopython PairwiseAligner",
+    "Length-based filtering requiring >70% overlap between query and template",
+    "Coordinate mapping aligned to sequence segments with linear interpolation for unaligned gaps",
+    "Iterative backbone distance constraint refinement (~5.95\u00c5 adjacent, ~10.2\u00c5 i+2)",
+    "Confidence-weighted Gaussian noise injection to diversify ensemble predictions"
+  ],
+  "features_engineering": [],
+  "models": [],
+  "frameworks_used": [
+    "biopython",
+    "pandas",
+    "numpy"
+  ],
+  "loss_functions": [],
+  "cv_strategy": "",
+  "ensembling": "Generates five predictions per test sequence by selecting the top-5 aligned training templates, transferring coordinates, and adding confidence-weighted Gaussian noise to all but the first prediction to ensure structural diversity.",
+  "insights": [
+    "Template-based coordinate transfer combined with gap interpolation and backbone constraints can produce plausible RNA structures without neural networks.",
+    "Confidence-weighted noise effectively diversifies ensemble predictions while preserving high-confidence matches.",
+    "Strict gap penalties and terminal gap penalties are essential to prevent residue misalignment during coordinate mapping."
+  ],
+  "critical_findings": [],
+  "what_did_not_work": [],
+  "source_url": "https://www.kaggle.com/code/datasciencegrad/stanford-rna-3d-tabm-optimized-stable-lb-0-371",
+  "votes": 209
+}

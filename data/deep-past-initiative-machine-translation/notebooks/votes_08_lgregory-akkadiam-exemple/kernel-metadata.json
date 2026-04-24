@@ -1,0 +1,28 @@
+{
+  "id": "lgregory/akkadiam-exemple",
+  "id_no": 109825852,
+  "title": "Akkadiam - Exemple ",
+  "code_file": "akkadiam-exemple.ipynb",
+  "language": "python",
+  "kernel_type": "notebook",
+  "is_private": false,
+  "enable_gpu": true,
+  "enable_tpu": false,
+  "enable_internet": false,
+  "keywords": [
+    "gpu"
+  ],
+  "dataset_sources": [],
+  "kernel_sources": [
+    "packagemanager/pm-109825852-at-03-06-2026-16-29-15"
+  ],
+  "competition_sources": [
+    "deep-past-initiative-machine-translation"
+  ],
+  "model_sources": [
+    "mattiaangeli/byt5-akkadian-mbr/PyTorch/default/6",
+    "mattiaangeli/byt5-akkadian-mbr/PyTorch/default/5"
+  ],
+  "docker_image": "gcr.io/kaggle-private-byod/python@sha256:536e3d9752ddf933ae83b0a0c3ea67d38e6236db11a1cd47d84927a0b8d2c440",
+  "machine_shape": "Gpu"
+}

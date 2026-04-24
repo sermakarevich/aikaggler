@@ -1,0 +1,33 @@
+{
+  "summary": "This notebook implements a high-throughput inference pipeline for the AIMO 3 competition using the gpt-oss-120b model served via vLLM. It demonstrates a robust tool-augmented reasoning framework where the LLM dynamically executes Python code in isolated Jupyter kernels to verify calculations and explore solutions. The author implements a parallel multi-attempt generation strategy with dynamic time budgeting and entropy-weighted answer selection to improve solution reliability. Key takeaways include effective strategies for managing GPU memory, orchestrating persistent sandbox environments for tool use, and leveraging token-level uncertainty to filter and aggregate probabilistic outputs.",
+  "purpose": "inference",
+  "competition_flow": "Loads test problems via the official Kaggle inference server wrapper, processes them through a parallelized vLLM-served LLM with Python tool-augmented reasoning, and returns formatted integer answers.",
+  "data_reading": [],
+  "data_processing": [
+    "Uses Harmony encoding for tokenization and applies a custom chat template with system prompts, tool configurations, and mathematical reasoning instructions."
+  ],
+  "features_engineering": [],
+  "models": [
+    "gpt-oss-120b"
+  ],
+  "frameworks_used": [
+    "vllm",
+    "openai",
+    "openai_harmony",
+    "transformers",
+    "polars",
+    "kaggle_evaluation"
+  ],
+  "loss_functions": [],
+  "cv_strategy": "",
+  "ensembling": "Generates multiple parallel reasoning attempts per problem and aggregates results using an entropy-weighted voting scheme that prioritizes answers from low-entropy (high-confidence) generations.",
+  "insights": [
+    "Persistent Jupyter kernel pools drastically reduce overhead for tool-augmented LLM reasoning compared to spawning new processes per call.",
+    "Token-level entropy serves as a reliable proxy for model confidence, enabling effective answer filtering without external validators.",
+    "Dynamic time budgeting based on remaining problems and early stopping on consensus prevents timeout failures in long-running inference loops."
+  ],
+  "critical_findings": [],
+  "what_did_not_work": [],
+  "source_url": "https://www.kaggle.com/code/nihilisticneuralnet/44-50-let-me-over-cook",
+  "votes": 2957
+}

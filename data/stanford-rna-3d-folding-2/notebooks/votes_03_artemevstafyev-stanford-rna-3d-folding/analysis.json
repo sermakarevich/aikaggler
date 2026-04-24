@@ -1,0 +1,51 @@
+{
+  "summary": "This notebook implements a hybrid inference pipeline for RNA 3D structure prediction that combines homology modeling, diffusion-based inference, and geometric post-processing. It first attempts Template-Based Modeling (TBM) by aligning query sequences against a training pool, adapting known coordinates, and applying structural constraints and diversity transforms. For targets lacking sufficient templates or exceeding length limits, it routes them to a pre-trained Protenix model, handling long sequences via overlapping chunking and Kabsch-aligned stitching. Finally, it fills remaining prediction slots with a de-novo idealized A-form helix fallback. Readers learn how to systematically combine multiple prediction sources and enforce physical plausibility to generate diverse, submission-ready RNA conformations.",
+  "purpose": "inference",
+  "competition_flow": "Loads test sequences and training structures, generates up to 10 predictions per target via TBM and Protenix inference with chunk stitching, fills gaps with a de-novo helix fallback, and saves the final coordinates to a CSV submission file.",
+  "data_reading": [
+    "pd.read_csv for test_sequences.csv, train_sequences.csv, validation_sequences.csv, and their corresponding labels CSVs",
+    "Parsing stoichiometry and chain segmentation strings from CSV columns into multi-chain segment maps"
+  ],
+  "data_processing": [
+    "Global sequence alignment via Biopython PairwiseAligner for template matching",
+    "Coordinate adaptation to query length with NaN interpolation for gaps",
+    "Overlapping chunk splitting for sequences exceeding MAX_SEQ_LEN",
+    "Kabsch alignment and linear weight blending for stitching chunk coordinates",
+    "Adaptive RNA constraints (5.95\u00c5 backbone bonds, 10.2\u00c5 i-i+2 distances, Laplacian smoothing, self-avoidance)",
+    "Diversity transforms (hinge rotation, chain jitter, spline wiggle)",
+    "Coordinate clipping to [-999.999, 9999.999]"
+  ],
+  "features_engineering": [
+    "Domain-derived geometric constraints (backbone bond lengths, i-i+2 distances, Laplacian smoothing, self-avoidance)",
+    "Stoichiometry parsing for multi-chain complex handling",
+    "Idealized A-form helix coordinates for de-novo fallback"
+  ],
+  "models": [
+    "Protenix (protenix_base_20250630_v1.0.0)",
+    "de-novo idealized A-form RNA helix"
+  ],
+  "frameworks_used": [
+    "torch",
+    "numpy",
+    "pandas",
+    "biopython",
+    "tqdm"
+  ],
+  "loss_functions": [],
+  "cv_strategy": "",
+  "ensembling": "Combines TBM homology predictions, Protenix diffusion outputs, and de-novo fallback coordinates to reach a fixed sample count per target, with no explicit post-processing beyond coordinate clipping.",
+  "insights": [
+    "TBM effectively captures local structure when high-similarity templates are available, reducing reliance on heavy inference.",
+    "Overlapping chunking with Kabsch alignment and linear blending prevents geometric artifacts in long sequences.",
+    "Adaptive constraints and diversity transforms improve structural realism and sample diversity without requiring retraining.",
+    "A simple geometric fallback ensures complete coverage and submission validity for targets with no templates or failed inference."
+  ],
+  "critical_findings": [
+    "Collapsed coordinates are explicitly detected during Protenix inference and filtered to prevent invalid submissions.",
+    "Stoichiometry parsing is required to correctly handle multi-chain RNA complexes that span multiple sequence segments.",
+    "Chunk stitching relies on a minimum overlap length (\u22653 residues) to compute reliable Kabsch alignments; shorter overlaps are skipped."
+  ],
+  "what_did_not_work": [],
+  "source_url": "https://www.kaggle.com/code/artemevstafyev/stanford-rna-3d-folding",
+  "votes": 383
+}

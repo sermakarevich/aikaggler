@@ -1,0 +1,48 @@
+{
+  "summary": "This notebook implements a hybrid inference pipeline for RNA 3D structure prediction that combines template-based modeling, a generative diffusion model, and a de-novo fallback. It first aligns query sequences against a training pool to adapt known coordinates, then routes targets with insufficient templates to Protenix, handling long sequences via overlapping chunks and Kabsch-aligned stitching. Remaining prediction slots are filled with an idealized A-form helix fallback. Readers should learn how to combine structural alignment, external generative models, and geometric constraints to produce robust, multi-sample submissions when template availability is uneven.",
+  "purpose": "baseline",
+  "competition_flow": "Loads test sequences and training structures, predicts 3D atomic coordinates using a hybrid TBM + Protenix + de-novo pipeline, and exports a formatted submission CSV with multiple structural samples per target.",
+  "data_reading": [
+    "pandas.read_csv for test, train, and validation sequence/label CSVs",
+    "Custom parsing for stoichiometry and chain segments",
+    "JSON serialization for Protenix input formatting"
+  ],
+  "data_processing": [
+    "Sequence chunking with configurable overlap for long targets",
+    "C1' atom coordinate extraction via masking and fallback heuristics",
+    "Kabsch alignment for chunk stitching and weighted linear blending of overlapping regions",
+    "Coordinate clipping and application of geometric constraints (bond lengths, self-avoidance, Laplacian smoothing)"
+  ],
+  "features_engineering": [
+    "Stoichiometry parsing and chain segment mapping",
+    "Domain-derived geometric constraints (5.95\u00c5 backbone bonds, 10.2\u00c5 i-i+2 distances, Laplacian smoothing, self-avoidance penalties)",
+    "Confidence-weighted diversity transforms (hinge, jitter, wiggle)"
+  ],
+  "models": [
+    "Protenix (protenix_base_20250630_v1.0.0)",
+    "de-novo A-form helix fallback"
+  ],
+  "frameworks_used": [
+    "torch",
+    "numpy",
+    "pandas",
+    "biopython",
+    "tqdm"
+  ],
+  "loss_functions": [],
+  "cv_strategy": "",
+  "ensembling": "Concatenates TBM, Protenix, and de-novo predictions to fill up to 5 samples per target without weighted averaging or post-processing.",
+  "insights": [
+    "Hybrid pipelines effectively mitigate template scarcity by combining alignment-based adaptation with generative modeling.",
+    "Chunking with Kabsch alignment enables processing sequences beyond model token limits while preserving geometric continuity.",
+    "Geometric constraints significantly improve the physical plausibility of predicted coordinates."
+  ],
+  "critical_findings": [
+    "Collapsed coordinate detection is explicitly warned against to prevent invalid submissions.",
+    "Sequences falling below configurable similarity/identity thresholds are skipped to avoid poor adaptations.",
+    "Long sequences require careful overlap handling to prevent stitching artifacts."
+  ],
+  "what_did_not_work": [],
+  "source_url": "https://www.kaggle.com/code/amirrezaaleyasin/openrnafold-starter3",
+  "votes": 344
+}

@@ -1,0 +1,79 @@
+{
+  "summary": "The author achieved 6th place in the DPC competition by building a pipeline that extracts and cleans text from diverse PDF sources, scrapes external dictionaries, and generates pseudo-labels using LLM APIs. They trained a diverse ensemble of 15 ByT5 models on varying data subsets and cleaning strategies, leveraging dynamic context sampling, R-Drop, PGD, and EMA for regularization and stability. The final submission uses Minimum Bayes Risk (MBR) ensembling with beam search decoding, avoiding weight averaging and sampling-based methods which degraded performance.",
+  "extensive_summary": "## Data Extraction & Cleaning\nThe solution tackles a complex text-to-text translation task involving ancient Akkadian tablets. The authors categorized provided PDFs into three types (image, text, broken_text) and applied tailored extraction pipelines. Text-based PDFs were processed directly via LLM APIs using regex to identify headings and extract document pairs. Image-based PDFs utilized an open-source GLM-OCR method with custom parameter tuning and parallelization. For the `train.csv` and `published_texts.csv` files, they scraped the OARE website to build a comprehensive dictionary of word meanings and used LLM APIs to generate pseudo-labels for translations. A rigorous cleaning pipeline was implemented, including Unicode NFKC normalization, special character simplification, determinative/script normalization, gap handling (`<gap>`), and aggressive removal of academic annotations. Turkish documents were translated to English using LLM APIs and dictionaries.\n\n## Training Strategy & Regularization\nThe core training focused on ByT5 models (base and large variants) trained on different data subsets (v1-v6). To handle misalignments and variable sentence lengths, they implemented **Dynamic Context Sampling**, using a Zipf/Geometric mixture distribution to sample the number of contextual sentences (K), symmetric/asymmetric left-right allocation, and a 20% probability of random contextual sentence insertion to force global topic learning. Regularization and stability were enhanced through **R-Drop** (enforcing output consistency via KL divergence between two dropout passes), **PGD** (adversarial perturbation in embedding space), and **EMA**. Engineering optimizations included DeepSpeed ZeRO-2, gradient checkpointing, and a custom trainer.\n\n## Inference & Ensembling\nThe final submission consisted of 15 models trained on various data subsets and cleaning variations. Instead of weight averaging, which proved ineffective, they employed **Minimum Bayes Risk (MBR)** ensembling. Inference was accelerated by restricting beam search to a size of 4 and avoiding sampling methods, which were found to decrease scores. Models were grouped and deployed across two T4 GPUs, achieving a final score of 40.7.",
+  "rank": 6,
+  "competition_flow": "Raw PDFs and CSV files are cleaned and augmented via LLM APIs and external dictionary scraping, then fed into an ensemble of 15 ByT5 models trained with dynamic context sampling and adversarial regularization, with final predictions aggregated via Minimum Bayes Risk ensembling.",
+  "data_reading": [
+    "PDFs parsed via PyMuPDF and GLM-OCR (extracting page/field coordinates and text)",
+    "CSV files loaded directly",
+    "External dictionary data scraped from the OARE website",
+    "OCR outputs structured as JSON dictionaries mapping page/field indices to text"
+  ],
+  "data_processing": [
+    "Unicode NFKC normalization, zero-width character removal, dash/hyphen unification",
+    "Diacritic simplification and removal of academic editorial symbols",
+    "Fraction/decimal formatting and Roman numeral conversion",
+    "Determinative/script normalization and sign composition cleanup",
+    "Gap standardization (`<gap>`) and dictionary-level hard replacement",
+    "Aggressive removal of translational explanations and academic annotations",
+    "Measurement unit expansion and punctuation/typographical correction",
+    "External dictionary scraping from OARE and LLM-based pseudo-labeling",
+    "Turkish-to-English translation via LLM APIs and dictionaries",
+    "Training augmentations: dynamic context sampling (Zipf/Geometric mixture for context length, random context insertion), name capitalization randomization, and dictionary-based norm-to-lexeme mapping"
+  ],
+  "features_engineering": [],
+  "models": [
+    "ByT5-base",
+    "ByT5-large",
+    "ByT5-XL",
+    "GLM-OCR",
+    "Qwen",
+    "LLaMA"
+  ],
+  "frameworks_used": [
+    "DeepSpeed"
+  ],
+  "loss_functions": [
+    "Cross-entropy loss",
+    "Symmetric Kullback-Leibler (KL) divergence"
+  ],
+  "cv_strategy": "5-fold cross-validation based on Public Leaderboard (LB) scores.",
+  "ensembling": "Final predictions were aggregated using Minimum Bayes Risk (MBR) ensembling across 15 models, with beam search restricted to size 4 and sampling explicitly avoided to prevent score degradation.",
+  "insights": [
+    "Dynamic context sampling effectively mitigates sentence misalignment and adapts the model to unpredictable test set sentence lengths.",
+    "Incorporating large volumes of initially deemed noisy external data significantly boosts performance.",
+    "Minimum Bayes Risk (MBR) ensembling is superior to weight averaging for this task.",
+    "Randomly sampling non-contiguous context sentences forces the model to learn global topic coherence rather than rote local ordering."
+  ],
+  "critical_findings": [
+    "Data initially considered too noisy actually improved scores when included in large volumes.",
+    "Weight fusion/averaging degraded performance compared to single models, making MBR ensembling necessary.",
+    "Training with very long context windows at the document level performed poorly for a sentence-level evaluation task.",
+    "Directly applying off-the-shelf LLMs (Qwen, LLaMA) without specialized cleaning or tricks yielded only average results."
+  ],
+  "what_did_not_work": [
+    "Organizing target sentence with explicit CONTEXT BEFORE/AFTER blocks during training/inference.",
+    "Data augmentation on names and dictionaries (random capitalization/norm-to-lexeme mapping) for single models.",
+    "Weight fusion/averaging.",
+    "Setting very long `maxlen` and training at the document level.",
+    "Using Large Language Models (Qwen, LLaMA, etc.) without special tricks.",
+    "Bidirectional training (adding `akk->eng`)."
+  ],
+  "github_repos": [],
+  "papers": [],
+  "other_solution_refs": [
+    {
+      "description": "GLM-OCR text extraction method",
+      "url": "https://www.kaggle.com/code/angantyr/text-extraction-from-pdf-docs-using-glm-oc"
+    },
+    {
+      "description": "Final cleaning function notebook",
+      "url": "https://www.kaggle.com/code/wscmisx/dpc-clean-function/notebook?scriptVersionId=306066643"
+    },
+    {
+      "description": "Final MBR ensemble inference notebook",
+      "url": "https://www.kaggle.com/code/wscmisx/final-dpc-ensemble-mbr-infer"
+    }
+  ],
+  "source_url": "https://www.kaggle.com/competitions/deep-past-initiative-machine-translation/discussion/684231"
+}
