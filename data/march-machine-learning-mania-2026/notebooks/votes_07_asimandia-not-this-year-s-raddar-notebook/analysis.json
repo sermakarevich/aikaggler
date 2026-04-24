@@ -1,0 +1,55 @@
+{
+  "tldr": "XGBoost baseline predicting NCAA tournament point differentials using season averages, Elo ratings, and GLM-derived team quality features, validated via leave-one-season-out cross-validation and calibrated with splines.",
+  "summary": "This notebook demonstrates a tabular baseline for predicting NCAA basketball tournament outcomes by modeling point differentials. It constructs a comprehensive feature set combining raw box score statistics, season-long team averages, Elo ratings, and GLM-derived team quality metrics. The model uses XGBoost trained with a leave-one-season-out validation scheme to prevent temporal leakage. Post-training, predictions are calibrated using a univariate spline and adjusted with a probability blending technique for extreme values before generating final win probabilities.",
+  "extensive_summary": "## Data Loading & Preprocessing\nThe notebook loads men's and women's NCAA basketball regular season and tournament results, concatenating them into unified DataFrames. It filters data from the 2003 season onward. A `prepare_data` function standardizes the dataset by selecting relevant box score columns, applying an overtime adjustment factor `(40 + 5 * NumOT) / 40` to normalize accumulated stats, and creating symmetric home/away features by swapping team roles (T1/T2). It computes point differential, win indicators, and a gender flag.\n\n## Feature Engineering\nSeveral advanced features are constructed:\n- **Seeds & Seed Diff**: Merged from tournament seed data to calculate the difference between opposing seeds.\n- **Season Averages**: Group-by aggregations compute mean box score stats (FGA, OR, DR, Blk, PF, opponent stats, PointDiff) per team per season, creating `T1_avg_*` and `T2_avg_*` features.\n- **Elo Ratings**: A custom Elo system is implemented per season (`base_elo=1000`, `elo_width=400`, `k_factor=100`) to generate `T1_elo`, `T2_elo`, and `elo_diff`.\n- **GLM Team Quality**: Using `statsmodels.GLM` with a Gaussian family, the author fits `PointDiff ~ -1 + T1_TeamID + T2_TeamID` per season/gender. Teams are filtered to tournament participants and those that beat them. This yields `T1_quality`, `T2_quality`, and `diff_quality`.\n\n## Model Training & Validation\nThe final feature set includes 30+ engineered columns. XGBoost is configured to predict point differential (`reg:squarederror`) with specific hyperparameters: `eta=0.0093`, `subsample=0.6`, `colsample_bynode=0.8`, `num_parallel_tree=2`, `min_child_weight=4`, `max_depth=4`, `tree_method=hist`, `grow_policy=lossguide`, `max_bin=38`, trained for 704 rounds. Validation uses a strict Leave-One-Season-Out (LOSO) scheme to avoid temporal leakage, evaluating MAE per held-out season.\n\n## Calibration & Inference\nRaw predictions are clipped to [-30, 30]. A `UnivariateSpline` (k=5) is fitted on sorted OOF predictions vs binary win labels to calibrate probabilities, clipped to [0.01, 0.99]. For inference, predictions are blended with a manual override factor (`alpha=0.9`) for probabilities >0.9 or <0.1. Final win probabilities are rounded and exported.",
+  "purpose": "baseline",
+  "models": [
+    "XGBoost"
+  ],
+  "frameworks": [
+    "xgboost",
+    "pandas",
+    "numpy",
+    "statsmodels",
+    "scikit-learn",
+    "scipy",
+    "matplotlib",
+    "seaborn"
+  ],
+  "cv_strategy": "Leave-One-Season-Out (LOSO) cross-validation",
+  "preprocessing": [
+    "Overtime stat adjustment factor",
+    "Symmetric home/away feature swapping",
+    "Point differential calculation",
+    "Gender flag encoding",
+    "Season filtering (>=2003)",
+    "Prediction clipping to [-30, 30]"
+  ],
+  "feature_engineering": [
+    "Season-long team averages (FGA, OR, DR, Blk, PF, opponent stats, PointDiff)",
+    "Elo ratings per season (base=1000, width=400, k=100)",
+    "GLM-derived team quality (Gaussian GLM: PointDiff ~ -1 + T1_TeamID + T2_TeamID)",
+    "Seed difference",
+    "Gender flag",
+    "Overtime adjustment factor"
+  ],
+  "augmentations": [],
+  "loss_functions": [
+    "reg:squarederror"
+  ],
+  "ensemble": "",
+  "post_processing": "UnivariateSpline (k=5) probability calibration on OOF predictions, probability clipping [0.01, 0.99], alpha blending (0.9) for extreme probabilities (>0.9 or <0.1)",
+  "what_worked": [],
+  "what_did_not_work": [],
+  "critical_findings": [],
+  "notable_techniques": [
+    "Overtime adjustment factor to normalize accumulated stats",
+    "Symmetric home/away feature generation via role swapping",
+    "GLM-based team quality estimation filtering only tournament-relevant teams",
+    "Leave-One-Season-Out CV to prevent temporal leakage",
+    "UnivariateSpline calibration for probability mapping",
+    "Alpha blending for extreme probability values"
+  ],
+  "source_url": "https://www.kaggle.com/code/asimandia/not-this-year-s-raddar-notebook",
+  "votes": 125
+}

@@ -1,0 +1,47 @@
+{
+  "tldr": "Hybrid inference pipeline combining Template-Based Modeling (TBM) with Protenix diffusion model predictions, applying adaptive RNA constraints and diversity transforms to generate 5 coordinate samples per RNA sequence.",
+  "summary": "This notebook implements a two-phase inference pipeline for the Stanford RNA 3D Folding competition. Phase 1 uses Template-Based Modeling (TBM) to align test sequences against the training/validation pool, adapting coordinates and applying diversity transforms alongside adaptive RNA constraints. Phase 2 falls back to the Protenix diffusion model for targets lacking sufficient TBM matches, handling input configuration, coordinate extraction, and robust C1' atom masking. The pipeline combines both sources to produce 5 samples per target, filling gaps with a de-novo A-form RNA helix fallback. The author provides a configuration table showing how toggling MSA, RNA MSA, templates, and TBM affects leaderboard scores, with a best score of 0.249 achieved using only Protenix without templates.",
+  "extensive_summary": "## Overview\nThe notebook implements a hybrid inference pipeline for RNA 3D structure prediction, combining Template-Based Modeling (TBM) with the Protenix diffusion model. It processes test sequences, generates multiple coordinate samples per target, and outputs a submission CSV.\n\n## Phase 1: Template-Based Modeling (TBM)\nThe pipeline first aligns each test sequence against the combined training and validation sequence pool using `Bio.Align.PairwiseAligner` (global alignment, match=2, mismatch=-1.5, gap scores=-8/-0.4). It retrieves the top 30 similar sequences, filtering by `MIN_SIMILARITY` and `MIN_PERCENT_IDENTITY` (default 50%). For each match, coordinates are adapted to the query sequence via alignment mapping, with gaps filled by linear interpolation or forward/backward extension. To ensure diversity across the 5 required samples, the notebook applies sequential transforms: raw adaptation, Gaussian noise scaling with similarity, hinge rotation, chain jittering, and spline-based wiggle smoothing. Each transformed structure is refined using `adaptive_rna_constraints`, which enforces:\n- Backbone bond length ~5.95 \u00c5\n- Soft i\u2013i+2 distance ~10.2 \u00c5\n- Laplacian smoothing\n- Self-avoidance (repulsion < 3.2 \u00c5 for residues > 2 apart)\nStrength scales with alignment confidence.\n\n## Phase 2: Protenix Inference\nTargets that don't reach 5 TBM predictions are routed to Protenix (`protenix_base_20250630_v1.0.0`). The notebook handles Kaggle path resolution, symlinks read-only assets (`common`, `checkpoint`, `mmcif`) to a writable `/kaggle/working/protenix_root` directory, and builds a JSON input file. It dynamically updates Protenix configs (`sample_diffusion.N_sample`) per target, runs inference, and extracts coordinates. A critical robustness step handles C1' atom masking: it checks `centre_atom_mask`, then falls back to `atom_to_tokatom_idx == 11` or `12` based on which count better matches the sequence length. Coordinates are padded/trimmed to the full (un-truncated) sequence length, with collapse detection (identical consecutive coordinates) resetting to zeros.\n\n## Phase 3: Combination & Fallback\nTBM and Protenix predictions are stacked to exactly `N_SAMPLE=5` per target. Remaining slots are filled with a de-novo A-form RNA helix (`generate_rna_structure`) using fixed rise (2.5 \u00c5) and twist (0.6 rad), followed by the same adaptive constraints. Final coordinates are clipped to [-999.999, 9999.999] and saved.\n\n## Configuration & Results\nThe author tracks leaderboard scores across 7 versions by toggling `USE_MSA`, `USE_RNA_MSA`, `USE_TEMPLATE`, and `TBM`. The best score (0.249 LB) was achieved with version 4 (all flags False, TBM disabled). Version 3 (TBM=True, others False) scored 0.408. The notebook emphasizes path setup, deterministic seeding, and graceful degradation for model failures.",
+  "purpose": "inference",
+  "models": [
+    "Protenix",
+    "protenix_base_20250630_v1.0.0"
+  ],
+  "frameworks": [
+    "torch",
+    "numpy",
+    "pandas",
+    "Bio.Align"
+  ],
+  "cv_strategy": "",
+  "preprocessing": [
+    "Sequence truncation to MAX_SEQ_LEN=512",
+    "C1' atom mask extraction (centre_atom_mask -> atom_to_tokatom_idx 11/12 fallback)",
+    "Coordinate padding/trimming to match sequence length",
+    "Coordinate clipping to [-999.999, 9999.999]",
+    "Deterministic seeding (torch, numpy, cuda)"
+  ],
+  "feature_engineering": [],
+  "augmentations": [],
+  "loss_functions": [],
+  "ensemble": "Combines TBM predictions and Protenix diffusion samples to reach 5 samples per target, filling remaining slots with a de-novo A-form RNA helix fallback.",
+  "post_processing": "Adaptive RNA constraints (bond lengths, i-i+2 distances, Laplacian smoothing, self-avoidance), coordinate clipping, model collapse detection (resetting identical coordinates to zeros), padding/trimming to full sequence length.",
+  "what_worked": [
+    "Version 4 (TBM=False, all MSA/template flags False) achieved the best leaderboard score of 0.249."
+  ],
+  "what_did_not_work": [
+    "Version 3 (TBM=True, others False) scored 0.408, indicating TBM alone or with limited MSA was less effective than pure Protenix inference."
+  ],
+  "critical_findings": [
+    "TBM alignment quality heavily depends on sequence identity thresholds; model collapse (identical coordinates) can occur and requires explicit detection and zero-resetting; C1' atom indexing varies between featurizers (11 vs 12), requiring a length-matching fallback heuristic."
+  ],
+  "notable_techniques": [
+    "Adaptive RNA constraints enforcing ~5.95\u00c5 backbone bonds, ~10.2\u00c5 i-i+2 distances, Laplacian smoothing, and distance-based self-avoidance",
+    "Diversity transforms for TBM predictions (hinge rotation, chain jittering, spline wiggle)",
+    "Dynamic Protenix config updates per target sequence length",
+    "C1' atom mask fallback using atom_to_tokatom_idx 11/12 count matching",
+    "De-novo A-form RNA helix fallback with fixed 2.5\u00c5 rise and 0.6 rad twist"
+  ],
+  "source_url": "https://www.kaggle.com/code/llkh0a/stanford-rna-3d-folding-part-2-protenix-tbm",
+  "votes": 232
+}

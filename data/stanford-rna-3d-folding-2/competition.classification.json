@@ -1,0 +1,15 @@
+{
+  "description": "Participants predict the three-dimensional structure of RNA molecules from their nucleotide sequences. The task involves modeling complex molecular folding patterns to output continuous structural similarity scores. Success is measured using the Ribonanza TM-Score PermuteChains metric on a held-out test set. Top solutions leverage multiple sequence alignments and template-based modeling techniques to improve prediction accuracy.",
+  "data_modality": "text",
+  "task_type": "regression",
+  "label_structure": "unknown",
+  "metric": "Ribonanza TM-Score PermuteChains",
+  "test_split": "unknown",
+  "format": "standard",
+  "dataset_scale": "small",
+  "domain": "bioinformatics",
+  "data_challenges": [
+    "data_scarcity"
+  ],
+  "constraints": []
+}

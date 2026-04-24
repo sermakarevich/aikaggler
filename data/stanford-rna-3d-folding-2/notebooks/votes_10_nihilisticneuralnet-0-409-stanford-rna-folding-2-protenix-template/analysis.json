@@ -1,0 +1,47 @@
+{
+  "tldr": "Hybrid RNA 3D structure prediction pipeline combining template-based coordinate adaptation, Protenix diffusion model inference, and de novo helical fallback, outputting 5 coordinate sets per residue.",
+  "summary": "This notebook implements a multi-phase inference pipeline for the Stanford RNA Folding 2 competition. It begins by selecting top structural templates from the training set using a weighted combination of global alignment scores, percent identity, and GC content similarity. Template coordinates are adapted to query sequences via alignment and gap-filling, then refined through iterative geometric constraints. For targets with insufficient templates, it falls back to the Protenix diffusion model (with MSA gating at 400 nt) and finally fills remaining slots with a de novo helical generator. The pipeline outputs 5 coordinate predictions per residue, weighted and constrained to ensure structural plausibility.",
+  "extensive_summary": "## Environment & Setup\nInstalls USalign, Protenix, biopython, ihm, modelcif, and ml-collections. Configures paths for data, Protenix, and USalign binaries. Seeds RNG with 42.\n\n## Data Loading & Parsing\nLoads train/validation/test sequences and labels. Parses stoichiometry and all_sequences fields to map chain segments per target. Extracts C1' coordinates from CIF files into a dictionary keyed by target ID.\n\n## Template Selection & Adaptation\nComputes sequence features (length, GC/AU content, complexity). Filters training sequences by length ratio (<0.4 vs query). Scores templates using a weighted combination: 0.7 * normalized global alignment score + 0.2 * percent identity + 0.1 * GC content similarity. Selects top 10 templates. Adapts template coordinates to query length via global alignment, filling gaps with linear interpolation or helical propagation (+3.8 \u00c5 along x-axis).\n\n## Constraint Refinement & Ensemble\nApplies iterative geometric constraints over 3 passes with decaying strength: backbone distance (5.9 \u00c5), 2-step distance (10.4 \u00c5), laplacian smoothing, backbone smoothing, and long-range repulsion/attraction for residues >2 apart with distance <3.5 \u00c5. Combines up to 5 templates using fixed weights [0.40, 0.25, 0.15, 0.12, 0.08], then applies a final constraint pass.\n\n## Protenix Integration & Fallback\nFor targets needing more predictions, runs Protenix inference with --augment.use_rnalm True, 12 cycles, 5 samples, 250 steps, and checkpoint 1599_ema_0.999.pt. Uses MSA only if sequence length <= 400 nt. Extracts C1' atoms from generated CIF files. Fills remaining slots up to 5 predictions with a de novo helical generator (radius 11, angle 0.58, rise 2.6) + constraint refinement.\n\n## Output Generation\nCombines all predictions per target, formats into 5 coordinate sets per residue, and saves as submission.csv.",
+  "purpose": "baseline",
+  "models": [
+    "Protenix"
+  ],
+  "frameworks": [
+    "biopython",
+    "numpy",
+    "pandas"
+  ],
+  "cv_strategy": "",
+  "preprocessing": [
+    "Parsing FASTA/STOICH formats",
+    "Mapping chain segments per target",
+    "Extracting C1' atoms from CIF files",
+    "Global pairwise sequence alignment",
+    "Adapting template coordinates to query length via interpolation and helical propagation (+3.8 \u00c5)",
+    "Filtering templates by length ratio (<0.4), similarity (>=0.45), and percent identity (>=55%)"
+  ],
+  "feature_engineering": [
+    "Sequence features: length, GC content, AU content, complexity",
+    "Template scoring: normalized global alignment score, percent identity, GC content similarity",
+    "Combined template score: 0.7 * normalized_score + 0.2 * percent_identity + 0.1 * feature_similarity",
+    "MSA gating: use MSA only if sequence length <= 400 nt"
+  ],
+  "augmentations": [
+    "Protenix inference uses --augment.use_rnalm True"
+  ],
+  "loss_functions": [],
+  "ensemble": "Weighted average of up to 5 template-adapted coordinate sets using fixed weights [0.40, 0.25, 0.15, 0.12, 0.08], followed by a final constraint refinement pass.",
+  "post_processing": "Iterative geometric constraint refinement (backbone distance 5.9 \u00c5, 2-step 10.4 \u00c5, laplacian smoothing, long-range repulsion <3.5 \u00c5) applied across 3 passes with decaying strength. Fills up to 5 predictions per target with de novo helical structures + constraints if templates/Protenix are insufficient.",
+  "what_worked": [],
+  "what_did_not_work": [],
+  "critical_findings": [],
+  "notable_techniques": [
+    "Hybrid template/Protenix/de-novo fallback pipeline ensuring exactly 5 predictions per target",
+    "Iterative geometric constraint refinement with decaying strength across backbone, 2-step, laplacian, and long-range distance terms",
+    "Helical gap propagation (+3.8 \u00c5 along x-axis) for unaligned regions",
+    "MSA gating for Protenix based on sequence length threshold (<=400 nt)",
+    "Fixed weighted ensemble of top 5 templates [0.40, 0.25, 0.15, 0.12, 0.08]"
+  ],
+  "source_url": "https://www.kaggle.com/code/nihilisticneuralnet/0-409-stanford-rna-folding-2-protenix-template",
+  "votes": 203
+}

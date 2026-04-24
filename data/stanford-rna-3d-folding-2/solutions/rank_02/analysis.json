@@ -1,0 +1,86 @@
+{
+  "tldr": "Integrating Base Pair Probability (BPP) features into a Protenix architecture and ensembling it with TBM and RNAPro for RNA 3D structure prediction.",
+  "summary": "The solution builds BPP-Protenix, a Protenix-based model that injects Base Pair Probability (BPP) matrices as pairwise embeddings into the Pairformer trunk. Training uses a filtered subset of RNA-only PDBs with specific hyperparameters (lr=1e-4, batch size 32, 4960 steps). The final submission is an ensemble of Template-Based Modeling (TBM), RNAPro, and BPP-Protenix (with plain Protenix fallback for incompatible targets), leveraging EternaFold for BPP calculation. The BPP injection acts as a strong inductive bias, significantly boosting public and private LB scores compared to baseline models.",
+  "extensive_summary": "## Summary of My Solution\nBuilt **BPP-Protenix**, integrating Base Pair Probability (BPP) features into an AlphaFold3-style architecture. Final pipeline is an ensemble of TBM, RNAPro, and BPP-Protenix (with plain Protenix fallback). Slot allocation: TBM (1), RNAPro (2\u20133), BPP-Protenix (4\u20135).\n\n## Core Idea: BPP as Structural Prior\nInspired by Ribonanza competition findings where BPP matrices were critical for RNA stability prediction. BPP matrix `[N, N]` maps directly to the Pairformer pair representation `z [N, N, c]`. Injected via `LinearNoBias(1 \u2192 128)` added to `z_init`.\n\n## BPP Calculator Selection: EternaFold vs ViennaRNA\nEvaluated BPP quality against experimental 3D coordinates. Filtered Kaggle training data to RNA monomers \u2264 1,000 nt, yielding 1,532 sequences. Contact defined as C1'-C1' distance < 12 \u00c5 (residues separated by \u22654). EternaFold outperformed ViennaRNA (96.2% vs 81.4% contact rate at BPP \u2265 0.7). Deployed via `arnie` library.\n\n## BPP-Protenix training\n- **Pretrained checkpoint**: `protenix_base_20250630_v1.0.0`\n- **Train data**: 619 PDBs (RNA-only, filtered from the 1,532 set)\n- **Validation data**: 33 PDBs (Kaggle val + collected PDBs from 2025-12-03 to 2026-02-18)\n- **Hyperparameters**: diffusion_batch_size=32, train_crop_size=550, lr=1e-4, EMA decay=0.995, num_steps=4960\n\n## BPP-Protenix Inference\nApplied BPP-available filter: RNA monomer, total entity length \u2264 850 tokens, no protein/DNA partners. Fallback to plain Protenix for failures. Excess length cropped to 850 residues with zero-padding. Tested three BPP integration methods:\n- **Method A**: LinearNoBias(1\u2192128) added to `z_init` (Public LB: 0.340)\n- **Method B**: Method A + 20-bin one-hot + Linear(20\u2192128) (LB: 0.317)\n- **Method C**: Method B + BppEmbedder in recycling loop (LB: 0.320)\nPlain Protenix control scored 0.309. Method A was selected.\n\n## Pseudoknot Analysis\nEternaFold does not predict pseudoknots. Post-hoc validation on 11 RNA-only targets (7 contained pseudoknots) showed BPP-Protenix outperformed plain Protenix by ~0.06 TM-score even within pseudoknot targets. Concluded BPP provides continuous pairing hints rather than discrete structures, making special pseudoknot handling unnecessary.\n\n## Ensemble Pipeline\n- **Slot 1**: TBM (borrowed from public notebook)\n- **Slots 2\u20133**: RNAPro (using TBM template as input)\n- **Slots 4\u20135**: BPP-Protenix (seed=101, N_sample=5, top 2 by confidence) or plain Protenix fallback\nFinal configuration (TBM 1 / RNAPro 2 / BPP-Protenix 2) achieved Public LB 0.504 and Private LB 0.492. BPP-Protenix provided +0.04 over plain Protenix and +0.07 over the TBM+RNAPro baseline.",
+  "rank": 2,
+  "models": [
+    "BPP-Protenix",
+    "Protenix",
+    "RNAPro",
+    "TBM",
+    "RNAdegformer"
+  ],
+  "cv_strategy": "Holdout validation set of 33 PDBs (Kaggle official validation + collected PDBs from 2025-12-03 to 2026-02-18)",
+  "preprocessing": [
+    "Filtered training data to RNA monomers \u2264 1,000 nt",
+    "Cropped targets >850 tokens to 850 residues with zero-padding",
+    "BPP calculation via EternaFold/arnie"
+  ],
+  "feature_engineering": [
+    "Base Pair Probability (BPP) matrix `[N, N]` injected as pairwise embedding via `LinearNoBias(1 \u2192 128)` added to `z_init`",
+    "BPP binned into 20-dimensional one-hot vector + linear embedding",
+    "BppEmbedder with 2-block Pairformer in recycling loop",
+    "C1'-C1' distance < 12 \u00c5 contact metric for BPP validation"
+  ],
+  "augmentations": [],
+  "loss_functions": [],
+  "ensemble": "Ensemble of TBM (1 slot), RNAPro (2 slots), and BPP-Protenix (2 slots, seed=101, N_sample=5, top 2 by confidence), with plain Protenix fallback for targets failing the BPP filter.",
+  "post_processing": "Top 2 predictions by confidence score selected per target for BPP-Protenix slots.",
+  "what_worked": [
+    "Simple linear injection of BPP (Method A) outperformed complex binning and embedding methods",
+    "EternaFold BPP provided higher contact accuracy than ViennaRNA",
+    "BPP-Protenix standalone performance matched template-based approaches"
+  ],
+  "what_did_not_work": [
+    "Binning BPP into one-hot vectors and adding a separate linear embedding (Method B) degraded performance",
+    "Adding a BppEmbedder with a 2-block Pairformer in the recycling loop (Method C) further reduced standalone scores"
+  ],
+  "critical_findings": [
+    "Allowing protein/DNA partners in the BPP filter caused almost no change in public LB score, suggesting few such targets exist in the test set",
+    "BPP provides continuous pairing hints rather than discrete structures, so missing pseudoknots did not harm performance",
+    "BPP-Protenix improved both public and private LB scores, confirming the validation strategy's reliability"
+  ],
+  "github_repos": [
+    {
+      "url": "https://github.com/ViennaRNA/ViennaRNA",
+      "role": "reference"
+    },
+    {
+      "url": "https://github.com/WaymentSteeleLab/EternaFold",
+      "role": "library"
+    },
+    {
+      "url": "https://github.com/DasLab/arnie",
+      "role": "library"
+    }
+  ],
+  "papers": [
+    {
+      "title": "RNAdegformer",
+      "url": "https://academic.oup.com/bib/article/24/1/bbac581/6986359"
+    }
+  ],
+  "other_solution_refs": [
+    {
+      "description": "Part I competition page",
+      "url": "https://www.kaggle.com/competitions/stanford-rna-3d-folding"
+    },
+    {
+      "description": "RNAPro discussion thread",
+      "url": "https://www.kaggle.com/competitions/stanford-rna-3d-folding-2/discussion/668412"
+    },
+    {
+      "description": "TBM notebook by @kami1976",
+      "url": "https://www.kaggle.com/code/kami1976/stanford-rna-3d-folding-part-2a18"
+    },
+    {
+      "description": "RNAPro inference pipeline by @jaejohn",
+      "url": "https://www.kaggle.com/code/jaejohn/rnapro-inference-with-tbm"
+    },
+    {
+      "description": "Ribonanza competition page",
+      "url": "https://www.kaggle.com/competitions/stanford-ribonanza-rna-folding"
+    }
+  ],
+  "source_url": "https://www.kaggle.com/competitions/stanford-rna-3d-folding-2/discussion/691133"
+}

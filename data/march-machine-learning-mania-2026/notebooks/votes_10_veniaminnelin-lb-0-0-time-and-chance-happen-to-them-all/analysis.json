@@ -1,0 +1,39 @@
+{
+  "tldr": "Maps historical game outcomes to the test set to achieve a perfect public leaderboard score, defaulting to 0.5 for unseen matchups.",
+  "summary": "This notebook demonstrates a data leakage trick to achieve a perfect public leaderboard score in the March Mania competition. It works by merging historical game results directly onto the test set IDs, assigning exact win/loss outcomes where they exist and defaulting to 0.5 otherwise. The author explicitly warns that this approach does not generalize to the private leaderboard and highlights the importance of caution when interpreting public scores. Readers learn how historical data overlap can artificially inflate leaderboard metrics and how to construct a trivial baseline submission.",
+  "extensive_summary": "## Concept & Motivation\nThis notebook demonstrates a simple trick to achieve a perfect public leaderboard score by exploiting the fact that the public evaluation set overlaps almost entirely with historical matchups that have known outcomes. The author shares it purely for curiosity to highlight that public leaderboards in this competition should be interpreted with caution.\n\n## Methodology & Implementation\nThe code loads the sample submission file and parses the `ID` column into `Season`, `Team1`, and `Team2` integers. It then loads six historical result CSVs (regular season and tournament results for men's and women's, including secondary tours) containing `Season`, `DayNum`, `WTeamID`, and `LTeamID`. These are concatenated into a single DataFrame. Team ordering is normalized by setting `Team1` to the minimum and `Team2` to the maximum of the winner/loser IDs. An `Outcome` column is created (1 if Team1 won, 0 otherwise). The latest game per season/team pair is extracted using a groupby on `Season`, `Team1`, `Team2` sorted by `DayNum`, taking the tail.\n\nThe test submission is then merged on `Season`, `Team1`, and `Team2`. Where a historical outcome exists, it is used; otherwise, the prediction defaults to `0.5`. The final `ID` and `Pred` columns are saved as `submission.csv`.\n\n## Caveats\nThe author explicitly notes that while this yields a `0.00000` public score, it does not generalize, carries no real predictive value, and is not expected to perform well on the private leaderboard.",
+  "purpose": "other",
+  "models": [],
+  "frameworks": [
+    "pandas"
+  ],
+  "cv_strategy": "",
+  "preprocessing": [
+    "Parsing submission IDs into Season/Team1/Team2",
+    "Loading and concatenating historical compact results",
+    "Normalizing team ordering (min/max for Team1/Team2)",
+    "Dropping duplicates by taking the latest game per season/team pair"
+  ],
+  "feature_engineering": [],
+  "augmentations": [],
+  "loss_functions": [],
+  "ensemble": "",
+  "post_processing": "",
+  "what_worked": [
+    "Achieves a perfect 0.00000 public leaderboard score by exploiting historical data overlap."
+  ],
+  "what_did_not_work": [
+    "Does not generalize to unseen matchups",
+    "Carries no real predictive value",
+    "Expected to perform poorly on the private leaderboard"
+  ],
+  "critical_findings": [
+    "The public leaderboard evaluation set overlaps almost entirely with historical matchups that have known outcomes, allowing trivial perfect scores via data leakage."
+  ],
+  "notable_techniques": [
+    "Leveraging historical compact results to map exact outcomes to test IDs",
+    "Defaulting predictions to 0.5 for unseen matchups to exploit public leaderboard data overlap"
+  ],
+  "source_url": "https://www.kaggle.com/code/veniaminnelin/lb-0-0-time-and-chance-happen-to-them-all",
+  "votes": 114
+}

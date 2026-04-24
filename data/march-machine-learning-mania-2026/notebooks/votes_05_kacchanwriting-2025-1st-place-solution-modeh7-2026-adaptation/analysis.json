@@ -1,0 +1,53 @@
+{
+  "tldr": "XGBoost regression baseline predicting NCAA basketball point differentials using Elo, GLM-derived team quality, and regular season box score averages, converted to win probabilities via spline calibration.",
+  "summary": "This notebook adapts a 2025 winning solution for the 2026 NCAA March Madness competition. It concatenates men's and women's regular season and tournament data, applies overtime adjustments, and doubles the dataset by swapping team positions. The author engineers four tiers of features: seed differences, regular season average box scores (team and opponent), custom Elo ratings, and GLM-derived team quality scores. A single XGBoost model is trained per season using leave-one-season-out validation to predict point differential. Predictions are calibrated to probabilities using a univariate spline and clipped to [0.01, 0.99]. The notebook demonstrates that GLM-derived quality consistently outperforms raw seeding in predictive power across seasons.",
+  "extensive_summary": "## Data Loading & Preprocessing\nThe notebook loads men's and women's NCAA March Mania 2026 data, concatenating regular season and tournament detailed results alongside seed data. A season cutoff of 2003 is applied. The `prepare_data` function filters relevant columns, applies an overtime adjustment factor `adjot = (40 + 5 * NumOT) / 40` to all box score columns, and doubles the dataset by swapping team positions (T1/T2) to balance perspectives. Point differential is computed as `T1_Score - T2_Score`, with a binary win label derived from its sign. A `men_women` indicator is added.\n\n## Feature Engineering\nFeatures are organized into four tiers. **Easy** features extract seed numbers from the `Seed` string and compute `Seed_diff` (T2_seed - T1_seed). **Medium** features calculate regular season average box scores per team and per opponent using `groupby([\"Season\", \"T1_TeamID\"]).agg(\"mean\")`, merging them as `T1_avg_...` and `T2_avg_...` (including `opponent_` prefixes). **Hard** features implement a custom Elo rating system per season with `base_elo=1000`, `elo_width=400`, and `k_factor=100`, updated via `update_elo` and `expected_result` functions. **Hardest** features derive team quality using `statsmodels.GLM` with a Gaussian family and formula `\"PointDiff~-1+T1_TeamID+T2_TeamID\"`, fitted per season and gender. Teams are filtered to tournament participants or those that beat tournament teams. Final features total 30, including `men_women`, seeds, `Seed_diff`, selected average box scores (Score, FGA, OR, DR, Blk, PF, opponent_FGA, opponent_Blk, opponent_PF, PointDiff), Elo ratings, Elo diff, and GLM quality ratings.\n\n## Model Training & Validation\nAn XGBoost regression model (`reg:squarederror`, `gbtree`) predicts point differential. Hyperparameters include `eta=0.0093`, `subsample=0.6`, `colsample_bynode=0.8`, `num_parallel_tree=2`, `min_child_weight=4`, `max_depth=4`, `tree_method=hist`, `grow_policy=lossguide`, `max_bin=38`, trained for `num_boost_round=704`. Validation uses a leave-one-season-out scheme: the model is trained on all seasons except one and evaluated on the held-out season. Mean absolute error is tracked per fold.\n\n## Probability Calibration & Submission\nRaw point differential predictions are clipped to `[-30, 30]` and grouped to compute empirical win percentages. A `scipy.interpolate.UnivariateSpline` (k=5) is fitted on sorted predictions and labels to convert regression outputs to probabilities, with outputs clipped to `[0.01, 0.99]`. The Brier score evaluates calibration. For submission, features are constructed for the sample submission file, merged with season-specific models, and predictions are averaged across seasons before rounding and exporting.",
+  "purpose": "baseline",
+  "models": [
+    "XGBoost"
+  ],
+  "frameworks": [
+    "xgboost",
+    "pandas",
+    "numpy",
+    "statsmodels",
+    "scipy",
+    "scikit-learn",
+    "matplotlib",
+    "seaborn"
+  ],
+  "cv_strategy": "Leave-one-season-out cross-validation",
+  "preprocessing": [
+    "Overtime adjustment factor (40 + 5 * NumOT) / 40 applied to box scores",
+    "Dataset doubled by swapping team positions (T1/T2)",
+    "Point differential calculated as T1_Score - T2_Score",
+    "Win label derived from point differential sign",
+    "men/women indicator added",
+    "Season cutoff set to 2003"
+  ],
+  "feature_engineering": [
+    "Aggregations: Regular season average box scores per team and per opponent (grouped by Season and TeamID, mean aggregation)",
+    "Encodings: Seed extraction from string (int(x[1:3])), men_women binary indicator",
+    "Interactions: Seed_diff (T2_seed - T1_seed), elo_diff, diff_quality",
+    "Domain-derived: Custom Elo ratings (base_elo=1000, elo_width=400, k_factor=100) updated per game",
+    "Domain-derived: GLM team quality using statsmodels.GLM with Gaussian family and formula 'PointDiff~-1+T1_TeamID+T2_TeamID' fitted per season/gender"
+  ],
+  "augmentations": [],
+  "loss_functions": [
+    "reg:squarederror"
+  ],
+  "ensemble": "",
+  "post_processing": "Predictions clipped to [-30, 30]; grouped by clipped point differential to compute empirical win percentages; probability conversion via scipy.interpolate.UnivariateSpline (k=5) on sorted predictions and labels; final probabilities clipped to [0.01, 0.99]; Brier score used for calibration evaluation.",
+  "what_worked": [],
+  "what_did_not_work": [],
+  "critical_findings": [],
+  "notable_techniques": [
+    "Overtime stat normalization using (40 + 5 * NumOT) / 40",
+    "Dataset doubling via team position swapping to balance perspective",
+    "GLM team quality derivation using statsmodels.GLM with Gaussian family",
+    "Spline-based probability calibration from regression outputs",
+    "Leave-one-season-out validation for temporal generalization"
+  ],
+  "source_url": "https://www.kaggle.com/code/kacchanwriting/2025-1st-place-solution-modeh7-2026-adaptation",
+  "votes": 138
+}

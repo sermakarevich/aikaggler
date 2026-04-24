@@ -1,0 +1,72 @@
+{
+  "tldr": "Ensemble of TBM, Protenix, and RNAPro with sequence chunking and MSA flag diversity to fill 5 submission slots.",
+  "summary": "The solution achieves 10th place by combining three structure prediction methods: Template-Based Modeling (TBM), Protenix, and RNAPro. The pipeline allocates 5 submission slots across these models, with TBM handling initial template search and adaptation, Protenix processing sequences via chunking for long RNAs, and RNAPro refining structures using RibonanzaNet2 embeddings. Key technical choices include applying Gaussian and geometric perturbations to TBM outputs, enforcing soft geometric constraints, and strategically toggling the `USE_RNA_MSA` flag to maximize ensemble diversity. The author emphasizes meticulous tracking of local validation versus public leaderboard scores, noting that the public LB was heavily skewed toward TBM, which masked improvements from Protenix and RNAPro.",
+  "extensive_summary": "## Core Pipeline & Ensemble Strategy\nThe final submission utilizes a 5-slot ensemble comprising two TBM predictions, one Protenix prediction, and two RNAPro predictions. Diversity between the two RNAPro slots is achieved by toggling the `USE_RNA_MSA` flag (one with `false`, one with `true`). The author meticulously tracked both local validation scores (`validation_sequences.csv`) and the Public LB throughout development.\n\n## TBM Implementation\nTBM serves as the foundational baseline. During local validation, the training and validation sets are merged to form a larger template pool. The pipeline scans up to `top_n=30` candidates using a global `PairwiseAligner`, ranking them by normalized alignment score and percent identity, then filtering by `MIN_SIMILARITY` and `MIN_PERCENT_IDENTITY`. Template coordinates are mapped to the query via alignment-aware copying with interpolation/extrapolation to preserve chain segments and stoichiometry. Two TBM outputs are generated: a straight adapted template copy, and the same template perturbed with Gaussian noise (`\u03c3 = max(0.01, (0.40 - sim) \u00d7 0.06)`) or geometric hinge/jitter for low-similarity cases. Soft geometric smoothing is applied via `adaptive_rna_constraints()` (2 passes) with a hinge angle of ~22 degrees.\n\n## Protenix & RNAPro Inference\nProtenix requires robust quality control to reject collapsed structures and padding/repeating valid samples to meet the prediction count. Long RNAs are split into overlapping chunks (`MAX_SEQ_LEN \u2248 512`, `CHUNK_OVERLAP \u2248 64`), inferred independently, and seamlessly blended. This chunking strategy yielded consistent local improvements on targets like `9MME` and `9ZCC`. RNAPro takes TBM-derived predictions as structural templates, running with RibonanzaNet2 embeddings, 10 recycling cycles, and 200 diffusion steps.\n\n## Validation Insights & Troubleshooting\nProtenix outputs are non-deterministic, but generating multiple samples per runtime did not improve diversity. A critical bottleneck in early notebooks prevented Protenix inference when TBM predictions passed a threshold; fixing this boosted local validation by 0.02. While `USE_RNA_MSA=true` improved local scores by ~0.03, it caused Public LB scores to drop when combined with TBM, likely because the Public LB was heavily dominated by the TBM approach. Reranking Protenix by confidence, finetuning Protenix, and using templates for Protenix all yielded negligible returns or were abandoned due to time constraints.",
+  "rank": 10,
+  "models": [
+    "TBM",
+    "Protenix",
+    "RNAPro",
+    "RibonanzaNet2"
+  ],
+  "cv_strategy": "Local validation tracking via `validation_sequences.csv` and Public LB; merged training and validation sets to form a larger template pool during local runs.",
+  "preprocessing": [
+    "Padding and repeating valid Protenix samples to meet prediction count",
+    "Chunking long sequences (`MAX_SEQ_LEN \u2248 512`, `CHUNK_OVERLAP \u2248 64`) for independent inference"
+  ],
+  "feature_engineering": [],
+  "augmentations": [
+    "Gaussian noise perturbation on TBM outputs (`\u03c3 = max(0.01, (0.40 - sim) \u00d7 0.06)`)",
+    "Geometric hinge/jitter perturbation for low-similarity cases",
+    "Soft geometric smoothing via `adaptive_rna_constraints()`"
+  ],
+  "loss_functions": [],
+  "ensemble": "5-slot ensemble allocating 2 slots to TBM, 1 to Protenix, and 2 to RNAPro, with diversity achieved by running RNAPro with `USE_RNA_MSA=false` for one submission and `USE_RNA_MSA=true` for the other.",
+  "post_processing": "Alignment-aware coordinate mapping with interpolation/extrapolation to preserve chain segments and stoichiometry; seamless blending of overlapping Protenix chunks; soft geometric smoothing via `adaptive_rna_constraints()`.",
+  "what_worked": [
+    "Chunking long sequences for Protenix improved local scores",
+    "Fixing the TBM-threshold bottleneck that blocked Protenix inference boosted local validation by 0.02",
+    "Toggling `USE_RNA_MSA` effectively diversified the RNAPro ensemble"
+  ],
+  "what_did_not_work": [
+    "Reranking Protenix by model confidence (too slow, low return)",
+    "Finetuning Protenix (abandoned due to time)",
+    "Using templates for Protenix (no LB/local improvement)",
+    "Relying solely on pure TBM or pure Protenix"
+  ],
+  "critical_findings": [
+    "Public LB was heavily dominated by the TBM approach, masking Protenix/RNAPro improvements",
+    "`USE_RNA_MSA=true` boosted local validation by ~0.03 but dropped Public LB scores when combined with TBM",
+    "Protenix predictions are non-deterministic but generating multiple samples per runtime did not yield helpful diversity"
+  ],
+  "github_repos": [
+    {
+      "url": "https://github.com/bytedance/Protenix",
+      "role": "reference"
+    }
+  ],
+  "papers": [],
+  "other_solution_refs": [
+    {
+      "description": "OpenRNAFold starter notebook",
+      "url": "https://www.kaggle.com/code/amirrezaaleyasin/openrnafold-starter3"
+    },
+    {
+      "description": "Protenix v1 adjusted dataset",
+      "url": "https://www.kaggle.com/datasets/qiweiyin/protenix-v1-adjusted"
+    },
+    {
+      "description": "Protenix v1 inference notebook",
+      "url": "https://www.kaggle.com/code/alexxanderlarko/protenix-v1"
+    },
+    {
+      "description": "RNAPro inference notebook",
+      "url": "https://www.kaggle.com/code/theoviel/stanford-rna-3d-folding-pt2-rnapro-inference"
+    },
+    {
+      "description": "Protenix + TBM integration notebook",
+      "url": "https://www.kaggle.com/code/llkh0a/stanford-rna-3d-folding-part-2-protenix-tbm"
+    }
+  ],
+  "source_url": "https://www.kaggle.com/competitions/stanford-rna-3d-folding-2/discussion/686820"
+}

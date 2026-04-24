@@ -1,0 +1,83 @@
+{
+  "tldr": "Ensemble of 11 quantized byt5-xl models trained on iteratively refined OCR and LLM-generated data, optimized via eval_loss checkpointing and refined with weighted MBR inference.",
+  "summary": "The 1st place solution leverages an ensemble of 11 byt5-xl models trained on meticulously curated datasets derived from OCR extraction and LLM generation. Instead of relying on standard BLEU/chrF metrics for checkpoint selection, the author prioritizes eval_loss to prevent overfitting to validation set styles. Key techniques include iterative data cleaning based on cross-fold error analysis, quantization to int8-float32 via ctranslate2 for inference speed, and a weighted MBR selector during inference. The approach demonstrates that data quality and careful validation metrics outweigh complex architectural changes or post-processing.",
+  "extensive_summary": "## Data Curation & Quality Control\nThe official train.csv was discarded. Training data was constructed through iterative OCR extraction and LLM generation. For structured books (AKT series, ICK_4, Larsen_2002, Michel_2020, POAT), GLM-OCR layout analysis combined with regex extracted chapter/page ranges. Gemini-3.0-pro-preview was prompted to extract sentence-level transliteration-translation pairs, with explicit instructions to prioritize logical meaning over physical line breaks, account for 3D tablet writing continuations (obverse/reverse/edges), and use anchor words (Sumerian logograms, numbers, proper names). For poorly-structured texts, a custom frontend facilitated manual screenshot extraction and batch API calls.\n\nData was iteratively refined: data1 (29,908 pairs) was expanded to data2 (30,931 pairs) by training 4-fold CV models, inferring on training folds, and filtering samples with cross-fold geo_metric < 20 for re-extraction. data3 (34,146 pairs) further targeted length mismatches (>100 chars difference) and long transliterations (>500 chars). Additional datasets included llmlabel (21,759 pairs from OARE database via dictionary/similarity queries) and synthetic data (synth1: 9,685 pairs targeting dictionary coverage gaps; synth2: 4,972 pairs from random training sentences). Float16 transformer baselines were also benchmarked against the quantized ensemble.\n\n## Model Training & Validation Strategy\nEleven byt5-xl models were trained on various combinations of the above datasets. Ten models used Seq2SeqTrainer with batch size 64 for 3 epochs. One model used a custom data-quality-weighted loss with batch size 48 for 4 epochs. Checkpoint selection strictly relied on validation eval_loss rather than eval_bleu or chrf, as later metric improvements indicated overfitting to validation set distribution/style. Some models used a 9:1 train/validation split. Larger architectures (byt5-xl over byt5-large/byt5-base) significantly boosted scores, contingent on having sufficient, clean data to avoid overfitting.\n\n## Inference & Ensemble Recipe\nModels were pre-compiled and quantized to int8-float32 using ctranslate2 to save ~30 minutes of inference time. Inference sorted test inputs by descending character length. Each model generated 10 candidates via beam search (beam_size=8) and sampling at temperatures [0.60, 0.80, 1.05]. A weighted MBR selector combined chrF++, BLEU, Jaccard, and length rewards to pick the final translation. Parallel MBR across 4 CPU cores and data-parallel GPU inference maximized throughput within the 9-hour limit. A conservative alternative ensemble of the top 4 LB checkpoints without quantization also performed well.\n\n## Critical Findings & Abandoned Experiments\nRelying on public LB post-processing (e.g., cleaning repeated n-grams, standardizing names) increased overfitting risk and caused score shake-ups. Decoder-only models (Qwen, translate-gemma), continual pre-training (CPT), multilingual prefixing, context usage, and same-model TTA were abandoned due to poor corpus quality or lack of gains. Standardizing Sumerian spelling/determinatives and stripping parentheses in translations also failed to help. The core lesson: meticulous data quality, eval_loss-driven checkpointing, and efficient quantized inference are more impactful than architectural complexity or aggressive post-processing.",
+  "rank": 1,
+  "models": [
+    "byt5-xl",
+    "byt5-large",
+    "byt5-base"
+  ],
+  "cv_strategy": "Checkpoint selection based on validation eval_loss; 4-fold CV used for iterative data filtering; some models used 9:1 train/validation split.",
+  "preprocessing": [
+    "Discarded official train.csv",
+    "GLM-OCR layout analysis + regex for page/chapter extraction",
+    "Gemini-3.0-pro-preview prompting for sentence-level alignment",
+    "Cross-fold geo_metric < 20 filtering",
+    "Character length difference > 100 and transliteration length > 500 filtering"
+  ],
+  "feature_engineering": [],
+  "augmentations": [
+    "Train-time: None explicitly stated",
+    "Test-time: Beam search (beam_size=8), sampling at temperatures [0.60, 0.80, 1.05], and weighted MBR (chrF++, BLEU, Jaccard, length rewards)"
+  ],
+  "loss_functions": [
+    "Standard Seq2Seq loss (10 models)",
+    "Custom data-quality-weighted loss (1 model)"
+  ],
+  "ensemble": "Ensemble of 11 byt5-xl models trained on different data combinations; each model generates 10 candidates via beam search and temperature sampling, combined via a weighted MBR selector.",
+  "post_processing": "None applied to the primary submission; one alternative added repeated n-gram (n=2-7) cleaning but was deemed risky for overfitting.",
+  "what_worked": [
+    "Using eval_loss for checkpoint selection",
+    "Quantizing to int8-float32 via ctranslate2",
+    "Training larger models (byt5-xl) with sufficiently clean data",
+    "Iterative cross-fold error filtering for data curation",
+    "Weighted MBR inference"
+  ],
+  "what_did_not_work": [
+    "Relying on eval_bleu/chrf for checkpointing",
+    "Public LB post-processing",
+    "Decoder-only models (Qwen, translate-gemma)",
+    "Continual pre-training (CPT)",
+    "Multilingual training with prefixes",
+    "Context usage",
+    "Same-model TTA",
+    "Standardizing Sumerian spelling/determinatives",
+    "Stripping parentheses in translations"
+  ],
+  "critical_findings": [
+    "eval_bleu/chrf improvements after 3 epochs indicate overfitting to validation style, not generalization",
+    "Larger models only outperform smaller ones when training data is sufficiently clean and abundant",
+    "Pre-compiling ctranslate2 models saves ~30 minutes, making large ensembles feasible within time limits",
+    "Public LB post-processing increases overfitting risk and causes score shake-ups"
+  ],
+  "github_repos": [],
+  "papers": [],
+  "other_solution_refs": [
+    {
+      "description": "MBR candidate diversity strategy",
+      "url": "https://www.kaggle.com/code/ngyzly/lb-35-5-better-candidate-diversity-on-public-model"
+    },
+    {
+      "description": "Post-training Qwen2.5 32B/72B",
+      "url": "https://www.kaggle.com/competitions/deep-past-initiative-machine-translation/writeups/25th-post-training-qwen2-5-32b-and-72b-with-gemi"
+    },
+    {
+      "description": "Seq2Seq CPT pseudo-labeling",
+      "url": "https://www.kaggle.com/competitions/deep-past-initiative-machine-translation/writeups/10th-place-solution-seq2seq-cpt-pseudo-label"
+    },
+    {
+      "description": "CPT GRPO no SFT",
+      "url": "https://www.kaggle.com/competitions/deep-past-initiative-machine-translation/writeups/23rd-place-cpt-grpo-no-sft"
+    },
+    {
+      "description": "Context usage discussion",
+      "url": "https://www.kaggle.com/competitions/deep-past-initiative-machine-translation/discussion/684270"
+    },
+    {
+      "description": "LLM online learning approach",
+      "url": "https://www.kaggle.com/competitions/deep-past-initiative-machine-translation/writeups/llm-online-learning-is-all-you-need"
+    }
+  ],
+  "source_url": "https://www.kaggle.com/competitions/deep-past-initiative-machine-translation/discussion/684353"
+}

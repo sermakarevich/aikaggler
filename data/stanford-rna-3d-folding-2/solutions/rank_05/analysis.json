@@ -1,0 +1,48 @@
+{
+  "tldr": "Multi-slot Protenix diffusion inference combined with geometry-aware template modeling and MSA depth-aware sampling for RNA structure prediction.",
+  "summary": "The solution achieves 5th place by combining template-based modeling with a depth-aware Protenix diffusion pipeline. Instead of treating MSA as a binary switch, inference is partitioned into three modes based on MSA depth, using high-fidelity evolutionary constraints for the first two slots and a noisy MSA hedge for the third. For long sequences, chunked inference is stitched using a quintic smoothstep function to ensure C2 continuity, and full reproducibility is enforced by disabling non-deterministic CUDA backends and MC Dropout. This structured inference recipe and MSA depth analysis drove the final score.",
+  "extensive_summary": "## Phase 1: Template-Based Modeling\nThe pipeline uses Biopython's PairwiseAligner with RNA-tuned gap penalties. Missing residues are interpolated along RNA-like helical trajectories (C1'\u2013C1' step ~5.9 \u00c5) via geometry-aware gap-filling. Diversity transforms (hinge rotations, chain jitter, smooth wiggle) are applied slot-by-slot, followed by bond-length correction, Laplacian smoothing, and self-avoidance. TM-score greedy selection prevents redundancy. Slot allocation is length-adaptive: \u2264512 nt gets max 2 TBM slots, >512 nt gets up to 5.\n\n## Phase 2: MSA Depth-Aware Inference\nInstead of a binary MSA switch, Protenix inference is split into three modes based on test depth (\u2265700: 54%, 10\u2013699: 25%, \u22649: 21%). Depth \u2265700 is optimal; lower depths inject noise. Slots 3 & 4 use `msa700` (depth \u2265700) with diversity from independent diffusion. Slot 5 uses `msa_full` (depth \u22651) as a hedge. For >512 nt, only `msa700` with `N_sample=3` is used. Multi-chunk stitching replaces linear ramps with `w(t) = 6t^5 - 15t^4 + 10t^3` for C2 continuity, plus Kabsch alignment in 128-nt overlaps to remove kinks.\n\n## Phase 3: Deterministic Reproducibility\nNon-deterministic CUDA and MC Dropout cause variance. Reproducibility is enforced by disabling FlashAttention/memory-efficient attention, setting `mc_dropout_apply_rate=0.0`, and forcing torch-native LayerNorm/triangle kernels over cuDNN/cuEquivariance backends, isolating algorithmic gains from RNG noise.",
+  "rank": 5,
+  "models": [
+    "Protenix",
+    "TBM (Template-Based Modeling)"
+  ],
+  "cv_strategy": "",
+  "preprocessing": [
+    "RNA-tuned gap penalties",
+    "geometry-aware gap-filling with helical trajectory interpolation (C1'\u2013C1' step ~5.9 \u00c5)",
+    "diversity transforms (hinge rotations, chain jitter, smooth wiggle)",
+    "geometry constraint refinement (bond-length correction, Laplacian smoothing, self-avoidance)",
+    "TM-score-based greedy diversity selection",
+    "length-adaptive slot allocation"
+  ],
+  "feature_engineering": [],
+  "augmentations": [],
+  "loss_functions": [],
+  "ensemble": "Multi-slot inference recipe combining up to 5 structural predictions per target: two deterministic Protenix samples with high-depth MSA (\u2265700) for diversity via independent diffusion, one low-depth MSA (\u22651) hedge, plus TBM templates, stitched via quintic smoothstep for long sequences.",
+  "post_processing": "Kabsch-based reference alignment in 128-nt overlap regions to eliminate geometric kinks and ensure global topology smoothness.",
+  "what_worked": [],
+  "what_did_not_work": [],
+  "critical_findings": [
+    "MSA depth distribution on test targets revealed 54% \u2265700, 25% 10\u2013699, 21% \u22649; depth \u2265700 is optimal as lower depths inject alignment noise.",
+    "Linear chunk blending causes first-derivative discontinuities; quintic smoothstep guarantees C2 continuity.",
+    "Non-deterministic CUDA/attention backends and MC Dropout cause run-to-run variance that masks algorithmic improvements."
+  ],
+  "github_repos": [],
+  "papers": [],
+  "other_solution_refs": [
+    {
+      "description": "Protenix v1 inference notebook",
+      "url": "https://www.kaggle.com/code/qiweiyin/protenix-v1-inference-2026"
+    },
+    {
+      "description": "Stanford RNA folding 2 Protenix template solution",
+      "url": "https://www.kaggle.com/code/nihilisticneuralnet/0-409-stanford-rna-folding-2-protenix-template"
+    },
+    {
+      "description": "Protenix v1 reference implementation",
+      "url": "https://www.kaggle.com/code/alexxanderlarko/protenix-v1"
+    }
+  ],
+  "source_url": "https://www.kaggle.com/competitions/stanford-rna-3d-folding-2/discussion/688036"
+}

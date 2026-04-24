@@ -1,0 +1,39 @@
+{
+  "tldr": "Runs a 2-model ByT5 ensemble across 3 random seeds, generates 96 candidates per sample via beam search and multi-temperature sampling, and selects the final translation using chrF++-based Minimum Bayes Risk (MBR) decoding.",
+  "summary": "This notebook implements a multi-run inference pipeline for the Deep Past Challenge Akkadian-to-English translation task. It loads two pre-trained ByT5 models and runs them three times with different random seeds to maximize candidate diversity. For each sample, it generates candidates using standard beam search and multi-temperature sampling, pools them across runs, and applies a chrF++-based Minimum Bayes Risk (MBR) selector to find the consensus translation. The pipeline includes extensive text preprocessing for diacritics and gaps, followed by a comprehensive regex-based postprocessing step to fix spacing, punctuation, fractions, and repetitions before saving the submission.",
+  "extensive_summary": "## Strategy & Configuration\nThe notebook implements a multi-run inference pipeline for the Deep Past Challenge Akkadian-to-English translation task. It combines two pre-trained ByT5 models (`byt5-akkadian-optimized-34x` and `byt5-akkadian-mbr-v2`) across three random seeds (42, 1337, 2024) to maximize candidate diversity. Each run processes the test set in batches of 8, sorting inputs by length for efficiency. The pipeline targets an expected leaderboard score of 35.9\u201336.3 and runs within a ~75\u201390 minute GPU window.\n\n## Preprocessing & Postprocessing\nInput texts undergo diacritic normalization (e.g., `s,` \u2192 `\u1e63`, `t,` \u2192 `\u1e6d`) and gap token replacement (`[...]` \u2192 `[GAP]`) before being prefixed with `translate Akkadian to English: `. After generation, outputs pass through a 64-operation regex postprocessing pipeline that normalizes fractions (e.g., `1/2` \u2192 `\u00bd`), strips prompts, converts pipes to slashes, removes control characters, fixes spacing around punctuation, eliminates adjacent and multi-word repetitions, trims trailing short words, normalizes ellipses/commas/exclamations, fixes quote spacing, capitalizes the first letter, and appends a period if missing.\n\n## Candidate Generation & MBR Selection\nFor each model and seed, the pipeline generates candidates via three decoding strategies: standard beam search (8 beams, 7 returns), diverse beam search (disabled due to T5 compatibility), and multi-temperature sampling (temperatures 0.55, 0.75, 0.95 with top_p=0.92, 2 samples each). This yields 16 candidates per model per run. All candidates across runs are pooled (capped at 100) and scored using chrF++ (word_order=2) in a Minimum Bayes Risk (MBR) framework, where each candidate is compared against all others in the pool to select the highest consensus translation. The final translations are reordered to match the original test IDs and saved as a CSV submission.",
+  "purpose": "ensemble",
+  "models": [
+    "ByT5"
+  ],
+  "frameworks": [
+    "transformers",
+    "torch",
+    "sacrebleu",
+    "pandas",
+    "numpy"
+  ],
+  "cv_strategy": "",
+  "preprocessing": [
+    "Diacritic substitution (s, \u2192 \u1e63, t, \u2192 \u1e6d, s` \u2192 \u0161, h, \u2192 \u1e2b, etc.)",
+    "Gap token replacement ([. ..] \u2192 [GAP])",
+    "Prompt prefixing (translate Akkadian to English:)",
+    "Length-sorted batching for inference efficiency"
+  ],
+  "feature_engineering": [],
+  "augmentations": [],
+  "loss_functions": [],
+  "ensemble": "Runs two ByT5 models across three random seeds (42, 1337, 2024), pools up to 96 candidates per sample, and selects the final translation using chrF++-based Minimum Bayes Risk (MBR) decoding with a pool cap of 100.",
+  "post_processing": "Fraction normalization (1/2 \u2192 \u00bd), prompt stripping, pipe-to-slash conversion, control character removal, whitespace/punctuation spacing fixes, adjacent and multi-word repetition removal, trailing short word trimming, ellipsis/commas/exclamations normalization, quote spacing fixes, first-letter capitalization, forced sentence-ending punctuation",
+  "what_worked": [],
+  "what_did_not_work": [],
+  "critical_findings": [],
+  "notable_techniques": [
+    "Multi-run MBR decoding with chrF++ consensus",
+    "Multi-temperature sampling (0.55, 0.75, 0.95) combined with beam search for candidate diversity",
+    "Length-sorted batching for inference efficiency",
+    "64-step regex postprocessing pipeline for translation cleanup"
+  ],
+  "source_url": "https://www.kaggle.com/code/meenalsinha/hybrid-best-akkadian",
+  "votes": 461
+}

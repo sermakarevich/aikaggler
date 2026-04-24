@@ -1,0 +1,37 @@
+{
+  "tldr": "Template-based RNA 3D structure inference pipeline that aligns training sequences to test queries, maps coordinates with gap interpolation, applies adaptive geometric constraints, and generates a submission with 5 coordinate predictions per residue.",
+  "summary": "This notebook implements a template-based inference pipeline for the Stanford RNA 3D Folding competition. It loads training sequences and their 3D coordinates, then for each test sequence, finds the top 5 most similar training sequences using global sequence alignment. Coordinates are mapped to the query sequence via alignment-aware interpolation and random walk gap-filling. The pipeline applies adaptive geometric constraints (sequential distance, steric clash prevention, and base-pair targeting) weighted by template similarity confidence. If fewer than 5 templates are found, de novo structures are generated using a helical seed and base-pair guided random walk. The final submission flattens 5 coordinate predictions per residue into the required long format.",
+  "extensive_summary": "## Data Loading & Label Processing\nThe notebook loads training, validation, and test sequence CSVs alongside their corresponding label CSVs containing 3D coordinates. A helper function `process_labels` groups the labels by `target_id`, extracts the `x_1, y_1, z_1` columns ordered by `resid`, and stores them in a dictionary mapping each target ID to a NumPy array of coordinates.\n\n## Template Matching & Coordinate Mapping\nFor each test sequence, the pipeline identifies similar training sequences using `Bio.pairwise2.align.globalms` with match=2, mismatch=-1, gap_open=-10, gap_extend=-0.5. Sequences with length differences >50% are skipped. Similarity is calculated as `alignment.score / (2 * min(len(query), len(template)))`. The top 5 templates are selected.\nCoordinates are adapted to the query sequence via `adapt_template_to_query`. The function aligns the query and template, maps matching residues, and handles gaps in two passes: isolated NaNs are linearly interpolated between valid neighbors, while remaining gaps are filled via a random walk with a typical step of 4.0 \u00c5. If no valid coordinates exist, a basic helix is generated.\n\n## Adaptive Geometric Constraints\nMapped coordinates are refined using `adaptive_rna_constraints`. Constraint strength is computed as `0.8 * (1.0 - min(confidence, 0.8))`, where confidence derives from template similarity. Three constraints are applied:\n1. Sequential distance enforcement (target range 5.5\u20136.5 \u00c5)\n2. Steric clash prevention (minimum 3.8 \u00c5 between non-consecutive atoms)\n3. Light Watson-Crick base-pair targeting (10.5 \u00c5 C1'-C1' distance) applied only when constraint strength > 0.3.\n\n## De Novo Fallback & Noise Injection\nIf fewer than 5 templates are found, `generate_rna_structure` creates de novo coordinates. It seeds a short helix, then iterates through residues checking for complementary bases within a 15-residue window. If a pair is found, it positions the nucleotide ~10 \u00c5 from its partner toward the structure center. Otherwise, it continues with a random walk (step size 3.5\u20134.5 \u00c5) with directional rotations. Gaussian noise scaled by `max(0.05, 0.8 - similarity)` is added to template-based predictions.\n\n## Submission Generation\nThe pipeline iterates over the test set, generates 5 coordinate predictions per target, and flattens them into a long-format DataFrame with columns `ID`, `resname`, `resid`, and `x_1`-`z_5`. The result is saved as `submission.csv`.",
+  "purpose": "inference",
+  "models": [],
+  "frameworks": [
+    "biopython",
+    "scipy",
+    "scikit-learn",
+    "pandas",
+    "numpy"
+  ],
+  "cv_strategy": "",
+  "preprocessing": [
+    "Coordinate extraction from label CSVs grouped by target_id",
+    "Global sequence alignment (Bio.pairwise2) for template matching",
+    "Gap handling via linear interpolation and random walk",
+    "Steric clash and sequential distance constraint enforcement"
+  ],
+  "feature_engineering": [],
+  "augmentations": [],
+  "loss_functions": [],
+  "ensemble": "Generates 5 coordinate predictions per test target by combining top template-based mappings with de novo fallback structures, then flattens them into a multi-column submission format.",
+  "post_processing": "",
+  "what_worked": [],
+  "what_did_not_work": [],
+  "critical_findings": [],
+  "notable_techniques": [
+    "Template-to-query coordinate mapping via alignment-aware gap interpolation and random walk",
+    "Confidence-weighted adaptive geometric constraints (sequential distance, steric clash, base-pair targeting)",
+    "De novo structure generation using helical seeding and base-pair guided random walk",
+    "Gaussian noise injection scaled inversely by template similarity score"
+  ],
+  "source_url": "https://www.kaggle.com/code/nihilisticneuralnet/stanford-rna-folding-2-template-based-approach",
+  "votes": 297
+}

@@ -1,0 +1,45 @@
+{
+  "tldr": "Ensemble of ByT5-Large and ByT5-XL models fine-tuned via a two-stage process (continued pre-training on synthetic drills followed by scholar data fine-tuning), with inference guided by a Qwen3-8B reward model.",
+  "summary": "The solution tackles Old Assyrian translation by combining massive synthetic data generation with a two-stage training pipeline for ByT5 models. Continued pre-training on diverse synthetic drills teaches language fundamentals, while fine-tuning on high-quality scholar translations refines the output style. The authors heavily leveraged LLMs for data extraction, quality auditing, and synthetic example generation, including slot-fill templates and grammar rule transformations. Inference uses beam search and a pairwise reward model to select the best sentence-level translation.",
+  "extensive_summary": "## Data Curation & Synthetic Generation\nThe pipeline prioritized data quality and synthetic drill generation over architectural changes. Synthetic tasks were created via Claude 4.5 Sonnet to teach OA fundamentals: vocab drills (~1k lemmas \u2192 ~90k examples, with polysemous lemmas concatenated up to 4 examples for sense disambiguation), grammar drills (~500 rules \u2192 ~50k examples via LLM transformation), and slot-fill templates (600+ typed slots filled programmatically from onomasticon.csv). Additional synthetic data included PN vs. Word contrastive pairs (60 ambiguous forms), weight conversion drills, and synthetic tablets via clause extension/name substitution. Real data was combined from competition CSVs (~2.7k tablets), K\u00fcltepe PDFs, and OCR publications. PDF pages were rendered at 576 DPI to correctly recognize Akkadian diacritics and subscript digits. Sentence splitting used Gemini 3 Pro with CoT, followed by LLM quality scoring (85% high, 7% medium, 8% low). Synthetic translations for unlabeled tablets used embedding-based retrieval (NVIDIA NV-Embed) to replace random few-shot examples, boosting self-reported high-quality rates from 61% to 82%. Pseudo-labeling was performed using fine-tuned ByT5 models on unlabeled transliterations.\n\n## Training Pipeline\nTraining followed a two-stage approach. Stage 1 (CPT) used a datamix of all synthetic drills plus competition/PDF/OCR/synthetic data, with high-quality subsets upsampled 2x. Config: effective batch size 128, 3 epochs, 18k steps, long warmup (3.6k steps) + constant LR, gradient clipping (max norm 0.3), and AWP. Checkpoint selection at 14k steps was critical: steps 0\u20136K rapidly learned common Sumerograms/formulas, 6K\u201314K refined vocabulary with diminishing returns, and 14K\u201318K showed regression onset due to name frequency bias and hallucinated names. Stage 2 (FT) fine-tuned on high-quality scholar data + pseudo-labeled pairs + 5k carry-over drills. Config: cosine decay LR, short warmup, name swap augmentation, AWP, EMA, and label smoothing. Ablations confirmed CPT\u2192FT outperformed direct training (41.4 vs 40.3 private). Pseudo-labeling and synthetic drill carry-over provided marginal gains, while name swap augmentation yielded minimal LB improvement.\n\n## Inference & Ensemble\nBeam search (8 beams) generated outputs for both ByT5-Large and ByT5-XL. A fine-tuned Qwen3-8B pairwise Reward Model selected the better translation per sentence. Deterministic normalization aligned transliteration and translation to match test format, enforcing name normalization, Sumerogram conventions, and gap marker parallelism. The pipeline heavily relied on agentic tooling (Claude Code) for data extraction, quality auditing, and training pipeline development.",
+  "rank": 3,
+  "models": [
+    "ByT5-Large",
+    "ByT5-XL",
+    "Qwen3-8B"
+  ],
+  "cv_strategy": "",
+  "preprocessing": [
+    "Deterministic normalization of transliteration and translation to match test format",
+    "Deduplication by `oare_id`",
+    "PDF rendering at 576 DPI for OCR/diacritic recognition",
+    "Sentence splitting via Gemini 3 Pro with CoT",
+    "Quality scoring (high/medium/low) via LLM judge",
+    "Name normalization and Sumerogram/gap marker parallelism alignment"
+  ],
+  "feature_engineering": [],
+  "augmentations": [
+    "Name swap augmentation"
+  ],
+  "loss_functions": [],
+  "ensemble": "Ensembled ByT5-Large and ByT5-XL models, using a fine-tuned Qwen3-8B pairwise Reward Model to select the better translation per sentence.",
+  "post_processing": "",
+  "what_worked": [],
+  "what_did_not_work": [],
+  "critical_findings": [
+    "Rendering PDFs at 576 DPI was critical for correctly recognizing Akkadian diacritics and subscript digits.",
+    "Explicit \"include ALL lines\" instructions prevented Gemini from silently skipping damaged tablets, preserving ~30% of pairs.",
+    "Replacing random few-shot examples with embedding-based retrieval (NVIDIA NV-Embed) improved synthetic translation quality from 61% to 82%.",
+    "Polysemous lemmas require concatenating examples from different senses to force context-based disambiguation.",
+    "Training beyond 14k steps caused regression onset due to name frequency bias and hallucinated names."
+  ],
+  "github_repos": [],
+  "papers": [],
+  "other_solution_refs": [
+    {
+      "description": "Demo notebook for K\u00fcltepe tablets extraction pipeline",
+      "url": "https://www.kaggle.com/code/darraghdog/k-ltepe-tablets-with-gemini-flash"
+    }
+  ],
+  "source_url": "https://www.kaggle.com/competitions/deep-past-initiative-machine-translation/discussion/684425"
+}

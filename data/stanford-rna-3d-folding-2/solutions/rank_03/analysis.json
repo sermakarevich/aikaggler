@@ -1,0 +1,80 @@
+{
+  "tldr": "Ensemble of RNAPro and Protenix diffusion models guided by a LightGBM template-based modeling step, with custom chunking/overlap strategies and multi-component input handling under strict GPU constraints.",
+  "summary": "The solution combines predictions from three foundation models: RNAPro, Protenix, and a custom template-based modeling (TBM) pipeline. A LightGBM model predicts TM-scores for query-template pairs to select the top-2 templates, which are then fed into the diffusion models. To handle long sequences and multi-component inputs (proteins, DNA, ligands) within T4 GPU limits, the author implements sequence chunking with 96-base overlaps, limits MSA depth to 2048, and applies fast inference kernels. The final submission averages two Protenix predictions, one RNAPro prediction, and two TBM-guided outputs without per-sequence selection logic.",
+  "extensive_summary": "## Overview & Ensemble Strategy\nThe solution targets Part 2 challenges (proteins, DNA, ligands, multi-chain, long sequences) by combining three prediction streams: two from TBM, two from Protenix, and one from RNAPro. No per-sequence selection logic is applied; all predictions are averaged. Inference runs in parallel on two T4 GPUs.\n\n## Template-Based Modeling (TBM) & Feature Engineering\nA LightGBM model predicts TM-scores for query-template pairs to select the top-2 templates for downstream diffusion models. Training data (~198K pairs) uses the 1000 most recent query RNA sequences and 200 preceding template sequences per query. Features include:\n- **RNA similarity**: `alignment_score`, `percent_identity`, `len_diff_ratio`\n- **Text embeddings**: Cosine similarity of query/template descriptions using `NeuML/pubmedbert-base-embeddings`\n- **Protein/DNA/Ligand similarity**: Alignment scores (BLOSUM62 for proteins, raw scores for DNA, Tanimoto Morgan fingerprints for ligands) computed across query-template pairs. Min, mean, and max of the resulting vectors are aggregated as `protein_similarity_matrix_(min|mean|max)`, `dna_similarity_matrix_(min|mean|max)`, and `ligand_similarity_matrix_(min|mean|max)`.\n- **Composition & Chains**: `num_query_(proteins|dna|ligands)`, `num_template_(proteins|dna|ligands)`, `(query|template)_num_all_chains`, `(query|template)_num_unique_chains`, and `chain_counts_match`.\n\n## Foundation Model Inference (RNAPro & Protenix)\nRNAPro uses the top-5 TBM templates as input. Protenix (`protenix_base_20250630_v1.0.0`) ingests RNA, proteins, DNA, and ligands. To fit T4 memory and runtime limits, non-RNA sequences are capped at 6 per group, with a `max_len_non_rna=128` budget split equally between proteins and DNA. Both models limit MSA depth to 2048 and employ `fast_layernorm` and `triattention` triangle attention kernels for faster inference on longer sequences.\n\n## Long Sequence Handling & Post-Processing\nRNA sequences >448 are split in two stages. First, multi-chain targets are split into chains with a 96-base overlap from the next chain (circular overlap for the final chain). Repeated chain pairs are skipped for speed. Second, remaining sequences >448 are chunked into 448-base segments with 96-base overlaps. Chunk predictions are merged to chains, then chains to full sequences using Kabsch alignment on overlaps. One RNAPro sample and two Protenix samples are generated per target.\n\n## Constraints & Observations\nHeavy reliance on sequence chunking, MSA depth limits, and kernel optimizations stems from strict T4 GPU memory and runtime constraints. The author notes that faster GPUs with larger memory could significantly improve performance, particularly for longer sequences and deeper MSAs.",
+  "rank": 3,
+  "models": [
+    "LightGBM",
+    "RNAPro",
+    "Protenix"
+  ],
+  "cv_strategy": "",
+  "preprocessing": [
+    "Sequence cropping to max length 768 for proteins",
+    "MSA depth limited to 2048",
+    "RNA sequences >448 split into chains/chunks with 96-base overlap",
+    "Kabsch alignment on overlapping regions",
+    "Non-RNA sequences limited to max 6 per group with `max_len_non_rna=128`"
+  ],
+  "feature_engineering": [
+    "RNA sequences similarity: `alignment_score`, `percent_identity`, `len_diff_ratio`",
+    "Text embeddings similarity: cosine similarity between query/template description embeddings (NeuML/pubmedbert-base-embeddings)",
+    "Proteins similarity: BLOSUM62 alignment scores -> `protein_similarity_matrix_(min|mean|max)`",
+    "DNA similarity: `dna_similarity_matrix_(min|mean|max)` (alignment scores without substitution matrix)",
+    "Ligands similarity: `ligand_similarity_matrix_(min|mean|max)` (Tanimoto similarities of Morgan fingerprints)",
+    "Composition counts: `num_query_(proteins|dna|ligands)`, `num_template_(proteins|dna|ligands)`",
+    "Chains-related: `(query|template)_num_all_chains`, `(query|template)_num_unique_chains`, `chain_counts_match`"
+  ],
+  "augmentations": [],
+  "loss_functions": [],
+  "ensemble": "Combines two predictions from TBM, two from Protenix, and one from RNAPro for all targets without per-sequence selection logic.",
+  "post_processing": "Kabsch alignment applied on overlapping regions when merging chunk predictions to chains and chains to full sequences.",
+  "what_worked": [],
+  "what_did_not_work": [],
+  "critical_findings": [],
+  "github_repos": [
+    {
+      "url": "https://github.com/NVIDIA-Digital-Bio/RNAPro",
+      "role": "reference"
+    },
+    {
+      "url": "https://github.com/bytedance/Protenix",
+      "role": "reference"
+    }
+  ],
+  "papers": [
+    {
+      "title": "Template-based RNA structure prediction advanced through a blind code competition",
+      "url": "https://doi.org/10.64898/2025.12.30.696949",
+      "arxiv_id": ""
+    },
+    {
+      "title": "Protenix-v1: Toward High-Accuracy Open-Source Biomolecular Structure Prediction",
+      "url": "https://doi.org/10.64898/2026.02.05.703733",
+      "arxiv_id": ""
+    }
+  ],
+  "other_solution_refs": [
+    {
+      "description": "TBM dataset creation notebook",
+      "url": "https://www.kaggle.com/code/stefanstefanov/srna3d2-create-tmscore-dataset"
+    },
+    {
+      "description": "TBM training dataset",
+      "url": "https://www.kaggle.com/datasets/stefanstefanov/srna3d2-tmscore-dataset"
+    },
+    {
+      "description": "TBM training notebook",
+      "url": "https://www.kaggle.com/code/stefanstefanov/srna3d2-train-tmscore-model"
+    },
+    {
+      "description": "RNAPro inference with TBM notebook",
+      "url": "https://www.kaggle.com/code/jaejohn/rnapro-inference-with-tbm"
+    },
+    {
+      "description": "RNAPro inference notebook",
+      "url": "https://www.kaggle.com/code/theoviel/stanford-rna-3d-folding-pt2-rnapro-inference"
+    }
+  ],
+  "source_url": "https://www.kaggle.com/competitions/stanford-rna-3d-folding-2/discussion/689697"
+}

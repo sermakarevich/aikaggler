@@ -1,0 +1,39 @@
+{
+  "tldr": "Inference notebook for a machine translation competition using a pre-trained ByT5 model with beam search, supplemented by commented-out rule-based translation memory and length-matching post-processing steps.",
+  "summary": "This notebook provides an inference pipeline for the Deep Past Initiative machine translation competition. It loads a pre-trained ByT5 sequence-to-sequence model and runs inference on test data using a custom PyTorch Dataset and DataLoader. The generation uses beam search (4 beams) with early stopping and a max length of 512. The author also includes commented-out code for a rule-based baseline that builds a translation memory bank and bidirectional confidence dictionary using TF-IDF and Dice coefficients, along with a length-matching post-processing step called SentenceAlign to merge predictions.",
+  "extensive_summary": "## Inference Pipeline\nThe notebook implements a baseline inference script for the Deep Past Initiative \u2013 Machine Translation competition. It loads a pre-trained `byt5-akkadian-model` using `transformers.AutoTokenizer` and `AutoModelForSeq2SeqLM`. The device is set to CUDA if available. Test data is loaded from a CSV containing `transliteration` and `id` columns.\n\n## Data Preparation & Tokenization\nA custom `InferenceDataset` wraps the test DataFrame. Each source text is prefixed with `\"translate Akkadian to English: \"`. Tokenization uses `max_length=512`, `padding=\"max_length\"`, and `truncation=True`, returning PyTorch tensors. A `DataLoader` processes batches of size 16 without shuffling.\n\n## Inference & Generation\nThe model runs in evaluation mode (`model.eval()`). Inference uses `torch.no_grad()` and `model.generate()` with `num_beams=4`, `early_stopping=True`, and `max_length=512`. Outputs are batch-decoded with `skip_special_tokens=True`, stripped of whitespace, and collected. Empty predictions are replaced with `\"broken text\"`.\n\n## Submission\nPredictions are saved to `submission.csv` with columns `id` and `translation`.\n\n## Commented Baseline & Post-Processing\nThe notebook also contains commented-out code for two additional components. First, a rule-based TR-TRY baseline that constructs a translation memory bank and bidirectional confidence dictionary from the training set. It normalizes source text by removing subscripts, brackets, and special characters, then builds TF-IDF vectors (char n-grams 3-6, word n-grams 1-2). Retrieval combines character and word TF-IDF scores with weights (0.75, 0.20), applies a length penalty, reranks with `SequenceMatcher`, and falls back to a Dice-coefficient-based word dictionary. Second, a SentenceAlign post-processing step that compares the model's output length with the rule-based output, appending the remaining text from the rule-based prediction to the model's output at the nearest whitespace boundary if the source is long enough, and appending a period if missing.",
+  "purpose": "inference",
+  "models": [
+    "ByT5"
+  ],
+  "frameworks": [
+    "pytorch",
+    "transformers",
+    "pandas",
+    "tqdm"
+  ],
+  "cv_strategy": "",
+  "preprocessing": [
+    "Text prefixing (\"translate Akkadian to English: \")",
+    "max_length=512 padding/truncation",
+    "Whitespace stripping",
+    "Empty string replacement (\"broken text\")"
+  ],
+  "feature_engineering": [],
+  "augmentations": [],
+  "loss_functions": [],
+  "ensemble": "",
+  "post_processing": "Replaces empty predictions with \"broken text\"; commented code includes whitespace-aligned text merging and period appending.",
+  "what_worked": [],
+  "what_did_not_work": [],
+  "critical_findings": [],
+  "notable_techniques": [
+    "Prefix prompting for translation tasks",
+    "Beam search generation with early stopping",
+    "Dice-coefficient bidirectional word confidence scoring",
+    "TF-IDF retrieval with length penalty and SequenceMatcher reranking",
+    "Whitespace-aligned text merging for post-processing"
+  ],
+  "source_url": "https://www.kaggle.com/code/qifeihhh666/dpc-starter-infer-add-sentencealign",
+  "votes": 600
+}

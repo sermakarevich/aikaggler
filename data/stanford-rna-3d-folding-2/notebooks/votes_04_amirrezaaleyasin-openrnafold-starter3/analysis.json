@@ -1,0 +1,42 @@
+{
+  "tldr": "Inference notebook that predicts RNA 3D structures by combining template-based modeling, Protenix diffusion model, and a de-novo A-form helix fallback to generate 5 coordinate samples per target.",
+  "summary": "This notebook implements a hybrid inference pipeline for the Stanford RNA 3D Folding competition. It first attempts template-based modeling (TBM) by aligning test sequences against training/validation structures, adapting coordinates, and applying diversity transforms. For targets requiring more samples or exceeding length limits, it routes them to the Protenix diffusion model, handling long sequences via overlapping chunking and Kabsch-aligned stitching. Finally, it fills remaining prediction slots with a de-novo idealized A-form RNA helix fallback, applies adaptive structural constraints, and outputs the results in the competition format.",
+  "extensive_summary": "## Setup & Configuration\nThe notebook initializes a hybrid RNA 3D structure prediction pipeline. It installs `biopython`, `biotite`, and `rdkit` via Kaggle datasets, sets deterministic seeds, and defines constants: `MAX_SEQ_LEN=512`, `CHUNK_OVERLAP=128`, `N_SAMPLE=5`, and TBM thresholds (`MIN_SIMILARITY=0.0`, `MIN_PERCENT_IDENTITY=50.0`).\n\n## Phase 1: Template-Based Modeling (TBM)\nFor each test target, the pipeline aligns its sequence against combined training/validation sequences using Biopython\u2019s `PairwiseAligner` (global mode, match=2, mismatch=-1.5, gap scores scaled by sequence length). It retrieves the top 30 similar templates, adapts their coordinates to the query via alignment mapping, and fills padding with linear interpolation or fixed offsets. To ensure diversity, it applies slot-specific transforms: Gaussian noise, hinge rotation, chain jittering, or smooth wiggle interpolation. Each adapted structure is refined using `adaptive_rna_constraints`, which enforces ~5.95\u00c5 backbone bonds, ~10.2\u00c5 i-i+2 spacing, Laplacian smoothing, and 3.2\u00c5 self-avoidance for chains >25 residues.\n\n## Phase 2: Protenix Inference & Chunk Stitching\nTargets requiring additional samples or exceeding 512nt are routed to the Protenix diffusion model. Long sequences are split into overlapping chunks (128nt overlap). The notebook builds a JSON input, initializes `InferenceRunner` and `InferenceDataset`, and extracts C1' coordinates using `centre_atom_mask` or `atom_to_tokatom_idx` fallbacks. Collapsed coordinates are discarded. Chunks are stitched back together using Kabsch alignment on overlapping residues, followed by linear weight blending to smooth transitions.\n\n## Phase 3: Ensemble & Output\nPredictions are combined sequentially: TBM outputs fill the first slots, Protenix fills the remainder, and any remaining slots are populated with a de-novo idealized A-form RNA helix (radius 10.0, rise 2.5 per residue). All coordinates undergo adaptive constraints, are clipped to [-999.999, 9999.999], and formatted into the competition CSV schema (`ID, resname, resid, x_1..5, y_1..5, z_1..5`).",
+  "purpose": "inference",
+  "models": [
+    "Protenix (protenix_base_20250630_v1.0.0)",
+    "de-novo A-form RNA helix fallback"
+  ],
+  "frameworks": [
+    "pytorch",
+    "pandas",
+    "numpy",
+    "biopython"
+  ],
+  "cv_strategy": "",
+  "preprocessing": [
+    "Sequence chunking for lengths >512nt (128nt overlap)",
+    "Coordinate extraction from Protenix atom masks",
+    "Padding short predictions",
+    "Clipping coordinates to [-999.999, 9999.999]"
+  ],
+  "feature_engineering": [],
+  "augmentations": [
+    "TBM diversity transforms: Gaussian noise, hinge rotation, chain jittering, smooth wiggle interpolation",
+    "Adaptive RNA constraints: ~5.95\u00c5 backbone bonds, ~10.2\u00c5 i-i+2 spacing, Laplacian smoothing, 3.2\u00c5 self-avoidance"
+  ],
+  "loss_functions": [],
+  "ensemble": "Combines up to 5 predictions per target by filling slots sequentially with TBM templates, Protenix diffusion outputs, and a de-novo A-form helix fallback.",
+  "post_processing": "Kabsch alignment for overlapping chunk stitching with linear weight blending, adaptive RNA structural constraints applied to all predictions, coordinate clipping",
+  "what_worked": [],
+  "what_did_not_work": [],
+  "critical_findings": [],
+  "notable_techniques": [
+    "Kabsch alignment for seamless chunk stitching in long-sequence inference",
+    "Adaptive RNA constraints enforcing ~5.95\u00c5 backbone bonds, ~10.2\u00c5 i-i+2 spacing, Laplacian smoothing, and 3.2\u00c5 self-avoidance",
+    "Diversity transforms (hinge, jitter, wiggle) to generate structurally varied TBM predictions",
+    "De-novo A-form helix fallback (radius 10.0, rise 2.5) for targets lacking templates or model coverage"
+  ],
+  "source_url": "https://www.kaggle.com/code/amirrezaaleyasin/openrnafold-starter3",
+  "votes": 344
+}

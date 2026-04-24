@@ -1,0 +1,13 @@
+{
+  "description": "Participants predict the outcomes of the 2026 NCAA Men's Basketball Tournament games using historical team statistics, seeding data, and past tournament results. Competitors must estimate the probability of each team winning its matchups to construct a tournament bracket. Success is evaluated by the Mean Squared Error between predicted probabilities and actual game results on a held-out test set.",
+  "data_modality": "tabular",
+  "task_type": "forecasting",
+  "label_structure": "single_label",
+  "metric": "Mean Squared Error",
+  "test_split": "temporal",
+  "format": "two_stage",
+  "dataset_scale": "small",
+  "domain": "sports_basketball",
+  "data_challenges": [],
+  "constraints": []
+}

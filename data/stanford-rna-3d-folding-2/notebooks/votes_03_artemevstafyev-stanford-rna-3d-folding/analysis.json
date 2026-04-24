@@ -1,0 +1,45 @@
+{
+  "tldr": "Hybrid RNA 3D folding baseline combining template-based modeling (TBM) with Protenix diffusion inference and a de-novo A-form helix fallback, generating 10 coordinate samples per target.",
+  "summary": "This notebook implements a hybrid inference pipeline for RNA 3D structure prediction. Phase 1 uses pairwise sequence alignment to find similar training structures, adapts their coordinates to the query sequence, and applies diversity transforms followed by adaptive RNA geometric constraints. Phase 2 routes targets requiring more samples or exceeding length limits to the Protenix diffusion model, handling long sequences via overlapping chunks that are stitched back together using Kabsch alignment and linear blending. Any remaining prediction slots are filled with a de-novo idealized A-form helix generator. The pipeline outputs 10 coordinate samples per residue per target, clipped to valid ranges.",
+  "extensive_summary": "## Pipeline Overview\nThe notebook implements a hybrid inference pipeline for RNA 3D structure prediction, combining template-based modeling (TBM), the Protenix diffusion model, and a de-novo fallback. It processes test sequences in three phases to generate 10 coordinate samples per target.\n\n## Phase 1: Template-Based Modeling (TBM)\nFor each test target, the pipeline searches a combined train/validation pool of 30 similar sequences using `Bio.Align.PairwiseAligner` with global alignment scores. Templates are filtered by minimum similarity and percent identity thresholds. For each valid template, coordinates are adapted to the query sequence via alignment mapping, with missing residues linearly interpolated or shifted. To ensure diversity across the 10 required samples, the notebook applies sequential transforms: Gaussian noise scaling with similarity, hinge rotation on the longest chain segment, chain jittering (rotation + translation), and spline-based wiggle smoothing. Each adapted structure is then refined using `adaptive_rna_constraints`, which enforces bond lengths (~5.95 \u00c5), soft i-i+2 distances (~10.2 \u00c5), Laplacian smoothing, and self-avoidance (<3.2 \u00c5) with confidence-weighted strength.\n\n## Phase 2: Protenix Inference\nTargets that exceed the sample limit or have sequences longer than `MAX_SEQ_LEN=512` are routed to Protenix. Long sequences are split into overlapping chunks (`CHUNK_OVERLAP=128`) and processed via a custom JSON input format. The Protenix `InferenceRunner` generates raw coordinates, which are extracted using `centre_atom_mask` or `atom_to_tokatom_idx` fallbacks. Collapsed coordinate predictions are detected and discarded. Chunks are stitched back together using Kabsch alignment on overlapping residues and linear weight blending to smooth transitions. Single-pass sequences are used directly.\n\n## Phase 3: Combination & Output\nTBM and Protenix predictions are combined per target. Any remaining slots are filled with a de-novo idealized A-form helix generator (`generate_rna_structure`), which applies a fixed radius (10.0 \u00c5) and rise (2.5 \u00c5) per residue, followed by the same adaptive RNA constraints. Final coordinates are stacked into `(N_SAMPLE, seq_len, 3)` arrays, clipped to `[-999.999, 9999.999]`, and formatted into the competition submission CSV with `x_i, y_i, z_i` columns for each sample.\n\n## Configuration & Utilities\nThe pipeline uses deterministic seeding, environment variables for model paths and thresholds, and handles multi-chain stoichiometry parsing. It includes robust fallbacks for missing masks, alignment errors, and inference failures.",
+  "purpose": "baseline",
+  "models": [
+    "protenix_base_20250630_v1.0.0",
+    "de-novo A-form helix generator"
+  ],
+  "frameworks": [
+    "torch",
+    "numpy",
+    "pandas",
+    "biopython",
+    "rdkit"
+  ],
+  "cv_strategy": "",
+  "preprocessing": [
+    "Sequence chunking (MAX_SEQ_LEN=512, CHUNK_OVERLAP=128)",
+    "Coordinate extraction via centre_atom_mask/atom_to_tokatom_idx",
+    "Padding to match sequence length",
+    "Coordinate clipping to [-999.999, 9999.999]"
+  ],
+  "feature_engineering": [],
+  "augmentations": [
+    "Gaussian noise addition",
+    "Hinge rotation",
+    "Chain jittering",
+    "Spline wiggle smoothing"
+  ],
+  "loss_functions": [],
+  "ensemble": "Combines TBM predictions, Protenix diffusion outputs, and de-novo A-form helix fallback to generate exactly 10 coordinate samples per target.",
+  "post_processing": "Kabsch alignment for chunk stitching, linear weight blending for overlaps, adaptive RNA constraints (bond lengths, i-i+2 distances, Laplacian smoothing, self-avoidance), coordinate clipping",
+  "what_worked": [],
+  "what_did_not_work": [],
+  "critical_findings": [],
+  "notable_techniques": [
+    "Chunk-and-stitch with Kabsch alignment and linear blending for long sequences",
+    "Adaptive RNA constraints with confidence-weighted strength scaling",
+    "Diversity transforms (hinge, jitter, wiggle) applied sequentially to template-adapted coordinates",
+    "Fallback to idealized A-form helix with fixed rise/radius for empty prediction slots"
+  ],
+  "source_url": "https://www.kaggle.com/code/artemevstafyev/stanford-rna-3d-folding",
+  "votes": 383
+}

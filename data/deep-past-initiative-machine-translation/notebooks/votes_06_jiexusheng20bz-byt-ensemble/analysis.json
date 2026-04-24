@@ -1,0 +1,36 @@
+{
+  "tldr": "Ensemble of two fine-tuned ByT5 models via weighted weight averaging for Akkadian-to-English translation, using regex gap normalization and beam search inference.",
+  "summary": "This notebook demonstrates an inference pipeline for machine translation from Akkadian to English using two fine-tuned ByT5 models. Instead of logit averaging, the author performs a weighted average of the model weights before loading them into a single model. The preprocessing pipeline replaces various ellipsis and gap patterns in the transliteration text with standardized tokens using regex. Inference is conducted with beam search and a max length of 512. The notebook serves as a practical recipe for model ensembling and text normalization in low-resource translation tasks.",
+  "extensive_summary": "## Setup and Imports\nThe notebook imports `pandas`, `torch`, `transformers`, `tqdm`, and `re`. It defines paths to two pre-trained/fine-tuned ByT5 models and sets inference parameters: `BATCH_SIZE=16`, `MAX_LENGTH=512`, and device selection.\n\n## Preprocessing\nA custom regex-based function `replace_gaps` normalizes various gap and ellipsis representations in the Akkadian transliteration data (e.g., `.3`, `xx`, `\u2026\u2026`, `\u2026`, `....`) into standardized `<big_gap>` or `<gap>` tokens. A reverse function `replace_gaps_back` is defined but not applied in the provided code. The translation prompt prefix `\"translate Akkadian to English: \"` is prepended to all inputs.\n\n## Model Weight Averaging\nDespite the markdown claiming logit averaging, the code performs weight averaging. Model weights are loaded, and a weighted sum is computed: `w1 = 0.94 / 1.94`, `w2 = 1.00 / 1.94`. The averaged weights are saved into `model2`'s state dict, effectively creating a single ensemble model.\n\n## Inference Pipeline\nA custom PyTorch `Dataset` tokenizes inputs with `max_length=512`, padding, and truncation. A `DataLoader` processes batches of size 16. Inference uses `model.generate` with `num_beams=4`, `early_stopping=True`, and `max_length=512`. Outputs are decoded with `skip_special_tokens=True` and stripped.\n\n## Submission\nPredictions are formatted into a DataFrame with `id` and `translation` columns. Empty predictions are replaced with `\"broken text\"`. The result is saved to `submission.csv`.",
+  "purpose": "ensemble",
+  "models": [
+    "ByT5"
+  ],
+  "frameworks": [
+    "torch",
+    "transformers",
+    "pandas"
+  ],
+  "cv_strategy": "",
+  "preprocessing": [
+    "regex-based gap/ellipsis normalization to <big_gap> and <gap> tokens",
+    "prefix prompting (\"translate Akkadian to English: \")",
+    "tokenization with max_length=512, padding, and truncation"
+  ],
+  "feature_engineering": [],
+  "augmentations": [],
+  "loss_functions": [],
+  "ensemble": "Weighted averaging of model weights (w1=0.94/1.94, w2=1.00/1.94) before inference, despite the markdown claiming logit averaging.",
+  "post_processing": "",
+  "what_worked": [],
+  "what_did_not_work": [],
+  "critical_findings": [],
+  "notable_techniques": [
+    "Weighted model weight averaging (w1=0.94/1.94, w2=1.00/1.94)",
+    "Regex normalization of Akkadian gap/ellipsis patterns to <big_gap> and <gap> tokens",
+    "Instruction prefix prompting for translation",
+    "Beam search inference (num_beams=4, early_stopping=True)"
+  ],
+  "source_url": "https://www.kaggle.com/code/jiexusheng20bz/byt-ensemble",
+  "votes": 409
+}

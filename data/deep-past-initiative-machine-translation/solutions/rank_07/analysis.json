@@ -1,0 +1,42 @@
+{
+  "tldr": "Fine-tuned byT5-xl as a causal language model on an expanded ~36k sample dataset with pseudolabeling and external PDF data to achieve 7th place.",
+  "summary": "The author achieved 7th place by expanding the training data to ~36k samples through translation, external PDF retrieval, and pseudolabeling deduplicated text. They evaluated multiple byT5 variants and found that model size was critical, with byT5-xl performing best. Instead of using a sequence-to-sequence setup, they framed the task as a causal language modeling problem, which outperformed both other T5 variants and fine-tuned LLMs like Mistral and Qwen. The final submission used byT5-xl trained for 3 epochs.",
+  "extensive_summary": "## Data Expansion & Preparation\nInitial manual sentence alignment yielded minimal gains. The core strategy focused on expanding the training set to four times its original size, culminating in ~36k samples of varying lengths. This was achieved by translating Turkish-to-English for shared non-English AKTs (~6k samples), extracting transliterations and translations from 18 PDF sources including `Innaya_v2.pdf` and historical geography/micronarrative texts (~6k samples), and deduplicating `published_texts.csv` against existing data. The remaining unduplicated text was split into ~30-word strings and pseudolabeled, adding ~18k samples.\n\n## Model Selection & Training\nModel scaling proved decisive: `byt5-small << byt5-base << byt5-large ~< byt5-xl`. The task was formulated as a causal language modeling problem rather than sequence-to-sequence, which significantly improved performance. Fine-tuning larger LLMs like Mistral and Qwen underperformed compared to byT5, and other T5 variants also lagged behind. The final submission utilized `byt5-xl` trained for 3 epochs, though `byt5-large` was used for faster iteration during experimentation.",
+  "rank": 7,
+  "models": [
+    "byt5-xl",
+    "byt5-large",
+    "byt5-base",
+    "byt5-small",
+    "Mistral",
+    "Qwen"
+  ],
+  "cv_strategy": "",
+  "preprocessing": [
+    "Manual sentence alignment",
+    "Deduplication of `published_texts.csv` against existing data",
+    "Splitting text into ~30-word strings",
+    "Pseudolabeling",
+    "Translation of Turkish-to-English for non-English AKTs",
+    "Extraction from external PDF sources"
+  ],
+  "feature_engineering": [],
+  "augmentations": [],
+  "loss_functions": [],
+  "ensemble": "",
+  "post_processing": "",
+  "what_worked": [
+    "Expanding training data to 4x via pseudolabeling and external PDFs",
+    "Using causal LM formulation over seq2seq",
+    "Scaling to byT5-xl"
+  ],
+  "what_did_not_work": [
+    "Initial manual sentence alignment had low impact",
+    "Fine-tuning Mistral/Qwen and other T5 variants performed worse than byT5"
+  ],
+  "critical_findings": [],
+  "github_repos": [],
+  "papers": [],
+  "other_solution_refs": [],
+  "source_url": "https://www.kaggle.com/competitions/deep-past-initiative-machine-translation/discussion/684215"
+}

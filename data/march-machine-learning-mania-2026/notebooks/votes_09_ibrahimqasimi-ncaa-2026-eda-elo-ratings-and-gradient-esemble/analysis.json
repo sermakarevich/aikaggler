@@ -1,0 +1,60 @@
+{
+  "tldr": "Baseline NCAA tournament prediction notebook using Elo ratings, Four Factors efficiency metrics, and contextual features, combined into a simple average ensemble of LightGBM, XGBoost, and CatBoost, validated on 2022\u20132025 tournaments.",
+  "summary": "This notebook provides a systematic baseline for predicting NCAA basketball tournament outcomes by combining rating systems, efficiency metrics, and contextual signals. It begins with an EDA highlighting seed gap dominance and consistent home-court advantage, then engineers features including a custom Elo system with margin-of-victory scaling, Dean Oliver's Four Factors, strength of schedule, late-season momentum, conference strength, and coach experience. These features are transformed into pairwise matchup differences and fed into an ensemble of LightGBM, XGBoost, and CatBoost. The model is validated on a temporal holdout (2022\u20132025 tournaments) and evaluated using the Brier score, with probability clipping applied for calibration.",
+  "extensive_summary": "## Overview & Objective\nThe notebook targets the March Machine Learning Mania 2026 competition, aiming to predict matchup win probabilities evaluated via Brier score. It covers Stage 1 (2022\u20132025 development) and Stage 2 (2026 prediction). The approach merges rating systems, efficiency metrics, and contextual signals into a gradient boosting ensemble.\n\n## Setup & Data Inventory\nImports include pandas, numpy, matplotlib, seaborn, lightgbm, xgboost, catboost, and sklearn metrics/calibration. Data paths point to `/kaggle/input/march-machine-learning-mania-2026`. The notebook loads compact/detailed results, tournament seeds, team conferences, coaches, and teams for both men and women. Seed strings are parsed into numeric values. Temporal coverage spans multiple decades for regular season and tournament data.\n\n## Exploratory Data Analysis\nEDA reveals key drivers: seed gap is the strongest predictor (higher seeds win >90% when gap >10), women's tournament is notably more \"chalk\" than men's, home-court advantage remains stable at ~58\u201360%, and scoring trends fluctuate yearly. Conference representation analysis shows SEC, Big Ten, and Big 12 dominance. Upset rates spike in similarly seeded matchups but drop sharply with large seed gaps.\n\n## Feature Engineering\nSix feature categories are constructed per team-season, then differenced for matchups:\n- **Elo Ratings:** Custom implementation with log-transformed margin-of-victory scaling, home-court adjustment (+100/-100), and 75% between-season mean reversion.\n- **Four Factors & Advanced Stats:** Computes offensive/defensive efficiency, effective field goal percentage, turnover rate, offensive rebound percentage, free throw rate, pace, assist rate, and blocks/stl per game using detailed box score data.\n- **Strength of Schedule (SOS):** Average opponent Elo across regular season games.\n- **Late-Season Momentum:** Win rate over the final 10 regular season games.\n- **Conference Strength:** Mean Elo of all conference teams per season.\n- **Coach Experience:** Cumulative NCAA tournament appearances and program tenure for men's coaches.\nPairwise features (`elo_d`, `seed_d`, `sos_d`, `mom_d`, `conf_d`, `cexp_d`, `cten_d`) and raw team stats are assembled into a unified feature matrix.\n\n## Model Training & Validation\nTraining data spans men's games from 2003+ and women's from 2010+. Validation uses a temporal holdout of 2022\u20132025 tournament games. Missing values are filled with 0. Three models are trained independently:\n- **LightGBM:** 2000 estimators, lr=0.02, num_leaves=31, min_child_samples=15, subsample/colsample=0.8, reg_alpha=0.1, reg_lambda=1.0. Early stopping at 200 rounds.\n- **XGBoost:** 2000 estimators, lr=0.02, max_depth=5, min_child_weight=15, subsample/colsample=0.8, reg_alpha=0.1, reg_lambda=1.0, tree_method=\"hist\". Early stopping at 200 rounds.\n- **CatBoost:** 2000 iterations, lr=0.02, depth=5, min_data_in_leaf=15, l2_leaf_reg=3.0, subsample=0.8. Evaluated on Logloss with 200-round early stopping.\nAll models use default binary classification losses and are evaluated on the validation set via Brier score.\n\n## Ensemble & Diagnostics\nPredictions are averaged across the three models and clipped to [0.02, 0.98]. Validation Brier scores are computed per season and gender. Diagnostics include LightGBM feature importance (top features typically include seed difference, Elo difference, and efficiency metrics), calibration curves (quantile strategy), and prediction distribution histograms. The ensemble shows reasonable calibration but benefits from clipping.\n\n## Submission Generation\nModels are retrained on the full historical dataset using early-stopping iteration counts. Predictions for Stage 1 and Stage 2 submissions are generated in batches of 50,000 matchups, applying the same feature pipeline and ensemble averaging. Final outputs are saved as CSVs with 6-decimal precision.",
+  "purpose": "baseline",
+  "models": [
+    "LightGBM",
+    "XGBoost",
+    "CatBoost"
+  ],
+  "frameworks": [
+    "pandas",
+    "numpy",
+    "matplotlib",
+    "seaborn",
+    "lightgbm",
+    "xgboost",
+    "catboost",
+    "scikit-learn"
+  ],
+  "cv_strategy": "Temporal holdout: validation on 2022\u20132025 tournaments, training on pre-2022 data (men: 2003+, women: 2010+)",
+  "preprocessing": [
+    "Missing values filled with 0",
+    "Predictions clipped to [0.02, 0.98]",
+    "Categorical/conf data converted to lookup dictionaries",
+    "Seed strings parsed to integers",
+    "Pairwise feature differencing for matchups"
+  ],
+  "feature_engineering": [
+    "Elo ratings with log-transformed margin-of-victory scaling, home-court adjustment, and 75% between-season mean reversion",
+    "Dean Oliver Four Factors: offensive/defensive efficiency, eFG%, TO%, OR%, FTR, pace, assist rate, blocks/stl per game",
+    "Strength of Schedule (SOS): average opponent Elo",
+    "Late-season momentum: win rate in final 10 regular season games",
+    "Conference strength: mean Elo of conference teams per season",
+    "Coach experience: cumulative tournament appearances and program tenure",
+    "Pairwise matchup differences (elo_d, seed_d, sos_d, mom_d, conf_d, cexp_d, cten_d) and raw team stats"
+  ],
+  "augmentations": [],
+  "loss_functions": [
+    "Default binary classification losses (LightGBM, XGBoost, CatBoost); evaluated on Brier score"
+  ],
+  "ensemble": "Simple average of predicted probabilities from LightGBM, XGBoost, and CatBoost, clipped to [0.02, 0.98].",
+  "post_processing": "Probability clipping to [0.02, 0.98]; calibration curve analysis using quantile strategy.",
+  "what_worked": [],
+  "what_did_not_work": [],
+  "critical_findings": [
+    "Seed difference is the single strongest predictor, with higher seeds winning >90% of games when the gap exceeds 10.",
+    "Women's tournament is notably more chalk (higher seeds win more consistently) than the men's tournament.",
+    "Home-court advantage remains stable at ~58\u201360% across decades, while raw scoring trends fluctuate, making efficiency metrics more reliable than point totals."
+  ],
+  "notable_techniques": [
+    "Elo system with log-transformed margin-of-victory scaling and 75% between-season mean reversion",
+    "Pairwise feature differencing to convert team-level stats into matchup-specific features",
+    "Late-season momentum captured via rolling win rate over the final 10 regular season games",
+    "Probability clipping to [0.02, 0.98] to prevent overconfident predictions and improve calibration",
+    "Coach tenure and cumulative tournament appearance tracking as proxy for program stability"
+  ],
+  "source_url": "https://www.kaggle.com/code/ibrahimqasimi/ncaa-2026-eda-elo-ratings-and-gradient-esemble",
+  "votes": 114
+}

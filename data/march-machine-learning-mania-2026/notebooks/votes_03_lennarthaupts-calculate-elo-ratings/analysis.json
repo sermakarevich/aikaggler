@@ -1,0 +1,47 @@
+{
+  "tldr": "Computes historical Elo ratings for men's and women's basketball teams with configurable match weights and rating parameters, aggregates them into per-season summary features, and generates a direct submission file.",
+  "summary": "This notebook implements a custom Elo rating system for NCAA basketball, calculating team ratings across regular season and tournament games. It introduces tunable parameters for the K-factor, rating width, and a margin-of-victory multiplier, while allowing distinct weights for regular season versus tournament matches. The code aggregates chronological ratings into summary statistics (mean, median, std, min, max, last, and linear trend) per team per season. Finally, it demonstrates how to use the final ratings to generate a baseline submission via the standard Elo probability formula.",
+  "extensive_summary": "## Algorithm Implementation\nThe notebook defines a custom Elo rating engine that updates team ratings sequentially based on match outcomes. The expected outcome probability is computed using the standard logistic function: `1 / (1 + 10^((rating_opponent - rating_team) / width))`. The rating update applies a configurable K-factor, a match weight, and an optional margin-of-victory multiplier `(win_score - loss_score) / alpha`. Ratings are clamped to a lower limit to prevent negative values. A Brier score is computed only on tournament matches for evaluation.\n\n## Data Preparation & Parameterization\nMen's and women's datasets are loaded separately from `MRegularSeasonCompactResults.csv`, `MNCAATourneyCompactResults.csv`, `MTeams.csv` (and corresponding W-files). Regular season and tournament results are concatenated, tagged with a `tourney` flag (0/1), and assigned match weights. Data is sorted chronologically by `Season` and `DayNum`, then indexed. For men's data, regular season weight is 1.0 and tournament weight is 0.75. For women's data, regular season weight is 0.95 and tournament weight is 1.0. Both use `initial_rating=1200`, `width=1200`, and `alpha=None` (disabling margin scaling). K-factors are set to 125 for men and 190 for women.\n\n## Feature Aggregation & Submission\nAfter computing chronological ratings, tournament rows are filtered out. Ratings are grouped by `TeamID` and `Season`, then aggregated into `Rating_Mean`, `Rating_Median`, `Rating_Std`, `Rating_Min`, `Rating_Max`, and `Rating_Last`. `Rating_Trend` is derived by applying `scipy.stats.linregress` to the rating sequence over the season. The final ratings are merged with team metadata and plotted. For submission, the notebook splits the sample submission IDs, maps the final `Rating_Last` to each team, and computes probabilities using `1 / (1 + 10^((T2_rating - T1_rating) / width))`.",
+  "purpose": "feature_engineering",
+  "models": [],
+  "frameworks": [
+    "numpy",
+    "pandas",
+    "scipy.stats",
+    "tqdm",
+    "matplotlib"
+  ],
+  "cv_strategy": "",
+  "preprocessing": [
+    "Concatenates regular season and tournament compact results",
+    "Adds binary tourney flag (0/1) and match weight columns",
+    "Sorts chronologically by Season and DayNum",
+    "Resets index after sorting",
+    "Filters out tournament rows before aggregation"
+  ],
+  "feature_engineering": [
+    "Elo ratings with initial_rating=1200, width=1200, alpha=None",
+    "K-factor: 125 (men), 190 (women)",
+    "Match weights: regular=1.0/tourney=0.75 (men), regular=0.95/tourney=1.0 (women)",
+    "Aggregated stats per TeamID/Season: mean, median, std, min, max, last",
+    "Rating_Trend via linear regression slope over season",
+    "Direct submission probability via 1/(1+10^((T2-T1)/width))"
+  ],
+  "augmentations": [],
+  "loss_functions": [],
+  "ensemble": "",
+  "post_processing": "",
+  "what_worked": [
+    "ELO ratings alone are unlikely to reach the medal zone, but serve as powerful features; this approach was a key component in two prize-winning entries."
+  ],
+  "what_did_not_work": [],
+  "critical_findings": [],
+  "notable_techniques": [
+    "Margin-of-victory multiplier in Elo update formula",
+    "Custom match weights for regular season vs tournament",
+    "Rating trend calculated as linear regression slope over the season",
+    "Direct submission generation using Elo difference probability formula"
+  ],
+  "source_url": "https://www.kaggle.com/code/lennarthaupts/calculate-elo-ratings",
+  "votes": 309
+}
