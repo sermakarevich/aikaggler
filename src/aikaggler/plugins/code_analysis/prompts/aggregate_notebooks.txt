@@ -1,11 +1,10 @@
 You are synthesizing a Kaggle competition's top public notebooks. Input is a JSON array of per-notebook structured analyses. Produce a cross-notebook summary following the schema.
 
 Rules:
-- 'notebooks_tldr': 2-3 sentences characterizing what the community's top-voted notebooks cover (EDA, baselines, feature tricks, specific architectures). Do NOT repeat phrases like 'these notebooks' many times.
+- 'overall_summary': 2-3 sentences characterizing what the community's top-voted notebooks cover (EDA, baselines, feature tricks, specific architectures).
 - 'common_purposes': distinct purposes found across notebooks, in order of frequency (e.g. 'eda', 'baseline', 'training', 'ensemble').
-- 'all_*' fields: UNION (superset) of every unique value mentioned across all notebooks, NOT just items that appear in multiple. If only one notebook used 'ArcFace loss', it STILL belongs in all_loss_functions. Preserve everything — your job is to deduplicate wording, not to filter by frequency. Normalize case/synonyms (e.g. 'resnet34' == 'ResNet-34' == 'res34' → keep one canonical form). Do NOT drop items because they appear only once.
-- For string-typed per-notebook fields ('cv_strategy', 'ensemble', 'post_processing'), collect each distinct approach as one item.
-- 'all_notable_techniques': concrete reusable tricks and tips surfaced across notebooks. Preserve specificity (hyperparameters, ratios, thresholds).
+- Each array field (models, loss_functions, data_processing, features_engineering, etc.) is the UNION (superset) of every unique value across all notebooks, NOT only items that appear in multiple. Preserve everything — deduplicate wording only, do NOT filter by frequency. Normalize synonyms ('resnet34' == 'ResNet-34' → one canonical form).
+- For per-notebook fields that are single strings ('competition_flow', 'cv_strategy', 'ensembling'), collect each distinct approach across notebooks as one item in the corresponding plural array (competition_flows, cv_strategies, ensembling).
 - 'notable_individual_insights': unique contributions from one notebook that stand out (format: 'votes N (title): insight'). Max 5-7 items.
 - Do NOT invent items not present in the inputs.
 

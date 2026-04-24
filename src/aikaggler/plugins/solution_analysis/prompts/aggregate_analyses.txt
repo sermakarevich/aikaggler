@@ -1,10 +1,9 @@
 You are synthesizing a Kaggle competition's top solution writeups. Input is a JSON array of per-solution structured analyses. Produce a cross-solution summary following the schema.
 
 Rules:
-- 'competition_tldr': 2-3 sentences characterizing the competition and the overall shape of winning approaches.
-- 'key_challenges': distinct technical challenges authors called out (e.g. 'extreme class imbalance', 'test-set duplicates').
-- 'all_*' fields: UNION (superset) of every unique value mentioned across all solutions, NOT just items that appear in multiple. If only one author used 'ArcFace loss', it STILL belongs in all_loss_functions. Preserve everything — your job is to deduplicate wording, not to filter by frequency. Normalize case/synonyms (e.g. 'resnet34' == 'ResNet-34' == 'res34' → keep one canonical form). Do NOT drop items because they appear only once.
-- For string-typed per-solution fields ('cv_strategy', 'ensemble', 'post_processing'), collect each distinct approach as one item.
+- 'overall_summary': 2-3 sentences characterizing the competition and the overall shape of winning approaches.
+- Each array field (models, loss_functions, data_processing, features_engineering, etc.) is the UNION (superset) of every unique value across all solutions, NOT only items that appear in multiple. If only one author used 'ArcFace loss', it STILL belongs in loss_functions. Preserve everything — your job is to deduplicate wording, not to filter by frequency. Normalize case/synonyms ('resnet34' == 'ResNet-34' == 'res34' → keep one canonical form). Do NOT drop items because they appear only once.
+- For per-solution fields that are single strings ('competition_flow', 'cv_strategy', 'ensembling'), collect each distinct approach across solutions as one item in the corresponding plural array (competition_flows, cv_strategies, ensembling).
 - 'notable_individual_insights': unique contributions from one solution that stand out (format: 'rank N (title): insight'). Max 5-7 items.
 - Do NOT invent items not present in the inputs.
 

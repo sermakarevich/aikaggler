@@ -128,35 +128,31 @@ def analyze_notebook_with_ollama(
     )
 
 
+_NOTEBOOK_PAYLOAD_FIELDS = [
+    "summary", "purpose", "competition_flow", "data_reading", "data_processing",
+    "features_engineering", "models", "frameworks_used", "loss_functions",
+    "cv_strategy", "ensembling", "insights", "critical_findings",
+    "what_did_not_work",
+]
+
+
 def aggregate_notebooks_with_ollama(
     analyses: list[dict],
     model: str = OLLAMA_MODEL,
     url: str = OLLAMA_URL,
 ) -> dict:
-    payload = [
-        {
-            "votes": a.get("votes"),
-            "title": a.get("title"),
-            "purpose": a["analysis"].get("purpose"),
-            "tldr": a["analysis"].get("tldr", ""),
-            "summary": a["analysis"].get("summary", ""),
-            "models": a["analysis"].get("models", []),
-            "frameworks": a["analysis"].get("frameworks", []),
-            "cv_strategy": a["analysis"].get("cv_strategy", ""),
-            "preprocessing": a["analysis"].get("preprocessing", []),
-            "feature_engineering": a["analysis"].get("feature_engineering", []),
-            "augmentations": a["analysis"].get("augmentations", []),
-            "loss_functions": a["analysis"].get("loss_functions", []),
-            "ensemble": a["analysis"].get("ensemble", ""),
-            "post_processing": a["analysis"].get("post_processing", ""),
-            "what_worked": a["analysis"].get("what_worked", []),
-            "what_did_not_work": a["analysis"].get("what_did_not_work", []),
-            "critical_findings": a["analysis"].get("critical_findings", []),
-            "notable_techniques": a["analysis"].get("notable_techniques", []),
-        }
-        for a in analyses
-        if "error" not in a.get("analysis", {})
-    ]
+    payload = []
+    for a in analyses:
+        analysis = a.get("analysis", {})
+        if "error" in analysis:
+            continue
+        entry: dict = {"votes": a.get("votes"), "title": a.get("title")}
+        for field in _NOTEBOOK_PAYLOAD_FIELDS:
+            entry[field] = analysis.get(field, [] if field not in {
+                "summary", "purpose", "competition_flow", "cv_strategy",
+                "ensembling",
+            } else "")
+        payload.append(entry)
     prompt = load_prompt(
         PROMPTS_DIR,
         "aggregate_notebooks",
@@ -197,7 +193,7 @@ def _render_aggregated_markdown(
     analyses: list[dict],
 ) -> str:
     lines = [f"# {slug}: top public notebooks", ""]
-    lines += [agg.get("notebooks_tldr", ""), ""]
+    lines += [agg.get("overall_summary", ""), ""]
 
     def _section(title: str, items: list[str]) -> None:
         if not items:
@@ -207,19 +203,18 @@ def _render_aggregated_markdown(
         lines.append("")
 
     _section("Common purposes", agg.get("common_purposes", []))
-    _section("Models", agg.get("all_models", []))
-    _section("Frameworks", agg.get("all_frameworks", []))
-    _section("CV strategies", agg.get("all_cv_strategies", []))
-    _section("Preprocessing", agg.get("all_preprocessing", []))
-    _section("Feature engineering", agg.get("all_feature_engineering", []))
-    _section("Augmentations", agg.get("all_augmentations", []))
-    _section("Loss functions", agg.get("all_loss_functions", []))
-    _section("Ensemble patterns", agg.get("all_ensemble_patterns", []))
-    _section("Post-processing", agg.get("all_post_processing", []))
-    _section("What worked", agg.get("all_what_worked", []))
-    _section("What did not work", agg.get("all_what_did_not_work", []))
-    _section("Critical findings", agg.get("all_critical_findings", []))
-    _section("Notable techniques", agg.get("all_notable_techniques", []))
+    _section("Competition flows", agg.get("competition_flows", []))
+    _section("Data reading", agg.get("data_reading", []))
+    _section("Data processing", agg.get("data_processing", []))
+    _section("Features engineering", agg.get("features_engineering", []))
+    _section("Models", agg.get("models", []))
+    _section("Frameworks used", agg.get("frameworks_used", []))
+    _section("Loss functions", agg.get("loss_functions", []))
+    _section("CV strategies", agg.get("cv_strategies", []))
+    _section("Ensembling", agg.get("ensembling", []))
+    _section("Insights", agg.get("insights", []))
+    _section("Critical findings", agg.get("critical_findings", []))
+    _section("What did not work", agg.get("what_did_not_work", []))
     _section(
         "Notable individual insights",
         agg.get("notable_individual_insights", []),
