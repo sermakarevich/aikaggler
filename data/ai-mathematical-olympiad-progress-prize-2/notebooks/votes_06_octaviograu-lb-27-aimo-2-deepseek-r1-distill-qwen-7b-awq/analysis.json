@@ -1,0 +1,42 @@
+{
+  "summary": "This notebook implements a fast, GPU-accelerated inference pipeline for the AIMO 2 competition using the vLLM framework to serve the deepseek-r1-distill-qwen-7b-awq model. It structures prompts with explicit step-by-step reasoning instructions and a strict output format, then generates multiple parallel sequences per question to capture diverse reasoning paths. The author aggregates these parallel outputs using a frequency-based voting mechanism with a small random jitter to break ties, ultimately returning the most common answer modulo 1000. The pipeline includes dynamic token limits and sequence counts that adapt as the runtime deadline approaches, ensuring the submission stays within the time budget. Readers should take away how vLLM's tensor parallelism and custom sampling parameters can be leveraged for rapid, multi-sample LLM inference, and how simple ensemble voting over generated reasoning traces can stabilize outputs without heavy post-processing.",
+  "purpose": "inference",
+  "competition_flow": "Loads the deepseek-r1-distill-qwen-7b-awq model via vLLM with tensor parallelism, generates multiple parallel reasoning traces per question using custom sampling parameters, aggregates the outputs via frequency voting with modulo 1000, and serves the results through the official AIMO 2 inference server.",
+  "data_reading": [
+    "Loads test/reference data via polars DataFrame or pandas CSV depending on the context.",
+    "Reads the reference.csv file to extract question text for local testing or submission generation."
+  ],
+  "data_processing": [
+    "Applies a regex pattern to extract text enclosed in \\boxed{} from model outputs.",
+    "Filters out messages that do not contain a valid boxed answer.",
+    "Converts extracted answers to integers, applying a small random jitter (random.random() / 1_000) to break ties in frequency counting.",
+    "Applies modulo 1000 to the final selected answer."
+  ],
+  "features_engineering": [],
+  "models": [
+    "deepseek-r1-distill-qwen-7b-awq"
+  ],
+  "frameworks_used": [
+    "vllm",
+    "torch",
+    "pandas",
+    "polars",
+    "numpy"
+  ],
+  "loss_functions": [],
+  "cv_strategy": "",
+  "ensembling": "Generates 32 parallel sequences per question, extracts boxed answers, counts their frequencies with a tiny random jitter to break ties, and selects the most frequent integer answer modulo 1000.",
+  "insights": [
+    "Using vLLM with tensor parallelism across 4 GPUs significantly accelerates batched LLM inference for competition deadlines.",
+    "Prompting the model to think step-by-step and strictly format outputs in \\boxed{} enables reliable post-processing via regex.",
+    "Frequency voting over multiple parallel generations acts as a lightweight ensemble that stabilizes LLM outputs without requiring complex calibration.",
+    "Dynamically reducing max_tokens and max_num_seqs as the runtime cutoff approaches ensures the pipeline completes within strict time limits."
+  ],
+  "critical_findings": [
+    "The author hardcodes a fallback answer of 210 for questions that do not contain specific keywords (e.g., 'Triangle', 'delightful', 'George') during local testing, likely to bypass slow generation for known hard cases.",
+    "The frequency counter uses a floating-point jitter (1 + random.random() / 1_000) to prevent exact ties, which is a practical workaround for deterministic voting in LLM outputs."
+  ],
+  "what_did_not_work": [],
+  "source_url": "https://www.kaggle.com/code/octaviograu/lb-27-aimo-2-deepseek-r1-distill-qwen-7b-awq",
+  "votes": 880
+}

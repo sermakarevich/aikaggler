@@ -1,0 +1,44 @@
+{
+  "summary": "The notebook demonstrates a tabular baseline for the March Machine Learning Mania competition using historical NCAA tournament and regular season data. It constructs team-level seasonal statistics (win ratio, average score gap) and computes pairwise differences for matchups, then trains a CatBoost classifier optimized via Optuna. The author shows that a simple temporal validation scheme combined with feature scaling and probability clipping yields a competitive local CV score, proving that well-engineered seasonal aggregates and pairwise differences are sufficient for a strong baseline without complex deep learning or external ratings.",
+  "purpose": "baseline",
+  "competition_flow": "Loads historical regular season and tournament CSVs, computes team-level seasonal aggregates and pairwise feature differences, optimizes a CatBoost classifier with Optuna using temporal validation, and generates a probability submission file.",
+  "data_reading": [
+    "Reads CSV files from the Kaggle input directory using pandas, concatenates men's and women's tournament/regular season files, and parses team IDs and seasons as integers while extracting seed components via regex."
+  ],
+  "data_processing": [
+    "Drops irrelevant columns, fills missing values with 0, applies min-max scaling using training set statistics, clips predictions to [0, 1], and defaults missing test seeds to 'W01'."
+  ],
+  "features_engineering": [
+    "Per-team seasonal aggregates (wins, losses, average score gaps), win ratio, weighted score gap, pairwise differences for seeds/ratios/gaps, and symmetric team-pair duplication."
+  ],
+  "models": [
+    "CatBoostRegressor"
+  ],
+  "frameworks_used": [
+    "pandas",
+    "numpy",
+    "scikit-learn",
+    "catboost",
+    "optuna",
+    "matplotlib",
+    "seaborn"
+  ],
+  "loss_functions": [
+    "Brier score loss (for Optuna objective), Mean Squared Error (for final CV evaluation)"
+  ],
+  "cv_strategy": "Temporal validation (leave-one-season-out) iterating through seasons, training on all prior seasons and validating on the current season.",
+  "ensembling": "Averages predictions across all validation folds before generating the final submission.",
+  "insights": [
+    "Temporal validation is more appropriate than random k-fold for time-series tournament data.",
+    "Pairwise feature differences effectively capture matchup advantages.",
+    "Probability clipping and min-max rescaling stabilize predictions and prevent extreme outputs.",
+    "Classification mode outperforms regression mode on the local CV metric."
+  ],
+  "critical_findings": [
+    "Missing tournament seeds in the test set are handled by defaulting to 'W01' since seeds are unknown until Selection Sunday.",
+    "The author notes that classification mode worked better than regression mode on CV, despite the original code supporting both."
+  ],
+  "what_did_not_work": [],
+  "source_url": "https://www.kaggle.com/code/alexkalita/optuna-catboost-march-mania-2025-0-15102",
+  "votes": 151
+}

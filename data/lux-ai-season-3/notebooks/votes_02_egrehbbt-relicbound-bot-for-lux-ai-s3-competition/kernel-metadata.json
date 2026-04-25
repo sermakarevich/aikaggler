@@ -1,0 +1,21 @@
+{
+  "id": "egrehbbt/relicbound-bot-for-lux-ai-s3-competition",
+  "id_no": 72978674,
+  "title": "Relicbound (bot for Lux AI S3 competition)",
+  "code_file": "relicbound-bot-for-lux-ai-s3-competition.ipynb",
+  "language": "python",
+  "kernel_type": "notebook",
+  "is_private": false,
+  "enable_gpu": false,
+  "enable_tpu": false,
+  "enable_internet": true,
+  "keywords": [],
+  "dataset_sources": [],
+  "kernel_sources": [],
+  "competition_sources": [
+    "lux-ai-season-3"
+  ],
+  "model_sources": [],
+  "docker_image": "gcr.io/kaggle-images/python@sha256:d6c239c710c9732d8a999bd7f81f4f5ff3a4e6c9ddfb331cba95ea5c2968fc1a",
+  "machine_shape": "None"
+}

@@ -1,0 +1,29 @@
+{
+  "id": "mbmmurad/lb-20-qwq-32b-preview-optimized-inference",
+  "id_no": 71935611,
+  "title": "[LB 20] QWQ-32B-preview Optimized inference",
+  "code_file": "lb-20-qwq-32b-preview-optimized-inference.ipynb",
+  "language": "python",
+  "kernel_type": "notebook",
+  "is_private": false,
+  "enable_gpu": false,
+  "enable_tpu": false,
+  "enable_internet": false,
+  "keywords": [
+    "gpu"
+  ],
+  "dataset_sources": [],
+  "kernel_sources": [
+    "abdullahmeda/vllm-installation-fix"
+  ],
+  "competition_sources": [
+    "ai-mathematical-olympiad-progress-prize-2"
+  ],
+  "model_sources": [
+    "abdullahmeda/qwen2.5/Transformers/72b-instruct-awq/1",
+    "shelterw/qwen2.5/Transformers/qwq-32b-preview-awq/1",
+    "qwen-lm/qwq-32b-preview/Transformers/default/1"
+  ],
+  "docker_image": "gcr.io/kaggle-images/python@sha256:a16cda2c5d52fa988d413876f3ffad7a46cca58678514601feb175990dc187c0",
+  "machine_shape": "None"
+}

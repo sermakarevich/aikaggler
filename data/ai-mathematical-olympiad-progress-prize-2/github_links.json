@@ -1,0 +1,44 @@
+[
+  {
+    "topic_id": 574765,
+    "title": "1st place solution - NemoSkills",
+    "owner": "NVIDIA",
+    "repo": "TensorRT-LLM",
+    "url": "https://github.com/NVIDIA/TensorRT-LLM"
+  },
+  {
+    "topic_id": 572948,
+    "title": "2nd place solution (Team imagination-research)",
+    "owner": "imagination-research",
+    "repo": "aimo2",
+    "url": "https://github.com/imagination-research/aimo2"
+  },
+  {
+    "topic_id": 572948,
+    "title": "2nd place solution (Team imagination-research)",
+    "owner": "Qihoo360",
+    "repo": "Light-R1",
+    "url": "https://github.com/Qihoo360/Light-R1"
+  },
+  {
+    "topic_id": 572948,
+    "title": "2nd place solution (Team imagination-research)",
+    "owner": "Qihoo360",
+    "repo": "360-LLaMA-Factory",
+    "url": "https://github.com/Qihoo360/360-LLaMA-Factory"
+  },
+  {
+    "topic_id": 572948,
+    "title": "2nd place solution (Team imagination-research)",
+    "owner": "InternLM",
+    "repo": "lmdeploy",
+    "url": "https://github.com/InternLM/lmdeploy"
+  },
+  {
+    "topic_id": 571356,
+    "title": "8th place - Solution (LB28) takeway",
+    "owner": "casper-hansen",
+    "repo": "AutoAWQ",
+    "url": "https://github.com/casper-hansen/AutoAWQ"
+  }
+]

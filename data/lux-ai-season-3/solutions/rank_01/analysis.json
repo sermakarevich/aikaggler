@@ -1,0 +1,62 @@
+{
+  "summary": "The author developed a 1st place multi-agent reinforcement learning solution for the Lux AI Season 3 competition using the IMPALA algorithm with V-trace. Key innovations included a custom network architecture combining residual blocks, a ConvLSTM for temporal memory, and a Transformer for spatial attention, alongside dynamic reward scaling and adaptive entropy scheduling to stabilize training in a sparse-reward environment. They also implemented a teacher-student framework with a frozen opponent pool to prevent catastrophic forgetting and overfitting, and devised a dual-model public testing strategy to evaluate a stronger policy without exposing it to imitation learning opponents.",
+  "extensive_summary": "## Core Architecture & Observation Space\nThe solution processes a 24\u00d724 map where each tile is represented by roughly 1000+ features (~100 continuous and ~900 one-hot encoded discrete features). These include environmental cues (asteroid presence, team unit occupancy, relic node region membership) and temporal tracking (steps since last observation or enemy sighting). An internal state updater continuously aggregates discovered environment parameters (e.g., `nebula_tile_vision_reduction`) to dynamically refine features. The raw features are compressed into a 24\u00d724\u00d7128 feature map, passed through 24 residual blocks, a ConvLSTM for cross-timestep memory, and 4 Transformer blocks for long-range spatial attention, producing a `BASE_OUTPUT`.\n\n## Training Algorithm & Stabilization\nTraining relied on large-scale IMPALA with V-trace corrections. To combat plateauing from pure self-play, the authors introduced a frozen teacher agent and a frozen opponent pool. A KL divergence loss aligned the student policy with the teacher, while a teacher baseline loss aligned value heads, preserving previously learned skills. Dynamic reward scaling tracked a sliding average of real returns over ~5000 batches to keep target values within a consistent [-5, +5] range. Dynamic entropy scheduling forced policy entropy to track a decaying target (resetting to smaller values after 100M steps), which caused short-term dips but yielded a stronger final policy.\n\n## Reward Design & Implementation\nEarly experiments used dense shaped rewards (points for relic collection, damage, sensor range, etc.), but the team shifted to a sparse match-result scheme (+/-1 for win/loss) combined with a +/-2.5 summary reward for total relic points. This hybrid approach prevented stagnation while maintaining clear optimization signals. During training, actions were sampled stochastically; during Kaggle inference, greedy action selection was used.\n\n## Testing & Submission Strategy\nA major challenge was evaluating a stronger model on the public leaderboard without triggering imitation learning from top competitors. The team deployed a dual-model submission: a weaker, already-competitive model was used 85% of the time, while the stronger model was used 15% of the time. Match data was logged and analyzed via a Python script to compute real-time win rates. Closer to the deadline, they injected noise into logits and alternated models within matches to further obscure the stronger policy's capabilities.",
+  "rank": 1,
+  "competition_flow": "Raw 24\u00d724 map observations (~1000+ tile features) are encoded and compressed into a 24\u00d724\u00d7128 feature map, processed through residual blocks, a ConvLSTM, and a Transformer, then passed to multi-head outputs (enemy prediction, value, movement, sap-target) trained via large-scale IMPALA self-play with dynamic reward/entropy scaling, and finally deployed via a dual-model Kaggle submission strategy to mask the strongest policy during public testing.",
+  "data_reading": [],
+  "data_processing": [
+    "Features encoded in normalized continuous form and discretized via binning into one-hot vectors.",
+    "Internal state updater aggregated discovered environment parameters over time to calculate dynamic features.",
+    "Training augmentation: flipping observations and actions to force the agent to always start at (0,0).",
+    "Inference augmentation: flipping x/y coordinates during Kaggle inference to smooth map orientation bias (disabled if overtime > 30s to reduce latency)."
+  ],
+  "features_engineering": [
+    "~1000+ features per tile: ~100 continuous features and ~900 one-hot encoded discrete features (asteroid presence, team unit presence, steps since last enemy sighting, relic node region membership).",
+    "Temporal features tracking steps since last observation or enemy sighting.",
+    "State tracking features for discovered environment parameters (e.g., vision reduction values).",
+    "3 additional 'enemy future prediction' features from the previous timestep.",
+    "Per-unit features (energy, unit ID in tile) appended to per-unit patches."
+  ],
+  "models": [
+    "Residual blocks",
+    "ConvLSTM",
+    "Transformer",
+    "MLP",
+    "Multi-head policy/value network (IMPALA-based)"
+  ],
+  "frameworks_used": [
+    "pytorch"
+  ],
+  "loss_functions": [
+    "weighted binary cross-entropy",
+    "KL divergence",
+    "teacher baseline loss",
+    "entropy regularization",
+    "TD losses"
+  ],
+  "cv_strategy": "Large-scale self-play against latest self, frozen opponent pool, and a frozen teacher model; real-time win rate tracking across thousands of matches.",
+  "ensembling": "Used a dual-model submission strategy where a weaker model was deployed 85% of the time and a stronger model 15% of the time to evaluate performance while masking the best policy from imitation learning opponents.",
+  "insights": [
+    "Large-scale self-play combined with advanced architectures (ResNet, ConvLSTM, Transformers) yields strong multi-agent policies.",
+    "Adaptive reward scaling and dynamic entropy scheduling are critical for stabilizing training in complex, sparse-reward environments.",
+    "Teacher-student frameworks and opponent pools effectively prevent catastrophic forgetting and overfitting to self-play dynamics.",
+    "Careful public testing strategies are essential to evaluate true performance without exposing advanced tactics to potential imitation learning opponents."
+  ],
+  "critical_findings": [
+    "Pure self-play plateaued quickly, necessitating the introduction of a frozen teacher agent and an opponent pool to maintain robustness and prevent overfitting to a single playstyle.",
+    "Dynamic entropy scheduling that decays to zero and then resets to smaller values caused short-term performance dips but ultimately produced a significantly stronger final policy.",
+    "Using a dual-model submission with a fixed probability mix allowed accurate evaluation of a stronger model on the public leaderboard without triggering imitation learning from top competitors."
+  ],
+  "what_did_not_work": [
+    "Behavior cloning (BC) from external replays was implemented but ultimately not incorporated into the final training because significant improvements were already observed without it."
+  ],
+  "github_repos": [
+    {
+      "url": "https://github.com/tonykozlovsky/lux-ai3-pub",
+      "role": "solution"
+    }
+  ],
+  "papers": [],
+  "other_solution_refs": [],
+  "source_url": "https://www.kaggle.com/competitions/lux-ai-season-3/discussion/569562"
+}

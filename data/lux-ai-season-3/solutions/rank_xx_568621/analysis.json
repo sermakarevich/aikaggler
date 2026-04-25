@@ -1,0 +1,65 @@
+{
+  "summary": "The author rewrote the Lux AI Season 3 environment and feature engineering pipeline in Rust to maximize simulation speed and ensure correctness via test-driven development. The core agent employs a deep reinforcement learning approach using Proximal Policy Optimization (PPO) with a residual convolutional neural network architecture that processes spatial and global features. Key technical decisions include inferring hidden map states (like energy fields and point tiles) from partial observations, using a 10-step temporal history, and applying test-time data augmentation via geometric transformations. The solution highlights how rigorous simulation engineering and stochastic policies significantly outperform deterministic heuristics in fog-of-war strategy games.",
+  "extensive_summary": "## Environment & Engineering\nThe author prioritized simulation speed and correctness by rewriting the Lux AI S3 rules engine and feature engineering pipeline in Rust. A rigorous test-driven development approach was used, including unit tests for individual components and integration tests comparing the custom simulation against the official rules engine across multiple seeds. This eliminated debugging time and even helped identify bugs in the official rules. The custom simulator achieved 110,000 steps/second on a local CPU, making simulation negligible compared to GPU training bottlenecks.\n\n## Feature Engineering\nFeatures were categorized into global vs. spatial and temporal vs. nontemporal. Temporal features tracked a 10-step history, combined with nontemporal features to yield ~80 global and ~100 spatial features. Due to fog of war and hidden rules, extensive feature inference was implemented: map symmetry was used to reflect discovered features, point tile locations were deduced from score changes and ship paths, hidden parameters (asteroid/nebula movement) were inferred by comparing step-to-step observations against discrete rule possibilities, and energy fields were cached and completed after minimal observations. Action masking was applied to disallow illegal moves, but was later recognized as potentially too restrictive for blind sapping.\n\n## Model Architecture & Training\nThe final agent uses a residual CNN with squeeze-excitation layers. Spatial features are projected via a 2-layer CNN, global features via a 2-layer MLP, and the streams are broadcast and summed before passing through an 8-block 3x3 CNN (d_model=256). A value head (2-layer 1x1 CNN + mean pooling) estimates win likelihood using a softmax over both teams' values to stabilize training. The actor head uses an MLP for main actions and a CNN for sap actions, with per-unit energy conditioning. Training used vanilla PPO with clipping, illegal action masking, entropy loss, teacher-KL loss, and GAE-Lambda (gamma ~0.9999-1.0) on sparse win/loss rewards. A vision transformer baseline was experimented with but struggled to stabilize at scale.\n\n## Test-Time & Deployment\nAt inference, the agent uses stochastic action sampling rather than deterministic argmax to improve blind sapping and evasion. Test-time augmentation applies diagonal reflections and 180-degree rotations, averaging the resulting policies before sampling. The codebase was compiled with PyO3/Maturin, managed via Rye, and built in Docker to resolve GLIBC compatibility issues for Kaggle deployment.",
+  "rank": null,
+  "competition_flow": "Raw game observations are parsed by a custom Rust rules engine, processed into spatial/global features with a 10-step history and inferred hidden states, fed into a residual CNN for PPO training, and deployed at test-time with stochastic sampling and geometric TTA.",
+  "data_reading": [],
+  "data_processing": [],
+  "features_engineering": [
+    "Global features (score, rules, step)",
+    "Spatial features (ships, relics, energy field)",
+    "Temporal features (10-step history of ships, scores)",
+    "Inferred features (reflected map symmetry, deduced point tile locations, hidden rule/asteroid/nebula parameter deduction, precomputed energy field caching)",
+    "Action masking (disallow off-map, asteroid collisions, insufficient energy, blind sap restrictions)"
+  ],
+  "models": [
+    "Residual convolutional neural network (CNN) with squeeze-excitation layers",
+    "8-block 3x3 CNN (d_model=256)",
+    "2-layer MLP for global feature projection",
+    "2-layer 1x1 CNN for value head",
+    "2-layer MLP for main actor head",
+    "2-layer CNN for sap actor head",
+    "Vision transformer with rotary positional embeddings (experimented)"
+  ],
+  "frameworks_used": [],
+  "loss_functions": [
+    "PPO with clipping",
+    "Illegal action masking loss",
+    "Entropy loss",
+    "Teacher-KL loss",
+    "GAE-Lambda for value estimation",
+    "Sparse win/loss reward (+1/-1)",
+    "Softmax value normalization"
+  ],
+  "cv_strategy": "",
+  "ensembling": "Test-time ensembling is achieved by applying three geometric augmentations (diagonal reflections and 180-degree rotation), averaging the resulting policy outputs, and then sampling actions from the averaged distribution.",
+  "insights": [
+    "Test-driven development drastically reduced debugging time and improved code correctness.",
+    "Stochastic policies outperform deterministic ones in fog-of-war strategy games due to better blind sapping and evasion.",
+    "Inferred features like symmetry and energy caching are critical for overcoming partial observability.",
+    "GPU compute is the primary bottleneck, making simulation speed optimization highly valuable.",
+    "Allowing the value function to see both teams' perspectives stabilizes training without affecting test-time performance."
+  ],
+  "critical_findings": [
+    "Restrictive action masking for blind sapping was counterproductive, as opponents successfully used blind saps on seemingly irrelevant tiles.",
+    "Vision transformers learned faster during imitation but were significantly harder to stabilize for large-scale training compared to CNNs.",
+    "The model's performance plateaued around 200M steps but continued to show gradual improvements up to 300M steps."
+  ],
+  "what_did_not_work": [
+    "Attempting to factorize the value function on a per-unit level failed to produce successful results.",
+    "Stabilizing training for a large vision transformer model proved too difficult within the competition timeframe."
+  ],
+  "github_repos": [
+    {
+      "url": "https://github.com/IsaiahPressman/kaggle-lux-2024",
+      "role": "solution"
+    },
+    {
+      "url": "https://github.com/Lux-AI-Challenge/Lux-Design-S3",
+      "role": "reference"
+    }
+  ],
+  "papers": [],
+  "other_solution_refs": [],
+  "source_url": "https://www.kaggle.com/competitions/lux-ai-season-3/discussion/568621"
+}

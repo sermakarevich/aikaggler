@@ -1,0 +1,83 @@
+{
+  "summary": "The author developed a multi-agent reinforcement learning (MARL) solution for the Lux AI NeurIPS 2024 competition, ultimately placing 14th. Initially experimenting with meta-RL and RNNs to learn hidden relic locations, they pivoted to using a rule-based agent for the first match to reveal fragment positions, which significantly boosted performance. The final approach utilized multi-agent proximal policy optimization (MAPPO) with shared actor parameters, a global critic, and a 47x47 egocentric observation space. Key breakthroughs included revising the reward structure to prioritize match outcomes over point differences and implementing strict action masking to prevent invalid moves.",
+  "extensive_summary": "## Initial Approach & Challenges\nThe team initially aimed to minimize hardcoded rules by exploring meta-reinforcement learning using an RNN-based architecture. They fed 7x7 egocentric observation channels into the RNN, sharing model parameters across agents while maintaining unique inference states. To address information sharing, they experimented with a 24x24 global state observation RNN acting as a central memory unit. However, this approach struggled with wiggling behavior and failed to learn combat strategies due to the lack of exact fragment positions.\n\n## Pivot & Breakthrough\nRecognizing the limitations of pure RL for hidden information, they integrated an open-source rule-based agent for the first match to reveal fragment locations, feeding ground-truth positions to the RL agents from match 2 onward. This yielded a massive score jump (from ~200 to 400 points per match). Later, they abandoned the rule-based agent and switched to a 47x47 egocentric observation space centered on each agent. Despite 75% of the observation being NULL, this configuration miraculously improved leaderboard standing from 150+ to 11-15 after a day of training.\n\n## Final Architecture & Training\nThe final solution employs multi-agent proximal policy optimization (MAPPO) with shared actor parameters across all agents and a global critic that observes both teams without fog. Training ran for 15 days on a single RTX 4090 GPU, accumulating over 30 million update steps and 1 billion environment steps. The team initially used a total point difference reward, which failed to incentivize strategic sacrifices, so they revised it to heavily weigh match win/loss outcomes. They also implemented strict action masking to prevent invalid moves like sapping without sufficient energy.\n\n## Key Learnings & Limitations\nThe author notes that basic action masking was insufficient; confident masking rules must be applied from the start. Vision Transformers showed promise but were computationally prohibitive, so they settled on a CNN with residual connections. Agent coordination remained a weakness, particularly regarding sapping actions, which required action sampling rather than greedy selection. The team also realized the importance of comprehensive performance metrics and monitoring from day one.",
+  "rank": 14,
+  "competition_flow": "The pipeline uses a rule-based agent for the first match to reveal hidden relic locations, then switches to a multi-agent PPO policy with shared actors and a global critic that takes 47x47 egocentric observations, applies strict action masking, and optimizes for match win/loss rewards over 15 days of GPU training.",
+  "data_reading": [],
+  "data_processing": [
+    "47x47 egocentric observation space centered on each agent",
+    "Strict action masking for invalid moves (e.g., sapping without energy)",
+    "Reward structure revised to weigh match win/loss outcomes over raw point differences"
+  ],
+  "features_engineering": [],
+  "models": [
+    "multi-agent proximal policy optimization (MAPPO)",
+    "RNN",
+    "CNN with residual connections",
+    "Vision Transformer"
+  ],
+  "frameworks_used": [],
+  "loss_functions": [],
+  "cv_strategy": "",
+  "ensembling": "",
+  "insights": [
+    "Strict action masking must be implemented from the start rather than expecting agents to learn invalid move avoidance.",
+    "Reward structures should prioritize match win/loss outcomes over raw point differences to encourage strategic sacrifices.",
+    "Comprehensive performance metrics and monitoring should be implemented before training begins to track behavioral evolution.",
+    "Vision Transformers show promise but may be computationally prohibitive compared to CNNs with residual connections under tight budgets."
+  ],
+  "critical_findings": [
+    "Using a 47x47 egocentric observation space with 75% NULL values surprisingly improved leaderboard standing from 150+ to 11-15 after minimal training.",
+    "Greedy action selection severely hurt performance; action sampling was necessary to encourage agents to explore sapping and coordination.",
+    "Feeding ground-truth fragment locations from match 2 onward doubled the mean points collected per match compared to pure RNN approaches."
+  ],
+  "what_did_not_work": [
+    "Pure meta-RL with RNNs failed to learn exact fragment positions and combat behavior due to hidden information.",
+    "Using total point difference as the reward structure caused agents to fail to learn strategic sacrifices, as they were rewarded for leading even when ultimately losing.",
+    "Basic action masking was insufficient; agents failed to learn to avoid invalid moves like sapping without energy unless explicitly masked.",
+    "Vision Transformers were too slow to train within the competition's time and compute constraints."
+  ],
+  "github_repos": [
+    {
+      "url": "https://github.com/L16H7/lux-3-comets",
+      "role": "solution"
+    },
+    {
+      "url": "https://github.com/dunnolab/xland-minigrid",
+      "role": "reference"
+    }
+  ],
+  "papers": [
+    {
+      "title": "Rl $^ 2$: Fast reinforcement learning via slow reinforcement learning.",
+      "url": "https://arxiv.org/abs/1611.02779",
+      "arxiv_id": "1611.02779"
+    },
+    {
+      "title": "XLand-minigrid: Scalable meta-reinforcement learning environments in JAX.",
+      "url": "https://github.com/dunnolab/xland-minigrid",
+      "arxiv_id": null
+    },
+    {
+      "title": "A closer look at invalid action masking in policy gradient algorithms.",
+      "url": "https://arxiv.org/abs/2006.14171",
+      "arxiv_id": "2006.14171"
+    },
+    {
+      "title": "The surprising effectiveness of ppo in cooperative multi-agent games.",
+      "url": "https://arxiv.org/abs/2103.01955",
+      "arxiv_id": "2103.01955"
+    }
+  ],
+  "other_solution_refs": [
+    {
+      "description": "relicbound-bot-for-lux-ai-s3-competition",
+      "url": "https://www.kaggle.com/code/egrehbbt/relicbound-bot-for-lux-ai-s3-competition"
+    },
+    {
+      "description": "lux-ai-season-3-discussion-556943",
+      "url": "https://www.kaggle.com/competitions/lux-ai-season-3/discussion/556943"
+    }
+  ],
+  "source_url": "https://www.kaggle.com/competitions/lux-ai-season-3/discussion/567961"
+}

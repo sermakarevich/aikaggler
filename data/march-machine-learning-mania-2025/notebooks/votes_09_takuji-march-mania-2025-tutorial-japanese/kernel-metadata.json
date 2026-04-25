@@ -1,0 +1,22 @@
+{
+  "id": "takuji/march-mania-2025-tutorial-japanese",
+  "id_no": 77064007,
+  "title": "March Mania 2025 / Tutorial [Japanese]",
+  "code_file": "march-mania-2025-tutorial-japanese.ipynb",
+  "language": "python",
+  "kernel_type": "notebook",
+  "is_private": false,
+  "enable_gpu": false,
+  "enable_tpu": false,
+  "enable_internet": true,
+  "keywords": [],
+  "dataset_sources": [],
+  "kernel_sources": [],
+  "competition_sources": [
+    "march-machine-learning-mania-2023",
+    "march-machine-learning-mania-2025"
+  ],
+  "model_sources": [],
+  "docker_image": "gcr.io/kaggle-images/python@sha256:df5bb865ba69fd6ef584de23ddc655e1ea6958c60ceb02eb5eed0459fa2819a2",
+  "machine_shape": "None"
+}

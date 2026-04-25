@@ -1,0 +1,57 @@
+{
+  "summary": "The author developed a fully JIT-compilable end-to-end JAX reinforcement learning pipeline for the Lux AI Season 3 competition, extending a minimal PPO implementation with backpropagation through time and prioritized fictitious self-play. Key technical choices included designing a lightweight network architecture (~1.8M parameters) with carefully engineered unit, spatial, and scalar features, and implementing a reward schedule that transitioned from dense to sparse rewards late in training. The final submission introduced a centralized critic with global observability, which improved value estimation and doubled sample efficiency despite halving training throughput. The approach highlights the practical trade-offs between training speed, model capacity, and code maintainability in complex multi-agent RL environments.",
+  "extensive_summary": "## Approach Overview\nThe solution is built on a fully JIT-compilable end-to-end JAX reinforcement learning pipeline, extending a minimal PPO implementation. The architecture processes per-unit features (ally/enemy flags, visibility, energy history, position), spatial grid features (energy, nebula/asteroid fields, relic nodes, sensor masks), and scalar features (team points, match steps, deducible game parameters). The action space includes movement, no-op, and a SAP action with a 15x15 target map, masked by energy, bounds, and visibility constraints.\n\n## Training Methodology\nThe core training loop employs PPO with Backpropagation Through Time (BPTT) and Prioritized Fictitious Self-Play (PFSP). PFSP dynamically weights opponent selection based on win rates against the current agent, allocating 75% of games to self-play and 25% to frozen past versions. This targeted sampling focuses training on challenging opponents to prevent stagnation. The reward schedule was initially dense (+0.002 per point, +1 per win) but switched to sparse rewards (+1 per win only) in the final week, yielding significant performance gains despite being applied to only the last 10% of training steps.\n\n## Architecture & Experiments\nThe final policy network is lightweight (~1.8M parameters), as larger models consumed excessive VRAM and reduced parallel environment counts without mid-stage gains. The author experimented with replacing Conv2d with ResBlocks, adding upsampling for the SAP map, and using a Pointer Network for SAP targeting. For the second submission, a centralized critic was introduced with full global observability, requiring separate input pipelines and adding ~1.4M parameters. This improved value estimation and doubled sample efficiency, though it halved training throughput (~40k steps/sec vs 80k steps/sec).\n\n## Lessons Learned\nThe author notes that while the JIT-compiled JAX pipeline maximized training speed, it severely hampered code readability and debugging. A critical bug was only caught late in the competition, underscoring the necessity of unit tests in complex RL codebases. Additionally, the author reflects that prioritizing higher model capacity (10M+ parameters) over raw training throughput would likely have produced better final results, as the centralized critic model ultimately outperformed the earlier high-throughput setup.",
+  "rank": 10,
+  "competition_flow": "Raw game state observations are processed into unit, spatial, and scalar feature tensors, fed into a JIT-compiled PPO policy with a centralized critic, trained via PFSP and BPTT with a dense-to-sparse reward schedule, and evaluated through self-play and frozen opponent sampling to generate final submissions.",
+  "data_reading": [],
+  "data_processing": [
+    "Spatial features persist across steps with dynamic nebula/asteroid shifting; actions are masked by energy, map bounds, and visibility; team points, wins, and match steps are binary encoded."
+  ],
+  "features_engineering": [
+    "Unit features (ally/enemy flag, visibility, last 5 turns energy, turns since last seen, current/last known position), spatial grid features (energy field, nebula & asteroid fields, relic nodes & points, sensor mask, visited tiles), and scalar features (binary encoded team points, wins, match steps, and deducible hidden game parameters)."
+  ],
+  "models": [
+    "PPO",
+    "PPO with Backpropagation Through Time (BPTT)",
+    "Prioritized Fictitious Self-Play (PFSP)",
+    "Centralized Critic",
+    "Conv2d",
+    "ResBlocks",
+    "Pointer Network"
+  ],
+  "frameworks_used": [
+    "JAX",
+    "PureJaxRL"
+  ],
+  "loss_functions": [],
+  "cv_strategy": "",
+  "ensembling": "",
+  "insights": [
+    "Switching to sparse rewards late in training yielded significant performance gains despite being applied to only the final 10% of steps.",
+    "Using a centralized critic with global observability improved value estimation and doubled sample efficiency, though it reduced training throughput.",
+    "Prioritizing higher model capacity over maximum training throughput likely yields better final results in complex RL environments.",
+    "Fully JIT-compilable pipelines maximize speed but severely reduce code readability, making extensive unit tests essential for debugging."
+  ],
+  "critical_findings": [
+    "Sparse rewards applied to only the last 10% of training steps still drove significant performance gains.",
+    "Larger model capacities increased VRAM usage and reduced parallel environments without delivering mid-stage performance improvements."
+  ],
+  "what_did_not_work": [
+    "Using larger models (>1.8M parameters) consumed excessive VRAM and reduced parallel environment counts without delivering mid-stage performance gains."
+  ],
+  "github_repos": [
+    {
+      "url": "https://github.com/luchris429/purejaxrl",
+      "role": "library"
+    }
+  ],
+  "papers": [
+    {
+      "title": "AlphaStar",
+      "url": "https://www.nature.com/articles/s41586-019-1724-z",
+      "arxiv_id": null
+    }
+  ],
+  "other_solution_refs": [],
+  "source_url": "https://www.kaggle.com/competitions/lux-ai-season-3/discussion/570196"
+}

@@ -1,0 +1,27 @@
+{
+  "id": "haoruili/lb24-deepseek-r1-with-more-prompt-engineering",
+  "id_no": 75436465,
+  "title": "[LB24] Deepseek-R1 with more prompt Engineering",
+  "code_file": "lb24-deepseek-r1-with-more-prompt-engineering.ipynb",
+  "language": "python",
+  "kernel_type": "notebook",
+  "is_private": false,
+  "enable_gpu": false,
+  "enable_tpu": false,
+  "enable_internet": false,
+  "keywords": [
+    "gpu"
+  ],
+  "dataset_sources": [],
+  "kernel_sources": [
+    "sorokin/pip-install-aimo2"
+  ],
+  "competition_sources": [
+    "ai-mathematical-olympiad-progress-prize-2"
+  ],
+  "model_sources": [
+    "huikang/deepseek-r1/Transformers/deepseek-aideepseek-r1-distill-qwen-14b-awq-neody/1"
+  ],
+  "docker_image": "gcr.io/kaggle-images/python@sha256:9a64aaf544db07179b1202109de9a638fb5b422fab0f9d12aca91ecdc556ce0e",
+  "machine_shape": "None"
+}

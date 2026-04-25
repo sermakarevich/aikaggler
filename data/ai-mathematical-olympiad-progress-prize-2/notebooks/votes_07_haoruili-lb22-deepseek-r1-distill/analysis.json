@@ -1,0 +1,40 @@
+{
+  "summary": "This notebook demonstrates an inference-only approach for the AI Mathematical Olympiad competition by leveraging the quantized DeepSeek-R1-Distill-Qwen-14B model via vLLM. It applies a diverse set of system prompts to encourage step-by-step reasoning, reverse checking, and careful problem parsing, then extracts final answers using regex on LaTeX boxed tags. A randomized frequency counter is used to select the most consistent answer across multiple prompt variants. The solution emphasizes efficient batched inference, dynamic token limits, and strict latency management to meet competition submission rules. Readers should learn how prompt diversity and structured extraction can boost LLM math performance without fine-tuning, and how to deploy quantized models efficiently on multi-GPU setups.",
+  "purpose": "inference",
+  "competition_flow": "Loads test questions from CSV, applies 15 diverse system prompts to a quantized DeepSeek-R1-Distill-Qwen-14B model via vLLM, extracts final answers via regex, selects the most frequent result using a randomized counter, and submits predictions using Kaggle's official inference server.",
+  "data_reading": [
+    "Reads test/reference CSV files using pandas and polars",
+    "Loads model weights and tokenizer from local Kaggle input directories"
+  ],
+  "data_processing": [
+    "Tokenizes prompts via vLLM chat templates",
+    "Extracts final answers using regex on \\boxed{...} tags",
+    "Applies a randomized frequency counter for answer selection",
+    "Implements time-based cutoffs with dynamic sequence/token limits to manage inference latency"
+  ],
+  "features_engineering": [],
+  "models": [
+    "DeepSeek-R1-Distill-Qwen-14B-AWQ"
+  ],
+  "frameworks_used": [
+    "vllm",
+    "pandas",
+    "polars",
+    "numpy",
+    "torch",
+    "kaggle_evaluation.aimo_2_inference_server"
+  ],
+  "loss_functions": [],
+  "cv_strategy": "",
+  "ensembling": "Combines outputs from 15 diverse system prompts by extracting answers and selecting the most frequent result via a randomized frequency counter.",
+  "insights": [
+    "Prompt diversity significantly impacts LLM reasoning performance on mathematical problems.",
+    "Structured extraction of answers via regex is more reliable than parsing raw generated text.",
+    "Time-based cutoffs and dynamic token limits are necessary to meet strict submission latency constraints.",
+    "AWQ quantization enables efficient multi-GPU batched inference for large language models."
+  ],
+  "critical_findings": [],
+  "what_did_not_work": [],
+  "source_url": "https://www.kaggle.com/code/haoruili/lb22-deepseek-r1-distill",
+  "votes": 585
+}

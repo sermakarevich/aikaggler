@@ -1,0 +1,31 @@
+{
+  "summary": "This notebook demonstrates an inference-only pipeline for the AI Mathematical Olympiad Progress Prize 2 competition using a quantized Qwen-14B model. It leverages vLLM for efficient tensor-parallel inference and employs structured prompt engineering to force step-by-step reasoning and modulo-1000 answer formatting. By generating multiple parallel sequences per question and aggregating results via a frequency counter, it mitigates generation variance and extraction errors. Readers should take away how quantization, vLLM optimization, and simple voting strategies can effectively solve complex math problems without fine-tuning. The approach highlights the importance of strict output constraints and time-aware fallbacks in competitive LLM inference.",
+  "purpose": "inference",
+  "competition_flow": "Loads a quantized Qwen-14B model via vLLM, generates multiple step-by-step reasoning traces per math problem using custom prompts, extracts and votes on the final answers, and submits them via Kaggle's inference server.",
+  "data_reading": [
+    "Reads reference/test CSVs using pandas and polars, and relies on kaggle_evaluation.aimo_2_inference_server to stream question IDs and text during competition runtime."
+  ],
+  "data_processing": [],
+  "features_engineering": [],
+  "models": [
+    "Qwen-14B-AWQ"
+  ],
+  "frameworks_used": [
+    "vllm",
+    "torch",
+    "pandas",
+    "polars"
+  ],
+  "loss_functions": [],
+  "cv_strategy": "",
+  "ensembling": "Generates 16 parallel sequences per question using temperature and top-p sampling, extracts answers via regex, and aggregates them using a frequency counter with a minor random tie-breaker to select the final answer.",
+  "insights": [
+    "Constraining the model to output answers modulo 1000 inside \\boxed{} simplifies answer extraction and standardizes evaluation.",
+    "Using AWQ quantization with vLLM enables running large models efficiently on limited GPU resources.",
+    "Batch generation with temperature sampling and majority voting mitigates single-generation hallucination or formatting errors."
+  ],
+  "critical_findings": [],
+  "what_did_not_work": [],
+  "source_url": "https://www.kaggle.com/code/itahiro/deepseek-r1-distill-qwen-7b",
+  "votes": 1396
+}

@@ -1,0 +1,41 @@
+{
+  "summary": "The author achieved 8th place using a single quantized DeepSeek-R1-Distill-Qwen-14B model run via vLLM with V1 architecture. They crafted a strict prompt to force concise reasoning and boxed modulo answers, generating 5 attempts per problem with varied seeds to stabilize results. Key technical choices included enabling prefix caching for speed, tuning sampling parameters like min_p and top_p, and carefully balancing context length with output token limits. The approach relies entirely on prompt engineering and inference-time sampling rather than model fine-tuning or complex ensembling.",
+  "extensive_summary": "## Approach Overview\nThe solution relies on a single, self-quantized DeepSeek-R1-Distill-Qwen-14B-AWQ-4bits-GEMM model, deployed using vLLM 0.8.2/0.7.3 with the V1 architecture enabled from the start. Instead of fine-tuning, the author focuses heavily on prompt design and inference-time sampling strategies.\n\n## Prompt Engineering\nA custom system prompt was crafted to constrain the model's behavior: it demands 1-2 step planning, limits reasoning steps, enforces modulo 1000 answers, and mandates a boxed final answer. The author notes that while this prompt works well, it's hard to reproduce consistently. Attempts to modify the prompt to force the model to \"search\" its training data for similar problems failed.\n\n## Inference Configuration\nInference is run with `max_num_seqs = 32`, `max_model_len = 24576`, and `tensor_parallel_size = 4`. The author uses 5 attempts per problem with different seeds (`vllm_seed = [42, 210, 1973, 2024, 2025]`) to stabilize outputs. Sampling parameters include `temperature = 1.0`, `top_p = 0.90`, `min_p = 0.05`, and `repetition_penalty = 1.0`. `enable_prefix_caching` is used to speed up generation.\n\n## Model & Hardware Tradeoffs\nThe 14B quantized model was chosen as the optimal tradeoff between performance and compute. The author briefly tested a 32B variant but dropped it because it required fewer attempts and significantly fewer `max_output_tokens`, which proved insufficient for complex problems requiring 20k+ tokens. Other self-made GGUF quantizations also yielded no real improvement.",
+  "rank": 8,
+  "competition_flow": "Raw math problems are fed into a single quantized DeepSeek-R1-Distill-Qwen-14B model via vLLM, where 5 inference attempts with varied seeds and strict prompt constraints generate candidate answers, which are then submitted.",
+  "data_reading": [],
+  "data_processing": [],
+  "features_engineering": [],
+  "models": [
+    "DeepSeek-R1-Distill-Qwen-14B-AWQ-4bits-GEMM"
+  ],
+  "frameworks_used": [
+    "vLLM"
+  ],
+  "loss_functions": [],
+  "cv_strategy": "",
+  "ensembling": "Five inference attempts per problem are generated using different random seeds to stabilize outputs, though the exact selection mechanism for the final submission is not detailed.",
+  "insights": [
+    "Strict prompt constraints forcing minimal reasoning steps and boxed modulo answers significantly improve output consistency.",
+    "Enabling prefix caching in vLLM meaningfully accelerates inference.",
+    "The 14B AWQ-quantized model offers the best balance of speed and accuracy for this task."
+  ],
+  "critical_findings": [
+    "The model occasionally hallucinates external knowledge retrieval (e.g., claiming to have 'Googled a similar problem before') during its reasoning trace, revealing training data leakage or memorization quirks.",
+    "Modifying the prompt to explicitly force the model to search its pre-trained data for similar problems actually degraded performance."
+  ],
+  "what_did_not_work": [
+    "Modifying the prompt to force the model to search for similar problems/answers in its training data.",
+    "Testing the 32B model variant (dropped due to insufficient output token capacity).",
+    "Experimenting with other self-made GGUF quantizations."
+  ],
+  "github_repos": [
+    {
+      "url": "https://github.com/casper-hansen/AutoAWQ",
+      "role": "library"
+    }
+  ],
+  "papers": [],
+  "other_solution_refs": [],
+  "source_url": "https://www.kaggle.com/competitions/ai-mathematical-olympiad-progress-prize-2/discussion/571356"
+}

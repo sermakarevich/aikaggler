@@ -1,0 +1,27 @@
+{
+  "id": "quannguyn12/lucky",
+  "id_no": 76489375,
+  "title": "LUCKY",
+  "code_file": "lucky.ipynb",
+  "language": "python",
+  "kernel_type": "notebook",
+  "is_private": false,
+  "enable_gpu": true,
+  "enable_tpu": false,
+  "enable_internet": false,
+  "keywords": [
+    "gpu"
+  ],
+  "dataset_sources": [],
+  "kernel_sources": [
+    "huikang/pip-install-aimo2"
+  ],
+  "competition_sources": [
+    "ai-mathematical-olympiad-progress-prize-2"
+  ],
+  "model_sources": [
+    "huikang/deepseek-r1/Transformers/deepseek-r1-distill-qwen-7b-awq-casperhansen/1"
+  ],
+  "docker_image": "gcr.io/kaggle-private-byod/python@sha256:57cb636a65386fd6c74fc9969211623034c487f7d483f9cd2c8456ebe2619345",
+  "machine_shape": "NvidiaL4"
+}

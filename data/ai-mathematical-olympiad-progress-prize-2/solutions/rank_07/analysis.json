@@ -1,0 +1,42 @@
+{
+  "summary": "The author achieved 7th place with a hastily prepared submission, attributing the result to luck as the public score dropped on the private leaderboard. The core of the solution focuses on optimizing LLM inference under strict hardware constraints, specifically using four L4 GPUs with limited memory bandwidth. Key technical decisions included selecting LMDeploy over competing engines due to better accuracy retention with int8 KV cache quantization, and implementing a dynamic batch sizing strategy that reallocates unused inference time to subsequent questions. These choices prioritized throughput and latency management over complex model tuning.",
+  "extensive_summary": "## Hardware Constraints and Inference Bottlenecks\nThe competition provided four L4 GPUs for inference, offering a combined 1200GB/s memory bandwidth. The author notes that L4 GPUs are suboptimal for LLM decoding, making long-context decoding and batched decoding critical. As context length increases, the KV cache grows beyond the model weights, becoming the primary bottleneck and heavily taxing GPU memory bandwidth.\n\n## Inference Engine Selection\nThe author benchmarked LMDeploy, SGLang, and vLLM using 4-bit quantized weights and fp16 KV cache. LMDeploy emerged as the fastest, followed by SGLang and vLLM v1. While SGLang and vLLM support FP8 KV cache quantization, LMDeploy uniquely supports int8 and int4 KV cache quantization. The author ultimately chose LMDeploy with int8 KV cache quantization because int4 quantization introduced unacceptable accuracy degradation.\n\n## Dynamic Batch Sizing Strategy\nTo maximize throughput, the author profiled inference times for decoding up to 16k tokens across various batch sizes. During submission, a conservative dynamic batching approach was implemented: the system tracked actual inference time per question and added the difference between planned and actual time to the budget for the next question. This allowed adaptive batch size selection based on real-time performance, though the author acknowledges that profiling longer max decoding lengths could further improve efficiency.",
+  "rank": 7,
+  "competition_flow": "Raw prompts were processed through a quantized DeepSeek-R1-Distill-Qwen-14B model using LMDeploy, with dynamic batch sizing adjusted in real-time based on profiling and live latency tracking, before submitting the generated outputs.",
+  "data_reading": [],
+  "data_processing": [],
+  "features_engineering": [],
+  "models": [
+    "casperhansen/deepseek-r1-distill-qwen-14b-awq"
+  ],
+  "frameworks_used": [
+    "LMDeploy",
+    "SGLang",
+    "vLLM"
+  ],
+  "loss_functions": [],
+  "cv_strategy": "",
+  "ensembling": "",
+  "insights": [
+    "KV cache size can surpass model weights during long-context decoding, making memory bandwidth the critical bottleneck rather than compute.",
+    "Int8 KV cache quantization offers a better accuracy-throughput trade-off than int4 for this specific hardware and workload.",
+    "Real-time latency tracking and dynamic time budgeting are essential for maximizing batch sizes under strict inference deadlines."
+  ],
+  "critical_findings": [
+    "L4 GPUs provide only 300GB/s memory bandwidth each, making them less ideal for LLM decoding compared to other architectures.",
+    "The public leaderboard score (23) dropped to 29 on the private set, highlighting significant score volatility and the role of luck in this competition."
+  ],
+  "what_did_not_work": [
+    "Int4 KV cache quantization caused excessive accuracy loss, forcing a switch to int8.",
+    "Failing to profile inference times for longer maximum decoding lengths left untapped performance potential."
+  ],
+  "github_repos": [],
+  "papers": [],
+  "other_solution_refs": [
+    {
+      "description": "Author's submission notebook with dynamic batching strategy and inference profiling",
+      "url": "https://www.kaggle.com/code/tascj0/aimo2-submit?scriptVersionId=231101822"
+    }
+  ],
+  "source_url": "https://www.kaggle.com/competitions/ai-mathematical-olympiad-progress-prize-2/discussion/572760"
+}

@@ -1,0 +1,203 @@
+# march-machine-learning-mania-2025: top public notebooks
+
+The community's top-voted notebooks primarily focus on establishing strong baselines and structured tutorials for predicting NCAA tournament outcomes, emphasizing seed differences, historical box score aggregates, and statistical team quality metrics. Contributors consistently engineer pairwise matchup features, train tree-based models like XGBoost and Random Forests, and apply rigorous probability calibration techniques to optimize for the Brier score. Several notebooks also highlight critical preprocessing steps such as overtime normalization, temporal cross-validation, and strategic submission manipulation.
+
+## Common purposes
+- baseline
+- tutorial
+- training
+- other
+
+## Competition flows
+- Loads team seed data and sample submission IDs, extracts season and team identifiers, merges seed values, calculates predictions using a linear seed-difference formula, and saves the output as a CSV submission file.
+- Loads historical NCAA team and game data, engineers game-level features and seed differences, trains a Random Forest regressor with probability calibration, and outputs a CSV submission of predicted win probabilities.
+- Loads and merges men's/women's box score and seed CSVs, engineers tiered statistical and rating features, trains season-specific XGBoost models via leave-one-season-out CV, calibrates predictions with splines, and generates a tournament win probability submission.
+- Loads precomputed probability matrices and tournament seed data → applies a mathematically derived optimal risk strategy to a base submission CSV → outputs a modified submission file optimized for Brier Score.
+- Loads and merges men's and women's regular season and tournament CSVs, engineers statistical and rating-based features, trains season-specific XGBoost models via leave-one-season-out validation, calibrates point differential predictions into win probabilities, and generates a final submission with manual overrides.
+- Loads and merges historical men's and women's NCAA basketball game and team data, engineers pairwise matchup features and historical score aggregates, trains an XGBoost regressor on tournament games, and generates a probability submission file.
+- Loads historical and tournament game data, constructs pairwise team features and aggregated score statistics, trains a calibrated Random Forest/Extra Trees voting regressor optimized with Optuna, and outputs a probability submission file.
+- Loads men's and women's basketball datasets, merges them into a unified game-level table, engineers team and matchup features, trains a Random Forest regressor to predict win probabilities, applies isotonic calibration, and outputs a tournament submission CSV.
+- Loads historical regular season and tournament CSVs, engineers ~45 team-level and matchup features, trains an XGBoost model to predict point differentials, calibrates predictions with a spline to generate win probabilities, and outputs a submission CSV.
+- Loads historical regular season and tournament CSVs, computes team-level seasonal aggregates and pairwise feature differences, optimizes a CatBoost classifier with Optuna using temporal validation, and generates a probability submission file.
+
+## Data reading
+- Reads WNCAATourneySeeds.csv, MNCAATourneySeeds.csv, and SampleSubmissionStage2.csv using pd.read_csv.
+- Concatenates the men's and women's seed datasets along axis 0 and fills missing values with 0.05.
+- Uses glob to locate CSV files in the input directory, reads them with pandas using latin-1 encoding, and concatenates men's and women's datasets (teams, regular season results, tournament results, seeds).
+- Parses seeds into a dictionary mapping season and team ID to seed integers.
+- Reads MRegularSeasonDetailedResults.csv, MNCAATourneyDetailedResults.csv, MNCAATourneySeeds.csv (and women's equivalents) via pd.read_csv, concatenates them, and filters by season >= 2003.
+- pd.read_csv loads probability tables, tournament seed CSVs, and the base submission file from Kaggle input directories.
+- Reads M/W regular season results, tournament results, and tournament seeds CSVs using pd.read_csv, concatenates genders, and filters by season >= 2003.
+- Uses glob to load multiple CSV files from the competition input directory, concatenating men's and women's datasets for teams, spellings, regular season results, tournament results, seeds, and game cities.
+- Uses glob to load multiple CSV files from the competition input directory with pandas, concatenating male and female datasets for teams, results, seeds, and cities.
+- Uses glob to load all CSVs from /kaggle/input/march-machine-learning-mania-2025/** into a dictionary.
+- Applies pd.read_csv with encoding='latin-1' to handle special characters.
+- Concatenates men's and women's datasets for teams, results, detailed results, seeds, and cities.
+- pd.read_csv with os.walk, fallback to cp1252 encoding, concatenating M/W tournament and regular season CSVs
+- Reads CSV files from the Kaggle input directory using pandas, concatenates men's and women's tournament/regular season files, and parses team IDs and seasons as integers while extracting seed components via regex.
+
+## Data processing
+- Parses submission IDs into year and team IDs via string splitting.
+- Extracts numeric seed values from strings, defaulting to 16 for errors or unselected teams.
+- Merges seed data for both TeamID1 and TeamID2 in each matchup using left joins.
+- Fills missing predictions with 0.5 before saving.
+- Maps win location to integers (1, 2, 3), fills missing values with -1, imputes remaining missing values with mean using SimpleImputer, and scales features with StandardScaler.
+- Clips final predictions to [0.001, 0.999] to avoid boundary extremes.
+- Adjusts box score stats for overtimes by dividing by (40 + 5 * NumOT) / 40 to normalize accumulation.
+- Doubles the dataset by swapping team positions (T1/T2) to create symmetric match features.
+- Computes point differentials, win labels, and clips raw predictions to [-30, 30] before calibration.
+- Drops the Elo_Rating column from probability matrices; parses team IDs and seed strings to map teams to tournament regions and rounds.
+- Doubles the dataset by swapping team perspectives, adjusts box score statistics for overtime duration using (40 + 5 * NumOT) / 40, computes point differential and win labels, and clips predictions to [-30, 30] during calibration.
+- Maps categorical win locations to numeric values, fills missing values with -1 during feature creation, applies SimpleImputer with mean strategy and StandardScaler for numerical features, and clips predicted probabilities to [0.001, 0.999].
+- Maps categorical location codes to integers, creates symmetric team pair identifiers, normalizes score differences relative to a fixed team ordering, fills missing values with -1, and filters the training set to only include tournament games.
+- Maps win location codes ('A', 'H', 'N') to numeric values (1, 2, 3).
+- Fills missing values with -1 across the dataset.
+- Imputes remaining missing values using SimpleImputer(strategy='mean').
+- Scales features using StandardScaler.
+- Clips final predictions to [0.0001, 0.9999] to avoid boundary probabilities.
+- Swaps winner/loser columns to double dataset size, standardizes column prefixes to T1_/T2_, encodes location as integers (1/-1/0), clips predictions to [-30, 30] and final probabilities to [0.025, 0.975]
+- Drops irrelevant columns, fills missing values with 0, applies min-max scaling using training set statistics, clips predictions to [0, 1], and defaults missing test seeds to 'W01'.
+
+## Features engineering
+- Computes SeedDiff as the difference between SeedValue1 and SeedValue2.
+- Applies a linear transformation (0.5 + 0.03 * SeedDiff) to map seed differences to win probabilities.
+- Computes seed differences, raw score differences, and normalized score differences.
+- Aggregates detailed game statistics (field goals, 3-pointers, free throws, rebounds, assists, turnovers, steals, blocks, fouls) per team pair using groupby with multiple aggregations (sum, mean, median, max, min, std, skew, nunique).
+- Extracts seed numbers and Seed_diff.
+- Calculates season-long averages for team and opponent box score stats (Score, FGA, Blk, PF, PointDiff).
+- Implements a custom Elo rating system per season.
+- Derives team quality scores using statsmodels.GLM with Gaussian family.
+- Final feature set includes men_women, seeds, Seed_diff, selected season averages, elo_diff, and diff_quality.
+- Extracts seed numbers and seed differences; computes regular season averages for both teams and their opponents; implements a custom Elo rating system per season; derives team quality scores using statsmodels.GLM with team fixed effects; merges all features and calculates differences (seed, Elo, quality).
+- Creates pairwise game identifiers, maps team seeds to numeric values, calculates score differences and seed differences, and aggregates historical team performance statistics (e.g., FG%, rebounds, assists, turnovers) using sum, mean, median, max, min, std, skew, and nunique grouped by team pairings.
+- Aggregates 28 score-related columns (e.g., field goals, rebounds, assists, turnovers) per team pair using sum, mean, median, max, min, std, skew, and nunique; creates seed difference and normalized score difference features; constructs symmetric team pair identifiers.
+- Creates matchup IDs, team IDs, and seed differences by sorting team IDs and mapping seed strings to numeric values.
+- Computes score differentials and normalized score differentials based on win/loss outcome.
+- Aggregates detailed game statistics (FGM, FGA, 3PM, 3PA, FT, rebounds, assists, turnovers, steals, blocks, fouls) per matchup using sum, mean, median, max, min, std, skew, and nunique.
+- Filters to tournament games only for training and merges aggregated features back into the main table.
+- Aggregated regular season box score stats (FGM, FGA, 3PM, OR, Ast, TO, Stl, PF) by team/season
+- Last 14-day win ratio
+- GLM-derived team quality scores using binomial family
+- Seed numbers and seed difference
+- Point differential
+- Per-team seasonal aggregates (wins, losses, average score gaps), win ratio, weighted score gap, pairwise differences for seeds/ratios/gaps, and symmetric team-pair duplication.
+
+## Models
+- RandomForestRegressor
+- XGBoost (reg:squarederror)
+- XGBoost
+- XGBRegressor
+- ExtraTreesRegressor
+- VotingRegressor
+- RandomForestRegressor (n_estimators=296, min_samples_split=2, max_features='sqrt', max_depth=20)
+- CatBoostRegressor
+
+## Frameworks used
+- numpy
+- pandas
+- scikit-learn
+- matplotlib
+- seaborn
+- xgboost
+- scipy
+- statsmodels
+- optuna
+- catboost
+
+## Loss functions
+- brier_score_loss
+- log_loss
+- mean_squared_error
+- reg:squarederror
+- Brier Score
+- Default regression loss (squared error) for training; log_loss, mean_absolute_error, brier_score_loss used for evaluation.
+- neg_mean_squared_error
+- Custom Cauchy loss function (cauchyobj)
+- MAE metric
+- Brier score loss (for Optuna objective)
+- Mean Squared Error (for final CV evaluation)
+
+## CV strategies
+- KFold(n_splits=5, shuffle=True, random_state=42)
+- Leave-one-season-out cross-validation
+- Leave-one-season-out cross-validation (train on all seasons except one, predict the held-out season)
+- 5-fold cross-validation via scikit-learn cross_val_score with neg_mean_squared_error scoring.
+- 5-fold cross-validation via scikit-learn's cross_val_score with neg_mean_squared_error scoring.
+- KFold(n_splits=5, shuffle=True, random_state=i), repeated 3 times
+- Temporal validation (leave-one-season-out) iterating through seasons, training on all prior seasons and validating on the current season.
+
+## Ensembling
+- None; uses a single Random Forest model with a separate Random Forest regressor for post-hoc probability calibration.
+- Averages spline-calibrated win probabilities across season-specific models and clips final probabilities to [0.01, 0.99].
+- Trains a separate XGBoost model per season and averages their predictions; applies a UnivariateSpline calibration to map point differentials to win probabilities, followed by manual overrides and confidence boosting for specific matches.
+- Combines a Random Forest and an Extra Trees regressor using VotingRegressor with equal weighting, followed by isotonic regression calibration on the training predictions to adjust output probabilities.
+- Single model with isotonic regression calibration applied to predictions; no model ensembling is performed.
+- Averages predictions across 3 model repeats and applies a UnivariateSpline calibration to map point differentials to win probabilities, with final probability clipping.
+- Averages predictions across all validation folds before generating the final submission.
+
+## Insights
+- Seed differences alone can serve as a strong, interpretable baseline for predicting tournament matchup outcomes.
+- A simple linear mapping of seed gaps to probabilities effectively captures expected win likelihood without complex modeling.
+- Mock evaluation using a Brier score against a simulated ground truth demonstrates how to validate submission formats before official results are available.
+- Probability calibration significantly improves the reliability of predicted win probabilities for Brier score optimization.
+- Aggregating detailed game statistics per team pair provides strong predictive signals for tournament outcomes.
+- Proper scoring rules like Brier score and log loss are better suited than accuracy for evaluating probabilistic tournament predictions.
+- GLM-derived team quality differences outperform raw seed differences in predicting tournament outcomes.
+- Calibrating raw point difference predictions with a UnivariateSpline significantly improves Brier score over uncalibrated outputs.
+- Team quality rankings from GLM closely align with official tournament seeds, validating the statistical approach.
+- Predicting a win for a team with exactly a 33.3% probability of winning maximizes expected reward under the Brier Score metric.
+- Precomputed probability matrices derived from betting odds can serve as a highly effective, model-free baseline for tournament predictions.
+- Tournament progression and round determination can be accurately reconstructed using only seed positions and region mappings.
+- Team quality derived from GLM fixed effects aligns closely with tournament seeds, validating statistical modeling over raw seeding.
+- Calibrating raw point differential predictions with splines significantly improves probabilistic accuracy (Brier score).
+- Overtime accumulation skews raw stats, necessitating a duration-based adjustment factor.
+- Seed matchups are a strong predictor of game outcomes, with higher seeds dominating lower seeds.
+- Historical team performance aggregates provide valuable context for predicting future tournament games.
+- Upset rates and score margins show consistent trends across tournament seasons.
+- Ensembling tree-based models provides better tolerance to hyperparameter search ranges compared to single models.
+- Isotonic regression calibration effectively corrects probability outputs from tree ensembles for classification tasks.
+- Filtering training data to only tournament games simplifies the feature space and focuses the model on the target competition format.
+- Merging men and women basketball datasets into a single table simplifies feature engineering and model training.
+- Aggregating detailed game statistics per matchup captures team performance trends beyond simple win/loss records.
+- Isotonic calibration effectively adjusts raw model probabilities to better align with observed win rates for tournament submissions.
+- Predicting point differentials rather than win probabilities directly can be more effective for this competition.
+- A small set of carefully engineered features (~45) is sufficient when combined with proper calibration.
+- Retraining on the full dataset for inference often yields better performance than relying solely on CV out-of-fold predictions.
+- Temporal validation is more appropriate than random k-fold for time-series tournament data.
+- Pairwise feature differences effectively capture matchup advantages.
+- Probability clipping and min-max rescaling stabilize predictions and prevent extreme outputs.
+- Classification mode outperforms regression mode on the local CV metric.
+
+## Critical findings
+- Box score statistics accumulate differently during overtimes, requiring a normalization factor to prevent bias.
+- Many intermediate box score features (e.g., FGM, FGA, rebounds, assists) were ultimately excluded from the final model, suggesting they add little predictive value over simpler aggregates like point differential and shooting attempts.
+- Raw box score stats accumulate during overtimes, requiring a (40 + 5 * NumOT) / 40 adjustment to normalize performance metrics.
+- GLM-derived team quality ranks match tournament seeds almost perfectly, showing strong predictive alignment.
+- Manual overrides in early rounds can correct model underconfidence against top seeds.
+- The spline calibration curve shows slight inversion at the tails, which the author notes as a potential issue.
+- XGBoost version differences (0.81 vs 2.0.3) can significantly alter predictions and final scores, requiring environment awareness.
+- Missing tournament seeds in the test set are handled by defaulting to 'W01' since seeds are unknown until Selection Sunday.
+- The author notes that classification mode worked better than regression mode on CV, despite the original code supporting both.
+
+## What did not work
+- 
+
+## Notable individual insights
+- votes 288 (UPDATED goto_conversion 🥇🥈🥈🥉 winning solution): Predicting a win for a team with exactly a 33.3% probability of winning maximizes expected reward under the Brier Score metric.
+- votes 311 (vilnius ncaa): GLM-derived team quality differences outperform raw seed differences in predicting tournament outcomes.
+- votes 151 (Optuna CatBoost March Mania 2025 [0.15102]): Temporal validation is more appropriate than random k-fold for time-series tournament data.
+- votes 156 (March Mania 2025 / Tutorial [Japanese]): XGBoost version differences (0.81 vs 2.0.3) can significantly alter predictions and final scores, requiring environment awareness.
+- votes 213 (Final-Solution-NCAA-2025): Raw box score stats accumulate during overtimes, requiring a (40 + 5 * NumOT) / 40 adjustment to normalize performance metrics.
+- votes 165 ([0.00000] RF/ET Ensemble+Optuna ): Ensembling tree-based models provides better tolerance to hyperparameter search ranges compared to single models.
+
+## Notebooks indexed
+- #639 votes [[notebooks/votes_01_paultimothymooney-simple-starter-notebook-for-march-mania-2025/notebook|Simple starter notebook for March Mania 2025]] ([kaggle](https://www.kaggle.com/code/paultimothymooney/simple-starter-notebook-for-march-mania-2025))
+- #347 votes [[notebooks/votes_02_jocelyndumlao-march-ml-mania-2025-brier-score-prediction/notebook|March ML Mania 2025 - Brier Score Prediction]] ([kaggle](https://www.kaggle.com/code/jocelyndumlao/march-ml-mania-2025-brier-score-prediction))
+- #311 votes [[notebooks/votes_03_raddar-vilnius-ncaa/notebook|vilnius ncaa]] ([kaggle](https://www.kaggle.com/code/raddar/vilnius-ncaa))
+- #288 votes [[notebooks/votes_04_kaito510-updated-goto-conversion-winning-solution/notebook|UPDATED goto_conversion 🥇🥈🥈🥉 winning solution]] ([kaggle](https://www.kaggle.com/code/kaito510/updated-goto-conversion-winning-solution))
+- #213 votes [[notebooks/votes_05_modeh7-final-solution-ncaa-2025/notebook|Final-Solution-NCAA-2025]] ([kaggle](https://www.kaggle.com/code/modeh7/final-solution-ncaa-2025))
+- #179 votes [[notebooks/votes_06_sadettinamilverdil-ncaa-basketball-predictions-with-xgboost/notebook|🏀 NCAA Basketball Predictions with XGBoost]] ([kaggle](https://www.kaggle.com/code/sadettinamilverdil/ncaa-basketball-predictions-with-xgboost))
+- #165 votes [[notebooks/votes_07_michaelrowen-0-00000-rf-et-ensemble-optuna/notebook|[0.00000] RF/ET Ensemble+Optuna ]] ([kaggle](https://www.kaggle.com/code/michaelrowen/0-00000-rf-et-ensemble-optuna))
+- #162 votes [[notebooks/votes_08_kerta27-mmlm2025-randomforest-optuna-lb-0-00000/notebook|MMLM2025 | RandomForest & Optuna [LB 0.00000]]] ([kaggle](https://www.kaggle.com/code/kerta27/mmlm2025-randomforest-optuna-lb-0-00000))
+- #156 votes [[notebooks/votes_09_takuji-march-mania-2025-tutorial-japanese/notebook|March Mania 2025 / Tutorial [Japanese]]] ([kaggle](https://www.kaggle.com/code/takuji/march-mania-2025-tutorial-japanese))
+- #151 votes [[notebooks/votes_10_alexkalita-optuna-catboost-march-mania-2025-0-15102/notebook|Optuna CatBoost March Mania 2025 [0.15102]]] ([kaggle](https://www.kaggle.com/code/alexkalita/optuna-catboost-march-mania-2025-0-15102))

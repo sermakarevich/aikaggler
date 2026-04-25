@@ -1,0 +1,42 @@
+{
+  "summary": "The author placed approximately 65th in a simulation-based AI competition by building a rule-based bot that iteratively improved upon a public starter kernel. Key technical choices included implementing nebula gas energy estimation, shared damage distribution for saplings, optimized harvesting logic, and defensive barrier construction using idle ships. The author also experimented with empirical enemy movement prediction and a late-game sacrifice strategy, while explicitly noting that more complex approaches like global optimization and U-Net interpolation failed to improve performance in practice.",
+  "extensive_summary": "## Overview & Baseline\nThe author participated in a simulation challenge, teaming up with @veshkinartem to build a bot that surpassed the public starter kernel provided by @egrehbbt. Rather than relying on heavy machine learning pipelines, the solution focused on refining core game mechanics through targeted heuristic logic.\n\n## Core Improvements\nThe final bot introduced several rule-based enhancements: nebula gas estimation to account for energy drops, a shared damage distribution system for saplings, and optimized harvesting logic. Defensive capabilities were added by constructing barriers using non-employed ships to protect farming spots. The author also implemented empirical prediction of enemy ship movement and a late-round strategy that sacrifices exploration to maximize harvesting if the team is losing.\n\n## Failed Experiments & Lessons Learned\nSeveral advanced techniques were tested but ultimately abandoned. Global sapling optimization across all ships simultaneously proved ineffective, as did predicting obstacle movement during pathfinding. Attempts at enemy ramming logic and U-Net-based energy interpolation also failed to yield score improvements; the U-Net model worked in isolation but provided no boost in live play. The author also tried implementing a referenced paper (arXiv:2301.01609), which looked promising theoretically but struggled to learn in the actual environment. The writeup concludes by highlighting open questions for the community, particularly around reinforcement learning implementation, avoiding greedy sapling distribution, and reverse-engineering the DROP_OFF_FACTOR.",
+  "rank": 65,
+  "competition_flow": "Raw simulation states are processed through a rule-based heuristic engine that computes movement, harvesting, and defensive actions, which are then submitted directly to the game API for scoring.",
+  "data_reading": [],
+  "data_processing": [],
+  "features_engineering": [],
+  "models": [
+    "U-Net"
+  ],
+  "frameworks_used": [],
+  "loss_functions": [],
+  "cv_strategy": "",
+  "ensembling": "",
+  "insights": [
+    "Reinforcement learning approaches and practical implementation tips are critical next steps for this competition.",
+    "Global optimization of sapling distribution across ships is necessary to avoid suboptimal greedy strategies.",
+    "Understanding how top teams estimated the DROP_OFF_FACTOR provides a key strategic advantage."
+  ],
+  "critical_findings": [
+    "U-Net energy interpolation performed well in isolation but provided no score boost when integrated into live gameplay.",
+    "Global sap optimization across all ships simultaneously failed to improve performance over simpler heuristics.",
+    "The referenced paper (arXiv:2301.01609) looked promising theoretically but struggled to learn in the actual simulation environment."
+  ],
+  "what_did_not_work": [
+    "Global sap optimization along all ships together",
+    "Prediction of obstacles movement in pathfinding",
+    "Enemy ramming logic",
+    "Energy interpolation with U-Net",
+    "Implementation of the referenced paper (arXiv:2301.01609)"
+  ],
+  "github_repos": [
+    {
+      "url": "https://github.com/ArtemVeshkin/luxai-s3",
+      "role": "solution"
+    }
+  ],
+  "papers": [],
+  "other_solution_refs": [],
+  "source_url": "https://www.kaggle.com/competitions/lux-ai-season-3/discussion/567567"
+}

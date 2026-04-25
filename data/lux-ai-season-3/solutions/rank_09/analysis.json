@@ -1,0 +1,54 @@
+{
+  "summary": "The team achieved 9th place by implementing an imitation learning approach based on match results from top-performing submissions. They fine-tuned a UNet architecture in two stages to predict map-based movement policies and SAP probabilities. A key technical contribution was estimating hidden environmental states and parameters using Bayesian inference and exhaustive search. Actions were assigned to units via a minimum cost flow algorithm to handle multi-unit coordination and avoid collisions.",
+  "extensive_summary": "## Approach Overview\nThe solution leverages imitation learning derived from high-performing submissions to train a policy network. The pipeline involves two stages of fine-tuning: Stage 1 trains exclusively on winning games from the \"Frog Parade\" submission, while Stage 2 incorporates both winning and losing games from a subsequent submission. The authors note that mixing data across different policies did not yield significant performance gains.\n\n## Feature Engineering & State Estimation\nThe model ingests 14-channel map features and 16-channel scalar features, normalized to [-1, 1] with standardized criteria for energy values. A mirroring augmentation ensures the home team's initial position is always (0,0). Crucially, the team estimated hidden states and unknown environmental parameters that vary per match. This includes predicting `NEXT_TILE_TYPE` via drift speed estimation, reconstructing the `ENERGY` map through exhaustive search, estimating `POINTS` and `ENERGY_NODE_DRIFT_SPEED` using Bayesian inference, and tracking enemy unit existence probabilities. Vision and energy reduction metrics for nebula tiles are also dynamically estimated from observed unit behavior.\n\n## Model Architecture & Training\nThe core model is a UNet architecture adapted from a previous LuxAI Season 1 solution. It takes map features `(14, n_stack, 24, 24)` and scalar features `(16, n_stack)` with `n_stack=4` to capture temporal context. The network outputs policy logits `(6, 24, 24)` for movement/SAP actions and SAP probability logits `(1, 24, 24)`. Training uses a DiceLoss for the main policy and a Custom Focal Tversky Loss (weight=0.1) for the sparse SAP targets, with batch normalization added to stabilize the SAP policy layer. Training runs for 30 epochs with a batch size of 1024 and learning rate of 1e-3.\n\n## Action Selection & Evaluation\nInstead of direct argmax, the team uses a minimum cost flow algorithm to assign actions to units, preventing collisions and optimizing global policy alignment. SAP and move actions are assigned separately by minimizing costs derived from predicted probabilities. The solution employs Test Time Augmentation (TTA) via mirroring. Evaluation relies on a modified `luxai_runner` that tracks win rates and p-values over 100 local episodes, ensuring changes are statistically significant before deployment.",
+  "rank": 9,
+  "competition_flow": "Raw match data from top submissions is used to train a two-stage fine-tuned UNet policy network, which estimates hidden states and outputs action probabilities that are resolved into unit assignments via minimum cost flow, followed by TTA and tournament-based evaluation.",
+  "data_reading": [],
+  "data_processing": [
+    "Normalized features to [-1, 1] with standardized energy scales",
+    "Applied mirroring augmentation along x/y axes during training",
+    "Used n_stack=4 for temporal context",
+    "Applied TTA mirroring at inference"
+  ],
+  "features_engineering": [
+    "14-channel map features (tile types, energy, nebula reduction, sensor mask, relics, points, entropy, unit counts/energy, visit count, sap area)",
+    "16-channel scalar features (match steps, points, wins, costs, ranges, nebula/energy drift stats)",
+    "Estimated hidden states (next tile type, energy map, point probabilities, opponent unit counts, vision/energy reduction metrics) using Bayesian inference and exhaustive search"
+  ],
+  "models": [
+    "UNet"
+  ],
+  "frameworks_used": [],
+  "loss_functions": [
+    "DiceLoss",
+    "Custom Focal Tversky Loss"
+  ],
+  "cv_strategy": "Custom tournament evaluation using a modified luxai_runner to track win rates and p-values over 100 local episodes per model change.",
+  "ensembling": "",
+  "insights": [
+    "Estimating hidden environmental states and parameters via Bayesian inference and exhaustive search significantly improves policy accuracy.",
+    "Using minimum cost flow for action assignment effectively handles multi-unit coordination and prevents collisions.",
+    "TTA via mirroring provides a reliable performance boost at inference time."
+  ],
+  "critical_findings": [
+    "Mixing data from different policies did not significantly improve performance, suggesting policy alignment is critical for imitation learning.",
+    "SAP targets are highly sparse, necessitating a custom Focal Tversky Loss with masking to prevent it from inhibiting main policy learning."
+  ],
+  "what_did_not_work": [
+    "Mixing data from different policies (multiple submissions) did not significantly improve performance."
+  ],
+  "github_repos": [
+    {
+      "url": "https://github.com/kuto5046/kaggle-luxai-s3",
+      "role": "solution"
+    }
+  ],
+  "papers": [],
+  "other_solution_refs": [
+    {
+      "description": "6th place LuxAI Season 1 solution (architecture reference)",
+      "url": "https://www.kaggle.com/competitions/lux-ai-2021/discussion/293776"
+    }
+  ],
+  "source_url": "https://www.kaggle.com/competitions/lux-ai-season-3/discussion/568789"
+}

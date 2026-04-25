@@ -1,0 +1,72 @@
+{
+  "summary": "The author developed a 5th place solution for a partially observable multi-agent reinforcement learning competition using an xLSTM-based recurrent architecture combined with a Transformer encoder. The approach separates actor and critic networks, with the critic having access to ground-truth information while the actor relies on encoded observations. Training followed a multi-phase curriculum starting with a smaller model, followed by knowledge distillation to a larger model, and finally extensive PPO training with shaped rewards. Self-play against a buffer of past checkpoints was used to stabilize learning, and the entire pipeline was implemented in JAX for efficiency.",
+  "extensive_summary": "## Architecture & Input Encoding\nThe solution centers on an xLSTM-based recurrent agent designed for a partially observable environment. Observations are split into global features (15-value vector for actor, 18-value for critic), map features (24x24x11 for actor, 24x24x15 for critic), and unit features (32 5-value vectors + positions for both friendly and opponent units). Positional encodings (x, y coordinates) are added to the map, and all features are flipped so the player always appears in the top-left corner. Relic fragment locations are tracked via a history of unit movements and point gains, with probabilities iteratively updated.\n\n## Model Design\nThe encoder processes map features through a ConvNeXt (3 blocks without resolution reduction to extract unit-location features, then compressed to a 128-dim vector), while friendly/opponent units and global state pass through shared MLPs with GELU and LayerNorm. These tokens (map, recurrent, 32 unit tokens, global) are fed into a Transformer meta-encoder with self-attention and gated MLPs. The core recurrent component is an xLSTM (combining mLSTM for memory and sLSTM layers), implemented in pure JAX. The actor head uses a transformer decoder with cross-attention over unit embeddings and map features to predict action types and sap locations, while the critic head is a simpler MLP with spectral norm. Both networks contain approximately 2M parameters.\n\n## Training Strategy\nTraining followed a phased curriculum. A smaller ~500K parameter model was trained first on a 16x16 map with shaped rewards, then scaled to a 24x24 map with shaped rewards, and finally sparse rewards. To scale up, a larger model was trained via knowledge distillation from the small model's logits (using cross-entropy loss) for 100M steps, followed by ~800M steps of PPO with shaped rewards. Self-play was implemented by vmap-ing over 128 past checkpoints (25% of games) and the latest checkpoint (75% of games), keeping all weights on GPU. The entire pipeline was built in JAX, leveraging JIT compilation and bfloat16 for efficiency.",
+  "rank": 5,
+  "competition_flow": "Raw game observations (global features, map tiles, unit states) are encoded via ConvNeXt and MLPs, passed through a Transformer and xLSTM recurrent core, and decoded by an actor network to predict action distributions, which are executed in a self-play PPO loop implemented in JAX.",
+  "data_reading": [],
+  "data_processing": [
+    "Flipping all features (positions, map) to keep the player in the top-left corner",
+    "Adding x/y coordinate positional encodings to map features",
+    "Masking invalid actions (out-of-map or out-of-reach sapping)",
+    "Iterative updating of relic fragment location probabilities based on unit history"
+  ],
+  "features_engineering": [
+    "Relic fragment location probabilities updated iteratively from unit movement history",
+    "Positional encodings (x, y coordinates) added to map features"
+  ],
+  "models": [
+    "xLSTM",
+    "ConvNeXt",
+    "Transformer",
+    "MLP"
+  ],
+  "frameworks_used": [
+    "jax"
+  ],
+  "loss_functions": [
+    "PPO loss",
+    "cross-entropy loss (knowledge distillation)"
+  ],
+  "cv_strategy": "",
+  "ensembling": "",
+  "insights": [
+    "Visualizing model inputs and outputs was essential for debugging a custom JAX implementation.",
+    "xLSTM outperformed standard LSTMs for partially observable time-series tasks while requiring fewer parameters.",
+    "The introduction of late-spawning relics made recurrent modeling highly advantageous for the competition.",
+    "Small map sizes enabled training on consumer GPUs with limited VRAM."
+  ],
+  "critical_findings": [
+    "Switching to sparse rewards during training caused significantly slower model improvement compared to shaped rewards.",
+    "The model continued to improve after the final submission checkpoint, indicating that longer training would have yielded higher scores."
+  ],
+  "what_did_not_work": [],
+  "github_repos": [
+    {
+      "url": "https://github.com/Elias-Buerger/kaggle-lux-s3",
+      "role": "solution"
+    },
+    {
+      "url": "https://github.com/luchris429/purejaxrl",
+      "role": "library"
+    }
+  ],
+  "papers": [
+    {
+      "title": "xlstm: Extended long short-term memory",
+      "url": "https://arxiv.org/abs/2405.04517",
+      "arxiv_id": "2405.04517"
+    },
+    {
+      "title": "JointPPO: Diving deeper into the effectiveness of PPO in multi-agent reinforcement learning",
+      "url": "https://arxiv.org/abs/2404.11831",
+      "arxiv_id": "2404.11831"
+    },
+    {
+      "title": "A convnet for the 2020s",
+      "url": "https://openaccess.thecvf.com/content/CVPR2022/html/Liu_A_ConNet_for_the_2020s_CVPR_2022_paper.html",
+      "arxiv_id": null
+    }
+  ],
+  "other_solution_refs": [],
+  "source_url": "https://www.kaggle.com/competitions/lux-ai-season-3/discussion/571111"
+}

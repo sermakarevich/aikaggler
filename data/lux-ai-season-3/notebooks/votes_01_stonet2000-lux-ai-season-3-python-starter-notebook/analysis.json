@@ -1,0 +1,29 @@
+{
+  "summary": "This notebook serves as a starter tutorial for the Lux AI Season 3 competition, demonstrating how to set up the luxai_s3 environment, implement a basic rule-based agent class, and evaluate it locally. It progressively adds exploration logic and relic node tracking to guide unit movement toward scoring objectives. The author shows how to parse environment observations, generate actions using utility functions, and package the agent into a submission archive. Readers should learn the fundamental API structure, observation parsing, action generation, and local evaluation workflow required to participate in this multi-agent strategy game competition.",
+  "purpose": "tutorial",
+  "competition_flow": "Sets up the luxai_s3 Gym environment, implements a rule-based agent that explores and targets relic nodes, evaluates it locally via a custom loop, and packages the code into a .tar.gz submission file for the competition platform.",
+  "data_reading": [
+    "Uses the LuxAIS3GymEnv wrapper to receive observations as dictionaries containing unit masks, positions, energy, relic node coordinates, and team points, which are then converted to NumPy arrays."
+  ],
+  "data_processing": [
+    "Converts observation dictionaries to NumPy arrays, tracks discovered relic node positions and IDs across matches using sets and lists, and generates movement actions using the direction_to utility function."
+  ],
+  "features_engineering": [],
+  "models": [],
+  "frameworks_used": [
+    "luxai_s3",
+    "numpy"
+  ],
+  "loss_functions": [],
+  "cv_strategy": "",
+  "ensembling": "",
+  "insights": [
+    "The competition environment is structured as a Gym-compatible wrapper where agents interact via observation dictionaries and action arrays.",
+    "Map information like relic node locations persists across matches within an episode and can be cached locally to improve agent performance.",
+    "Units must move onto hidden tiles near relic nodes to score points, requiring a combination of exploration and targeted movement."
+  ],
+  "critical_findings": [],
+  "what_did_not_work": [],
+  "source_url": "https://www.kaggle.com/code/stonet2000/lux-ai-season-3-python-starter-notebook",
+  "votes": 548
+}

@@ -1,0 +1,74 @@
+{
+  "summary": "The author developed an 8th place imitation learning solution for the Lux AI S3 competition by training UNet models on 11,681 winning episodes collected from 10 other agents. Key innovations included conditioning the network on agent IDs to stabilize training across varying action distributions and mirroring the game state along the main diagonal to enforce a consistent point-of-view, which leveraged map symmetries. The pipeline maintained a global game state to handle fog of war, extracted extensive map and global features, and ultimately submitted an ensemble of UNet models with separate prediction heads and a UNet with Diffusion Transformer-style heads.",
+  "extensive_summary": "## Approach Overview\nThe solution relies on imitation learning (IL) trained on winning episodes from top-performing agents, primarily from the Flat Neurons and Frog Parade teams. To address training instabilities caused by differing action distributions across agents, the author conditioned the model on the agent ID at both the UNet bottleneck and the prediction head. During inference, the model is conditioned to imitate the best agent from Frog Parade. Additionally, to leverage map symmetries and ensure consistent data usage, the game state is mirrored along the main diagonal if played from player 1's POV, effectively standardizing everything to player 0's perspective.\n\n## Data Curation & Feature Engineering\nThe dataset was carefully curated by filtering for matches where the target agent won and removing games that ended prematurely (where agents stopped playing once a decided state was reached), as these exhibited divergent action distributions. The author constructed 18 map-level features (e.g., unit positions, energy, sap ranges, visibility, tile types, drift predictions, distance from center, relic/reward nodes) and 32 global features (e.g., normalized steps, costs, sensor ranges, relic/reward discovery flags, reward history over X turns, team points, drift speed types, agent ID). A maintained global game state was crucial for handling fog of war and hidden reward nodes, updated iteratively each turn. Reward node detection relied on an external algorithm from the Relicbound bot.\n\n## Model Architecture & Training\nTwo distinct UNet models were employed: a map-level Action Model predicting simultaneous actions for all units, and a unit-level Sap Model predicting sap targets. Both models take a 18x24x24 input volume. The Action Model outputs a 6x24x24 volume (Cross Entropy Loss) with masking applied to cells without units. The Sap Model outputs a 1x24x24 volume (Weighted Dice Loss) with masking applied outside the sap range. Training used a learning rate of 1e-3 and batch size of 128. To stabilize training across agents, distinct prediction heads were used per agent. In the final week, the author experimented with a single prediction head conditioned on agent ID, adopting a Diffusion Transformer (DiT) block architecture. The final submissions ensemble both the separate-head UNet and the DiT-conditioned UNet architectures.",
+  "rank": 8,
+  "competition_flow": "The pipeline curates winning episodes from other agents, constructs 50 map and global features while maintaining a fog-of-war-aware global state, trains two UNet models (action and sap) with agent-ID conditioning and symmetry normalization, and submits an ensemble of the separate-head and DiT-conditioned architectures.",
+  "data_reading": [],
+  "data_processing": [
+    "Mirroring game state along the main diagonal to standardize POV to player 0",
+    "Normalizing energy, costs, steps, and team points to [0,1]",
+    "Masking cells without units for the action model and cells outside sap range for the sap model during training/inference",
+    "Filtering dataset to only winning matches and removing prematurely decided games"
+  ],
+  "features_engineering": [
+    "18 map-level features: unit positions/energy, sap range, visibility, tile types, drift predictions, distance from center, relic/reward nodes, reward map",
+    "32 global features: normalized steps, costs, sensor ranges, relic/reward discovery flags, reward history over X turns, team points, drift speed types, agent ID one-hot"
+  ],
+  "models": [
+    "UNet",
+    "Diffusion Transformer"
+  ],
+  "frameworks_used": [],
+  "loss_functions": [
+    "Cross Entropy Loss",
+    "Weighted Dice Loss"
+  ],
+  "cv_strategy": "",
+  "ensembling": "The final submissions consist of an ensemble of two network architectures: a UNet with separate prediction heads per agent and a UNet with a single prediction head conditioned via Diffusion Transformer blocks.",
+  "insights": [
+    "Conditioning the network on agent IDs at the bottleneck and prediction head stabilizes training across agents with different action distributions.",
+    "Mirroring the game state along the main diagonal leverages map symmetries and ensures consistent data usage.",
+    "Maintaining a global game state is essential for handling fog of war and hidden reward nodes in iterative decision-making."
+  ],
+  "critical_findings": [
+    "Removing matches where agents stopped playing once a decided state was reached prevented performance degradation caused by significantly different action distributions in those endgame scenarios.",
+    "Different agents inherently exhibit different action distributions, which introduces instabilities during imitation learning training."
+  ],
+  "what_did_not_work": [],
+  "github_repos": [
+    {
+      "url": "https://github.com/gregorlied/lux-s3/tree/main",
+      "role": "solution"
+    },
+    {
+      "url": "https://github.com/gregorlied/lux-s3/releases/tag/v73a",
+      "role": "solution"
+    },
+    {
+      "url": "https://github.com/gregorlied/lux-s3/releases/tag/v73b",
+      "role": "solution"
+    }
+  ],
+  "papers": [
+    {
+      "title": "Diffusion Transformer",
+      "url": "https://arxiv.org/abs/2212.09748",
+      "arxiv_id": "2212.09748"
+    }
+  ],
+  "other_solution_refs": [
+    {
+      "description": "Relicbound bot reward node detection algorithm",
+      "url": "https://www.kaggle.com/code/egrehbbt/relicbound-bot-for-lux-ai-s3-competition"
+    },
+    {
+      "description": "6th place solution from Season 1 (UNet architecture reference)",
+      "url": "https://www.kaggle.com/competitions/lux-ai-2021/discussion/293776"
+    },
+    {
+      "description": "4th place solution from Season 1 (separate prediction heads reference)",
+      "url": "https://www.kaggle.com/competitions/lux-ai-2021/discussion/296938"
+    }
+  ],
+  "source_url": "https://www.kaggle.com/competitions/lux-ai-season-3/discussion/570673"
+}

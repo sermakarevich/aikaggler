@@ -1,0 +1,27 @@
+{
+  "summary": "This notebook serves as an official starter tutorial for the Lux AI Season 3 competition, guiding users through setting up the local development environment, installing the luxai-s3 package, and implementing a basic rule-based agent. It demonstrates how to parse environment observations, define an agent class with an act method, and evaluate the agent locally using the provided Gym-style wrapper. The tutorial progressively builds a simple exploration strategy that tracks discovered relic nodes and moves units toward them, culminating in instructions to package and submit the bot via Kaggle. Readers learn the fundamental API for interacting with the game environment and the complete workflow for developing, testing, and submitting competitive agents.",
+  "purpose": "tutorial",
+  "competition_flow": "Installs the Lux AI S3 environment kit, defines a rule-based agent class that parses observations and generates movement actions, evaluates it locally using a Gym wrapper, and packages the code into a tar.gz file for Kaggle submission.",
+  "data_reading": [],
+  "data_processing": [],
+  "features_engineering": [],
+  "models": [],
+  "frameworks_used": [
+    "luxai-s3",
+    "numpy",
+    "IPython"
+  ],
+  "loss_functions": [],
+  "cv_strategy": "",
+  "ensembling": "",
+  "insights": [
+    "The Lux AI S3 environment exposes game state through observation dictionaries that can be efficiently parsed into numpy arrays for computation.",
+    "Agents must maintain internal state across timesteps to track discovered map elements like relic nodes for long-term strategy.",
+    "The competition utilizes a Gym-style API with reset and step methods, enabling straightforward local evaluation loops for rule-based or RL agents.",
+    "Packaging the agent as a submission.tar.gz containing main.py and agent.py is the required format for Kaggle evaluation."
+  ],
+  "critical_findings": [],
+  "what_did_not_work": [],
+  "source_url": "https://www.kaggle.com/code/zakirkhanaleemi/lux-ai-season-starter-notebook",
+  "votes": 66
+}

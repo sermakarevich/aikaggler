@@ -1,0 +1,34 @@
+{
+  "summary": "This notebook demonstrates an inference pipeline for the AI Mathematical Olympiad competition using the Qwen2.5-QwQ-32B-Preview model. It implements a multi-turn reasoning loop where the model generates step-by-step solutions and Python code, which are then executed locally via a custom REPL to verify calculations. The pipeline extracts candidate answers from both the model's `\boxed{}` outputs and the executed code's stdout, applying a majority vote to select the final prediction. It also showcases how to rotate system prompts to improve reasoning consistency and handle the competition's modulo 1000 answer constraint. Readers should learn how to integrate LLMs with external code execution tools for reliable mathematical problem solving and how to structure a submission script for Kaggle's inference server.",
+  "purpose": "inference",
+  "competition_flow": "Loads the Qwen2.5-QwQ-32B-Preview model via vLLM, processes competition questions through a multi-turn reasoning loop with Python code execution, extracts and votes on candidate answers, and submits predictions via Kaggle's inference server.",
+  "data_reading": [
+    "Reads competition questions from a Polars DataFrame passed to the `predict` function; locally tests against `/kaggle/input/ai-mathematical-olympiad-progress-prize-2/reference.csv`."
+  ],
+  "data_processing": [
+    "String manipulation for prompt formatting, regex extraction of Python code and `\boxed{}` answers, modulo 1000 conversion for large numbers, and majority voting on extracted candidates."
+  ],
+  "features_engineering": [],
+  "models": [
+    "Qwen2.5-QwQ-32B-Preview (AWQ)"
+  ],
+  "frameworks_used": [
+    "vllm",
+    "pytorch",
+    "polars",
+    "pandas"
+  ],
+  "loss_functions": [],
+  "cv_strategy": "",
+  "ensembling": "Aggregates candidate answers extracted from both the model's natural language `\boxed{}` outputs and executed Python code outputs, then selects the most frequent valid integer via majority voting as post-processing.",
+  "insights": [
+    "Integrating external Python code execution with LLM reasoning significantly improves mathematical accuracy.",
+    "Rotating multiple system prompts helps stabilize the model's reasoning style across different questions.",
+    "Extracting answers from both textual `\boxed{}` outputs and code execution results increases robustness against generation failures.",
+    "Applying modulo 1000 to large numerical answers aligns with competition submission constraints and prevents overflow issues."
+  ],
+  "critical_findings": [],
+  "what_did_not_work": [],
+  "source_url": "https://www.kaggle.com/code/boristown/qwen-qwq-32b-preview-deepreasoning",
+  "votes": 516
+}

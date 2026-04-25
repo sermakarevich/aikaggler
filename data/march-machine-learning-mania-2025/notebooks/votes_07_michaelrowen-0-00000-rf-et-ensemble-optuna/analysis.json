@@ -1,0 +1,39 @@
+{
+  "summary": "This notebook demonstrates a baseline pipeline for the March Machine Learning Mania competition using a voting ensemble of Random Forest and Extra Trees regressors. It constructs pairwise team features from detailed game logs, aggregates historical score statistics, and optimizes hyperparameters via Optuna. The author emphasizes that ensembling improves tolerance to hyperparameter ranges and applies isotonic regression to calibrate the model's probability outputs. Readers should learn how to efficiently build symmetric team-pair features, aggregate them for tabular modeling, and calibrate tree-based ensemble predictions for binary classification tasks framed as regression.",
+  "purpose": "baseline",
+  "competition_flow": "Loads historical and tournament game data, constructs pairwise team features and aggregated score statistics, trains a calibrated Random Forest/Extra Trees voting regressor optimized with Optuna, and outputs a probability submission file.",
+  "data_reading": [
+    "Uses glob to load multiple CSV files from the competition input directory with pandas, concatenating male and female datasets for teams, results, seeds, and cities."
+  ],
+  "data_processing": [
+    "Maps categorical location codes to integers, creates symmetric team pair identifiers, normalizes score differences relative to a fixed team ordering, fills missing values with -1, and filters the training set to only include tournament games."
+  ],
+  "features_engineering": [
+    "Aggregates 28 score-related columns (e.g., field goals, rebounds, assists, turnovers) per team pair using sum, mean, median, max, min, std, skew, and nunique; creates seed difference and normalized score difference features; constructs symmetric team pair identifiers."
+  ],
+  "models": [
+    "RandomForestRegressor",
+    "ExtraTreesRegressor",
+    "VotingRegressor"
+  ],
+  "frameworks_used": [
+    "scikit-learn",
+    "optuna",
+    "pandas",
+    "numpy"
+  ],
+  "loss_functions": [
+    "neg_mean_squared_error"
+  ],
+  "cv_strategy": "5-fold cross-validation via scikit-learn's cross_val_score with neg_mean_squared_error scoring.",
+  "ensembling": "Combines a Random Forest and an Extra Trees regressor using VotingRegressor with equal weighting, followed by isotonic regression calibration on the training predictions to adjust output probabilities.",
+  "insights": [
+    "Ensembling tree-based models provides better tolerance to hyperparameter search ranges compared to single models.",
+    "Isotonic regression calibration effectively corrects probability outputs from tree ensembles for classification tasks.",
+    "Filtering training data to only tournament games simplifies the feature space and focuses the model on the target competition format."
+  ],
+  "critical_findings": [],
+  "what_did_not_work": [],
+  "source_url": "https://www.kaggle.com/code/michaelrowen/0-00000-rf-et-ensemble-optuna",
+  "votes": 165
+}

@@ -1,0 +1,38 @@
+{
+  "summary": "This notebook implements a complete reinforcement learning training pipeline for a grid-based strategy game using Proximal Policy Optimization. It constructs a custom Gym environment that simulates unit spawning, sensor-based visibility, and dynamic map mechanics. The author designs a detailed, rule-based reward function to guide exploration, relic collection, and combat interactions. The code demonstrates how to bridge competition JSON observations with a multi-input neural network policy and package the trained agent for submission. Readers should learn how to structure RL environments for strategy games and the critical role of reward shaping in sparse-reward settings.",
+  "purpose": "training",
+  "competition_flow": "Simulates a grid-based strategy game environment, trains a PPO agent with a custom multi-input observation and hand-crafted reward function, and packages the model for competition submission.",
+  "data_reading": [
+    "Converts competition JSON observations via from_json and transform_obs into flat numpy dictionaries matching the Gym environment's observation space."
+  ],
+  "data_processing": [
+    "Custom PPOGameEnv handles state initialization, per-unit sensor mask computation, unit spawning, map rolling, and observation flattening; no explicit normalization or augmentation is applied."
+  ],
+  "features_engineering": [
+    "Custom reward shaping and multi-input observation engineering (sensor masks, unit stats, map features, game state) guide the agent's learning process."
+  ],
+  "models": [
+    "PPO"
+  ],
+  "frameworks_used": [
+    "stable-baselines3",
+    "gym",
+    "numpy"
+  ],
+  "loss_functions": [],
+  "cv_strategy": "",
+  "ensembling": "",
+  "insights": [
+    "Custom reward shaping is essential for guiding exploration and task completion in grid strategy games.",
+    "Multi-input policies effectively handle heterogeneous observation spaces like masks, coordinates, and tile features.",
+    "Perspective swapping ensures consistent training and inference alignment across different player IDs."
+  ],
+  "critical_findings": [
+    "The final training results do not align with the reward function design, indicating potential reward misalignment or exploration difficulties."
+  ],
+  "what_did_not_work": [
+    "Training results did not align with the reward function design, suggesting the reward shaping requires further tuning."
+  ],
+  "source_url": "https://www.kaggle.com/code/yizhewang3/ppo-stable-baselines3",
+  "votes": 216
+}

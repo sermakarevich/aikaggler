@@ -1,0 +1,65 @@
+{
+  "summary": "The author achieved 4th place in a simulation competition by implementing an Imitation Learning (IL) pipeline that combines two neural models: an Action Model and a Sap Target Model. The approach relies on extracting 24x24 map features and scalar global features from game observations, leveraging map symmetry and exploration-based estimation for hidden parameters. A key technical choice was dynamically switching between two model variants based on whether a hidden parameter (unit_sap_dropoff_factor) could be estimated during gameplay. The pipeline uses a UNet architecture trained on filtered replay data from a top-performing team, with careful handling of overlapping units and probability thresholding during inference.",
+  "extensive_summary": "## Overview & Core Approach\nThe solution centers on an Imitation Learning (IL) framework that determines unit behavior by combining two distinct models: an **Action Model** (predicting Move/Sap directions) and a **Sap Target Model** (predicting Sap targets). Both models take 24x24 map features and scalar-valued global features as input. A critical design choice involves leveraging map symmetry to infer unobserved coordinates and using exploration to estimate hidden parameters like `tile_type` drift and `unit_sap_dropoff_factor`.\n\n## Feature Engineering & Model Switching\nThe author extracts 15 map features and 12 global features per step. Features like `tile_type`, `point_prob_map`, and `unit_sap_dropoff_factor` are estimated through exploration logic rather than direct observation. To handle the unobservable `unit_sap_dropoff_factor`, two versions of each model were trained: one without the feature and one with it. A dynamic model-switching mechanism is employed during gameplay, initially using the version without the feature and switching to the enhanced version once the parameter is successfully estimated, enabling adaptive performance throughout the match.\n\n## Imitation Learning Pipeline\nTraining data consists exclusively of filtered replays from the 'Frog Parade' team, specifically focusing on winning episodes. Episodes were filtered by selecting opponents with high leaderboard scores to mitigate matching system bugs. The Action Model is trained on all steps of these episodes, while the Sap Target Model only uses steps where a Sap action was taken. Both models use a UNet-based architecture where map features feed into the network and global features are broadcasted and concatenated at the bottleneck. The Action Model outputs a (6, 24, 24) probability map for 6 actions, trained with `BCEWithLogitsLoss` and masked for valid unit coordinates. The Sap Target Model outputs a (1, 24, 24) probability map for targets, trained with cross-entropy loss.\n\n## Inference & Post-Processing\nDuring inference, both models employ Test-Time Augmentation (TTA) with 4 rotations and vertical flips, averaging 8 outputs. Low-probability actions are filtered using cumulative probability thresholds (0.7 for actions, 0.6 for sap targets). A novel probability adjustment mechanism handles unit overlap: when multiple units share a coordinate, the first unit picks an action, the probability of that action is reduced by `1/(number of units)`, and the remainder is normalized for subsequent units to prevent action collisions. Fine-tuning was performed on a subset of high-performing episodes from the final leaderboard submission.",
+  "rank": 4,
+  "competition_flow": "Raw game observations are parsed into 24x24 map and scalar global features, which are fed into two dynamically switched UNet-based Imitation Learning models (Action and Sap Target) trained on filtered replay data, with inference applying TTA, probability thresholding, and overlap-aware action selection to generate unit commands.",
+  "data_reading": [
+    "Observations parsed into 24x24 map features and scalar global features per step",
+    "Replay data loaded from team submissions"
+  ],
+  "data_processing": [
+    "Map features leverage symmetry to infer unobserved coordinates",
+    "Hidden parameters like tile_type drift and unit_sap_dropoff_factor are estimated via exploration logic",
+    "Training data filtered to winning episodes against high-LEA opponents",
+    "Augmentations include 0/90/180/270 degree rotations and vertical flips",
+    "Inference applies TTA with the same augmentations and averages outputs"
+  ],
+  "features_engineering": [
+    "15 map features (self/opp unit positions, energy, enable flags, tile_type, visible_mask, map_energy, relic_nodes, point_prob_map, pre_self/opp_unit_pos)",
+    "12 global features (self/opp reward, match steps/round, team points/wins, unit costs/range/dropoff_factor)",
+    "Symmetry-based inference for unobserved tiles",
+    "Exploration-based estimation for point_prob_map and unit_sap_dropoff_factor"
+  ],
+  "models": [
+    "UNet-based architecture",
+    "Action Model",
+    "Sap Target Model"
+  ],
+  "frameworks_used": [],
+  "loss_functions": [
+    "BCEWithLogitsLoss",
+    "cross-entropy loss"
+  ],
+  "cv_strategy": "",
+  "ensembling": "The solution combines outputs from two separate IL models (Action and Sap Target) and applies TTA with 4 rotations and vertical flips, averaging 8 outputs, followed by cumulative probability thresholding (0.7 for actions, 0.6 for sap targets) and a coordinate-overlap probability adjustment mechanism to prevent action collisions.",
+  "insights": [
+    "Leveraging map symmetry significantly improves feature extraction by allowing inference of unobserved coordinates.",
+    "Dynamically switching models based on estimated hidden parameters like unit_sap_dropoff_factor enables adaptive gameplay performance.",
+    "Fine-tuning on a small subset of high-performing episodes from the final leaderboard yields better results than training on the full dataset."
+  ],
+  "critical_findings": [
+    "Removing past step information (pre_self_unit_pos, pre_opp_unit_pos) from the Sap Target Model input unexpectedly increased the win rate during local experiments.",
+    "Attempting to use long-term temporal models like LSTM or Conv3D severely degraded performance, whereas simple frame-stacking of unit positions improved it.",
+    "Converting the IL policy to Reinforcement Learning caused complete policy collapse or no improvement, highlighting the difficulty of RL training with limited computational resources."
+  ],
+  "what_did_not_work": [
+    "Using data from winning matches even when losing the game.",
+    "Mixing data from another team.",
+    "Incorporating LSTM or Conv3D for long-term time series.",
+    "Converting the IL model to Reinforcement Learning."
+  ],
+  "github_repos": [
+    {
+      "url": "https://github.com/KASSII/Kaggle_LuxAI-s3",
+      "role": "solution"
+    }
+  ],
+  "papers": [],
+  "other_solution_refs": [
+    {
+      "description": "Reference to Lux AI 2021 Season 1 6th place solution",
+      "url": "https://www.kaggle.com/competitions/lux-ai-2021/discussion/293776"
+    }
+  ],
+  "source_url": "https://www.kaggle.com/competitions/lux-ai-season-3/discussion/569928"
+}

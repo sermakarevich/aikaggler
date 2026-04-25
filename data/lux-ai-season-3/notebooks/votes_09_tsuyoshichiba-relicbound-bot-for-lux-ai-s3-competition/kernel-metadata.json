@@ -1,0 +1,23 @@
+{
+  "id": "tsuyoshichiba/relicbound-bot-for-lux-ai-s3-competition",
+  "id_no": 76228094,
+  "title": "Relicbound (bot for Lux AI S3 competition)",
+  "code_file": "relicbound-bot-for-lux-ai-s3-competition.ipynb",
+  "language": "python",
+  "kernel_type": "notebook",
+  "is_private": false,
+  "enable_gpu": true,
+  "enable_tpu": false,
+  "enable_internet": true,
+  "keywords": [
+    "gpu"
+  ],
+  "dataset_sources": [],
+  "kernel_sources": [],
+  "competition_sources": [
+    "lux-ai-season-3"
+  ],
+  "model_sources": [],
+  "docker_image": "gcr.io/kaggle-private-byod/python@sha256:f9647cc12ad6b5bff2567807c9baa993ae44f17e770a4e099dbde5f4e3a2f1ae",
+  "machine_shape": "Gpu"
+}

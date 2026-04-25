@@ -1,0 +1,27 @@
+{
+  "id": "haoruili/lb22-deepseek-r1-distill",
+  "id_no": 75307835,
+  "title": "[LB22] deepseek-r1-distill",
+  "code_file": "lb22-deepseek-r1-distill.ipynb",
+  "language": "python",
+  "kernel_type": "notebook",
+  "is_private": false,
+  "enable_gpu": true,
+  "enable_tpu": false,
+  "enable_internet": false,
+  "keywords": [
+    "gpu"
+  ],
+  "dataset_sources": [],
+  "kernel_sources": [
+    "sorokin/pip-install-aimo2"
+  ],
+  "competition_sources": [
+    "ai-mathematical-olympiad-progress-prize-2"
+  ],
+  "model_sources": [
+    "huikang/deepseek-r1/Transformers/deepseek-aideepseek-r1-distill-qwen-14b-awq-neody/1"
+  ],
+  "docker_image": "gcr.io/kaggle-private-byod/python@sha256:57cb636a65386fd6c74fc9969211623034c487f7d483f9cd2c8456ebe2619345",
+  "machine_shape": "NvidiaL4"
+}

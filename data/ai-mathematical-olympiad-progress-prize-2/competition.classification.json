@@ -1,0 +1,13 @@
+{
+  "description": "Participants develop AI models to solve national-level mathematics Olympiad problems. The competition is categorized under natural language processing and mathematics, indicating that challenges are presented as text or symbolic expressions that models must interpret and answer. Success is evaluated using the Accuracy Score on a held-out test set.",
+  "data_modality": "text",
+  "task_type": "classification",
+  "label_structure": "single_label",
+  "metric": "Accuracy Score",
+  "test_split": "unknown",
+  "format": "standard",
+  "dataset_scale": "small",
+  "domain": "mathematics",
+  "data_challenges": [],
+  "constraints": []
+}

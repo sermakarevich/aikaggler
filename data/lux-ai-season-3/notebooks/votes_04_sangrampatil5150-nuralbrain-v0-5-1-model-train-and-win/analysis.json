@@ -1,0 +1,37 @@
+{
+  "summary": "This notebook implements a Deep Q-Network (DQN) agent for the Lux AI Season 3 competition, focusing on a reinforcement learning approach rather than traditional supervised learning. It constructs a custom 9-channel local-view state representation per unit, integrates prioritized experience replay with soft target network updates, and incorporates domain-specific mechanics like obstacle movement prediction and enemy sap targeting. The training loop uses delta reward shaping based on team points, validates against a random baseline, and includes visualization utilities for episode replay. Readers should understand how to adapt DQN for a multi-unit grid-based strategy game with partial observability and custom action masking.",
+  "purpose": "training",
+  "competition_flow": "Loads the Lux AI Season 3 environment, constructs a custom 9-channel local-view state tensor per unit, trains a DQN agent with prioritized experience replay and delta reward shaping over multiple episodes, and validates performance against a random baseline with replay visualization.",
+  "data_reading": [
+    "Parses observation dictionaries from `LuxAIS3GymEnv(numpy_output=True)`, extracting unit positions, energy, sensor masks, tile types, and team points."
+  ],
+  "data_processing": [
+    "Constructs a 9-channel 11x11 local-view tensor per unit by normalizing tile types, energy, and step count; applies boundary-aware action masking and delta reward shaping."
+  ],
+  "features_engineering": [
+    "Hand-crafted 9-channel local view state representation including tile type, energy, relic/reward discovery status, unit/energy presence, normalized step counter, and dynamic distance maps to relics and rewards."
+  ],
+  "models": [
+    "DQN (4 Conv layers with BatchNorm, MaxPool, 3 FC layers)"
+  ],
+  "frameworks_used": [
+    "pytorch",
+    "luxai-s3"
+  ],
+  "loss_functions": [
+    "Mean squared error with prioritized experience replay weights: `(weights * (current_q_values - target_q_values) ** 2).mean()`"
+  ],
+  "cv_strategy": "",
+  "ensembling": "",
+  "insights": [
+    "Prioritized experience replay with beta annealing effectively handles non-stationary RL data distributions.",
+    "Soft target network updates (tau=0.005) stabilize DQN training in a grid-based strategy environment.",
+    "Delta reward shaping (difference in team points) provides a sparse but effective learning signal.",
+    "Local 11x11 view with distance channels enables efficient partial observability handling.",
+    "Action masking prevents invalid boundary moves without penalizing the agent."
+  ],
+  "critical_findings": [],
+  "what_did_not_work": [],
+  "source_url": "https://www.kaggle.com/code/sangrampatil5150/nuralbrain-v0-5-1-model-train-and-win",
+  "votes": 134
+}

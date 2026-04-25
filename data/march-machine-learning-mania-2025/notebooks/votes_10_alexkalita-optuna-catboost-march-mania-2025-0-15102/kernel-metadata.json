@@ -1,0 +1,21 @@
+{
+  "id": "alexkalita/optuna-catboost-march-mania-2025-0-15102",
+  "id_no": 76443831,
+  "title": "Optuna CatBoost March Mania 2025 [0.15102]",
+  "code_file": "optuna-catboost-march-mania-2025-0-15102.ipynb",
+  "language": "python",
+  "kernel_type": "notebook",
+  "is_private": false,
+  "enable_gpu": false,
+  "enable_tpu": false,
+  "enable_internet": true,
+  "keywords": [],
+  "dataset_sources": [],
+  "kernel_sources": [],
+  "competition_sources": [
+    "march-machine-learning-mania-2025"
+  ],
+  "model_sources": [],
+  "docker_image": "gcr.io/kaggle-images/python@sha256:fc0148cd8ab98517c6d48b2ffad1c4c38cc28d833695f95be76101d886d6c82d",
+  "machine_shape": "None"
+}

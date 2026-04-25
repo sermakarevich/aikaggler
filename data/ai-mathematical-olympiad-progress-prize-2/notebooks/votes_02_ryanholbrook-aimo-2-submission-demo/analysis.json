@@ -1,0 +1,28 @@
+{
+  "summary": "This notebook serves as a submission template for the AIMO 2 competition, demonstrating how to structure an inference server that responds to the Kaggle evaluation API. It provides a stub `predict` function and shows how to initialize the `AIMO2InferenceServer` to handle local testing or hidden test set evaluation. The author emphasizes strict timing constraints, noting that the server must start within 15 minutes and each prediction must be returned within 30 minutes, with the first call exempt from the deadline to allow for model loading. Readers should take away the exact API contract required for valid submissions and the practical steps to validate their inference pipeline locally before uploading.",
+  "purpose": "inference",
+  "competition_flow": "Initializes a Kaggle evaluation server that receives mathematical questions and returns integer predictions, with local testing enabled via a provided gateway script.",
+  "data_reading": [
+    "Passes the path to `/kaggle/input/ai-mathematical-olympiad-progress-prize-2/test.csv` to the local gateway helper for loading."
+  ],
+  "data_processing": [],
+  "features_engineering": [],
+  "models": [],
+  "frameworks_used": [
+    "polars",
+    "pandas",
+    "kaggle_evaluation.aimo_2_inference_server"
+  ],
+  "loss_functions": [],
+  "cv_strategy": "",
+  "ensembling": "",
+  "insights": [
+    "Demonstrates the exact function signature and return format required for AIMO 2 submissions.",
+    "Highlights the 15-minute server startup and 30-minute per-prediction latency constraints enforced by the evaluation gateway.",
+    "Shows how to use the provided local gateway to validate submission logic before competition evaluation."
+  ],
+  "critical_findings": [],
+  "what_did_not_work": [],
+  "source_url": "https://www.kaggle.com/code/ryanholbrook/aimo-2-submission-demo",
+  "votes": 1157
+}

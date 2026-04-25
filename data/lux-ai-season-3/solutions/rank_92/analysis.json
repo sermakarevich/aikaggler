@@ -1,0 +1,45 @@
+{
+  "summary": "The author achieved 92nd place in the LUX AI Season 3 competition by modifying a strong public rule-based bot rather than training a machine learning model. Key improvements included directing all units toward the discoverer of new resources, forcing idle units to explore unknown nodes during early games, and implementing a relative-coordinate SAP attack system restricted to harvesting units to prevent energy depletion. An initial attempt at imitation learning was abandoned due to state management failures that caused unidirectional movement.",
+  "extensive_summary": "The solution targets the LUX AI Season 3 competition, a multi-agent simulation where autonomous bots compete across multiple games. Instead of pursuing complex machine learning, the author built upon a highly structured public rule-based agent. The core strategy revolves around three targeted modifications to the base heuristic logic.\n\nFirst, upon discovering a new reward or relic, all units are immediately redirected toward the discovering unit to consolidate efforts. Second, during the initial three games, units that are not actively harvesting or searching are forced to move randomly toward unexplored nodes instead of remaining stationary, significantly boosting exploration and discovery rates. Third, the author implemented a SAP (attack) mechanic that triggers when an enemy enters a Manhattan distance of 8. Crucially, SAP is only executed by harvesting units with spare energy to avoid depleting power mid-movement, and the attack vector is calculated using relative coordinates (enemy position minus current position) rather than raw coordinates.\n\nThe author also notes that an initial attempt at imitation learning from top teams failed due to difficulties in properly managing the simulation state, which caused units to move unidirectionally. Overall, the approach demonstrates how targeted heuristic tweaks and careful state/energy management can yield competitive results in a multi-agent simulation without heavy ML overhead.",
+  "rank": 92,
+  "competition_flow": "The pipeline involves initializing the LUX AI S3 simulation environment, applying a modified rule-based heuristic agent that handles exploration, resource harvesting, and relative-coordinate SAP attacks, and executing it against opponent bots across multiple games to generate a final submission.",
+  "data_reading": [],
+  "data_processing": [],
+  "features_engineering": [],
+  "models": [],
+  "frameworks_used": [],
+  "loss_functions": [],
+  "cv_strategy": "",
+  "ensembling": "",
+  "insights": [
+    "Directing all units toward the discoverer of a new resource consolidates efforts and improves collection efficiency.",
+    "Moving idle units toward unexplored nodes during early games significantly increases the probability of discovering new rewards and relics.",
+    "SAP attacks must use relative coordinates (enemy position minus current position) rather than raw coordinates to function correctly.",
+    "Restricting SAP usage to harvesting units with remaining energy prevents units from depleting their power before reaching their destination."
+  ],
+  "critical_findings": [
+    "Imitation learning from top teams failed because managing the simulation state properly was difficult, causing units to move in only one direction.",
+    "Using raw coordinates for SAP attack vectors breaks the mechanic; relative coordinates are required."
+  ],
+  "what_did_not_work": [
+    "Imitation learning from top teams, which struggled with state management and caused units to move unidirectionally."
+  ],
+  "github_repos": [
+    {
+      "url": "https://www.kaggle.com/code/kosirowada/rulebaseagent",
+      "role": "solution"
+    },
+    {
+      "url": "https://www.kaggle.com/code/egrehbbt/relicbound-bot-for-lux-ai-s3-competition",
+      "role": "reference"
+    }
+  ],
+  "papers": [],
+  "other_solution_refs": [
+    {
+      "description": "Public base notebook modified for this solution",
+      "url": "https://www.kaggle.com/code/egrehbbt/relicbound-bot-for-lux-ai-s3-competition"
+    }
+  ],
+  "source_url": "https://www.kaggle.com/competitions/lux-ai-season-3/discussion/567893"
+}

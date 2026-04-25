@@ -1,0 +1,42 @@
+{
+  "summary": "This notebook demonstrates an optimized inference pipeline for the AI Mathematical Olympiad Progress Prize 2 using the AWQ-quantized QwQ-32B-preview model. It implements a chain-of-thought self-consistency approach by generating multiple diverse responses per problem via temperature sampling and varied prompts, then extracting and voting on answers from both natural language reasoning and executed Python code. The author highlights that reducing the number of samples to five and carefully tuning vLLM parameters significantly improves runtime efficiency and stability without sacrificing accuracy. Readers should take away that iterative self-reflection in large language models outperforms standard chain-of-thought for complex math, and that inference optimization (quantization, sampling, prompt diversity) is often more impactful than model size alone.",
+  "purpose": "inference",
+  "competition_flow": "Loads math problems from a CSV, processes them through a quantized QwQ-32B-preview model using vLLM with prompt diversity and code execution, extracts answers via regex and majority voting, and submits the final integer modulo 1000 via the Kaggle inference server.",
+  "data_reading": [
+    "Reads the reference dataset using pandas.read_csv, drops the ground truth column, and passes questions as polars.DataFrame items to the prediction function."
+  ],
+  "data_processing": [
+    "Formats questions into chat templates using tokenizer.apply_chat_template, appends a modulo 1000 instruction, and extracts final answers using regex on \\boxed{} patterns and Python REPL outputs, applying modulo 1000 to all numeric results."
+  ],
+  "features_engineering": [],
+  "models": [
+    "QwQ-32B-preview (AWQ quantized)"
+  ],
+  "frameworks_used": [
+    "vllm",
+    "transformers",
+    "torch",
+    "kaggle_evaluation.aimo_2_inference_server",
+    "polars",
+    "pandas"
+  ],
+  "loss_functions": [],
+  "cv_strategy": "",
+  "ensembling": "Implements chain-of-thought self-consistency by generating 5 samples per problem with temperature=1 and 5 distinct prompts, extracts answers from both natural language and executed Python code, and selects the final answer via majority voting modulo 1000.",
+  "insights": [
+    "QwQ-32B-preview's iterative self-reflection and verification mechanism makes it significantly more effective for complex mathematical reasoning than standard chain-of-thought prompting.",
+    "Reducing the number of generated samples from 8 to 5 improves inference efficiency and prevents timeout errors without degrading accuracy.",
+    "Combining temperature sampling with diverse prompt engineering increases response diversity, which is essential for reliable self-consistency voting.",
+    "AWQ quantization enables running a 32B parameter model on limited GPU memory while preserving reasoning capabilities."
+  ],
+  "critical_findings": [
+    "The notebook's leaderboard score exhibits high variance due to stochastic sampling and vLLM generation, meaning it does not guarantee a consistent score on submission.",
+    "Python code execution outputs are intentionally weighted double in the final voting process compared to natural language answers to prioritize computational verification."
+  ],
+  "what_did_not_work": [
+    "Using 8 samples per problem was inefficient and risked exceeding the 5-hour runtime limit without improving accuracy.",
+    "Prompts explicitly requesting Python code generation were removed because the model leverages chain-of-thought reasoning more effectively than direct code generation for this task."
+  ],
+  "source_url": "https://www.kaggle.com/code/mbmmurad/lb-20-qwq-32b-preview-optimized-inference",
+  "votes": 1097
+}

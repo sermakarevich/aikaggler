@@ -1,0 +1,27 @@
+{
+  "id": "huikang/qwen2-5-72b-instruct-with-tir",
+  "id_no": 69024281,
+  "title": "Qwen2.5-72B-Instruct with TIR",
+  "code_file": "qwen2-5-72b-instruct-with-tir.ipynb",
+  "language": "python",
+  "kernel_type": "notebook",
+  "is_private": false,
+  "enable_gpu": true,
+  "enable_tpu": false,
+  "enable_internet": false,
+  "keywords": [
+    "gpu"
+  ],
+  "dataset_sources": [],
+  "kernel_sources": [
+    "abdullahmeda/vllm-installation-fix"
+  ],
+  "competition_sources": [
+    "ai-mathematical-olympiad-progress-prize-2"
+  ],
+  "model_sources": [
+    "abdullahmeda/qwen2.5/Transformers/72b-instruct-awq/1"
+  ],
+  "docker_image": "gcr.io/kaggle-private-byod/python@sha256:141219e230dab548ccc19aa4e62bcf805ed9de0b4d5112227e28f5f1a25991f8",
+  "machine_shape": "NvidiaL4"
+}

@@ -1,0 +1,30 @@
+{
+  "summary": "The author secured 3rd place using a lightweight inference-time optimization strategy rather than model training or fine-tuning. The core contribution is a dynamic branching and early-stopping algorithm that efficiently explores multiple solution paths for math problems while conserving compute. By starting with a few branches, selectively duplicating only unfinished ones, and halting generation when a strong majority consensus emerges, the method reduces hallucination risk and avoids redundant KV cache recomputation. Prefix caching in vLLM is leveraged to make this branching approach computationally viable within strict time limits.",
+  "extensive_summary": "The author achieved 3rd place with a relatively simple but highly effective inference-time optimization strategy for large language models solving math problems. Rather than training or fine-tuning, the solution focuses on dynamically controlling the generation process to balance exploration and computational efficiency.\n\nThe core algorithm begins by generating 4096 tokens across 5 initial solution branches. These branches are then duplicated to create 10 paths, and another 4096 tokens are generated. At the 8192-token mark, a stopping rule is applied: if more than 6 solutions are completed (detected via a regex for `\\boxed{}`) and one answer achieves a >70% majority, generation halts immediately. This early stopping is motivated by the observation that early solution steps share significant common ground, while hallucination risk and computational cost increase as generation progresses.\n\nIf the stopping condition isn't met, the algorithm randomly selects 7 unfinished branches, duplicates them to reach 14 total branches, and generates the next 4096 tokens. All generated solutions are collected and resolved via majority vote. To mitigate the computational overhead of branching, the author explicitly enables `enable_prefix_caching=True` in vLLM to reuse the shared KV cache across branches. A time-aware fallback mechanism is also implemented: if approaching a cutoff, the process starts with 6 branches, duplicates after 4096 tokens, and forces a stop at 8192 tokens. The author notes that while correlated prefixes introduce some redundancy, the approach effectively condenses search space exploration and typically completes within 6-7 minutes per problem.",
+  "rank": 3,
+  "competition_flow": "The pipeline takes raw math problems, feeds them into a quantized Deepseek-R1-Distill-Qwen-14B model via vLLM, applies a dynamic multi-branch generation and early-stopping algorithm with prefix caching, and resolves the final answer via majority vote over the generated \\boxed{} outputs.",
+  "data_reading": [],
+  "data_processing": [],
+  "features_engineering": [],
+  "models": [
+    "Deepseek-R1-Distill-Qwen-14B"
+  ],
+  "frameworks_used": [
+    "vLLM"
+  ],
+  "loss_functions": [],
+  "cv_strategy": "",
+  "ensembling": "The final answer is determined by applying a majority vote across all dynamically generated solution branches, with an early-stopping rule that halts generation once a single answer exceeds a 70% majority threshold among completed solutions.",
+  "insights": [
+    "Early tokens in LLM math solutions share significant common ground, making dynamic branching more efficient than uniform generation.",
+    "Hallucination probability increases as generation progresses, justifying early stopping when a strong majority consensus emerges.",
+    "Enabling prefix caching in vLLM is critical to avoid redundant KV cache recomputation when branching solutions.",
+    "A time-aware fallback strategy ensures solutions complete within strict time limits by reducing branch counts and token limits."
+  ],
+  "critical_findings": [],
+  "what_did_not_work": [],
+  "github_repos": [],
+  "papers": [],
+  "other_solution_refs": [],
+  "source_url": "https://www.kaggle.com/competitions/ai-mathematical-olympiad-progress-prize-2/discussion/573314"
+}

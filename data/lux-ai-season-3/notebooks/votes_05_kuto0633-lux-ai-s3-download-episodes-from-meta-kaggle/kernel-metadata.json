@@ -1,0 +1,23 @@
+{
+  "id": "kuto0633/lux-ai-s3-download-episodes-from-meta-kaggle",
+  "id_no": 73318714,
+  "title": "Lux AI S3 Download Episodes from Meta Kaggle",
+  "code_file": "lux-ai-s3-download-episodes-from-meta-kaggle.ipynb",
+  "language": "python",
+  "kernel_type": "notebook",
+  "is_private": false,
+  "enable_gpu": false,
+  "enable_tpu": false,
+  "enable_internet": true,
+  "keywords": [],
+  "dataset_sources": [
+    ""
+  ],
+  "kernel_sources": [],
+  "competition_sources": [
+    "lux-ai-season-3"
+  ],
+  "model_sources": [],
+  "docker_image": "gcr.io/kaggle-images/python@sha256:820f58c1c0aae98e031ad41630a374db9ae9875c6f1dea078c4e3bee7c444803",
+  "machine_shape": "None"
+}

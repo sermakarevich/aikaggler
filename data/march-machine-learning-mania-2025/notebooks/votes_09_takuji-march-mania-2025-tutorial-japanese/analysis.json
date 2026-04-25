@@ -1,0 +1,48 @@
+{
+  "summary": "This notebook serves as a tutorial for the March Mania 2025 competition by dissecting the 1st place solution from March Mania 2023. It walks through essential college basketball domain knowledge, data loading, and a step-by-step breakdown of feature engineering, model training, and probability calibration. Readers learn how to transform raw game logs into a compact feature set, train an XGBoost model to predict point differentials, and apply a spline-based calibration to convert margins into win probabilities. The tutorial emphasizes that a small, well-crafted feature set combined with careful post-processing can be highly effective for this type of tabular prediction task.",
+  "purpose": "tutorial",
+  "competition_flow": "Loads historical regular season and tournament CSVs, engineers ~45 team-level and matchup features, trains an XGBoost model to predict point differentials, calibrates predictions with a spline to generate win probabilities, and outputs a submission CSV.",
+  "data_reading": [
+    "pd.read_csv with os.walk, fallback to cp1252 encoding, concatenating M/W tournament and regular season CSVs"
+  ],
+  "data_processing": [
+    "Swaps winner/loser columns to double dataset size, standardizes column prefixes to T1_/T2_, encodes location as integers (1/-1/0), clips predictions to [-30, 30] and final probabilities to [0.025, 0.975]"
+  ],
+  "features_engineering": [
+    "Aggregated regular season box score stats (FGM, FGA, 3PM, OR, Ast, TO, Stl, PF) by team/season",
+    "Last 14-day win ratio",
+    "GLM-derived team quality scores using binomial family",
+    "Seed numbers and seed difference",
+    "Point differential"
+  ],
+  "models": [
+    "XGBoost"
+  ],
+  "frameworks_used": [
+    "pandas",
+    "numpy",
+    "xgboost",
+    "scikit-learn",
+    "scipy",
+    "statsmodels",
+    "matplotlib"
+  ],
+  "loss_functions": [
+    "Custom Cauchy loss function (cauchyobj)",
+    "MAE metric"
+  ],
+  "cv_strategy": "KFold(n_splits=5, shuffle=True, random_state=i), repeated 3 times",
+  "ensembling": "Averages predictions across 3 model repeats and applies a UnivariateSpline calibration to map point differentials to win probabilities, with final probability clipping.",
+  "insights": [
+    "Predicting point differentials rather than win probabilities directly can be more effective for this competition.",
+    "A small set of carefully engineered features (~45) is sufficient when combined with proper calibration.",
+    "Retraining on the full dataset for inference often yields better performance than relying solely on CV out-of-fold predictions."
+  ],
+  "critical_findings": [
+    "The spline calibration curve shows slight inversion at the tails, which the author notes as a potential issue.",
+    "XGBoost version differences (0.81 vs 2.0.3) can significantly alter predictions and final scores, requiring environment awareness."
+  ],
+  "what_did_not_work": [],
+  "source_url": "https://www.kaggle.com/code/takuji/march-mania-2025-tutorial-japanese",
+  "votes": 156
+}

@@ -1,0 +1,103 @@
+{
+  "id": 86023,
+  "competitionName": "ai-mathematical-olympiad-progress-prize-2",
+  "title": "AI Mathematical Olympiad - Progress Prize 2",
+  "briefDescription": "Solve national-level math challenges using artificial intelligence models",
+  "dateEnabled": "2024-10-17T15:00:47.587Z",
+  "deadline": "2025-04-01T23:59:00Z",
+  "hasLeaderboard": true,
+  "maxDailySubmissions": 1,
+  "numScoredSubmissions": 2,
+  "hasSolution": true,
+  "numPrizes": 5,
+  "forumId": 6010164,
+  "finalLeaderboardHasBeenVerified": true,
+  "disableSubmissions": true,
+  "userRankMultiplier": 1,
+  "dateCreated": "2024-10-01T16:19:05.996703700Z",
+  "competitionHostSegmentId": 1,
+  "maxTeamSize": 7,
+  "medalsAllowed": true,
+  "enableTeamFiles": true,
+  "teamFileDeadline": "2025-04-30T00:00:00Z",
+  "teamMergerExplicitDeadline": "2025-03-25T23:59:00Z",
+  "prohibitNewEntrantsExplicitDeadline": "2025-03-25T23:59:00Z",
+  "kernelsPublishingDisabledDeadline": "2025-03-25T23:59:00Z",
+  "organizationId": 4015,
+  "hasCoverImageUrl": true,
+  "showPrivateLeaderboard": true,
+  "hasScripts": true,
+  "onlyAllowKernelSubmissions": true,
+  "totalTeams": 2212,
+  "totalCompetitors": 2672,
+  "totalSubmissions": 3887,
+  "rulesRequired": true,
+  "usesSynchronousReruns": true,
+  "maxCpuRuntimeMinutes": 540,
+  "maxGpuRuntimeMinutes": 300,
+  "clonedFromCompetitionId": 73231,
+  "rowIdColumnName": "id",
+  "requiredSubmissionFilename": "submission.parquet",
+  "evaluationAlgorithm": {
+    "id": 474,
+    "name": "Accuracy Score",
+    "isMax": true,
+    "isPublic": true,
+    "environmentRenderType": "ENVIRONMENT_RENDER_TYPE_JSON",
+    "kernelId": 39243584,
+    "latestCompetitionMetricVersionId": 17210,
+    "state": "AVAILABLE"
+  },
+  "categories": [
+    {
+      "id": 13204,
+      "name": "nlp",
+      "fullPath": "analysis > nlp",
+      "description": "Natural Language Processing gives a computer program the ability to extract meaning human language. Applications include sentiment analysis, translation, and speech recognition.",
+      "datasetCount": 6740,
+      "competitionCount": 130,
+      "scriptCount": 9654,
+      "slug": "nlp",
+      "displayName": "NLP"
+    },
+    {
+      "id": 17174,
+      "name": "mathematics",
+      "fullPath": "subject > mathematics",
+      "description": "",
+      "datasetCount": 311,
+      "competitionCount": 9,
+      "scriptCount": 415,
+      "slug": "mathematics",
+      "displayName": "Mathematics"
+    },
+    {
+      "name": "accuracy score",
+      "description": "Accuracy classification score. See https://scikit-learn.org/stable/modules/generated/sklearn.metrics.accuracy_score.html",
+      "displayName": "Accuracy Score"
+    }
+  ],
+  "organization": {
+    "slug": "aimoprize",
+    "name": "AI|MO",
+    "thumbnailImageUrl": "https://storage.googleapis.com/kaggle-organizations/4015/thumbnail.png",
+    "profileUrl": "/organizations/aimoprize"
+  },
+  "launched": true,
+  "createdByUserId": 1095143,
+  "license": {
+    "id": 42,
+    "name": "Subject to Competition Rules",
+    "agreementRequired": false
+  },
+  "hostName": "AI|MO",
+  "locked": true,
+  "totalJoinedUsers": 16441,
+  "requiresIdentityVerification": true,
+  "submissionSizeLimitMb": 20480,
+  "reward": {
+    "id": "USD",
+    "quantity": 2117152
+  },
+  "usesHearth": true
+}

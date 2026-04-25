@@ -1,0 +1,52 @@
+{
+  "summary": "The author abandoned a rule-based agent after weeks of stagnation and switched to an Imitation Learning (IL) pipeline using replays from top teams. The solution employs two separate UNet architectures: a World-wise Unit-UNet for predicting action probabilities and a Unit-wise SAP-UNet for predicting SAP targets. Key technical choices include simulating fog-of-war visibility and hidden game constants from replay observations, standardizing spawn positions via map mirroring, and dropping 95% of passive \"Center\" actions to accelerate training. The final submission was trained on Frog Parade replays and fine-tuned on Flat Neurons replays, outperforming the initial rule-based baseline.",
+  "extensive_summary": "## Approach & Architecture\nThe solution pivots from a rule-based agent to an Imitation Learning (IL) strategy after hitting performance limits. The core model consists of two distinct UNet architectures: a **World-wise Unit-UNet** that predicts action probabilities for all units across the environment, and a **Unit-wise SAP-UNet** that specifically predicts the target location for the SAP action. While the author initially planned to merge them, they remained separate. The Unit-UNet outputs a 6x24x24 tensor representing probabilities for six actions (Center, Up, Right, Down, Left, SAP) at each grid position. The SAP-UNet outputs a 24x24 probability distribution for SAP targets.\n\n## Data & Preprocessing\nTraining data was sourced from replays of \"Frog Parade\" and \"Flat Neurons\". The author implemented a rigorous preprocessing pipeline to simulate the agent's limited visibility and unobservable game constants. At each replay step, custom code reconstructs the observable state, identifies reward positions, populates obstacle maps, and infers hidden constants. To standardize training, maps where the replay agent spawned in the bottom-right corner were mirrored to force a spawn at (0, 0). This introduced action distribution skew, which was mitigated using weighted cross-entropy loss. Additionally, 95% of \"Center\" action instances were dropped to accelerate learning and reduce passivity.\n\n## Handling Ambiguity & Inference\nA key limitation of the Unit-UNet is its inability to handle multiple units occupying the same position. During training, the author randomly selects one action for colliding units, prioritizing movement and SAP over Center. During inference, units at the same position are sorted by energy, and the predicted action is assigned to the top half by energy to encourage spreading and avoid clustering. The final submission (`lux3_0.4.8_fn.tar.gz`) was trained on Frog Parade replays and fine-tuned on Flat Neurons replays, proving more effective than training on a single team's data.",
+  "rank": 3,
+  "competition_flow": "The pipeline extracts observable states and infers hidden constants from top-team replays, standardizes map orientations via mirroring, filters out uninformative timesteps and excessive \"Center\" actions, trains two separate UNet models with weighted cross-entropy loss, and combines the outputs for final submission.",
+  "data_reading": [],
+  "data_processing": [
+    "Mirrored maps to standardize spawn positions at (0,0), dropped 95% of \"Center\" action instances to reduce passivity and speed up learning, filtered out timesteps where game outcomes were already decided, and simulated fog-of-war visibility and hidden game constants by reconstructing observable states from replay agent observations."
+  ],
+  "features_engineering": [
+    "Feature maps (28x24x24) encoding unit positions/energy, fleet vision, nebulae, asteroids, node energy, relics, reward points, and vision duration; global features (17) including move/SAP costs, team points, match step/number, and inferred hidden constants (nebula drift speed, energy reduction, vision reduction, SAP dropoff factor, energy void factor)."
+  ],
+  "models": [
+    "UNet",
+    "World-wise Unit-UNet",
+    "Unit-wise SAP-UNet"
+  ],
+  "frameworks_used": [],
+  "loss_functions": [
+    "weighted cross-entropy loss"
+  ],
+  "cv_strategy": "",
+  "ensembling": "Two separate UNets are used complementarily rather than ensembled; during inference, predicted actions for colliding units are assigned to the top half by energy to encourage spreading.",
+  "insights": [
+    "Accurately simulating fog-of-war visibility and hidden game constants from replay observations is critical for effective imitation learning.",
+    "Mirroring maps to standardize spawn positions introduces action distribution skew that must be addressed with loss weighting.",
+    "Sorting units by energy during inference effectively mitigates the model's inability to handle multiple units at the same position.",
+    "Fine-tuning on a second team's replays yields better generalization than training exclusively on one team's data."
+  ],
+  "critical_findings": [
+    "A simple IL approach trained for only a couple of hours outperformed a heavily optimized rule-based agent that took weeks to develop.",
+    "Dropping 95% of \"Center\" action instances dramatically accelerated the learning process by reducing passive behavior.",
+    "Mirroring maps to standardize spawn positions inherently skews the action distribution, increasing Right/Down frequency while decreasing Left/Up."
+  ],
+  "what_did_not_work": [
+    "A rule-based agent approach hit performance limits after weeks of development without any progress, prompting a switch to Imitation Learning."
+  ],
+  "github_repos": [
+    {
+      "url": "https://github.com/w9PcJLyb/lux3-bot",
+      "role": "solution"
+    }
+  ],
+  "papers": [],
+  "other_solution_refs": [
+    {
+      "description": "Relicbound bot",
+      "url": "https://www.kaggle.com/code/egrehbbt/relicbound-bot-for-lux-ai-s3-competition"
+    }
+  ],
+  "source_url": "https://www.kaggle.com/competitions/lux-ai-season-3/discussion/568494"
+}

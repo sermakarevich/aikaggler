@@ -1,0 +1,37 @@
+{
+  "id": "itahiro/deepseek-r1-distill-qwen-7b",
+  "id_no": 72077300,
+  "title": "Deepseek-r1-distill-qwen-7b",
+  "code_file": "deepseek-r1-distill-qwen-7b.ipynb",
+  "language": "python",
+  "kernel_type": "notebook",
+  "is_private": false,
+  "enable_gpu": true,
+  "enable_tpu": false,
+  "enable_internet": false,
+  "keywords": [
+    "gpu"
+  ],
+  "dataset_sources": [],
+  "kernel_sources": [
+    "mpware/vllm-0-7-1",
+    "leonshangguan/deepseek-r1-distill-qwen-7b-awq"
+  ],
+  "competition_sources": [
+    "ai-mathematical-olympiad-progress-prize-2"
+  ],
+  "model_sources": [
+    "huikang/deepseek-r1/Transformers/deepseek-r1-distill-qwen-14b-awq-casperhansen/1",
+    "huikang/deepseek-r1/Transformers/deepseek-r1-distill-qwen-32b-awq-casperhansen/1",
+    "huikang/deepseek-r1/Transformers/deepseek-aideepseek-r1-distill-qwen-14b-awq-neody/1",
+    "huikang/deepseek-r1/Transformers/deepseek-r1-distill-qwen-7b-awq-casperhansen/1",
+    "shelterw/deepseek-r1/Transformers/deepseek-r1-distill-qwen-32b-awq/1",
+    "konstantinboyko/deepseek-r1-distill-qwen-14b-awq-corianas/Transformers/default/1",
+    "konstantinboyko/qwen-14b-awq-casperhansen/Transformers/default/1",
+    "shelterw/qwen2.5/Transformers/qwq-32b-preview-awq/1",
+    "abdullahmeda/qwen2.5/Transformers/72b-instruct-awq/1",
+    "qwen-lm/qwq-32b-preview/Transformers/default/1"
+  ],
+  "docker_image": "gcr.io/kaggle-private-byod/python@sha256:d8674e13fab653bf7fb8d9a102f2ae94036771ccb5c73f51888d881421e1f937",
+  "machine_shape": "NvidiaL4"
+}

@@ -1,0 +1,29 @@
+{
+  "summary": "This notebook provides a utility script to download replay episodes for the Lux AI Season 3 competition from Kaggle's Meta Kaggle dataset and API. It demonstrates how to efficiently query large Meta Kaggle CSVs using Polars, filter by competition and submission IDs, and fetch JSON replay files via the Kaggle API. The author emphasizes practical considerations like handling missing string values, applying schema overrides, and implementing rate limiting to comply with Kaggle's API constraints. Readers learn a reproducible workflow for gathering competition replay data for analysis or baseline development.",
+  "purpose": "utility",
+  "competition_flow": "Queries Meta Kaggle CSVs to identify relevant episodes and submissions, fetches their replay data via the Kaggle API, and saves the JSON files locally with rate limiting.",
+  "data_reading": [
+    "Loads Episodes.csv and EpisodeAgents.csv from the Meta Kaggle input directory using polars.scan_csv.",
+    "Applies schema_overrides for numeric columns and parses datetime strings with str.to_datetime."
+  ],
+  "data_processing": [
+    "Converts empty strings in InitialConfidence and InitialScore to None and casts them to Float64.",
+    "Sorts and groups by SubmissionId to isolate top agents and compute aggregate metrics.",
+    "Implements a rate-limiting loop with time.sleep to respect Kaggle's API request limits."
+  ],
+  "features_engineering": [],
+  "models": [],
+  "frameworks_used": [],
+  "loss_functions": [],
+  "cv_strategy": "",
+  "ensembling": "",
+  "insights": [
+    "Meta Kaggle CSVs can be efficiently queried and joined using Polars instead of pandas for large-scale data filtering.",
+    "Kaggle's replay API requires explicit rate limiting to avoid throttling when downloading large numbers of episodes.",
+    "Schema overrides and null-handling are necessary when parsing Meta Kaggle CSVs due to inconsistent data types and empty string placeholders."
+  ],
+  "critical_findings": [],
+  "what_did_not_work": [],
+  "source_url": "https://www.kaggle.com/code/kuto0633/lux-ai-s3-download-episodes-from-meta-kaggle",
+  "votes": 126
+}

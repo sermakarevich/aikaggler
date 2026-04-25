@@ -1,0 +1,71 @@
+{
+  "summary": "The team secured 2nd place by optimizing both reasoning performance and inference efficiency for a math problem-solving competition. Their approach combined reasoning-oriented training (SFT followed by DPO to control output length) with aggressive efficiency optimizations, including 4-bit weight and 8-bit KV cache quantization using the lmdeploy inference engine. During inference, they employed dynamic prompt mixing, self-consistency aggregation, and multi-level early stopping strategies to maximize accuracy within strict time constraints.",
+  "extensive_summary": "## Reasoning-Oriented Training\nThe authors started with DeepSeek-R1-Distill-Qwen-14B as the base model. They performed Stage 1 SFT for 8 epochs on a mix of high-difficulty math reasoning trajectories from Light-R1 and LIMO datasets (duplicates removed). To address the resulting output length inflation, Stage 2 applied DPO using a custom dataset constructed from OpenR1-Math-220k. DPO pairs were filtered using four criteria: correctness, length ratio, minimum length, and sentence transformer similarity. Training utilized 360-LLaMA-Factory for sequence parallelism on 8\u00d7A800s.\n\n## Efficiency Optimization\nInference was handled via lmdeploy (TurboMind engine) for higher throughput and faster initialization compared to vLLM. They applied 4-bit AWQ weight quantization and 8-bit KV cache quantization, which reduced latency by 40-55% over FP16 with only a 5-10% drop in sample accuracy.\n\n## Inference-Time Strategies\nThe pipeline used a mix of Chain-of-Thought and Code prompts (7 CoT, 8 Code per question). They implemented sample-level early stopping upon detecting the first valid executable code or boxed answer, and question-level early stopping when a majority of outputs agreed. A dynamic `adjust_speed` module recalculated remaining time vs. questions to scale down sample counts and max reasoning time mid-competition. Self-consistency aggregation was used for final answer selection.",
+  "rank": 2,
+  "competition_flow": "Fine-tune a 14B reasoning model on curated math datasets, apply AWQ and KV cache quantization, run inference with lmdeploy using dynamic prompt mixing and multi-level early stopping, aggregate results via self-consistency, and submit.",
+  "data_reading": [],
+  "data_processing": [
+    "Combined Light-R1 stage2 and LIMO datasets, removed duplicates, constructed DPO pairs using correctness, length ratio, min length, and sentence transformer similarity thresholds."
+  ],
+  "features_engineering": [],
+  "models": [
+    "DeepSeek-R1-Distill-Qwen-14B",
+    "deepseek-14b-sft-dpo2",
+    "deepseek-14b-sft-dpo4"
+  ],
+  "frameworks_used": [
+    "Light-R1",
+    "360-LLaMA-Factory",
+    "lmdeploy",
+    "sentence transformer"
+  ],
+  "loss_functions": [
+    "DPO"
+  ],
+  "cv_strategy": "Local validation on AIME 2025 test set (30 problems) and reference set (10 problems), evaluating average sample accuracy and aggregated accuracy via self-consistency.",
+  "ensembling": "Self-consistency aggregation across 15 samples per question (7 CoT, 8 Code prompts), with dynamic sample count reduction and early stopping triggered by majority agreement or remaining time constraints.",
+  "insights": [
+    "DPO effectively reduces model output length without degrading reasoning performance.",
+    "Quantization (W4KV8) offers a strong speed-accuracy trade-off, cutting latency by ~40-55% with only a 5-10% accuracy drop.",
+    "Diversifying system prompts does not improve reasoning model performance.",
+    "Fine-tuning on math data reduces the model's inclination to output code, but improves conditional accuracy when code is generated."
+  ],
+  "critical_findings": [
+    "Early stopping after the first valid answer or executable code rarely misses opportunities to revise incorrect answers, making it highly effective for token savings.",
+    "After fine-tuning, the model becomes significantly less likely to output code despite using a code prompt, shifting the error profile from 'no code' to 'wrong number'.",
+    "W4KV8 quantization performs comparably to W4KV16 in reasoning accuracy while offering superior latency benefits."
+  ],
+  "what_did_not_work": [
+    "GRPO training runs showed no significant accuracy improvement.",
+    "RAG using an IMO dataset as a document bank for few-shot demonstrations yielded no improvement.",
+    "Model-based aggregation using an LLM to vote on frequent answers was unstable.",
+    "Quantization-aware training (QAT) with DPO on a 2k dataset did not bring improvement."
+  ],
+  "github_repos": [
+    {
+      "url": "https://github.com/imagination-research/aimo2",
+      "role": "solution"
+    },
+    {
+      "url": "https://github.com/Qihoo360/Light-R1",
+      "role": "reference"
+    },
+    {
+      "url": "https://github.com/Qihoo360/360-LLaMA-Factory",
+      "role": "library"
+    },
+    {
+      "url": "https://github.com/InternLM/lmdeploy",
+      "role": "library"
+    }
+  ],
+  "papers": [
+    {
+      "title": "Efficiently Serving LLM Reasoning Programs with Certaindex",
+      "url": "",
+      "arxiv_id": null
+    }
+  ],
+  "other_solution_refs": [],
+  "source_url": "https://www.kaggle.com/competitions/ai-mathematical-olympiad-progress-prize-2/discussion/572948"
+}

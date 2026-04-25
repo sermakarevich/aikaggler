@@ -1,0 +1,34 @@
+{
+  "summary": "The author developed a rules-based bot for the Lux AI Season 3 competition, building upon an existing notebook by @egrehbbt as its foundation. They implemented five core heuristic modifications: prioritizing relic search when point differentials shift, harvesting and charging energy for a synchronized late-game 'avalanche' attack, predicting board changes to optimize ship routing, and deploying blind SAPs to disrupt opponents based on point estimates. The solution also involved collaborative code optimization with a colleague to improve execution speed and secure a silver medal.",
+  "extensive_summary": "## Foundation and Core Strategy\nThe solution relies entirely on a rules-based architecture rather than machine learning, leveraging an existing notebook by @egrehbbt as its structural foundation. The overarching philosophy centers on maintaining a point advantage through proactive relic discovery and capitalizing on late-game opportunities.\n\n## Key Heuristic Modifications\nThe bot implements five primary rule-based adjustments that drive its decision-making:\n- **Find Relics Intensive Mode:** When either team's score is increasing (indicating a reward has appeared), all ships are redirected to search for relics. The author notes that falling behind in relic discovery is the most critical failure mode.\n- **Harvesting, Energy Charge, and SAP:** Ships are instructed to harvest resources and recharge energy to prepare for a coordinated late-game assault. SAPs are simultaneously utilized to intercept or hinder enemy ships entering contested zones.\n- **Avalanche Strategy:** In the final 10 steps, energy-charged ships are grouped to launch a synchronized attack on the opponent's harvesting operations, aiming to dramatically shift the score and turn the match around.\n- **Predicting Board Changes:** The bot analyzes the timing of board state updates and energy accumulation to forecast future conditions, allowing it to plot optimal movement routes that account for impending changes rather than reacting passively.\n- **Blind SAP Deployment:** SAPs are deployed without direct line-of-sight to opponents. By estimating the opponent's reward fill based on their point gain, the bot can strategically disrupt their progress even when they are not visible.\n\n## Collaboration and Optimization\nThe author collaborated with a colleague (Kazuhiro.O) to refine the approach. While the author's initial scores plateaued, they contributed by optimizing the colleague's program's execution speed, which proved crucial as the competition progressed and allowed them to secure a silver medal.",
+  "rank": 29,
+  "competition_flow": "The pipeline consists of a rules-based game bot that observes the simulation state, applies five heuristic modifications (relic prioritization, energy harvesting/charging, late-game avalanche attacks, board change prediction, and blind SAP deployment), and outputs actions for submission.",
+  "data_reading": [],
+  "data_processing": [],
+  "features_engineering": [],
+  "models": [],
+  "frameworks_used": [],
+  "loss_functions": [],
+  "cv_strategy": "",
+  "ensembling": "",
+  "insights": [
+    "Prioritizing relic search when point differentials shift is critical to avoid falling behind.",
+    "Late-game synchronization of energy-charged ships can overwhelm opponents and decisively shift the match.",
+    "Predicting board state changes allows for proactive route optimization rather than reactive movement.",
+    "Blind SAP deployment based on estimated opponent rewards effectively disrupts progress without requiring direct line-of-sight."
+  ],
+  "critical_findings": [
+    "The game state can be decisively shifted in the final 10 steps through a coordinated energy avalanche.",
+    "Estimating opponent reward fill via point gain enables effective blind SAP deployment, a non-obvious tactical advantage."
+  ],
+  "what_did_not_work": [],
+  "github_repos": [],
+  "papers": [],
+  "other_solution_refs": [
+    {
+      "description": "Foundation notebook by @egrehbbt used as the core strategy base",
+      "url": "https://www.kaggle.com/code/egrehbbt/relicbound-bot-for-lux-ai-s3-competition"
+    }
+  ],
+  "source_url": "https://www.kaggle.com/competitions/lux-ai-season-3/discussion/567581"
+}

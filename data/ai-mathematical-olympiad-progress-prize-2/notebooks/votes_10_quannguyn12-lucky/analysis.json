@@ -1,0 +1,37 @@
+{
+  "summary": "This notebook demonstrates a high-throughput inference pipeline for the AI Mathematical Olympiad Progress Prize 2 competition using a quantized 7B parameter LLM. It leverages vLLM for parallel decoding and implements a multi-prompt strategy that combines standard instructions with a specialized \"human-like reasoning\" prefix and a Chinese prompt. The pipeline extracts final answers from \\boxed{} tags, aggregates them via a noisy majority vote, and applies the competition's modulo 1000 constraint. Readers should take away how prompt diversity and parallel generation can stabilize LLM outputs for math problems, as well as practical techniques for managing inference latency and memory on Kaggle GPUs. The notebook proves that a carefully engineered inference wrapper can outperform naive single-prompt generation without requiring model fine-tuning.",
+  "purpose": "inference",
+  "competition_flow": "Reads math questions from a CSV, generates parallel completions using a quantized LLM via vLLM, extracts and aggregates answers via a noisy majority vote, and submits the final integer modulo 1000 through the official Kaggle inference server.",
+  "data_reading": [
+    "Loads test/reference data using pandas and polars, extracting individual question strings via .item(0) for single-question processing."
+  ],
+  "data_processing": [
+    "None explicitly applied; raw question strings are directly formatted into chat templates."
+  ],
+  "features_engineering": [],
+  "models": [
+    "deepseek-r1-distill-qwen-7b-awq"
+  ],
+  "frameworks_used": [
+    "vllm",
+    "torch",
+    "pandas",
+    "polars",
+    "kaggle_evaluation.aimo_2_inference_server"
+  ],
+  "loss_functions": [],
+  "cv_strategy": "",
+  "ensembling": "Generates 128 parallel completions using a weighted mix of English and Chinese prompts, extracts \\boxed{} answers, and selects the final prediction via a noisy majority vote (adding random noise to break ties) before applying modulo 1000.",
+  "insights": [
+    "Mixing multiple system prompts and adding a \"think like a human\" chain-of-thought prefix improves the model's ability to avoid decimal arithmetic and produce cleaner final answers.",
+    "Adding a small random perturbation to vote counts effectively breaks ties and stabilizes the selection process without biasing the majority.",
+    "Dynamically reducing max_tokens and max_num_seqs as the deadline approaches ensures predictions are submitted within the strict time limits."
+  ],
+  "critical_findings": [
+    "The author hardcodes a fallback answer (210) for local testing when specific keywords like \"circumcircle\" or \"Triangle\" are missing, highlighting a practical shortcut for debugging.",
+    "The code explicitly warns about and mitigates inference latency by tracking elapsed time and dynamically scaling batch sizes and token limits."
+  ],
+  "what_did_not_work": [],
+  "source_url": "https://www.kaggle.com/code/quannguyn12/lucky",
+  "votes": 508
+}

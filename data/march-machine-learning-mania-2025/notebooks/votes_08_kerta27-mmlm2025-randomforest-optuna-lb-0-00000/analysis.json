@@ -1,0 +1,43 @@
+{
+  "summary": "The notebook demonstrates a baseline pipeline for the March Machine Learning Mania 2025 competition using a Random Forest regressor. It focuses on constructing a unified dataset from men's and women's basketball data, engineering team-level and game-level features, and training a model to predict win probabilities. The author references external Optuna tuning and applies isotonic regression calibration to the final predictions before submission. Readers should learn how to merge disparate basketball datasets, create interaction/aggregation features for team matchups, and properly calibrate probabilistic outputs for tournament prediction tasks.",
+  "purpose": "baseline",
+  "competition_flow": "Loads men's and women's basketball datasets, merges them into a unified game-level table, engineers team and matchup features, trains a Random Forest regressor to predict win probabilities, applies isotonic calibration, and outputs a tournament submission CSV.",
+  "data_reading": [
+    "Uses glob to load all CSVs from /kaggle/input/march-machine-learning-mania-2025/** into a dictionary.",
+    "Applies pd.read_csv with encoding='latin-1' to handle special characters.",
+    "Concatenates men's and women's datasets for teams, results, detailed results, seeds, and cities."
+  ],
+  "data_processing": [
+    "Maps win location codes ('A', 'H', 'N') to numeric values (1, 2, 3).",
+    "Fills missing values with -1 across the dataset.",
+    "Imputes remaining missing values using SimpleImputer(strategy='mean').",
+    "Scales features using StandardScaler.",
+    "Clips final predictions to [0.0001, 0.9999] to avoid boundary probabilities."
+  ],
+  "features_engineering": [
+    "Creates matchup IDs, team IDs, and seed differences by sorting team IDs and mapping seed strings to numeric values.",
+    "Computes score differentials and normalized score differentials based on win/loss outcome.",
+    "Aggregates detailed game statistics (FGM, FGA, 3PM, 3PA, FT, rebounds, assists, turnovers, steals, blocks, fouls) per matchup using sum, mean, median, max, min, std, skew, and nunique.",
+    "Filters to tournament games only for training and merges aggregated features back into the main table."
+  ],
+  "models": [
+    "RandomForestRegressor (n_estimators=296, min_samples_split=2, max_features='sqrt', max_depth=20)"
+  ],
+  "frameworks_used": [
+    "numpy",
+    "pandas",
+    "scikit-learn"
+  ],
+  "loss_functions": [],
+  "cv_strategy": "",
+  "ensembling": "Single model with isotonic regression calibration applied to predictions; no model ensembling is performed.",
+  "insights": [
+    "Merging men and women basketball datasets into a single table simplifies feature engineering and model training.",
+    "Aggregating detailed game statistics per matchup captures team performance trends beyond simple win/loss records.",
+    "Isotonic calibration effectively adjusts raw model probabilities to better align with observed win rates for tournament submissions."
+  ],
+  "critical_findings": [],
+  "what_did_not_work": [],
+  "source_url": "https://www.kaggle.com/code/kerta27/mmlm2025-randomforest-optuna-lb-0-00000",
+  "votes": 162
+}

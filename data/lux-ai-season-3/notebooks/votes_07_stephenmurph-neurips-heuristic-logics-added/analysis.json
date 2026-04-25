@@ -1,0 +1,36 @@
+{
+  "summary": "This notebook implements a heuristic-based AI agent for the Lux AI Season 3 competition, demonstrating a rule-driven approach that dynamically adapts across multiple matches. It transitions from systematic map exploration in early matches to exploiting discovered relic scoring patterns and engaging in combat in later matches. Key takeaways include the effectiveness of sector-based exploration for coverage, maintaining a decaying enemy position heatmap for partial observability, and using match history to adjust aggression and scoring strategies.",
+  "purpose": "other",
+  "competition_flow": "The notebook initializes the Lux AI Season 3 environment, implements a heuristic agent that tracks map knowledge and enemy positions, runs a simulation to generate a replay, and packages the code for competition submission.",
+  "data_reading": [
+    "Reads environment configuration (env_cfg) and observation dictionaries (obs) containing tile types, energies, unit positions, relic nodes, and sensor masks provided by the Lux AI engine."
+  ],
+  "data_processing": [
+    "Processes raw observations into internal state representations: updates visited tile knowledge, marks discovered relic nodes, decays and spreads an enemy position heatmap, and tracks scoring events to infer tile-value patterns."
+  ],
+  "features_engineering": [],
+  "models": [],
+  "frameworks_used": [
+    "luxai-s3",
+    "numpy",
+    "pandas",
+    "collections",
+    "IPython"
+  ],
+  "loss_functions": [],
+  "cv_strategy": "",
+  "ensembling": "",
+  "insights": [
+    "Heuristic agents can effectively compete by dynamically shifting focus from exploration to exploitation across match phases.",
+    "Sector-based assignment ensures systematic and efficient map coverage without redundant searches.",
+    "A decaying enemy position heatmap robustly handles partial observability and unit movement uncertainty.",
+    "Early matches should prioritize information gathering over immediate scoring or combat."
+  ],
+  "critical_findings": [
+    "Enemy position uncertainty accumulates over time, necessitating a decay factor in the heatmap to prevent stale predictions from dictating actions.",
+    "Nebula tiles drain energy, making passive avoidance a critical survival strategy that outweighs aggressive movement in many scenarios."
+  ],
+  "what_did_not_work": [],
+  "source_url": "https://www.kaggle.com/code/stephenmurph/neurips-heuristic-logics-added",
+  "votes": 87
+}

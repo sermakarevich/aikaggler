@@ -1,0 +1,65 @@
+{
+  "overall_summary": "This competition focused on solving advanced math problems under strict latency and hardware constraints, pushing participants to balance reasoning accuracy with inference efficiency. Winning approaches diverged between heavy fine-tuning pipelines with speculative decoding and quantization, and lightweight inference-time optimizations like dynamic branching, early stopping, and prompt engineering. Across all top solutions, success hinged on aggressive latency management, KV cache optimization, and strategic sampling rather than relying solely on raw model scale.",
+  "competition_flows": [
+    "Raw AoPS math problems were filtered and expanded into CoT and TIR datasets, used to fine-tune and linearly merge a Qwen2.5-14B model, which was then optimized via TensorRT-LLM, FP8 quantization, and ReDrafter speculative decoding with dynamic batching and time-buffering for inference.",
+    "Fine-tune a 14B reasoning model on curated math datasets, apply AWQ and KV cache quantization, run inference with lmdeploy using dynamic prompt mixing and multi-level early stopping, aggregate results via self-consistency, and submit.",
+    "Raw math problems are fed into a single quantized DeepSeek-R1-Distill-Qwen-14B model via vLLM, where 5 inference attempts with varied seeds and strict prompt constraints generate candidate answers, which are then submitted.",
+    "The pipeline takes raw math problems, feeds them into a quantized Deepseek-R1-Distill-Qwen-14B model via vLLM, applies a dynamic multi-branch generation and early-stopping algorithm with prefix caching, and resolves the final answer via majority vote over the generated \\boxed{} outputs.",
+    "Raw prompts were processed through a quantized DeepSeek-R1-Distill-Qwen-14B model using LMDeploy, with dynamic batch sizing adjusted in real-time based on profiling and live latency tracking, before submitting the generated outputs."
+  ],
+  "data_reading": [],
+  "data_processing": [
+    "Collected 540K problems from AoPS forums and generated up to 32 solution candidates per problem using DeepSeek-R1 and QwQ-32B (temp 0.7, top-p 0.95).",
+    "Filtered incorrect answers by verifying answer equivalence with Qwen2.5-32B-Instruct.",
+    "Built a TIR pipeline starting with LIMO, iteratively generating 1.7M solutions, then aggressively filtering to 15K high-quality samples based on code execution count and answer correctness.",
+    "Applied sequence packing and context parallelization during training to accelerate long-reasoning data processing.",
+    "Combined Light-R1 stage2 and LIMO datasets, removed duplicates, constructed DPO pairs using correctness, length ratio, min length, and sentence transformer similarity thresholds."
+  ],
+  "features_engineering": [],
+  "models": [
+    "Qwen2.5-14B-Base",
+    "DeepSeek-R1",
+    "QwQ-32B",
+    "Qwen2.5-32B-Instruct",
+    "Qwen2.5-72B-Math-Instruct",
+    "LIMO",
+    "DeepSeek-Distill-14B",
+    "DeepSeek-R1-Distill-Qwen-14B"
+  ],
+  "frameworks_used": [
+    "NVIDIA/NeMo-Skills",
+    "NVIDIA/NeMo-Aligner",
+    "mergekit",
+    "TensorRT-LLM",
+    "Light-R1",
+    "360-LLaMA-Factory",
+    "LMDeploy",
+    "sentence transformer",
+    "vLLM",
+    "SGLang"
+  ],
+  "loss_functions": [
+    "DPO"
+  ],
+  "cv_strategies": [
+    "Used a held-out benchmark dataset (Comp-Math-24-25) comprising 256 problems from AIME24/25 and HMMT 2024/2025, evaluated via maj@16 and pass@16 metrics across multiple runs.",
+    "Local validation on AIME 2025 test set (30 problems) and reference set (10 problems), evaluating average sample accuracy and aggregated accuracy via self-consistency."
+  ],
+  "ensembling": [
+    "The solution relied on linearly merging CoT and TIR checkpoints rather than traditional model ensembling, combined with dynamic early stopping and a time-buffering strategy to stabilize outputs and manage latency.",
+    "Self-consistency aggregation across 15 samples per question (7 CoT, 8 Code prompts), with dynamic sample count reduction and early stopping triggered by majority agreement or remaining time constraints.",
+    "Five inference attempts per problem are generated using different random seeds to stabilize outputs, though the exact selection mechanism for the final submission is not detailed.",
+    "The final answer is determined by applying a majority vote across all dynamically generated solution branches, with an early-stopping rule that halts generation once a single answer exceeds a 70% majority threshold among completed solutions."
+  ],
+  "insights": [],
+  "critical_findings": [],
+  "what_did_not_work": [],
+  "notable_individual_insights": [
+    "rank 1 (1st place solution - NemoSkills): Linearly merging CoT and TIR checkpoints effectively balanced accuracy and generation speed without complex merging techniques.",
+    "rank 1 (1st place solution - NemoSkills): FP8 quantization combined with ReDrafter speculative decoding provided the optimal speed-accuracy tradeoff for inference.",
+    "rank 2 (2nd place solution (Team imagination-research)): Quantization (W4KV8) offers a strong speed-accuracy trade-off, cutting latency by ~40-55% with only a 5-10% accuracy drop.",
+    "rank 3 (3rd Place Solution Report): Early tokens in LLM math solutions share significant common ground, making dynamic branching more efficient than uniform generation.",
+    "rank 7 (7th place solution (pure luck)): KV cache size can surpass model weights during long-context decoding, making memory bandwidth the critical bottleneck rather than compute.",
+    "rank 8 (8th place - Solution (LB28) takeway): Strict prompt constraints forcing minimal reasoning steps and boxed modulo answers significantly improve output consistency."
+  ]
+}

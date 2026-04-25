@@ -1,0 +1,41 @@
+{
+  "summary": "Relicbound implements a rule-based AI agent for the Lux AI Season 3 competition, focusing on map exploration and resource gathering. It maintains a persistent internal state to track tile types, energy levels, and obstacle movements, using dynamic A* pathfinding with energy-aware weights to navigate ships efficiently. The agent employs convolution over known relic locations to infer hidden reward zones and assigns tasks greedily based on ship energy and proximity. Readers should understand how to build a robust, partially observable strategy bot using state prediction, dynamic pathfinding, and heuristic resource allocation.",
+  "purpose": "other",
+  "competition_flow": "The notebook defines a Python agent that parses JSON game observations, updates an internal map with predicted obstacle movements and reward locations, uses A* pathfinding to navigate ships, and outputs turn-based actions.",
+  "data_reading": [
+    "Observations are read from `observation.obs`, parsed via `json.loads` if necessary, and converted to a structured dictionary using `lux.kit.from_json`.",
+    "Game configuration constants are extracted from `configurations[\"env_cfg\"]` at step 0."
+  ],
+  "data_processing": [
+    "The agent maintains a `Space` object that updates tile types, energy fields, and obstacle positions based on sensor masks.",
+    "It dynamically infers obstacle drift speed and direction by logging state changes, and uses `scipy.signal.convolve2d` to propagate known relic locations into a reward probability map."
+  ],
+  "features_engineering": [
+    "Hand-crafted internal state features include a grid tracking tile types, energy, and exploration status.",
+    "The agent computes a convolution-based reward map from relic positions and tracks obstacle movement periods and directions via boolean state-change logs."
+  ],
+  "models": [],
+  "frameworks_used": [
+    "numpy",
+    "scipy.signal",
+    "json",
+    "copy",
+    "collections",
+    "sys"
+  ],
+  "loss_functions": [],
+  "cv_strategy": "",
+  "ensembling": "",
+  "insights": [
+    "Maintaining a persistent internal map with predicted obstacle movements significantly improves navigation efficiency in partially observable environments.",
+    "Convolution over known relic locations can effectively infer hidden reward node distributions without direct observation.",
+    "Energy-aware pathfinding weights prevent ships from getting stranded in low-energy zones, ensuring sustainable exploration."
+  ],
+  "critical_findings": [
+    "The game engine's energy field can shift unpredictably, requiring the agent to reset energy predictions when sensor data contradicts internal state.",
+    "Reward calculation logic sometimes yields mathematically impossible states (reward > unknown nodes), indicating potential race conditions or data quirks in the scoring system."
+  ],
+  "what_did_not_work": [],
+  "source_url": "https://www.kaggle.com/code/egrehbbt/relicbound-bot-for-lux-ai-s3-competition",
+  "votes": 501
+}

@@ -1,0 +1,17 @@
+{
+  "description": "Participants predict the outcomes of the 2025 NCAA Men's Basketball Tournament games using historical team statistics, seeding data, and past tournament results. The task requires forecasting game results (typically win probabilities or point spreads) for a series of matchups. Success is evaluated by the Mean Squared Error between the predicted values and the actual outcomes on a held-out test set.",
+  "data_modality": "tabular",
+  "task_type": "forecasting",
+  "label_structure": "single_label",
+  "metric": "Mean Squared Error",
+  "test_split": "temporal",
+  "format": "standard",
+  "dataset_scale": "small",
+  "domain": "sports_basketball",
+  "data_challenges": [
+    "class_imbalance",
+    "long_tail",
+    "private_test_shift"
+  ],
+  "constraints": []
+}

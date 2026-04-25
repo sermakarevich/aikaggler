@@ -1,0 +1,106 @@
+{
+  "id": 86411,
+  "competitionName": "lux-ai-season-3",
+  "title": "NeurIPS 2024 - Lux AI Season 3",
+  "briefDescription": "Deep space exploration!",
+  "dateEnabled": "2024-12-09T19:47:51.783Z",
+  "deadline": "2025-03-24T23:59:00Z",
+  "hasLeaderboard": true,
+  "leaderboardPercentage": 30,
+  "maxDailySubmissions": 5,
+  "numScoredSubmissions": 2,
+  "numPrizes": 8,
+  "forumId": 6054504,
+  "finalLeaderboardHasBeenVerified": true,
+  "disableSubmissions": true,
+  "userRankMultiplier": 1,
+  "dateCreated": "2024-10-08T17:58:11.753520500Z",
+  "competitionHostSegmentId": 1,
+  "maxTeamSize": 5,
+  "medalsAllowed": true,
+  "enableTeamFiles": true,
+  "teamFileDeadline": "2025-04-26T00:00:00Z",
+  "teamMergerExplicitDeadline": "2025-03-03T23:59:00Z",
+  "prohibitNewEntrantsExplicitDeadline": "2025-03-03T23:59:00Z",
+  "kernelsPublishingDisabledDeadline": "2025-03-03T23:59:00Z",
+  "organizationId": 3789,
+  "hasCoverImageUrl": true,
+  "showPrivateLeaderboard": true,
+  "hasScripts": true,
+  "totalTeams": 701,
+  "totalCompetitors": 821,
+  "totalSubmissions": 1202,
+  "rulesRequired": true,
+  "evaluationAlgorithm": {
+    "id": 2586,
+    "name": "Lux AI Season 3",
+    "isMax": true,
+    "isEnvironment": true,
+    "environmentRenderType": "ENVIRONMENT_RENDER_TYPE_HTML",
+    "state": "ENVIRONMENT"
+  },
+  "categories": [
+    {
+      "id": 13313,
+      "name": "reinforcement learning",
+      "fullPath": "task > reinforcement-learning",
+      "datasetCount": 163,
+      "competitionCount": 15,
+      "scriptCount": 592,
+      "slug": "reinforcement-learning",
+      "displayName": "Reinforcement Learning"
+    },
+    {
+      "id": 12101,
+      "name": "artificial intelligence",
+      "fullPath": "subject > science and technology > computer science > artificial intelligence",
+      "description": "This tag has datasets and kernels where people come together and use cutting-edge research to train models on pictures of cats.",
+      "datasetCount": 4377,
+      "competitionCount": 86,
+      "scriptCount": 3821,
+      "slug": "artificial-intelligence",
+      "displayName": "Artificial Intelligence"
+    },
+    {
+      "id": 2500,
+      "name": "games",
+      "fullPath": "subject > culture and humanities > games",
+      "description": "One of the hallmarks of intelligence is the use of games and toys to occupy free time and develop intellectually. Often stored in Mom's basement.",
+      "datasetCount": 10746,
+      "competitionCount": 16,
+      "scriptCount": 34428,
+      "slug": "games-and-toys",
+      "displayName": "Games"
+    },
+    {
+      "name": "custom metric",
+      "description": "This competition's metric is defined under the 'Evaluation' tab",
+      "displayName": "Custom Metric"
+    }
+  ],
+  "organization": {
+    "slug": "luxchallenge",
+    "name": "Lux AI Challenge",
+    "thumbnailImageUrl": "https://storage.googleapis.com/kaggle-organizations/3789/thumbnail.png",
+    "profileUrl": "/organizations/luxchallenge"
+  },
+  "launched": true,
+  "createdByUserId": 50767,
+  "license": {
+    "id": 30,
+    "name": "Apache 2.0",
+    "url": "https://www.apache.org/licenses/LICENSE-2.0",
+    "agreementRequired": false
+  },
+  "hostName": "Lux AI Challenge",
+  "scoreTruncationNumDecimals": 1,
+  "locked": true,
+  "totalJoinedUsers": 3849,
+  "requiresIdentityVerification": true,
+  "submissionSizeLimitMb": 20480,
+  "reward": {
+    "id": "USD",
+    "quantity": 50000
+  },
+  "simulation": true
+}

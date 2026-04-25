@@ -1,0 +1,21 @@
+{
+  "id": "ryanholbrook/aimo-2-submission-demo",
+  "id_no": 67904468,
+  "title": "AIMO 2 Submission Demo",
+  "code_file": "aimo-2-submission-demo.ipynb",
+  "language": "python",
+  "kernel_type": "notebook",
+  "is_private": false,
+  "enable_gpu": false,
+  "enable_tpu": false,
+  "enable_internet": false,
+  "keywords": [],
+  "dataset_sources": [],
+  "kernel_sources": [],
+  "competition_sources": [
+    "ai-mathematical-olympiad-progress-prize-2"
+  ],
+  "model_sources": [],
+  "docker_image": "gcr.io/kaggle-images/python@sha256:a16cda2c5d52fa988d413876f3ffad7a46cca58678514601feb175990dc187c0",
+  "machine_shape": "None"
+}

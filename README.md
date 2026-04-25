@@ -69,4 +69,19 @@ data/<slug>/
 - `competition_analysis` — orchestrator. Runs solutions + notebooks, then classifies the competition (structured tags + prose description).
 - `solution_analysis` — scrapes the discussion forum via Kaggle's internal RPC, filters to real solution writeups with a local LLM, extracts structured per-solution analyses, aggregates.
 - `code_analysis` — lists top-voted notebooks via `kaggle kernels list`, pulls each, converts `.ipynb` to readable markdown+code, extracts structured per-notebook analyses, aggregates.
+- `knowledge_base_mcp` — read-only MCP server (and matching `akb` CLI) over the harvested `data/<slug>/` artifacts. Exposes ~12 tools for filtering, comparing, and aggregating across competitions (`list_competitions`, `get_competition`, `aggregate_field`, `compare_competitions`, `search`, …). See [its README](src/aikaggler/plugins/knowledge_base_mcp/README.md) for full details.
 - `_shared/ollama.py` — unified `ollama_call` + prompt loader used by all plugins.
+
+## Knowledge Base MCP
+
+Query the local knowledge base from Claude Code (or any MCP client) without re-reading per-competition JSON by hand.
+
+```sh
+just kb-mcp                          # boot the stdio MCP server locally
+just kb list                         # CLI equivalent: latest 20 competitions
+
+# Register with Claude Code:
+claude mcp add aikaggler-kb -- uv --directory /home/sergii/kaggle/aikaggler run akb-mcp
+```
+
+Tools then appear as `mcp__aikaggler-kb__list_competitions`, `mcp__aikaggler-kb__aggregate_field`, etc.

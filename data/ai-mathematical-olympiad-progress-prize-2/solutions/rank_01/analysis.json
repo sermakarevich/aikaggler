@@ -1,0 +1,64 @@
+{
+  "summary": "The authors developed a math reasoning pipeline by fine-tuning a Qwen2.5-14B model on a large Chain-of-Thought (CoT) dataset and a smaller Tool-Integrated Reasoning (TIR) dataset. They discovered that linearly merging the CoT and TIR checkpoints effectively balanced accuracy with generation speed, reducing output length and code executions. Inference was heavily optimized using TensorRT-LLM, FP8 quantization, and Apple's ReDrafter speculative decoding, combined with dynamic early stopping and a time-buffering strategy to meet strict latency constraints. This approach stabilized outputs and achieved 1st place by prioritizing efficient long-reasoning and structured code execution over raw model scale.",
+  "extensive_summary": "### Data Construction & Filtering\nThe pipeline began by collecting 540K math problems from AoPS forums. The authors generated up to 32 solution candidates per problem using DeepSeek-R1 and QwQ-32B (temperature 0.7, top-p 0.95), with harder problems receiving more candidates. Incorrect solutions were filtered by verifying answer equivalence using Qwen2.5-32B-Instruct, resulting in a 2.2M CoT subset for submission. For Tool-Integrated Reasoning (TIR), they built a pipeline starting with LIMO to elicit instruction-following code generations, iteratively producing 1.7M TIR solutions. These were aggressively filtered down to 15K high-quality samples based on code execution count and answer correctness.\n\n### Training Strategy\nA Qwen2.5-14B-Base model was fine-tuned on the 2.2M CoT dataset for 8 epochs using NVIDIA/NeMo-Skills. Training utilized a learning rate of 1e-4, AdamW, 0.01 weight decay, 10% linear warmup, sequence packing, and context parallelization across 512 H100s. The base RoPE was extended to 500k to support long reasoning. This was followed by a lightweight TIR fine-tuning phase on the 15K samples for 400 steps at a constant 1e-5 learning rate, using the final checkpoint without weight averaging.\n\n### Model Merging & Inference Optimization\nThe authors explored merging CoT and TIR checkpoints using the mergekit package and found that a simple linear combination (CoT * 0.3 + TIR * 0.7) was surprisingly effective, improving accuracy while reducing average output length and code executions. For inference, they converted models to TensorRT-LLM engines with FP8 quantization, which improved speed over BF16 with minimal accuracy loss. They integrated ReDrafter speculative decoding (trained on 100k solutions, achieving a 65% acceptance rate and ~1.8x speedup). The serving system leveraged TensorRT's in-flight batching, dynamic early stopping (canceling remaining generations when initial answers match), and a time-buffering strategy (350s base + up to 210s buffer) to efficiently allocate compute. An \"almost\" greedy search (temperature 0) was used for stability.\n\n### Key Takeaways\nThe solution demonstrates that carefully curated TIR data, linear checkpoint merging, and aggressive inference optimization (quantization + speculative decoding + dynamic batching) can outperform larger, unoptimized models in latency-constrained environments. Public leaderboard variance was heavily influenced by timeout behaviors and batch size limitations, making private leaderboard alignment a more reliable metric.",
+  "rank": 1,
+  "competition_flow": "Raw AoPS math problems were filtered and expanded into CoT and TIR datasets, used to fine-tune and linearly merge a Qwen2.5-14B model, which was then optimized via TensorRT-LLM, FP8 quantization, and ReDrafter speculative decoding with dynamic batching and time-buffering for inference.",
+  "data_reading": [],
+  "data_processing": [
+    "Collected 540K problems from AoPS forums and generated up to 32 solution candidates per problem using DeepSeek-R1 and QwQ-32B (temp 0.7, top-p 0.95).",
+    "Filtered incorrect answers by verifying answer equivalence with Qwen2.5-32B-Instruct.",
+    "Built a TIR pipeline starting with LIMO, iteratively generating 1.7M solutions, then aggressively filtering to 15K high-quality samples based on code execution count and answer correctness.",
+    "Applied sequence packing and context parallelization during training to accelerate long-reasoning data processing."
+  ],
+  "features_engineering": [],
+  "models": [
+    "Qwen2.5-14B-Base",
+    "DeepSeek-R1",
+    "QwQ-32B",
+    "Qwen2.5-32B-Instruct",
+    "Qwen2.5-72B-Math-Instruct",
+    "LIMO",
+    "DeepSeek-Distill-14B"
+  ],
+  "frameworks_used": [
+    "NVIDIA/NeMo-Skills",
+    "NVIDIA/NeMo-Aligner",
+    "mergekit",
+    "TensorRT-LLM"
+  ],
+  "loss_functions": [],
+  "cv_strategy": "Used a held-out benchmark dataset (Comp-Math-24-25) comprising 256 problems from AIME24/25 and HMMT 2024/2025, evaluated via maj@16 and pass@16 metrics across multiple runs.",
+  "ensembling": "The solution relied on linearly merging CoT and TIR checkpoints rather than traditional model ensembling, combined with dynamic early stopping and a time-buffering strategy to stabilize outputs and manage latency.",
+  "insights": [
+    "Linearly merging CoT and TIR checkpoints effectively balanced accuracy and generation speed without complex merging techniques.",
+    "FP8 quantization combined with ReDrafter speculative decoding provided the optimal speed-accuracy tradeoff for inference.",
+    "Dynamic early stopping and a shared time-buffering strategy were critical for meeting strict latency constraints without sacrificing accuracy.",
+    "Public leaderboard scores were highly variable due to timeout issues and batch size limitations, making private leaderboard alignment more reliable."
+  ],
+  "critical_findings": [
+    "Surprisingly, a simple linear combination of checkpoints outperformed more complex merging techniques from the mergekit package.",
+    "Despite setting temperature to 0, TensorRT-LLM still produced slightly varying outputs within a single batch, likely due to rounding or batching issues.",
+    "Stronger models and larger batch sizes often caused early exits due to token limits, making the optimized 14B model with speculative decoding more effective than raw capacity."
+  ],
+  "what_did_not_work": [
+    "Stronger models generated too many tokens and timed out under Kaggle constraints.",
+    "Generative solution re-ranking and outcome reward models required too much memory/time and diminished benefits for long reasoning/TIR.",
+    "7B models with ReDrafter were fast but yielded lower CV and LB scores.",
+    "32B CoT models produced scores close to the 14B model despite fitting larger batches.",
+    "A smoothed buffer strategy based on remaining time was developed but not used due to time constraints."
+  ],
+  "github_repos": [
+    {
+      "url": "https://github.com/NVIDIA/TensorRT-LLM",
+      "role": "library"
+    }
+  ],
+  "papers": [],
+  "other_solution_refs": [
+    {
+      "description": "Kaggle Submission script",
+      "url": "https://www.kaggle.com/code/darraghdog/nemoskills-qwen2-5-14b-instruct-mix48-redrafter"
+    }
+  ],
+  "source_url": "https://www.kaggle.com/competitions/ai-mathematical-olympiad-progress-prize-2/discussion/574765"
+}

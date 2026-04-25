@@ -1,0 +1,37 @@
+{
+  "summary": "This notebook implements an inference pipeline for the AIMO 2 competition using a quantized 7B parameter LLM. It leverages vLLM for high-throughput generation and employs a multi-sequence sampling strategy to mitigate model hallucination on mathematical problems. The author extracts candidate answers from the model's chain-of-thought, applies a frequency-based voting scheme with a minor random tie-breaker, and outputs the result modulo 1000. It demonstrates how to structure prompts, manage generation parameters, and handle competition-specific submission formats efficiently on limited GPU resources. Readers should learn how to deploy quantized LLMs for competitive math problems and implement robust answer extraction and aggregation logic.",
+  "purpose": "inference",
+  "competition_flow": "Loads test questions via Kaggle's inference server, generates multiple reasoning traces using a quantized LLM via vLLM, extracts and votes on final answers, and returns predictions modulo 1000.",
+  "data_reading": [
+    "Loads test/reference data through the kaggle_evaluation.aimo_2_inference_server which passes id_ and question as Polars DataFrames to a custom predict function; also locally reads reference.csv for local testing."
+  ],
+  "data_processing": [
+    "Applies chat template formatting for prompts, extracts answers using regex matching for \\boxed{} patterns, filters out invalid responses, and sorts generation outputs by token length for internal tracking."
+  ],
+  "features_engineering": [],
+  "models": [
+    "deepseek-r1-distill-qwen-7b-awq"
+  ],
+  "frameworks_used": [
+    "vllm",
+    "torch",
+    "polars",
+    "pandas",
+    "kaggle_evaluation"
+  ],
+  "loss_functions": [],
+  "cv_strategy": "",
+  "ensembling": "Generates 32 parallel sequences per question, extracts all valid boxed answers, counts their frequencies with a tiny random perturbation for tie-breaking, and returns the most frequent answer modulo 1000.",
+  "insights": [
+    "Multi-sequence sampling combined with frequency voting effectively reduces hallucination in mathematical reasoning tasks.",
+    "Modulo 1000 post-processing aligns with competition scoring rules and prevents formatting-related score loss.",
+    "vLLM's tensor parallelism and GPU memory utilization settings are critical for running large quantized models within hardware constraints."
+  ],
+  "critical_findings": [
+    "The author hardcodes a fallback answer (210) for specific question types during local testing to bypass slow generation and save time.",
+    "Using min_p=0.05 alongside frequency_penalty=0.2 helps constrain the model's output distribution without overly suppressing valid mathematical steps."
+  ],
+  "what_did_not_work": [],
+  "source_url": "https://www.kaggle.com/code/yekenot/aimo-2-deepseek-r1-distill-qwen-7b-awq",
+  "votes": 1086
+}

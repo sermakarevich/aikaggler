@@ -1,0 +1,38 @@
+{
+  "summary": "This notebook demonstrates an inference pipeline for the AI Mathematical Olympiad Progress Prize 2 competition, leveraging the DeepSeek-R1-Distill-Qwen-14B-AWQ model via vLLM. It focuses on prompt engineering strategies derived from recent reasoning papers, using multiple system prompts to encourage deep reasoning, reverse checking, and abstraction. Outputs are aggregated across 16 parallel generations using a frequency-based voting mechanism with minor random tie-breaking, followed by a modulo 1000 constraint. The author emphasizes handling latency constraints and extracting answers reliably from LaTeX-formatted model outputs. Readers should learn how to structure multi-prompt LLM inference, implement self-consistency decoding, and adapt to competition-specific output formats.",
+  "purpose": "inference",
+  "competition_flow": "Loads math problems via the competition inference server, generates parallel responses using a quantized DeepSeek-R1 model with diverse prompt templates, aggregates answers via frequency voting, and returns modulo 1000 predictions within strict latency limits.",
+  "data_reading": [
+    "Reads input questions as Polars DataFrames via kaggle_evaluation.aimo_2_inference_server.AIMO2InferenceServer; locally tests against a reference CSV."
+  ],
+  "data_processing": [
+    "Extracts final answers using regex on \\boxed{} tags; filters out generations without valid answers; applies a frequency-based voting function with slight random noise for tie-breaking; enforces modulo 1000 on final predictions."
+  ],
+  "features_engineering": [],
+  "models": [
+    "DeepSeek-R1-Distill-Qwen-14B-AWQ"
+  ],
+  "frameworks_used": [
+    "vllm",
+    "torch",
+    "pandas",
+    "polars",
+    "kaggle_evaluation.aimo_2_inference_server"
+  ],
+  "loss_functions": [],
+  "cv_strategy": "",
+  "ensembling": "Generates 16 parallel responses across three prompt templates, aggregates via frequency voting with minor random tie-breaking, and applies modulo 1000 post-processing.",
+  "insights": [
+    "Using diverse system prompts that explicitly encourage reverse thinking, abstraction, and step-by-step verification improves LLM reasoning on math problems.",
+    "Parallel generation with frequency voting acts as an effective self-consistency ensemble without additional training.",
+    "Modulo 1000 constraints require robust answer extraction and tie-breaking strategies to avoid deterministic voting failures."
+  ],
+  "critical_findings": [
+    "Deterministic answer voting can be brittle, so adding slight random noise to tie-breaking improves robustness.",
+    "Latency constraints require dynamic token limits and early termination strategies to meet competition deadlines.",
+    "LLMs may \"think\" in different languages and benefit from explicit instructions to recheck and abstract problems."
+  ],
+  "what_did_not_work": [],
+  "source_url": "https://www.kaggle.com/code/haoruili/lb24-deepseek-r1-with-more-prompt-engineering",
+  "votes": 1040
+}

@@ -1,0 +1,34 @@
+{
+  "summary": "This notebook demonstrates a robust, tool-augmented inference pipeline for solving mathematical Olympiad problems using the Qwen2.5-72B-Instruct model. It implements a multi-turn reasoning loop where the model generates Python code, which is extracted, wrapped with standard imports, and executed in a sandbox to verify intermediate results. The pipeline detects contradictions, prompts the model to self-correct, and iterates this process across multiple parallel prompts before selecting a final answer through majority voting. Readers should learn how to structure reliable LLM-based solvers that leverage external computation, iterative refinement, and answer aggregation to overcome single-pass generation limitations.",
+  "purpose": "inference",
+  "competition_flow": "Receives mathematical questions, processes them through a multi-turn LLM inference loop with code execution and self-correction, aggregates answers via voting, and submits predictions via the Kaggle evaluation server.",
+  "data_reading": [],
+  "data_processing": [
+    "Extracts Python code blocks from LLM output using regex and wraps them with standard imports and dynamic variable printing.",
+    "Executes extracted code in a sandboxed subprocess with timeout and error handling.",
+    "Filters LLM responses for \\boxed{} answers, detects contradictions, and applies a custom majority voting function with tie-breaking."
+  ],
+  "features_engineering": [],
+  "models": [
+    "Qwen2.5-72B-Instruct (AWQ)"
+  ],
+  "frameworks_used": [
+    "vllm",
+    "torch",
+    "polars",
+    "pandas",
+    "kaggle_evaluation.aimo_2_inference_server"
+  ],
+  "loss_functions": [],
+  "cv_strategy": "",
+  "ensembling": "Generates 16 parallel initial prompts, runs 4 iterative inference rounds with self-correction, and selects the final answer via a custom majority voting function with tie-breaking.",
+  "insights": [
+    "Combining LLM generation with external code execution and iterative self-correction significantly improves reliability for mathematical reasoning tasks.",
+    "Extracting and sandbox-executing intermediate Python code allows the pipeline to verify calculations and detect logical contradictions automatically.",
+    "Parallel prompt generation followed by iterative filtering and answer aggregation yields more stable predictions than single-pass inference."
+  ],
+  "critical_findings": [],
+  "what_did_not_work": [],
+  "source_url": "https://www.kaggle.com/code/huikang/qwen2-5-72b-instruct-with-tir",
+  "votes": 583
+}

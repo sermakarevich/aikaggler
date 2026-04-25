@@ -1,0 +1,61 @@
+{
+  "summary": "The author developed a reinforcement learning agent for the Lux AI Season 3 competition, transitioning from failed RL attempts to a rule-based baseline, and finally back to a successful RL implementation. They used a convolutional ResNet backbone processing spatial feature maps, trained with VTrace and a teacher KL loss, and optimized the reward function by switching from match win-loss to game win-loss with self-play against a baseline. Key technical contributions include a Bayesian and linear equation-based method for detecting hidden relic cells, careful handling of energy node drift, and dropping the UPGO policy gradient loss due to its disproportionate magnitude.",
+  "extensive_summary": "The author's journey through the Lux AI Season 3 competition involved three distinct phases: initial RL attempts that failed, a pivot to a rule-based agent that plateaued around 1500 score, and a final successful RL implementation that climbed to 1900+. The core architecture employs a convolutional ResNet backbone that ingests a comprehensive set of feature maps. The network outputs a feature vector at each unit's (x, y) location, which is concatenated with the unit's energy to determine actions from a large action space of 16 units \u00d7 230 options (5 moves + 225 SAP locations), mitigated by action masking.\n\nTraining utilized the VTrace algorithm with a teacher KL loss. The author conducted three training rounds: starting with an 8-layer ResNet, moving to a 16-layer model (~13.3M parameters), and finally adding more feature maps. Data augmentation was achieved by mirroring the left-top corner. The reward function evolved from a simple match win-loss during warmup to a game win-loss reward during self-play against a zero-sum baseline model. A critical turning point was dropping the UPGO policy gradient loss, which was found to be an order of magnitude larger than other loss components and hindered learning.\n\nThe solution heavily relies on domain-specific feature engineering and hidden state inference. Feature maps include game parameters (steps, team points, unit movement costs), map states (cell type, energy, nebula, visibility, relic neighbors), and temporal data (cell types for 3 future steps, team/enemy energy and locations from the last 2 steps). To handle hidden relic cells, the author implemented both a Bayesian inference approach (modeling cells as independent binary variables with a 0.25 prior) and a linear equation solver that leverages past observations. Energy node tracking was handled by computing the energy field across all positions and matching it with known nodes, accounting for drift mechanics. Additional inferred parameters included nebula drift speed, nebula energy reduction, and estimators for energy void and sap dropoff factors.",
+  "rank": null,
+  "competition_flow": "Raw game state feature maps are processed through a convolutional ResNet to extract spatial features, concatenated with unit energy, and fed into a VTrace-trained RL agent that outputs masked actions for movement and SAP targeting, with hidden game states inferred via Bayesian/linear methods and energy field matching.",
+  "data_reading": [],
+  "data_processing": [
+    "Mirrored data for the left-top corner to augment training.",
+    "Computed energy fields across all possible positions and matched them with known energy nodes.",
+    "Inferred hidden relic cell positions using Bayesian posterior updates and linear equation solving over past observations.",
+    "Tracked nebula drift speed and energy reduction to avoid misleading the agent with obsolete map information.",
+    "Added temporal features including cell types for 3 future steps and team/enemy energy and location layers from the last 2 steps."
+  ],
+  "features_engineering": [
+    "Game parameters: step, match step, unit_move_cost, unit_sensor_range, nebula_vision_reduction, nebula_energy_reduction, team points, and team wins.",
+    "Map features: cell type, cell energy, nebula, visible status, relic neighbor status, and team point layer.",
+    "Temporal layers: cell type in 3 future steps, team energy/location, and enemy energy/location from the last 2 steps.",
+    "Inferred parameters: energy void field factor and sap dropoff factor estimator."
+  ],
+  "models": [
+    "Convolutional ResNet (8-layer, 16-layer, 26-layer tested)"
+  ],
+  "frameworks_used": [],
+  "loss_functions": [
+    "VTrace",
+    "teacher KL loss",
+    "UPGO pg loss",
+    "baseline loss"
+  ],
+  "cv_strategy": "",
+  "ensembling": "",
+  "insights": [
+    "Self-play against a zero-sum baseline model was the key catalyst for the RL agent to start learning effectively.",
+    "The Bayesian approach to relic detection offers noise robustness at the cost of slower convergence compared to linear equations.",
+    "Energy node locations are only known until the next drift, which is determined by a randomly selected nearby position."
+  ],
+  "critical_findings": [
+    "Dropping the UPGO pg loss was counterintuitive but necessary because its magnitude was an order of magnitude larger than other losses, stalling training.",
+    "A 26-layer ResNet significantly slowed training without yielding any performance gains.",
+    "Pure rule-based heuristics plateaued at ~1500 score, proving insufficient for top-tier rankings."
+  ],
+  "what_did_not_work": [
+    "Initial RL attempts with move-action-only agents and various reward-shaping ideas (<700 score).",
+    "Rule-based agent plateauing at 1500+.",
+    "26-layer ResNet slowing training with no improvement.",
+    "UPGO pg loss causing training stagnation due to large magnitude."
+  ],
+  "github_repos": [
+    {
+      "url": "https://github.com/flynnwang/eco_bang_bang",
+      "role": "solution"
+    },
+    {
+      "url": "https://github.com/IsaiahPressman/Kaggle_Lux_AI_2021",
+      "role": "reference"
+    }
+  ],
+  "papers": [],
+  "other_solution_refs": [],
+  "source_url": "https://www.kaggle.com/competitions/lux-ai-season-3/discussion/568721"
+}
