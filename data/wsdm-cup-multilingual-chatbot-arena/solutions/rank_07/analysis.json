@@ -1,0 +1,51 @@
+{
+  "summary": "The author built an uncertainty-aware inference pipeline for a chatbot preference prediction task, fine-tuning multiple open-weight LLMs on a mix of labeled and unlabeled datasets. During inference, a base model scores all test prompts, and uncertainty is calculated as proximity to the decision boundary to route the most uncertain examples to progressively larger models. The final predictions combine base and larger model scores via a weighted ensemble, with higher weights assigned to larger models for uncertain cases. Key strategies included pseudo-labeling unlabeled data with 70B+ LLMs, using direct token logits for Gemma models, and keeping the preference head simple to improve generalization.",
+  "extensive_summary": "## Inference Pipeline & Ensembling\nThe solution centers on an uncertainty-based ensemble pipeline. A base `gemma-2-9b-it` model scores all test examples, and uncertainty is computed as `1-|p-0.5|`. The top 50% of examples closest to the decision boundary are re-scored using larger models: the top 15% use `Qwen2.5-32B-Instruct` or `Mistral-Small-24B-Instruct-2501`, while the next 35% use `Qwen2.5-14B-Instruct`. The remaining examples rely solely on the base model. Final scores are computed as weighted sums: `1.0*base + 1.5*xlarge` for the top 15%, `1.0*base + 1.0*large` for the next 35%, and `1.0*base` for the rest. Inference is handled via vLLM.\n\n## Data & Training Strategy\nTraining data combines labeled preference datasets (WSDM Cup, LMSYS Arena, PPE-Human-Preference-V1) with sampled unlabeled sources (Skywork, Tulu-3, WildChat, lmsys-chat-1m). The team applied cluster-based sampling to align unlabeled prompts with the Arena Explorer distribution and generated pseudo-labels for them using `Qwen2.5-72B-Instruct` and `Llama-3.1-Nemotron-70B-Instruct`. Model training varied by architecture: Gemma models were trained with a combined language modeling and reward modeling loss, directly leveraging \"A\" and \"B\" token logits without a dedicated reward head. Other models used `AutoModelForSequenceClassification` with a linear head.\n\n## Generalization Insights\nThe author emphasizes that larger LLMs generalize better for uncertain examples, ensembling different model families and approaches improves robustness, and keeping the preference head simple (a single linear layer) aids generalization. Distilling from 70B+ LLMs on a large, diverse unlabeled dataset proved highly effective. The pipeline successfully balances inference cost and performance by dynamically routing hard examples to larger models.",
+  "rank": 7,
+  "competition_flow": "Raw preference data (labeled and unlabeled/pseudo-labeled) is used to fine-tune multiple LLMs, which are then deployed in an uncertainty-aware inference pipeline that scores all test prompts with a base model, re-scores the most uncertain prompts with progressively larger models, and combines them via a weighted ensemble for the final submission.",
+  "data_reading": [],
+  "data_processing": [
+    "Sampled subsets from multiple unlabeled datasets (6k, 25k, 30k examples)",
+    "Applied cluster-based sampling to align prompt distribution with Arena Explorer",
+    "Generated pseudo-labels for unlabeled data using 70B+ LLMs"
+  ],
+  "features_engineering": [],
+  "models": [
+    "gemma-2-9b-it",
+    "Qwen2.5-32B-Instruct",
+    "Mistral-Small-24B-Instruct-2501",
+    "Qwen2.5-14B-Instruct",
+    "Qwen2.5-72B-Instruct",
+    "Llama-3.1-Nemotron-70B-Instruct",
+    "AutoModelForSequenceClassification"
+  ],
+  "frameworks_used": [
+    "vllm"
+  ],
+  "loss_functions": [
+    "combined language modeling and reward modeling losses"
+  ],
+  "cv_strategy": "",
+  "ensembling": "Uncertainty-based weighted ensemble where the base model scores all examples, and the top 50% most uncertain examples are re-scored with larger models; final scores are computed as `1.0*base + 1.5*xlarge` for the top 15% uncertain, `1.0*base + 1.0*large` for the next 35%, and `1.0*base` for the rest.",
+  "insights": [
+    "Larger LLMs tend to generalize better when handling uncertain examples.",
+    "Ensembling different modeling approaches and model families improves robustness.",
+    "Keeping the preference modeling head simple (a single linear layer) aids generalization.",
+    "Distilling from 70B+ LLMs on a large, diverse unlabeled dataset significantly boosts performance."
+  ],
+  "critical_findings": [
+    "Uncertainty can be effectively approximated as closeness to the decision boundary (`1-|p-0.5|`) to route examples to larger models.",
+    "Directly using \"A\" and \"B\" token logits from non-reward models combined with a combined LM and reward loss is a viable alternative to standard classification heads."
+  ],
+  "what_did_not_work": [],
+  "github_repos": [],
+  "papers": [
+    {
+      "title": "Regularizing Hidden States Enables Learning Generalizable Reward Model for LLMs",
+      "url": "https://arxiv.org/abs/2406.10216",
+      "arxiv_id": "2406.10216"
+    }
+  ],
+  "other_solution_refs": [],
+  "source_url": "https://www.kaggle.com/competitions/wsdm-cup-multilingual-chatbot-arena/discussion/567589"
+}

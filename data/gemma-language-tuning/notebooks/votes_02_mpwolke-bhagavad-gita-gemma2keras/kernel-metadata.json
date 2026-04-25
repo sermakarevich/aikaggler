@@ -1,0 +1,28 @@
+{
+  "id": "mpwolke/bhagavad-gita-gemma2keras",
+  "id_no": 66914537,
+  "title": "Bhagavad Gita (\u092d\u0917\u0935\u0926\u094d\u0917\u0940\u0924\u093e) Gemma2Keras",
+  "code_file": "bhagavad-gita-gemma2keras.ipynb",
+  "language": "python",
+  "kernel_type": "notebook",
+  "is_private": false,
+  "enable_gpu": true,
+  "enable_tpu": false,
+  "enable_internet": true,
+  "keywords": [
+    "gpu"
+  ],
+  "dataset_sources": [
+    "a2m2a2n2/bhagwad-gita-dataset"
+  ],
+  "kernel_sources": [],
+  "competition_sources": [
+    "gemma-language-tuning"
+  ],
+  "model_sources": [
+    "keras/gemma/Keras/gemma_2b_en/2",
+    "keras/gemma2/Keras/gemma2_2b_en/1"
+  ],
+  "docker_image": "gcr.io/kaggle-private-byod/python@sha256:141219e230dab548ccc19aa4e62bcf805ed9de0b4d5112227e28f5f1a25991f8",
+  "machine_shape": "Gpu"
+}

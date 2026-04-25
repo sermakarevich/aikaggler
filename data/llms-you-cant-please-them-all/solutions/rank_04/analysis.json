@@ -1,0 +1,61 @@
+{
+  "summary": "The authors engineered a prompt injection strategy to manipulate LLM judges (Gemma, LLaMA, Qwen) into outputting specific grades for essay evaluation. By exploiting language-specific behavioral differences, they used English and Japanese instructions to independently control model outputs. They constructed targeted wordlists and prompt suffixes to consistently trigger desired grading behaviors, validating them through a custom local testing pipeline. Iterative batching and metric-aware filtering allowed them to optimize exploit distribution and maximize the final score.",
+  "extensive_summary": "## Initial Assumptions & Core Insight\nThe team initially hypothesized that only Gemma-2B and LLaMA-3B would be used due to licensing constraints, but quickly pivoted to exploiting their distinct instruction-following behaviors. They discovered that Gemma (and Qwen) followed the last instruction regardless of language, while LLaMA strictly adhered to English instructions. This allowed them to decouple grade control by combining English and Japanese prompts.\n\n## Exploit Construction & Local Testing\nThey developed three primary exploit configurations (099, 990, 909 grades) using curated wordlists (positive, negative, stopwords) and carefully crafted English/Japanese suffixes. To validate these locally, they built a system prompt generator that templated tens of thousands of unique prompts. Despite rigorous local testing, only 10-20% of locally optimal exploits translated to leaderboard success, highlighting the gap between local evaluation and competition metrics.\n\n## Metric Adaptation & Optimization\nWhen the metric changed, the team extended random word portions to 600 characters to bypass English confidence and similarity filters. They shifted from submitting 1,000 unique essays to batching smaller sets (e.g., 200 essays) and repeating them, which significantly improved consistency. A critical breakthrough came when they realized the standard deviation calculation used `ddof=1`, allowing them to fine-tune exploit distribution across public and private splits. Finally, they filtered batches by ensuring the maximum similarity score across multiple methods stayed below ~0.195, ultimately securing a highly consistent top-tier submission.",
+  "rank": 4,
+  "competition_flow": "The pipeline involved generating synthetic essays using curated wordlists and prompt injection suffixes, locally testing them against templated system prompts to verify grade outputs, batching and distributing exploits across public/private splits, and submitting the optimized batch to maximize the grading metric.",
+  "data_reading": [],
+  "data_processing": [
+    "Sampled ~70 essay topics and clipped them to 450 or 600 characters.",
+    "Appended English and Japanese exploit suffixes to essay text.",
+    "Curated and updated wordlists (positive, negative, stopwords) to influence model behavior.",
+    "Extended random word portions to 600 characters to circumvent language confidence and similarity metrics.",
+    "Filtered essay batches by computing mean and maximum similarity scores across multiple methods, retaining only those with a maximum similarity < ~0.195."
+  ],
+  "features_engineering": [],
+  "models": [
+    "Gemma-2B",
+    "LLaMA-3B",
+    "Qwen"
+  ],
+  "frameworks_used": [],
+  "loss_functions": [],
+  "cv_strategy": "",
+  "ensembling": "",
+  "insights": [
+    "LLMs exhibit distinct instruction-following behaviors based on language, allowing separate control of Gemma and LLaMA using English and Japanese prompts.",
+    "Local testing with templated system prompts is essential for validating exploits, though leaderboard consistency often drops significantly compared to local results.",
+    "The competition's standard deviation calculation used `ddof=1`, which was a critical detail for maximizing the final score."
+  ],
+  "critical_findings": [
+    "Extending the random word portion of essays to 600 characters was necessary to circumvent both the English language confidence and similarity metrics.",
+    "Batching a smaller set of essays (e.g., 200) and repeating them multiple times proved more effective than submitting 1,000 unique essays.",
+    "The hosts were evaluating public and private datasets simultaneously, requiring an even distribution of exploits across both splits."
+  ],
+  "what_did_not_work": [
+    "Initial assumption that only Gemma and LLaMA would be included due to licensing agreements.",
+    "Using overly positive words in the wordlist, which reduced the score.",
+    "Relying solely on local exploit results without accounting for leaderboard inconsistency (only 10-20% of locally optimal exploits worked on the leaderboard).",
+    "Submitting 1,000 unique essays instead of batching, which yielded lower scores."
+  ],
+  "github_repos": [],
+  "papers": [],
+  "other_solution_refs": [
+    {
+      "description": "Submission Notebook",
+      "url": "https://www.kaggle.com/code/conormacamhlaoibh/5th-place-llms-ycpta"
+    },
+    {
+      "description": "Essay Wordlists Dataset",
+      "url": "https://www.kaggle.com/datasets/conormacamhlaoibh/llm-judges-wordlists"
+    },
+    {
+      "description": "System Prompt Templates Dataset",
+      "url": "https://www.kaggle.com/datasets/conormacamhlaoibh/llm-judge-prompts"
+    },
+    {
+      "description": "Previous Discussion Post",
+      "url": "https://www.kaggle.com/competitions/llms-you-cant-please-them-all/discussion/555051"
+    }
+  ],
+  "source_url": "https://www.kaggle.com/competitions/llms-you-cant-please-them-all/discussion/566479"
+}

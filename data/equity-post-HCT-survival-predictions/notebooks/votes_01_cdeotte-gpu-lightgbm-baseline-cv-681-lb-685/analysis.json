@@ -1,0 +1,51 @@
+{
+  "summary": "This notebook demonstrates two distinct approaches for handling survival analysis targets (`efs` and `efs_time`) in a Kaggle competition: transforming them into a single regression target using the Kaplan-Meier estimator, or using native Cox proportional hazards loss. It trains five GPU-accelerated gradient boosting models (XGBoost, CatBoost, LightGBM) across both approaches over 10 folds, and combines their predictions by ranking and summing them to improve the cross-validation score. Readers should learn how to adapt survival data for standard regression models, leverage GPU acceleration in popular GBDT libraries, and effectively ensemble ranked predictions for ranking-based competition metrics.",
+  "purpose": "baseline",
+  "competition_flow": "Loads CSV data, transforms survival targets into regression proxies or Cox-compatible labels, trains five GPU-accelerated GBDT models across 10 folds, ranks their predictions, sums them for an ensemble, and generates a submission CSV.",
+  "data_reading": [
+    "pd.read_csv for train and test datasets"
+  ],
+  "data_processing": [
+    "Label encoding of categorical features using factorize()",
+    "Filling categorical NaNs with 'NAN'",
+    "Reducing numerical feature precision to float32/int32",
+    "Leaving numerical NaNs intact for GBDT handling",
+    "Transforming survival targets via Kaplan-Meier survival function or Cox-compatible time negation"
+  ],
+  "features_engineering": [
+    "Label encoding of categorical features using factorize()",
+    "Precision reduction of numerical features to float32/int32",
+    "Target engineering via Kaplan-Meier survival function to create a risk score proxy",
+    "Cox-compatible target creation by negating event times for censored patients"
+  ],
+  "models": [
+    "XGBoost",
+    "CatBoost",
+    "LightGBM"
+  ],
+  "frameworks_used": [
+    "xgboost",
+    "catboost",
+    "lightgbm",
+    "lifelines",
+    "scipy",
+    "pandas",
+    "numpy",
+    "matplotlib"
+  ],
+  "loss_functions": [
+    "regression (MSE)",
+    "survival:cox"
+  ],
+  "cv_strategy": "KFold(n_splits=10, shuffle=True, random_state=42)",
+  "ensembling": "Averages predictions across 10 folds per model, converts each model's predictions to ranks using scipy.stats.rankdata(), and sums the ranks across all five models to form the final ensemble prediction.",
+  "insights": [
+    "Survival targets can be flexibly adapted for standard regression models via Kaplan-Meier transformation or handled natively using Cox loss.",
+    "GPU acceleration is straightforward to implement across XGBoost, CatBoost, and LightGBM for faster training.",
+    "Ranking and summing predictions from heterogeneous models improves cross-validation scores for ranking-based competition metrics."
+  ],
+  "critical_findings": [],
+  "what_did_not_work": [],
+  "source_url": "https://www.kaggle.com/code/cdeotte/gpu-lightgbm-baseline-cv-681-lb-685",
+  "votes": 1199
+}

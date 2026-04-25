@@ -1,0 +1,21 @@
+{
+  "description": "Participants develop reinforcement learning agents to control spaceships and manage resources in a simulated deep-space strategy game. The environment generates grid-based maps with terrain, units, and resource nodes, and agents must make sequential decisions to maximize a custom scoring metric. Success is measured by the agent's total score on a held-out set of simulation seeds, with public and private leaderboards evaluating generalization across different map configurations.",
+  "data_modality": "graph",
+  "task_type": "regression",
+  "label_structure": "none",
+  "metric": "Lux AI Season 3",
+  "test_split": "unknown",
+  "format": "simulation",
+  "dataset_scale": "unknown",
+  "domain": "space_simulation",
+  "data_challenges": [
+    "multi_agent_interaction",
+    "partial_observability",
+    "long_horizon_planning"
+  ],
+  "constraints": [
+    "limited_submissions",
+    "simulation_environment",
+    "no_internet_during_inference"
+  ]
+}

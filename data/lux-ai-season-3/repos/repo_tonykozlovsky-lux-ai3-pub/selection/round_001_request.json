@@ -1,0 +1,9 @@
+{
+  "reasoning": "These files will clarify the overall project structure, training entry points, configuration schema, and the underlying game environment, providing a solid foundation for analyzing the core solution components.",
+  "files_to_read": [
+    "README.md",
+    "final_versions/07_03_tune_against_mask/main.py",
+    "final_versions/07_03_tune_against_mask/conf/base.yaml",
+    "Lux-Design-S3/README.md"
+  ]
+}

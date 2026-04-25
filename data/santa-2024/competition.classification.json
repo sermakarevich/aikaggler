@@ -1,0 +1,13 @@
+{
+  "description": "Participants are tasked with rearranging scrambled holiday-themed words into coherent sentences or phrases. The competition focuses on discrete sequence optimization rather than traditional supervised learning. Success is evaluated using a custom competition metric that likely measures linguistic coherence or language model perplexity on a held-out test set.",
+  "data_modality": "text",
+  "task_type": "generation",
+  "label_structure": "single_label",
+  "metric": "Santa 2024 Metric",
+  "test_split": "unknown",
+  "format": "code_comp",
+  "dataset_scale": "unknown",
+  "domain": "text_puzzles",
+  "data_challenges": [],
+  "constraints": []
+}

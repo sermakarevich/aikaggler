@@ -238,8 +238,35 @@ def _render_aggregated_markdown(
     return "\n".join(lines)
 
 
+def _existing_notebook_analyses(out: Path) -> dict[str, tuple[Path, dict]]:
+    """ref -> (existing notebook dir, analysis dict). Skips entries with errors."""
+    nb_root = out / "notebooks"
+    if not nb_root.is_dir():
+        return {}
+    by_ref: dict[str, tuple[Path, dict]] = {}
+    for d in nb_root.iterdir():
+        if not d.is_dir():
+            continue
+        meta_path = d / "kernel-metadata.json"
+        analysis_path = d / "analysis.json"
+        if not (meta_path.exists() and analysis_path.exists()):
+            continue
+        try:
+            meta = json.loads(meta_path.read_text())
+            analysis = json.loads(analysis_path.read_text())
+        except (OSError, json.JSONDecodeError):
+            continue
+        if "error" in analysis:
+            continue
+        ref = meta.get("id") or ""
+        if ref:
+            by_ref[ref] = (d, analysis)
+    return by_ref
+
+
 def cmd_notebooks(args: argparse.Namespace) -> int:
     out = competition_dir(args.slug)
+    force = getattr(args, "force", False)
 
     rows = list_top_notebooks(args.slug, args.top)
     print(f"Fetched {len(rows)} notebooks for {args.slug}")
@@ -247,11 +274,29 @@ def cmd_notebooks(args: argparse.Namespace) -> int:
         print("No notebooks found; skipping.")
         return 0
 
+    cached = {} if force else _existing_notebook_analyses(out)
+    if cached:
+        print(f"  found {len(cached)} cached notebook analysis/es")
+
     all_analyses: list[dict] = []
+    new_count = 0
     for i, row in enumerate(rows, 1):
         ref = row.get("ref", "")
         votes = int(row.get("totalVotes") or 0)
         title = row.get("title") or ref
+
+        if ref in cached:
+            existing_dir, existing_analysis = cached[ref]
+            print(f"  [{i}/{len(rows)}] reusing {ref} ({existing_dir.name})")
+            all_analyses.append({
+                "ref": ref,
+                "title": title,
+                "votes": votes,
+                "stem": existing_dir.name,
+                "analysis": existing_analysis,
+            })
+            continue
+
         stem = _stem_for(i, ref)
         notebook_dir = out / "notebooks" / stem
 
@@ -273,6 +318,7 @@ def cmd_notebooks(args: argparse.Namespace) -> int:
         analysis["source_url"] = f"https://www.kaggle.com/code/{ref}"
         analysis["votes"] = votes
         _write_notebook_files(notebook_dir, row, analysis, body)
+        new_count += 1
 
         all_analyses.append({
             "ref": ref,
@@ -282,14 +328,27 @@ def cmd_notebooks(args: argparse.Namespace) -> int:
             "analysis": analysis,
         })
 
-    print(f"Wrote {len(all_analyses)} notebook writeups to {out}/notebooks/")
+    print(
+        f"Wrote {new_count} new notebook writeups to {out}/notebooks/ "
+        f"({len(all_analyses) - new_count} reused)"
+    )
+
+    agg_path = out / "aggregated_notebooks.json"
+    if not force and new_count == 0 and agg_path.exists():
+        try:
+            agg_existing = json.loads(agg_path.read_text())
+        except (OSError, json.JSONDecodeError):
+            agg_existing = None
+        if agg_existing is not None and "error" not in agg_existing:
+            print(f"  aggregated_notebooks.json up to date; skipping aggregation")
+            return 0
 
     print(f"Aggregating {len(all_analyses)} notebooks with {args.model}...")
     try:
         agg = aggregate_notebooks_with_ollama(all_analyses, model=args.model)
     except Exception as e:
         agg = {"error": f"{type(e).__name__}: {e}"}
-    (out / "aggregated_notebooks.json").write_text(json.dumps(agg, indent=2))
+    agg_path.write_text(json.dumps(agg, indent=2))
     if "error" not in agg:
         md = _render_aggregated_markdown(args.slug, agg, all_analyses)
         (out / "aggregated_notebooks.md").write_text(md)
@@ -315,6 +374,8 @@ def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(prog="akc-notebooks")
     parser.add_argument("slug")
     parser.add_argument("--top", type=int, default=TOP_NOTEBOOKS)
+    parser.add_argument("--force", action="store_true",
+                        help="Re-pull and re-analyze even if cached analyses exist")
     parser.add_argument("--model", default=OLLAMA_MODEL)
     args = parser.parse_args(argv)
     return cmd_notebooks(args)

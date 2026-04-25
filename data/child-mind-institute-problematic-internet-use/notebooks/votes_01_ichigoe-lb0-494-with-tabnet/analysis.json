@@ -1,0 +1,62 @@
+{
+  "summary": "This notebook demonstrates a baseline recipe for the Child Mind Institute Problematic Internet Use competition, focusing on ordinal regression to predict the Severity Impairment Index (sii). It combines tabular demographic and physical features with compressed actigraphy time-series data using a custom PyTorch autoencoder. The author trains an ensemble of gradient boosting models alongside TabNet, optimizes decision thresholds via scipy to maximize Quadratic Weighted Kappa, and finalizes predictions through majority voting across multiple ensemble configurations. Readers should learn how to handle mixed data types, compress time-series into tabular features, and apply threshold tuning for ordinal classification tasks.",
+  "purpose": "baseline",
+  "competition_flow": "Loads CSV and parquet actigraphy data, compresses time-series via statistics and an autoencoder, engineers hand-crafted tabular features, trains a multi-model ensemble with threshold optimization, and generates a majority-voted submission file.",
+  "data_reading": [
+    "polars.read_csv() for main train/test tables",
+    "polars.read_parquet() for actigraphy series data",
+    "pandas.read_csv() for re-reading and sample submission"
+  ],
+  "data_processing": [
+    "Filters rows with valid target values",
+    "Casts seasonal columns to categorical enums",
+    "Handles missing values using KNNImputer and SimpleImputer",
+    "Fills categorical nulls with 'Missing' and maps to integers",
+    "Replaces infinite values with NaN",
+    "Drops rows with excessive missingness",
+    "Scales autoencoder inputs with StandardScaler"
+  ],
+  "features_engineering": [
+    "Compresses actigraphy time-series into statistical summaries and 60-dimensional autoencoder embeddings",
+    "Creates interaction/ratio features like BMI_Age, Internet_Hours_Age, BFP_BMI, Muscle_to_Fat, and Hydration_Status",
+    "Manually maps categorical season columns to integer indices"
+  ],
+  "models": [
+    "LightGBM",
+    "XGBoost",
+    "CatBoost",
+    "TabNet",
+    "RandomForestRegressor",
+    "GradientBoostingRegressor"
+  ],
+  "frameworks_used": [
+    "pytorch",
+    "keras",
+    "lightgbm",
+    "xgboost",
+    "catboost",
+    "scikit-learn",
+    "polars",
+    "pandas",
+    "scipy"
+  ],
+  "loss_functions": [
+    "MSE (autoencoder & TabNet)",
+    "Default regression loss (LightGBM/XGBoost/CatBoost)"
+  ],
+  "cv_strategy": "StratifiedKFold(n_splits=5, shuffle=True, random_state=42)",
+  "ensembling": "Combines predictions from LightGBM, XGBoost, CatBoost, TabNet, RandomForest, and GradientBoosting via VotingRegressor, applies scipy-optimized thresholds to map continuous outputs to ordinal classes, and performs majority voting across three separate ensemble submissions.",
+  "insights": [
+    "Ordinal regression tasks benefit significantly from post-training threshold optimization rather than standard classification heads.",
+    "Compressing high-dimensional actigraphy time-series via autoencoders or simple statistics effectively captures temporal patterns for tabular models.",
+    "Majority voting across diverse model architectures stabilizes predictions and mitigates individual model bias."
+  ],
+  "critical_findings": [
+    "The target distribution is highly imbalanced, with approximately 50% of samples in class 0 and very few in class 3.",
+    "The PCIAT-PCIAT_Total column perfectly predicts whether the sii target is missing, allowing clean filtering of supervised data.",
+    "Several features exhibit high missing ratios that require careful imputation strategies."
+  ],
+  "what_did_not_work": [],
+  "source_url": "https://www.kaggle.com/code/ichigoe/lb0-494-with-tabnet",
+  "votes": 1325
+}

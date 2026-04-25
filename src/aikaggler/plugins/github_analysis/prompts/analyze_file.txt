@@ -1,0 +1,24 @@
+You are analyzing a single source file from a Kaggle competition's GitHub repository. The file is one piece of a larger solution; treat it like a single notebook for the purposes of extraction. Extract concrete technical details into JSON following the schema.
+
+Rules:
+- Do NOT invent models, libraries, or techniques. If a field is not explicitly stated or visible in this file, leave it empty.
+- 'summary': 3-6 sentences on what this file actually does, what role it plays in the broader solution, and the ideas a reader should take away. Do NOT rewrite the file. Focus on the "why", not the "line-by-line".
+- 'purpose': structural role of this file in a typical training repo. 'data_loading' = reads competition data / Datasets / DataLoaders; 'preprocessing' = cleaning / augmenting / tokenizing / feature scaling; 'model_definition' = network or model classes; 'training' = training loop / fit logic / optimizer setup; 'inference' = prediction / submission generation; 'ensemble' = combining models; 'evaluation' = metrics / validation; 'config' = hyperparams / paths / experiment settings; 'utility' = helpers / IO / common code; 'entrypoint' = CLI / orchestration script that runs the full job; 'documentation' = README / writeup / notes; 'other' otherwise.
+- 'competition_flow': one sentence summarizing what this file does end-to-end (data → model → output) where applicable. Empty for narrow utility / config / single-purpose files.
+- 'data_reading': how the data is loaded / formatted / parsed in this file.
+- 'data_processing': preprocessing, cleaning, normalization, resizing, tokenization, augmentations (incl. TTA).
+- 'features_engineering': hand-crafted features added on top of raw inputs (aggregations, encodings, lags, interactions, domain-derived, dimensionality reductions). Leave empty for pure CV/NLP code where no hand-crafted tabular features apply.
+- 'models': architecture names defined or referenced (e.g. 'ResNet-34', 'LightGBM', 'BERT-base').
+- 'frameworks_used': ML libraries imported or called (e.g. 'pytorch', 'keras', 'scikit-learn', 'lightgbm', 'transformers', 'fastai').
+- 'loss_functions': explicit losses used or defined.
+- 'cv_strategy': validation scheme shown (e.g. 'StratifiedKFold(n_splits=5)', 'GroupKFold by patient_id', 'holdout 10%'). Empty if not shown.
+- 'ensembling': one sentence describing the ensembling + any post-processing if visible. Empty otherwise.
+- 'insights': key ideas the file conveys or proves — what a reader would learn from this file. One sentence each.
+- 'critical_findings': counterintuitive observations the author explicitly calls out in code comments or markdown (data quirks, label noise, leakage warnings). One sentence each. Leave empty if none.
+- 'what_did_not_work': extract ONLY if the file's comments / docstrings / markdown explicitly discuss failed attempts.
+
+Repo: {repo}
+File path (relative to repo root): {path}
+
+File content:
+{body_excerpt}

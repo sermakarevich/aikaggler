@@ -1,0 +1,41 @@
+{
+  "summary": "This educational notebook demonstrates applying transformer architectures to NFL player tracking data to predict offensive formations. It walks through loading preprocessed spatio-temporal sequences, configuring a custom PyTorch Lightning transformer model, and training it on a single week of data. The author evaluates performance on a withheld test set, achieving approximately 92% accuracy, and visualizes predictions over animated player positions. Readers should understand how self-attention naturally handles variable player ordering and captures complex interactions without extensive manual feature engineering, and how these techniques generalize to other sports analytics tasks.",
+  "purpose": "tutorial",
+  "competition_flow": "Loads preprocessed NFL player tracking data via custom utilities, trains a custom transformer model to predict offensive formations, and evaluates accuracy with confusion matrices and animated spatial visualizations.",
+  "data_reading": [
+    "Reads plays.csv for target distribution and unique class counts.",
+    "Loads train/val/test splits via process_datasets.load_datasets() utility.",
+    "Reads parquet files for tracking metadata and preprocessed features."
+  ],
+  "data_processing": [
+    "Applies custom preprocessing utilities (prep_data.main(), process_datasets.main()).",
+    "Filters evaluation to ball_snap events and BEFORE_SNAP frame types.",
+    "Batches sequences with DataLoader (batch_size=64, shuffle=True for training, num_workers=3)."
+  ],
+  "features_engineering": [],
+  "models": [
+    "SportsTransformerLitModel (custom transformer with model_dim=64, num_layers=4, dropout=0.01, feature_len=5)"
+  ],
+  "frameworks_used": [
+    "pytorch",
+    "pytorch-lightning",
+    "pandas",
+    "numpy",
+    "scikit-learn",
+    "seaborn",
+    "matplotlib",
+    "plotly"
+  ],
+  "loss_functions": [],
+  "cv_strategy": "",
+  "ensembling": "",
+  "insights": [
+    "Transformers naturally handle variable player ordering and capture complex interactions via self-attention, reducing the need for manual feature engineering.",
+    "Spatio-temporal tracking data can be effectively modeled with relatively small datasets (e.g., one week) for formation prediction.",
+    "The methodology is adaptable to tracking data across multiple sports beyond football."
+  ],
+  "critical_findings": [],
+  "what_did_not_work": [],
+  "source_url": "https://www.kaggle.com/code/pvabish/modeling-with-transformers-by-sumersports",
+  "votes": 68
+}

@@ -1,0 +1,38 @@
+{
+  "summary": "This notebook demonstrates how to adapt the open-weight Gemma 2B model for Kazakh instruction-following tasks using parameter-efficient fine-tuning. It loads the saillab/alpaca_kazakh_taco dataset, formats it into consistent instruction-response templates, and applies LoRA adapters via KerasNLP. The author validates the approach by comparing pre- and post-training generation outputs, showing improved Kazakh fluency and instruction adherence. Readers learn how to efficiently fine-tune large language models for low-resource languages using the JAX backend and Keras 3.",
+  "purpose": "training",
+  "competition_flow": "Loads a Kazakh instruction-following dataset, formats it into instruction-response pairs, fine-tunes a Gemma 2B model using LoRA and KerasNLP, and saves the adapted model for downstream Kazakh text generation.",
+  "data_reading": [
+    "Loads data from a Hugging Face dataset (saillab/alpaca_kazakh_taco) using pd.read_parquet with a direct hf:// URL path."
+  ],
+  "data_processing": [
+    "Selects instruction and text columns, truncates text to 3000 characters, limits the dataset to 30,000 rows, and formats each sample into a fixed Instruction/Response template string."
+  ],
+  "features_engineering": [
+    ""
+  ],
+  "models": [
+    "GemmaCausalLM (Gemma 2B)"
+  ],
+  "frameworks_used": [
+    "keras",
+    "keras_nlp",
+    "jax",
+    "pandas",
+    "numpy"
+  ],
+  "loss_functions": [
+    "SparseCategoricalCrossentropy(from_logits=True)"
+  ],
+  "cv_strategy": "",
+  "ensembling": "",
+  "insights": [
+    "Parameter-efficient fine-tuning via LoRA enables adapting large open-weight models to low-resource languages without full retraining.",
+    "Consistent instruction-response templating significantly improves the model's ability to follow Kazakh prompts.",
+    "Keras 3 with the JAX backend provides a memory-efficient and practical stack for fine-tuning LLMs on consumer GPUs."
+  ],
+  "critical_findings": [],
+  "what_did_not_work": [],
+  "source_url": "https://www.kaggle.com/code/armanzhalgasbayev/kazakh-llm-based-on-gemma-2b-kz",
+  "votes": 66
+}

@@ -1,0 +1,66 @@
+{
+  "summary": "This notebook demonstrates a multi-stage survival prediction pipeline for the Equity Post-HCT Survival Predictions competition, combining classical survival statistics with modern gradient boosting and neural ranking models. It engineers robust pseudo-targets using out-of-fold Cox PH, Kaplan-Meier, and Nelson-Aalen survival functions, then trains LightGBM, CatBoost, and a custom PyTorch pairwise ranking network on these targets. The approach highlights how event-aware masking in ranking losses and race-stratified target scaling effectively handle censored clinical time-to-event data. Readers should learn how to bridge survival analysis with ML ensembling, manage demographic bias through stratification, and construct complementary model stacks for clinical prediction tasks.",
+  "purpose": "ensemble",
+  "competition_flow": "Loads clinical and HLA matching CSV data, engineers survival-based pseudo-targets and HLA aggregations, trains stratified LightGBM/CatBoost regressors and a PyTorch pairwise ranking network, then ensembles their predictions into a final submission.",
+  "data_reading": [
+    "pd.read_csv and pl.read_csv from /kaggle/input/equity-post-HCT-survival-predictions/ paths"
+  ],
+  "data_processing": [
+    "Fills missing values with median, 'Unknown', or 'N/A' depending on column type",
+    "Casts datatypes to Float32/String/Int32 and handles constant columns",
+    "Applies StandardScaler to numerical features and LabelEncoder to categoricals",
+    "Replaces specific outlier values (e.g., year_hct=2020 to 2019, karnofsky_score=40 to 50)",
+    "Log-transforms efs_time and applies race-group stratification during validation splits"
+  ],
+  "features_engineering": [
+    "Aggregates HLA matching columns into low/high-resolution 6/8/10-locus matches",
+    "Creates year_hct - 2000 and is_cyto_score_same flags",
+    "Computes cross-features like donor_age-age_at_hct and comorbidity/karnofsky interactions",
+    "Generates pseudo-targets using OOF Cox PH, Kaplan-Meier, and Nelson-Aalen survival functions",
+    "Applies logit transform and race-weighted scaling to targets to account for demographic survival disparities"
+  ],
+  "models": [
+    "XGBClassifier",
+    "LitNN (custom PyTorch MLP with ODST layers and categorical embeddings)",
+    "LGBMRegressor",
+    "CatBoostRegressor",
+    "CoxPHFitter",
+    "KaplanMeierFitter",
+    "NelsonAalenFitter"
+  ],
+  "frameworks_used": [
+    "xgboost",
+    "pytorch",
+    "pytorch_lightning",
+    "pytorch_tabular",
+    "lifelines",
+    "lightgbm",
+    "catboost",
+    "pandas",
+    "polars",
+    "scikit-learn"
+  ],
+  "loss_functions": [
+    "Margin-based pairwise ranking loss with event mask",
+    "MSE (auxiliary task)",
+    "RMSE",
+    "MAE",
+    "Cox partial likelihood loss"
+  ],
+  "cv_strategy": "StratifiedKFold(n_splits=5) stratified by race_group and newborn status; KFold(n_splits=5) for survival target generation",
+  "ensembling": "Averages predictions from LightGBM and CatBoost models trained on four different survival-based pseudo-targets, applies a binary classifier mask offset (+0.2 for predicted events), and combines outputs using fixed weights across folds.",
+  "insights": [
+    "Event-aware masking in pairwise ranking losses correctly handles censored survival pairs without introducing ranking bias.",
+    "Stratifying validation by race_group prevents performance degradation and demographic bias across patient subpopulations.",
+    "Survival models (Cox/KM/NA) generate highly informative pseudo-targets that significantly boost gradient boosting performance.",
+    "Combining ranking networks with traditional classifiers captures complementary signal patterns in clinical tabular data."
+  ],
+  "critical_findings": [
+    "Replacing specific outlier values (e.g., karnofsky_score=40 to 50, hla_high_res_8=2 to 3) prevents model confusion from rare clinical entries.",
+    "Applying race-specific weights to target scaling accounts for inherent demographic survival disparities in the dataset.",
+    "Censored observations must be explicitly masked in pairwise comparisons to avoid invalid ranking signals and data leakage."
+  ],
+  "what_did_not_work": [],
+  "source_url": "https://www.kaggle.com/code/gogo4974/cibmtr-ensemble",
+  "votes": 467
+}

@@ -1,0 +1,37 @@
+{
+  "summary": "The notebook demonstrates a brute-force combinatorial search to find the optimal word permutation for the first sample in the Santa 2024 competition by minimizing perplexity. It implements a custom batched perplexity scorer using a 4-bit quantized Gemma-2-9B model to accelerate GPU metric evaluation compared to standard single-sample processing. By iterating through all 3.6 million possible permutations and processing them in batches of 64, the author efficiently identifies a permutation that achieves a perplexity score near 470. The key takeaway is that leveraging large batch sizes with quantized LLMs dramatically speeds up metric computation, making exhaustive searches feasible on consumer-grade GPUs. Readers learn how to adapt official metric code for batch processing and apply it to discrete optimization tasks.",
+  "purpose": "utility",
+  "competition_flow": "Reads the first sample's text from the submission file, generates all possible word permutations, evaluates their perplexity using a batched quantized Gemma-2-9B model, and outputs the optimal permutation merged into a new submission CSV.",
+  "data_reading": [
+    "Reads sample_submission.csv using pandas.read_csv to extract the original text for the first sample."
+  ],
+  "data_processing": [
+    "Splits the original text into words, generates all possible permutations using itertools.permutations, and joins them back into strings.",
+    "Normalizes whitespace by splitting and rejoining strings before passing them to the scorer."
+  ],
+  "features_engineering": [],
+  "models": [
+    "Gemma-2-9B"
+  ],
+  "frameworks_used": [
+    "transformers",
+    "torch",
+    "numpy",
+    "pandas",
+    "itertools"
+  ],
+  "loss_functions": [
+    "torch.nn.CrossEntropyLoss(reduction='none')"
+  ],
+  "cv_strategy": "",
+  "ensembling": "",
+  "insights": [
+    "Using large batch sizes with quantized LLMs significantly accelerates metric computation on GPUs compared to processing samples individually.",
+    "Exhaustive brute-force search over all permutations is computationally feasible for small combinatorial spaces when metric evaluation is optimized.",
+    "Correctly shifting logits and labels is required to compute token-level cross-entropy loss for accurate perplexity calculation."
+  ],
+  "critical_findings": [],
+  "what_did_not_work": [],
+  "source_url": "https://www.kaggle.com/code/cdeotte/brute-force-first-sample-perplexity-470",
+  "votes": 330
+}

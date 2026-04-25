@@ -1,0 +1,46 @@
+{
+  "summary": "This notebook demonstrates how to achieve a competitive leaderboard score on the WSDM Cup multilingual chatbot arena task using only the provided competition data and a quantized Gemma-2 9B model. It details a complete inference pipeline that handles multilingual text preprocessing, custom prompt formatting, and length-based dynamic batching to optimize GPU memory. The author highlights the effectiveness of Test-Time Augmentation (TTA) by swapping response candidates and averaging predictions, alongside multi-GPU parallelization to accelerate inference. Readers should learn how to efficiently adapt a large language model for binary preference classification without external data or complex training loops.",
+  "purpose": "inference",
+  "competition_flow": "Loads test data, preprocesses and tokenizes multilingual prompts and responses with custom formatting, runs inference using a 4-bit quantized Gemma-2 9B model with a LoRA adapter across two GPUs, applies TTA by averaging swapped predictions, and generates a CSV submission.",
+  "data_reading": [
+    "pl.read_parquet('/kaggle/input/wsdm-cup-multilingual-chatbot-arena/test.parquet').to_pandas()"
+  ],
+  "data_processing": [
+    "Fills NaN values with empty strings",
+    "Truncates long texts using token offsets to preserve context and inserts '\\n(snip)\\n'",
+    "Adds custom prompt tags (<prompt>:, \\n\\n<response_a>:, \\n\\n<response_b>:)",
+    "Tokenizes with GemmaTokenizerFast (max_length=2048, truncation=True)",
+    "Applies TTA by swapping response_a and response_b",
+    "Sorts inputs by sequence length for dynamic padding",
+    "Splits batches by length thresholds (>1024 and <=1024) to enable larger batch sizes for shorter sequences"
+  ],
+  "features_engineering": [],
+  "models": [
+    "Gemma-2 9B (4-bit quantized)",
+    "LoRA adapter (checkpoint-226)"
+  ],
+  "frameworks_used": [
+    "transformers",
+    "peft",
+    "accelerate",
+    "bitsandbytes",
+    "torch",
+    "polars",
+    "pandas",
+    "numpy",
+    "tqdm"
+  ],
+  "loss_functions": [],
+  "cv_strategy": "",
+  "ensembling": "Averages predictions from the original and TTA-swapped response pairs, and combines outputs from two GPU models and two batch size configurations.",
+  "insights": [
+    "Custom prompt formatting with explicit tags improves model comprehension for preference tasks.",
+    "Swapping response candidates during inference effectively reduces prediction bias.",
+    "Sorting inputs by length and using dynamic padding significantly optimizes GPU memory and inference speed.",
+    "Splitting batches by length thresholds allows using larger batch sizes for shorter sequences, further accelerating inference."
+  ],
+  "critical_findings": [],
+  "what_did_not_work": [],
+  "source_url": "https://www.kaggle.com/code/qianxinyu/wsdm-cup-lb-0-684-only-gemma-2-9b-4-bit",
+  "votes": 205
+}

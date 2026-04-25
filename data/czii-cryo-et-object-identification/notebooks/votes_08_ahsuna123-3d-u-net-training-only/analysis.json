@@ -1,0 +1,37 @@
+{
+  "summary": "This notebook provides a complete training pipeline for a 3D medical image segmentation task using the CZII CryoET ML Challenge dataset. It demonstrates how to convert sparse particle picks into dense multi-class segmentation masks using the copick ecosystem, then feed them into a MONAI-based 3D U-Net. The author emphasizes handling severe class imbalance via the Tversky loss function and implements a custom training loop with MLflow for experiment tracking. Readers should learn how to bridge sparse annotation formats with dense segmentation tasks, apply 3D spatial augmentations, and set up a reproducible training workflow for volumetric data.",
+  "purpose": "training",
+  "competition_flow": "Loads sparse particle picks from the CZII CryoET dataset, converts them into dense 3D multi-class segmentation masks, trains a 3D U-Net with Tversky loss using MONAI, and tracks metrics and model weights via MLflow.",
+  "data_reading": [
+    "Copied from sparse particle picks using copick_utils.segmentation_from_picks, stored as dense multi-label NumPy arrays in dictionaries with 'image' and 'label' keys."
+  ],
+  "data_processing": [
+    "Non-random transforms: EnsureChannelFirstd, NormalizeIntensityd, Orientationd (RAS).",
+    "Random transforms: RandCropByLabelClassesd (class-balanced 3D cropping), RandRotate90d, and RandFlipd.",
+    "Non-random transforms cached via CacheDataset; random transforms applied during iteration."
+  ],
+  "features_engineering": [],
+  "models": [
+    "3D UNet (MONAI)"
+  ],
+  "frameworks_used": [
+    "torch",
+    "monai",
+    "copick",
+    "mlflow"
+  ],
+  "loss_functions": [
+    "TverskyLoss"
+  ],
+  "cv_strategy": "Fixed holdout split: first 5 runs for training, next 2 runs for validation, with metrics computed every 2 epochs.",
+  "ensembling": "",
+  "insights": [
+    "Sparse particle picks can be effectively converted into dense multi-class segmentation masks for training 3D volumetric models.",
+    "Using class-balanced random cropping helps mitigate severe class imbalance in cryoET data.",
+    "Integrating MLflow with a custom training loop enables straightforward hyperparameter logging, metric tracking, and model versioning."
+  ],
+  "critical_findings": [],
+  "what_did_not_work": [],
+  "source_url": "https://www.kaggle.com/code/ahsuna123/3d-u-net-training-only",
+  "votes": 250
+}

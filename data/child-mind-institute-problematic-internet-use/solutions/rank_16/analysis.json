@@ -1,0 +1,40 @@
+{
+  "summary": "The author achieved 16th place by training a LightGBM model with a custom quadratic weighted kappa (QWK) objective and metric. Key technical choices included imputing missing values using IterativeImputer, engineering features directly from parquet files, and employing a 10x10 nested cross-validation scheme to ensure robust validation scores and stable test predictions. Threshold optimization was performed once using the aggregated predictions from the nested CV. The author emphasizes that missing value imputation was crucial for performance, while the custom QWK objective primarily improved cross-validation scores rather than leaderboard performance.",
+  "extensive_summary": "## Solution Overview\nThe author secured 16th place by leveraging a gradient boosting approach centered on LightGBM. The pipeline relies heavily on careful data preparation and a rigorous validation strategy to ensure generalization.\n\n## Data Preparation & Feature Engineering\nRaw data was processed into parquet files, from which the author performed feature engineering. A critical step was handling missing values using IterativeImputer, which the author identifies as a major contributor to the final score. An ablation study confirmed that removing this imputation step significantly degraded both CV and LB performance.\n\n## Model Training & Validation Strategy\nThe core model is LightGBM, trained with a custom quadratic weighted kappa (QWK) objective function and evaluation metric. To mitigate overfitting and obtain reliable validation scores, the author implemented a 10x10 nested cross-validation scheme. Threshold optimization was conducted only once, leveraging the overall predictions generated across the nested CV folds.\n\n## Robustness & Ablation Findings\nThe author tested the stability of the solution by varying the StratifiedKFold seed across 10 runs, demonstrating consistent leaderboard performance. Ablation experiments revealed that while the custom QWK objective meaningfully boosted CV scores, it did not translate to leaderboard gains. Conversely, missing value imputation and parquet-based feature engineering were indispensable for achieving the final rank.",
+  "rank": 16,
+  "competition_flow": "The author engineered features from parquet files, imputed missing values with IterativeImputer, trained a LightGBM model with a custom QWK objective using 10x10 nested cross-validation, optimized the prediction threshold once on aggregated CV predictions, and submitted the final model.",
+  "data_reading": [
+    "parquet files"
+  ],
+  "data_processing": [
+    "imputation of missing values with IterativeImputer"
+  ],
+  "features_engineering": [
+    "feature engineering from parquet files"
+  ],
+  "models": [
+    "LightGBM"
+  ],
+  "frameworks_used": [],
+  "loss_functions": [
+    "custom QWK objective"
+  ],
+  "cv_strategy": "10 x 10 nested cross-validation using StratifiedKFold",
+  "ensembling": "Threshold optimization performed once using the overall predictions from the nested cross-validation; no model ensembling was used.",
+  "insights": [
+    "Missing value imputation was critical for achieving strong leaderboard performance.",
+    "The custom QWK objective meaningfully improved cross-validation scores but did not translate to leaderboard gains.",
+    "A 10x10 nested CV scheme provided stable validation scores and robust test predictions."
+  ],
+  "critical_findings": [
+    "The custom QWK objective and metric only contributed to the CV score, not the leaderboard, despite being a core pipeline component.",
+    "Missing value imputation had a disproportionately large impact on both CV and LB scores compared to other feature engineering steps."
+  ],
+  "what_did_not_work": [
+    "The custom QWK objective and metric only improved the CV score and did not contribute to leaderboard performance."
+  ],
+  "github_repos": [],
+  "papers": [],
+  "other_solution_refs": [],
+  "source_url": "https://www.kaggle.com/competitions/child-mind-institute-problematic-internet-use/discussion/552569"
+}

@@ -1,0 +1,25 @@
+{
+  "id": "jazivxt/regression-test",
+  "id_no": 73348928,
+  "title": "Regression Test",
+  "code_file": "regression-test.ipynb",
+  "language": "python",
+  "kernel_type": "notebook",
+  "is_private": false,
+  "enable_gpu": false,
+  "enable_tpu": true,
+  "enable_internet": true,
+  "keywords": [],
+  "dataset_sources": [
+    ""
+  ],
+  "kernel_sources": [],
+  "competition_sources": [
+    "santa-2024"
+  ],
+  "model_sources": [
+    "google/gemma-2/Transformers/gemma-2-9b/2"
+  ],
+  "docker_image": "gcr.io/kaggle-private-byod/python-tpuvm@sha256:567e351ed67dd800b54ac2fbac6578f293da3d3c91e9da50db4a8da3803fe972",
+  "machine_shape": "Tpu1VmV38"
+}

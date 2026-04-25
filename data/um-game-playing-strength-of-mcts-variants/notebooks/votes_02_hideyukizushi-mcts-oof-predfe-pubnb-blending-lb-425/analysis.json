@@ -1,0 +1,60 @@
+{
+  "summary": "This notebook demonstrates a robust baseline pipeline for predicting agent utility in a board game MCTS competition. It combines two gradient boosting workflows: one heavily reliant on custom text-based feature engineering and TF-IDF, and another that leverages imported feature importances and OOF prediction stacking. The author emphasizes preventing data leakage by using StratifiedGroupKFold grouped by game ruleset, and shows how to safely reuse out-of-fold predictions as meta-features for a second training round. Readers should take away practical techniques for handling rule-based text data, optimizing memory usage with dtype casting, and structuring a reproducible ensemble baseline.",
+  "purpose": "ensemble",
+  "competition_flow": "Loads CSV data, applies extensive text and domain feature engineering, trains CatBoost and LightGBM models with StratifiedGroupKFold by game type, generates OOF predictions as meta-features, blends two model pipelines, and outputs a submission via Kaggle's inference server.",
+  "data_reading": [
+    "polars.read_csv converted to pandas DataFrames",
+    "reads train, test, and sample submission CSVs directly from Kaggle input paths"
+  ],
+  "data_processing": [
+    "String cleaning (lowercasing, punctuation removal)",
+    "Outlier clipping (PlayoutsPerSecond, MovesPerSecond)",
+    "Memory dtype casting (int8/16/32/64, float16/32/64)",
+    "TF-IDF vectorization (ngram 2-3, 500 features)",
+    "Dropping constant/low-frequency columns",
+    "Parsing agent strings and LudRules"
+  ],
+  "features_engineering": [
+    "Readability indices (ARI, McAlpine_EFLAW, CLRI) on EnglishRules and LudRules",
+    "Binary agent position flags for specific MCTS variants",
+    "Domain-derived ratios (e.g., Playouts/Moves, ComplexityBalanceInteraction, AdvantageBalanceRatio)",
+    "TF-IDF on EnglishRules and LudRules",
+    "One-hot encoding for known categorical values",
+    "OOF predictions from base models used as meta-features",
+    "Feature selection via imported importance CSV"
+  ],
+  "models": [
+    "CatBoost",
+    "LightGBM"
+  ],
+  "frameworks_used": [
+    "lightgbm",
+    "catboost",
+    "polars",
+    "pandas",
+    "numpy",
+    "scikit-learn",
+    "dill",
+    "plotly",
+    "matplotlib"
+  ],
+  "loss_functions": [
+    "RMSE"
+  ],
+  "cv_strategy": "StratifiedGroupKFold(n_splits=5, shuffle=True, random_state=2024) grouped by 'GameRulesetName'",
+  "ensembling": "Blends predictions from two independent GBM pipelines (Model 1 and Model 2) with equal weights (0.5 each); Model 2 internally blends LightGBM and CatBoost with weights 0.8 and 0.3.",
+  "insights": [
+    "StratifiedGroupKFold by game type prevents leakage between different board game rulesets.",
+    "OOF predictions can be safely reused as meta-features for a second training round without data leakage.",
+    "Text readability metrics and TF-IDF on game rules capture structural complexity that correlates with agent utility.",
+    "Heavy dtype casting and polars significantly reduce memory footprint for large tabular datasets."
+  ],
+  "critical_findings": [
+    "Target variable is clipped to [-0.985, 0.985] and scaled by 1.1 during training/inference to constrain output ranges.",
+    "Many high-cardinality or low-frequency categorical columns are dropped to prevent overfitting and reduce memory.",
+    "Game ruleset names are used as group labels for CV, indicating that game types have distinct feature distributions."
+  ],
+  "what_did_not_work": [],
+  "source_url": "https://www.kaggle.com/code/hideyukizushi/mcts-oof-predfe-pubnb-blending-lb-425",
+  "votes": 593
+}

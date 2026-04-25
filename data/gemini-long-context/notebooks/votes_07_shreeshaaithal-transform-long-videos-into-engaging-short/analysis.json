@@ -1,0 +1,45 @@
+{
+  "summary": "This notebook demonstrates an automated pipeline for repurposing landscape (16:9) YouTube videos into vertical (9:16) social media shorts. It combines YouTube transcript extraction, LLM-based segment selection, and computer vision techniques to dynamically crop and stabilize video frames around detected faces. The workflow highlights how generative AI can replace manual highlight identification, while OpenCV and YOLOv8 handle aspect ratio adaptation and subject tracking. Readers should learn how to chain multimodal models and video processing libraries to build scalable content repurposing tools. The notebook also provides practical tips on handling video timing, scene detection fallbacks, and frame smoothing to avoid jittery outputs.",
+  "purpose": "utility",
+  "competition_flow": "Downloads a YouTube video and its auto-generated transcript, uses Gemini to extract key segments, trims the video, applies face-aware dynamic cropping to a 9:16 aspect ratio, and compiles the final vertical clips.",
+  "data_reading": [
+    "Uses yt-dlp to fetch auto-generated .srt subtitles and video files",
+    "Parses SRT files into JSON using the srt library",
+    "Loads video frames via moviepy.VideoFileClip and cv2.VideoCapture"
+  ],
+  "data_processing": [
+    "Converts SRT to JSON",
+    "Trims video clips based on LLM-selected timestamps",
+    "Detects scenes with pySceneDetect",
+    "Performs face detection and tracking with YOLOv8",
+    "Applies dynamic 9:16 cropping with stability/smoothing factors",
+    "Resizes frames, aligns audio, and trims excess frames to match original duration"
+  ],
+  "features_engineering": [],
+  "models": [
+    "gemini-1.5-flash-002",
+    "yolov8m.pt"
+  ],
+  "frameworks_used": [
+    "google-generativeai",
+    "langchain",
+    "ultralytics",
+    "opencv-python",
+    "moviepy",
+    "scenedetect",
+    "torch"
+  ],
+  "loss_functions": [],
+  "cv_strategy": "",
+  "ensembling": "",
+  "insights": [
+    "LLMs with long-context windows can reliably identify narrative highlights in transcripts, reducing manual editing time.",
+    "Applying stability and smoothing factors to face-tracking coordinates prevents jittery camera movements during vertical cropping.",
+    "Scene detection serves as a useful fallback when face tracking fails or when content relies on visual changes rather than speakers.",
+    "Dynamic aspect ratio conversion requires careful frame resizing and audio duration alignment to maintain playback quality."
+  ],
+  "critical_findings": [],
+  "what_did_not_work": [],
+  "source_url": "https://www.kaggle.com/code/shreeshaaithal/transform-long-videos-into-engaging-short",
+  "votes": 65
+}

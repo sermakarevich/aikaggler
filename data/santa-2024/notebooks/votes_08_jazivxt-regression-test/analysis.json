@@ -1,0 +1,44 @@
+{
+  "summary": "This notebook explores a permutation-based text optimization task by comparing a lightweight regression approach against an LLM-based perplexity scorer. It loads precomputed scores, engineers word-position features, and trains an XGBoost model to predict sequence quality. The author then generates candidate permutations, evaluates them with both models, and implements a brute-force local search to minimize perplexity. Readers learn how to efficiently compute LLM perplexity with caching, use positional features for regression, and navigate the combinatorial explosion of permutation search. The key takeaway is that hybrid approaches combining fast regression proxies with targeted LLM verification can guide text optimization without exhaustive search.",
+  "purpose": "baseline",
+  "competition_flow": "Loads precomputed scores and sample submissions, trains an XGBoost regressor on word-position features, generates text permutations, and evaluates candidates using both the regression model and a custom Gemma-2-9b perplexity scorer to identify low-perplexity sequences.",
+  "data_reading": [
+    "Reads sample_submission.csv and a past.pickle file containing precomputed scores, mapping them to text strings."
+  ],
+  "data_processing": [
+    "Splits text into words, calculates word indices, filters data by ID groups, generates permutations of text segments, and implements a custom LRU cache for batched LLM inference."
+  ],
+  "features_engineering": [
+    "Word position indices (mapping each unique word to its index in the sequence) used as regression features."
+  ],
+  "models": [
+    "XGBRegressor",
+    "Gemma-2-9b"
+  ],
+  "frameworks_used": [
+    "pandas",
+    "numpy",
+    "scikit-learn",
+    "xgboost",
+    "torch",
+    "transformers"
+  ],
+  "loss_functions": [
+    "CrossEntropyLoss (reduction='none') for perplexity calculation",
+    "MAE (eval_metric) for XGBoost training"
+  ],
+  "cv_strategy": "",
+  "ensembling": "",
+  "insights": [
+    "Word position indices provide a simple yet effective feature set for predicting permutation scores.",
+    "LLM perplexity can be computed efficiently using batched inference and an LRU cache to avoid redundant model calls.",
+    "Brute-force permutation search is computationally infeasible for long sequences but viable for short, localized segments."
+  ],
+  "critical_findings": [
+    "Exhaustive permutation search scales factorially (~2.4x10^18 for 20 words), making it impossible for full-length texts.",
+    "Duplicate words in a sequence cause index collisions that require explicit handling or deduplication strategies."
+  ],
+  "what_did_not_work": [],
+  "source_url": "https://www.kaggle.com/code/jazivxt/regression-test",
+  "votes": 294
+}

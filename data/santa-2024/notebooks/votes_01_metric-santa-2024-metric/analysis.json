@@ -1,0 +1,37 @@
+{
+  "summary": "This notebook implements the official evaluation metric for the Santa 2024 competition, which scores text permutations based on their mean perplexity relative to the original ground truth. It demonstrates how to leverage a pre-trained causal language model to compute token-level cross-entropy loss and convert it to perplexity for rigorous text rearrangement evaluation. The code enforces strict permutation validation and whitespace normalization before scoring, ensuring submissions are mathematically valid. Readers should understand how perplexity serves as a robust, model-based metric for preserving linguistic structure and how to efficiently implement it with memory management and quantization. The notebook also highlights the importance of proper sequence boundary handling and autoregressive loss shifting in metric computation.",
+  "purpose": "utility",
+  "competition_flow": "Accepts solution and submission DataFrames, validates that each submission is a valid permutation of the original text, computes token-wise cross-entropy loss using a pre-trained LLM, and returns the mean perplexity as the final score.",
+  "data_reading": [],
+  "data_processing": [
+    "Normalizes whitespace by splitting and rejoining strings.",
+    "Validates permutation integrity using word frequency counters.",
+    "Shifts logits and labels for autoregressive loss calculation.",
+    "Manages GPU memory by clearing CUDA cache and running garbage collection."
+  ],
+  "features_engineering": [],
+  "models": [
+    "Gemma-2-9b"
+  ],
+  "frameworks_used": [
+    "transformers",
+    "pytorch",
+    "pandas",
+    "numpy"
+  ],
+  "loss_functions": [
+    "CrossEntropyLoss (token-wise, reduction='none')"
+  ],
+  "cv_strategy": "",
+  "ensembling": "",
+  "insights": [
+    "Perplexity effectively measures how well a permuted text preserves the original linguistic structure and probability distribution.",
+    "Token-level loss calculation allows for granular evaluation of each word's contribution to the overall score.",
+    "8-bit quantization makes running large language models for metric computation feasible on consumer GPUs.",
+    "Proper sequence boundary handling with BOS and EOS tokens is critical for accurate perplexity calculation."
+  ],
+  "critical_findings": [],
+  "what_did_not_work": [],
+  "source_url": "https://www.kaggle.com/code/metric/santa-2024-metric",
+  "votes": 719
+}

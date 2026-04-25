@@ -1,0 +1,38 @@
+{
+  "summary": "This notebook establishes a fast baseline for a survival prediction competition by converting two target variables (efs and efs_time) into a single continuous target. It trains GPU-accelerated XGBoost and CatBoost regressors using 5-fold cross-validation and evaluates performance with the official concordance index metric. The author intentionally omits feature engineering to demonstrate a reproducible starting point, suggesting that future score improvements can be achieved through custom features, neural networks, or alternative target encodings. Readers should take away how to handle censored survival data with standard regression models and leverage GPU acceleration for rapid baseline iteration.",
+  "purpose": "baseline",
+  "competition_flow": "Loads train and test CSVs, transforms censored survival targets into a single normalized target, trains GPU-accelerated XGBoost and CatBoost regressors with 5-fold CV, evaluates using the official concordance index, averages the model predictions, and exports a submission CSV.",
+  "data_reading": [
+    "pd.read_csv for train and test datasets."
+  ],
+  "data_processing": [
+    "Fills categorical NaNs with \"NAN\", label encodes categoricals via factorize(), reduces numerical precision to float32/int32, leaves numerical NaNs intact, and transforms two survival targets into a single continuous target using rank normalization, offset shifting for censored observations, and max normalization."
+  ],
+  "features_engineering": [],
+  "models": [
+    "XGBoost (XGBRegressor)",
+    "CatBoost (CatBoostRegressor)"
+  ],
+  "frameworks_used": [
+    "xgboost",
+    "catboost",
+    "pandas",
+    "numpy",
+    "matplotlib",
+    "lifelines"
+  ],
+  "loss_functions": [
+    "reg:logistic"
+  ],
+  "cv_strategy": "KFold(n_splits=5, shuffle=True, random_state=42)",
+  "ensembling": "Averages the out-of-fold and test predictions from XGBoost and CatBoost by summing them (since both are already divided by the number of folds), then negates the result for the final submission.",
+  "insights": [
+    "GPU-accelerated GBDT models can be trained extremely fast while still providing a strong baseline for survival prediction tasks.",
+    "Transforming censored survival targets into a single continuous target using rank normalization and offset shifting allows standard regression models to be applied directly.",
+    "Leaving numerical NaNs as-is and using native categorical support in GBDT frameworks avoids unnecessary imputation or encoding overhead."
+  ],
+  "critical_findings": [],
+  "what_did_not_work": [],
+  "source_url": "https://www.kaggle.com/code/cdeotte/xgboost-catboost-baseline-cv-668-lb-668",
+  "votes": 376
+}

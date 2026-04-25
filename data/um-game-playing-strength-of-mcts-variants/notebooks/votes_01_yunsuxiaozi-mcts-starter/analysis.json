@@ -1,0 +1,49 @@
+{
+  "summary": "This notebook provides a baseline pipeline for the UM Game Playing Strength of MCTS Variants competition, focusing on predicting agent utility from game rules and MCTS configuration strings. It demonstrates a rigorous feature engineering workflow that parses agent parameters, derives efficiency and complexity ratios, computes readability metrics for game rules, and applies fold-safe TF-IDF to prevent leakage. The author trains two CatBoost models using StratifiedGroupKFold grouped by game ruleset, explains the mathematical rationale behind scaling and clipping predictions to minimize RMSE, and shares an iterative version history showing how feature selection and post-processing improved the leaderboard score. Readers should learn how to handle text-heavy tabular data, prevent leakage during cross-validation, and apply simple post-processing to optimize regression metrics.",
+  "purpose": "baseline",
+  "competition_flow": "Reads MCTS agent and game rule CSVs, engineers tabular and text features, trains two CatBoost models with StratifiedGroupKFold grouped by game ruleset, applies scaling and clipping post-processing, and generates a submission via Kaggle's inference server.",
+  "data_reading": [
+    "Loaded via polars.read_csv() and converted to pandas DataFrames from /kaggle/input/um-game-playing-strength-of-mcts-variants/."
+  ],
+  "data_processing": [
+    "Cleans strings (lowercase, punctuation removal), clips outliers for PlayoutsPerSecond and MovesPerSecond, reduces memory by casting numeric columns to minimal dtype, fits TF-IDF per CV fold to prevent leakage, and drops numerous game/board rule columns deemed non-generalizable."
+  ],
+  "features_engineering": [
+    "Parses MCTS agent strings into selection, exploration constant, playout, and score bounds; creates one-hot encodings for known categories; adds binary flags for 64 predefined agent combinations; derives 17+ efficiency, complexity, and ratio features from game metrics; computes ARI, CLRI, and McAlpine_EFLAW readability scores for EnglishRules and LudRules; generates 500 TF-IDF features per text column per fold."
+  ],
+  "models": [
+    "CatBoostRegressor"
+  ],
+  "frameworks_used": [
+    "polars",
+    "pandas",
+    "numpy",
+    "scikit-learn",
+    "catboost",
+    "dill",
+    "matplotlib",
+    "kaggle_evaluation.mcts_inference_server"
+  ],
+  "loss_functions": [
+    "RMSE"
+  ],
+  "cv_strategy": "StratifiedGroupKFold(n_splits=5 or 10, random_state=2024, shuffle=True) grouped by GameRulesetName, with target rounded to integers for stratification.",
+  "ensembling": "Averages predictions across two CatBoost model variants and multiple folds, then applies a 1.1x scaling factor and clips results to [-0.985, 0.985] to minimize overall RMSE.",
+  "insights": [
+    "Splitting CV by game ruleset is critical for generalizing to unknown games.",
+    "Post-processing with scaling and clipping can reduce RMSE by balancing the loss curve across the target distribution.",
+    "TF-IDF must be fit separately per fold to avoid data leakage.",
+    "Dropping game-specific rule columns prevents overfitting to training board configurations."
+  ],
+  "critical_findings": [
+    "The target distribution is bounded in [-1, 1], and clipping predictions to [-0.985, 0.985] with a 1.1x multiplier yields lower RMSE than unclipped predictions.",
+    "CV and LB scores do not perfectly correlate, indicating potential distribution shifts or leakage in the public leaderboard.",
+    "Many board-specific features degrade generalization and should be dropped to avoid overfitting to training board configurations."
+  ],
+  "what_did_not_work": [
+    "Removing XGBoost, dropping the area feature, and removing agent1/agent2 TF-IDF features improved CV/LB scores.",
+    "Version 7's outlier clipping and threshold adjustments initially worsened CV/LB, indicating over-regularization or information loss."
+  ],
+  "source_url": "https://www.kaggle.com/code/yunsuxiaozi/mcts-starter",
+  "votes": 681
+}

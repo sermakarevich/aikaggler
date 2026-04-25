@@ -1,0 +1,135 @@
+{
+  "summary": "This solution implements a winning multi-agent reinforcement learning pipeline for the Lux AI Season 3 competition, centered on the IMPALA algorithm. It processes spatial-temporal game states through a hybrid architecture combining ResNet blocks, ConvLSTM for temporal dynamics, and custom Transformer layers with 2D sinusoidal positional embeddings. Key innovations include dynamic reward scaling, adaptive entropy scheduling, and a teacher-student framework to stabilize learning in sparse, non-stationary environments. The pipeline leverages hand-crafted features inferred from observation deltas, such as hidden game mechanics and temporal gaps, alongside rotation-based inference-time augmentation to improve decision robustness. Strategic mixed-model submissions and careful leaderboard testing were employed to evaluate performance while mitigating imitation learning risks.",
+  "competition_flow": "Raw environment observations are parsed and normalized through custom Gym wrappers, enriched with hand-crafted temporal and spatial features, processed by a hybrid CNN-Transformer-LSTM model with rotation-based augmentation, and output as masked action logits for submission.",
+  "data_reading": [
+    "Observations are loaded as dictionary-based state dicts from LuxAIS3GymEnv (numpy_output=True), containing map features, units, sensor masks, and steps, which are then normalized, discretized, and converted to standardized tensors."
+  ],
+  "data_processing": [
+    "Continuous features normalized and discretized via binning into one-hot vectors",
+    "x/y coordinates flipped during inference for data augmentation",
+    "Coordinates normalized to [-1, 1] for grid sampling",
+    "Nearest-neighbor patches extracted via F.grid_sample",
+    "One-hot and continuous unit features concatenated and merged with spatial patches via linear merger",
+    "Parallel environment outputs stacked into batched numpy arrays",
+    "Numpy arrays converted to PyTorch tensors with dtype validation and GPU pinning",
+    "Rewards aggregated and scaled",
+    "Standard Gym tuple outputs converted to dictionaries",
+    "Convolution-like kernels applied for vision mapping",
+    "Frequency-voted estimates computed for energy reduction and SAP dropoff",
+    "Unit positions tracked across timesteps",
+    "Map shifts detected by comparing tile types between steps"
+  ],
+  "features_engineering": [
+    "Temporal gaps tracking steps since last observation or enemy sighting",
+    "Aggregated internal state parameters like estimated vision reduction",
+    "Per-unit attributes including energy and tile ID combined with spatial patches",
+    "One-hot encoding of discrete features (103 classes)",
+    "Continuous feature vectors (5 dims) concatenated with one-hot encodings",
+    "Derived metrics including max/sum energy per tile, estimated move/sap capacity, energy deltas, relic probabilities, spawn distances, visibility/unseen ticks, and scaled game parameters",
+    "Hand-crafted features inferred via discrete candidate voting including nebula_tile_energy_reduction, unit_sap_dropoff_factor, min/max_nebula_vision_reduction, unit_energy_void_factor, my/enemy_unexpected_energy_change, shift_param, and steps_to_shift"
+  ],
+  "models": [
+    "IMPALA",
+    "ResNet",
+    "ConvLSTM",
+    "Transformer",
+    "MLP",
+    "Enemy Future Prediction Head",
+    "Value Function Head",
+    "Movement Head",
+    "Sap-Target Head",
+    "SpatialTransformer",
+    "ConvLSTMCell",
+    "Sliser",
+    "Predictor",
+    "DictSeparateActorResnBinary",
+    "DictSeparateActorResn",
+    "ResidualBlockNoMask",
+    "CrossAttentionTransformer",
+    "TransformerWithPosEmbed",
+    "DictInputLayer",
+    "Custom Self-Attention Transformer",
+    "Custom Cross-Attention Transformer",
+    "2D Sinusoidal Positional Embedding",
+    "SELayerNoMask",
+    "ParallelDilationResidualBlock"
+  ],
+  "frameworks_used": [
+    "pytorch",
+    "gym",
+    "numpy",
+    "einops",
+    "luxai_s3"
+  ],
+  "loss_functions": [
+    "Weighted binary cross-entropy",
+    "KL divergence loss",
+    "Teacher baseline loss",
+    "TD losses",
+    "Entropy regularization"
+  ],
+  "cv_strategy": "",
+  "ensembling": "A two-model submission strategy is used where a weaker model plays 85% of matches and a stronger model plays 15%, with additional logit noise injection for larger models to mask capabilities and evaluate true win rates.",
+  "insights": [
+    "Large-scale self-play combined with ResNet, ConvLSTM, and Transformer architectures effectively learns complex multi-agent policies.",
+    "Adaptive reward scaling and dynamic entropy scheduling stabilize training in sparse, non-stationary environments.",
+    "Teacher-student frameworks and frozen opponent pools prevent catastrophic forgetting and overfitting to self-play dynamics.",
+    "Strategic mixed-model submissions allow accurate leaderboard evaluation while protecting against imitation learning.",
+    "Combining local patch extraction with global spatial features allows the model to capture both fine-grained unit details and broader map context.",
+    "Using fixed 2D sinusoidal positional embeddings instead of learnable ones ensures spatial consistency and generalization across different grid resolutions.",
+    "Applying available action masks directly to logits before sampling enables efficient handling of multi-discrete action spaces with dynamic constraints.",
+    "Integrating a ConvLSTM with explicit termination mask handling preserves temporal state across episodes while correctly resetting hidden/cell states upon episode end.",
+    "The architecture uses pre-normalization (LayerNorm before attention/FFN) to stabilize training dynamics.",
+    "Parallel dilated convolutions efficiently capture multi-scale receptive fields without increasing model parameters.",
+    "Squeeze-and-Excitation blocks adaptively recalibrate channel-wise feature responses to emphasize informative channels.",
+    "Comparing current and previous observations allows accurate inference of hidden game mechanics like SAP dropoff and energy void factors without explicit environment exposure.",
+    "Frequency voting over discrete candidate values provides a robust way to estimate continuous or hidden parameters in partially observable environments.",
+    "Tracking units across timesteps via position/energy proximity handles ID switching and unit spawning/death gracefully.",
+    "Reward shaping is implemented as a weighted sum of discrete, interpretable components rather than a single dense signal.",
+    "Multipliers are used to isolate specific behaviors during different training phases without rewriting core logic."
+  ],
+  "critical_findings": [
+    "Imitation learning opponents can copy strong strategies, making it necessary to obscure model capabilities during public testing.",
+    "Pure self-play eventually plateaus, requiring teacher KL alignment and diverse opponent pools to maintain progress.",
+    "The unit matching logic includes a fallback for a rare edge case where position/energy proximity checks fail, indicating potential instability in state tracking under specific conditions."
+  ],
+  "what_did_not_work": [
+    "Behavior cloning from external replays was implemented but ultimately abandoned because the RL pipeline already achieved significant improvements without it.",
+    "The explore_reward component is explicitly marked as broken in the code comments.",
+    "The my_stuck_reward is noted as difficult to implement correctly without pathfinding.",
+    "Several other granular rewards (unit stacking, energy waste, sensor mask, near units) are disabled via zero multipliers, indicating they were abandoned during tuning."
+  ],
+  "training_setup": [
+    "Training utilizes the IMPALA algorithm with dynamic reward scaling, adaptive entropy scheduling, and a teacher-student framework to stabilize learning in sparse, non-stationary environments."
+  ],
+  "notable_files": [
+    {
+      "path": "README.md",
+      "role": "documentation"
+    },
+    {
+      "path": "final_versions/07_03_tune_against_mask/agent.py",
+      "role": "inference"
+    },
+    {
+      "path": "final_versions/07_03_tune_against_mask/lux_ai/nns/models.py",
+      "role": "model definition"
+    },
+    {
+      "path": "final_versions/07_03_tune_against_mask/lux_ai/nns/transformer.py",
+      "role": "model definition"
+    },
+    {
+      "path": "final_versions/07_03_tune_against_mask/lux_ai/nns/conv_blocks.py",
+      "role": "model definition"
+    },
+    {
+      "path": "final_versions/07_03_tune_against_mask/lux_ai/lux_gym/obs_spaces.py",
+      "role": "preprocessing"
+    },
+    {
+      "path": "final_versions/07_03_tune_against_mask/lux_ai/lux_gym/sb3.py",
+      "role": "utility"
+    }
+  ]
+}

@@ -1,0 +1,40 @@
+{
+  "summary": "This notebook conducts a thorough exploratory data analysis for the Child Mind Institute Problematic Internet Use competition, focusing on validating the target variable and understanding feature distributions. The author identifies critical flaws in the provided SII scores caused by missing PCIAT questionnaire responses and implements a recalculation logic to exclude or flag ambiguous cases. After cleaning physical measurements, converting units, and removing biologically impossible values, the analysis reveals that the target variable likely captures broader developmental and behavioral factors rather than pure internet addiction, heavily influenced by parental bias and age-inappropriate survey items. Readers should take away the importance of verifying target derivation, handling missing data carefully in ordinal scales, and recognizing that demographic proxies like age and physical metrics often drive apparent correlations in health-related datasets.",
+  "purpose": "eda",
+  "competition_flow": "Loads train and test CSVs, validates and corrects the target variable for missing questionnaire data, cleans physical and demographic features, and analyzes distributions and correlations to understand feature-target relationships and data quality.",
+  "data_reading": [
+    "pd.read_csv for train, test, and data_dictionary CSV files."
+  ],
+  "data_processing": [
+    "Recalculates SII to handle missing PCIAT answers, filters to complete responses, converts units (lbs to kg, inches to cm), recalculates BMI, replaces biologically impossible values (0s, systolic <= diastolic) with NaN, bins age and CGAS scores, and encodes categorical variables."
+  ],
+  "features_engineering": [
+    "Age group bins, ordinal internet use encoding, CGAS score bins, recalculated BMI, complete response mask, unit conversions."
+  ],
+  "models": [],
+  "frameworks_used": [
+    "pandas",
+    "numpy",
+    "matplotlib",
+    "seaborn"
+  ],
+  "loss_functions": [],
+  "cv_strategy": "",
+  "ensembling": "",
+  "insights": [
+    "SII scores show a U-shaped relationship with age, peaking in adolescents.",
+    "Internet usage time correlates linearly with age but has a complex, non-linear relationship with SII.",
+    "Adolescents are the most affected demographic across all internet usage levels.",
+    "The SII target variable likely reflects broader developmental/behavioral factors and parental bias rather than pure internet addiction.",
+    "Physical measures like height and weight correlate with SII but primarily act as proxies for age."
+  ],
+  "critical_findings": [
+    "The original SII scores are sometimes incorrect when PCIAT questions are left unanswered, requiring recalculation or exclusion.",
+    "A significant portion of physical measurements fall outside biologically normal ranges or contain clear data entry errors.",
+    "BIA-derived metrics contain implausible negative values and extreme outliers, indicating potential processing or measurement errors.",
+    "Participants with less than 1 hour of daily internet use still exhibit high SII scores, challenging the assumption that usage time directly drives impairment."
+  ],
+  "what_did_not_work": [],
+  "source_url": "https://www.kaggle.com/code/antoninadolgorukova/cmi-piu-features-eda",
+  "votes": 745
+}

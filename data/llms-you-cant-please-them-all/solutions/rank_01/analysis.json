@@ -1,0 +1,27 @@
+{
+  "summary": "The author achieved a stable gold medal score by optimizing prompt injection templates and drastically reducing evaluation variance. Instead of relying on hundreds of unique essays, they narrowed the test set to just 10 carefully selected essays and repeated them approximately 100 times to stabilize the median score. They used Monte Carlo-style simulations with fixed random seeds to identify stable subsets and filter out topic-sensitive attacks that caused significant score drops.",
+  "extensive_summary": "## Attack Template Design\nThe solution began with an iterative \"submit more\" strategy to identify three effective attack templates. The author emphasized that the choice of random words within these templates was critical, using a pregenerated list of ~250 English nouns. Tuning specific word subsets was necessary to maintain 1.0 English confidence while achieving a plausible sim score that translated to a strong leaderboard position.\n\n## Variance Reduction via Repetition\nThe core technical insight involved minimizing variance in judge grades by drastically reducing the number of unique test samples. Rather than using ~333 essays per template, the author found that using only 10 unique essays and repeating them ~100 times maximally reduced grade variance. This approach relied on the assumption that the only non-fixed variable was the essay topic, which was treated as part of the judge's system prompt.\n\n## Stability Verification\nTo validate the approach, the author fixed the `np.permutation` seed and simulated picking random 30% of 1000 assumed grades 1000 times, using the median to guide selection. They verified stability by changing seeds and observing that score differences stabilized around 1e-2. Essays that caused score drops (e.g., 29 to 27) upon seed changes were identified as topic-sensitive and discarded, leaving only the most robust subsets for the final submission.",
+  "rank": 1,
+  "competition_flow": "The pipeline involved iteratively testing prompt injection templates, simulating score distributions with fixed random seeds to filter unstable attacks, and submitting a highly repeated test set to stabilize the final judge score.",
+  "data_reading": [],
+  "data_processing": [],
+  "features_engineering": [],
+  "models": [],
+  "frameworks_used": [],
+  "loss_functions": [],
+  "cv_strategy": "",
+  "ensembling": "",
+  "insights": [
+    "Reducing the number of unique test samples and heavily repeating them can drastically lower evaluation variance when relying on stochastic judges.",
+    "The specific choice of random words in prompt templates significantly impacts both language confidence and final leaderboard scores."
+  ],
+  "critical_findings": [
+    "Using only 10 unique essays with ~100 repetitions each proved sufficient to maximize score stability, contrary to the intuition that more diverse samples are always better.",
+    "Changing the random seed could cause score drops from 29 to 27, revealing that certain attack templates were highly sensitive to the randomly inserted essay topics."
+  ],
+  "what_did_not_work": [],
+  "github_repos": [],
+  "papers": [],
+  "other_solution_refs": [],
+  "source_url": "https://www.kaggle.com/competitions/llms-you-cant-please-them-all/discussion/566380"
+}

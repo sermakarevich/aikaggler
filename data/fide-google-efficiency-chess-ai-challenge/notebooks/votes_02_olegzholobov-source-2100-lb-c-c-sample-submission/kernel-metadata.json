@@ -1,0 +1,23 @@
+{
+  "id": "olegzholobov/source-2100-lb-c-c-sample-submission",
+  "id_no": 71711071,
+  "title": "source 2100 LB c/c++ sample submission",
+  "code_file": "source-2100-lb-c-c-sample-submission.ipynb",
+  "language": "python",
+  "kernel_type": "notebook",
+  "is_private": false,
+  "enable_gpu": false,
+  "enable_tpu": false,
+  "enable_internet": true,
+  "keywords": [],
+  "dataset_sources": [
+    ""
+  ],
+  "kernel_sources": [],
+  "competition_sources": [
+    "fide-google-efficiency-chess-ai-challenge"
+  ],
+  "model_sources": [],
+  "docker_image": "gcr.io/kaggle-images/python@sha256:a16cda2c5d52fa988d413876f3ffad7a46cca58678514601feb175990dc187c0",
+  "machine_shape": "None"
+}

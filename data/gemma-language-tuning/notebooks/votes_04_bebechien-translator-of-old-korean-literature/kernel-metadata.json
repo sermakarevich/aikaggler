@@ -1,0 +1,25 @@
+{
+  "id": "bebechien/translator-of-old-korean-literature",
+  "id_no": 66678214,
+  "title": "Translator of Old Korean Literature",
+  "code_file": "translator-of-old-korean-literature.ipynb",
+  "language": "python",
+  "kernel_type": "notebook",
+  "is_private": false,
+  "enable_gpu": true,
+  "enable_tpu": false,
+  "enable_internet": true,
+  "keywords": [
+    "gpu"
+  ],
+  "dataset_sources": [],
+  "kernel_sources": [],
+  "competition_sources": [
+    "gemma-language-tuning"
+  ],
+  "model_sources": [
+    "keras/gemma2/Keras/gemma2_instruct_2b_en/1"
+  ],
+  "docker_image": "gcr.io/kaggle-private-byod/python@sha256:940180dcea42e703acbeae669a52d68e6fa3130ef60805b36005534a5152a5f3",
+  "machine_shape": "NvidiaTeslaT4"
+}

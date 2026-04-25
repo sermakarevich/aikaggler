@@ -1,0 +1,36 @@
+{
+  "summary": "The author tackled a tabular ranking problem for allogeneic HCT transplantation events by factorizing the non-differentiable ranking task into two separate subproblems: binary classification for event probability and conditional regression for expected ranking position among event cases. To handle censored data, they used Kaplan-Meier estimator-derived weights for the classification task. For the regression task, they applied an inverse normal CDF transformation to the rank percentages as targets. The final risk score combined these predictions using a specific formula, leveraging an ensemble of TabM, CatBoost, and XGBoost models.",
+  "extensive_summary": "## Problem Formulation & Core Insight\nThe competition required ranking patients by risk scores for allogeneic HCT transplantation events. Recognizing that direct ranking optimization is non-differentiable and introduces unstable step-function behavior when smoothed, the author factorized the problem into two distinct tasks: predicting the probability of an event (`P(event)`) and predicting the expected ranking position among patients who experienced an event (`E[rank% | event = 1]`).\n\n## Handling Censored Data & Target Transformation\nFor the event probability task, censored data points were treated as partial observations. Their weights were computed using cumulative densities from the Kaplan-Meier estimator, then scaled to the (0,1) range. For the ranking regression task, the target was defined as `rank(-time)/N`, mapping to a 0-1 range where 0 represents the longest time and 1 the shortest. To stabilize training, the author applied a target transformation using the inverse normal CDF (`inverse_normal_cdf(rank%)`) to generate z-scores, with predictions later transformed back to percentages via the normal CDF.\n\n## Model Ensemble & Final Scoring\nSix models were trained across three algorithms: TabM, CatBoost, and XGBoost. Predictions from these models were merged via weighted sums for both the event probability and ranking components. The final risk score was computed using the formula: `risk_score = P(event = 0)*(s0_group/2) + P(event = 1)*(s0_group + (1-s0_group)*E[rank% | event = 1])`, where `s0_group` aggregates event probabilities by race group. The author notes that adding a LightGBM model had minimal impact on the final ensemble score.",
+  "rank": 4,
+  "competition_flow": "Raw tabular data was split into event probability and conditional ranking targets (with Kaplan-Meier weighting for censoring and inverse normal CDF transformation for rankings), trained on TabM, CatBoost, and XGBoost models, merged via weighted sums, and combined into a final risk score formula for submission.",
+  "data_reading": [],
+  "data_processing": [
+    "Kaplan-Meier estimator weights for censored data points scaled to (0,1)",
+    "inverse normal CDF transformation on rank% targets for regression task"
+  ],
+  "features_engineering": [],
+  "models": [
+    "TabM",
+    "CatBoost",
+    "XGBoost",
+    "LightGBM"
+  ],
+  "frameworks_used": [],
+  "loss_functions": [],
+  "cv_strategy": "",
+  "ensembling": "Predictions from TabM, CatBoost, and XGBoost models were merged via weighted sums for both the event probability and ranking components, then combined into a final risk score formula; a LightGBM model was also included but had minimal impact.",
+  "insights": [
+    "Directly optimizing non-differentiable ranking tasks often leads to instability or poor alignment with the original objective when smoothed.",
+    "Factorizing a ranking problem into separate probability and conditional ranking components provides a more stable and interpretable training pipeline.",
+    "Target transformations like the inverse normal CDF can effectively stabilize regression training for bounded ranking percentages."
+  ],
+  "critical_findings": [
+    "Treating censored data as partial observations with Kaplan-Meier-derived weights prevents information loss without introducing complex survival loss functions.",
+    "Adding a LightGBM model to the ensemble provided negligible score improvement despite its speed and competitive solo performance."
+  ],
+  "what_did_not_work": [],
+  "github_repos": [],
+  "papers": [],
+  "other_solution_refs": [],
+  "source_url": "https://www.kaggle.com/competitions/equity-post-HCT-survival-predictions/discussion/566528"
+}

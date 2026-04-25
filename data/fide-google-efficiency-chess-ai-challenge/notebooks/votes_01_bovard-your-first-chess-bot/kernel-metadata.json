@@ -1,0 +1,21 @@
+{
+  "id": "bovard/your-first-chess-bot",
+  "id_no": 71090570,
+  "title": "Your First Chess Bot",
+  "code_file": "your-first-chess-bot.ipynb",
+  "language": "python",
+  "kernel_type": "notebook",
+  "is_private": false,
+  "enable_gpu": false,
+  "enable_tpu": false,
+  "enable_internet": true,
+  "keywords": [],
+  "dataset_sources": [],
+  "kernel_sources": [],
+  "competition_sources": [
+    "fide-google-efficiency-chess-ai-challenge"
+  ],
+  "model_sources": [],
+  "docker_image": "gcr.io/kaggle-images/python@sha256:9a64aaf544db07179b1202109de9a638fb5b422fab0f9d12aca91ecdc556ce0e",
+  "machine_shape": "None"
+}

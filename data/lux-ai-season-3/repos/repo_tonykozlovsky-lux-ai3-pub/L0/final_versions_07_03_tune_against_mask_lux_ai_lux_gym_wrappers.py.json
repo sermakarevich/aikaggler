@@ -1,0 +1,33 @@
+{
+  "path": "final_versions/07_03_tune_against_mask/lux_ai/lux_gym/wrappers.py",
+  "analysis": {
+    "summary": "This file provides a suite of Gym environment wrappers tailored for a reinforcement learning pipeline in the LUX AI competition. It handles parallel environment stepping, converts environment outputs to PyTorch tensors, standardizes data formats, and manages reward computation and logging. The code emphasizes profiling, device placement, and handling Kaggle-specific observation formats. Readers should understand how raw environment interactions are transformed into batched, tensor-ready, and reward-scaled inputs for downstream training.",
+    "purpose": "utility",
+    "competition_flow": "Wraps raw LUX AI environment steps to aggregate rewards, convert outputs to PyTorch tensors, vectorize parallel environments, and standardize data formats for downstream RL training.",
+    "data_reading": [],
+    "data_processing": [
+      "Stacks parallel environment outputs into batched numpy arrays for efficient vectorized stepping.",
+      "Converts numpy arrays to PyTorch tensors with strict dtype validation and GPU pinning.",
+      "Aggregates and scales rewards using a configurable reward scaler.",
+      "Converts standard Gym tuple outputs into dictionaries for downstream consumption."
+    ],
+    "features_engineering": [],
+    "models": [],
+    "frameworks_used": [
+      "gym",
+      "numpy",
+      "torch"
+    ],
+    "loss_functions": [],
+    "cv_strategy": "",
+    "ensembling": "",
+    "insights": [
+      "Parallel environments are vectorized by stacking observations and infos into batched arrays for efficient training.",
+      "Reward computation is decoupled into a separate reward_space object to allow flexible reward shaping without modifying the core environment.",
+      "Tensor conversion explicitly handles mixed dtypes and pins memory for optimized GPU transfer.",
+      "The code includes explicit checks for Kaggle competition environments to handle None observations and custom seed/reset logic."
+    ],
+    "critical_findings": [],
+    "what_did_not_work": []
+  }
+}

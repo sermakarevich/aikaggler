@@ -1,0 +1,29 @@
+{
+  "id": "fnands/baseline-unet-train-submit",
+  "id_no": 70260623,
+  "title": "Baseline UNet train + submit",
+  "code_file": "baseline-unet-train-submit.ipynb",
+  "language": "python",
+  "kernel_type": "notebook",
+  "is_private": false,
+  "enable_gpu": true,
+  "enable_tpu": false,
+  "enable_internet": false,
+  "keywords": [
+    "gpu"
+  ],
+  "dataset_sources": [
+    "fnands/1000-epoch-run-model-weights",
+    "fnands/czii-cryoet-dependencies",
+    "hengck23/hengck-czii-cryo-et-01"
+  ],
+  "kernel_sources": [
+    "fnands/create-numpy-dataset-exp-name"
+  ],
+  "competition_sources": [
+    "czii-cryo-et-object-identification"
+  ],
+  "model_sources": [],
+  "docker_image": "gcr.io/kaggle-private-byod/python@sha256:141219e230dab548ccc19aa4e62bcf805ed9de0b4d5112227e28f5f1a25991f8",
+  "machine_shape": "Gpu"
+}

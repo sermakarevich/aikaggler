@@ -1,0 +1,53 @@
+{
+  "summary": "This notebook demonstrates a reproducible baseline for the Child Mind Institute Problematic Internet Use competition, emphasizing deterministic seeding across PyTorch, NumPy, and LightGBM to stabilize leaderboard scores. It combines tabular clinical/physical features, compressed time-series statistics, and autoencoder embeddings into a multi-model ensemble. The author highlights that rigorous seed fixing is critical for reproducibility, and that optimizing decision thresholds on out-of-fold predictions significantly improves ordinal classification metrics like QWK. Readers should take away practical techniques for handling high-dimensional time-series data in tabular pipelines and the importance of post-processing thresholds for ordinal targets.",
+  "purpose": "baseline",
+  "competition_flow": "Loads CSV and parquet time-series data, engineers statistical and autoencoder features, trains a multi-model ensemble with stratified 5-fold CV, optimizes prediction thresholds via out-of-fold validation, and generates a final submission via majority voting across three experimental setups.",
+  "data_reading": [
+    "polars and pandas are used to read CSV files and parquet time-series directories; categorical season columns are initially cast to Enum types."
+  ],
+  "data_processing": [
+    "Filters rows with missing target values, handles missing data with KNN and median imputers, replaces infinite values with NaN, rounds the target to integers, maps categorical season columns to integers, and drops the id column."
+  ],
+  "features_engineering": [
+    "Computes statistical summaries from time-series parquet files, applies a custom PyTorch autoencoder to compress time-series stats into 60-dimensional embeddings, and creates hand-crafted interaction features (e.g., BMI \u00d7 Age, Fat/BMI ratios, Weight-normalized metabolic rates) and ratios between BIA and physical measurements."
+  ],
+  "models": [
+    "LightGBM",
+    "XGBoost",
+    "CatBoost",
+    "TabNet",
+    "RandomForestRegressor",
+    "GradientBoostingRegressor",
+    "VotingRegressor"
+  ],
+  "frameworks_used": [
+    "pytorch",
+    "lightgbm",
+    "xgboost",
+    "catboost",
+    "scikit-learn",
+    "polars",
+    "pandas",
+    "scipy"
+  ],
+  "loss_functions": [
+    ""
+  ],
+  "cv_strategy": "StratifiedKFold(n_splits=5, shuffle=True, random_state=42)",
+  "ensembling": "Combines LightGBM, XGBoost, CatBoost, TabNet, RandomForest, and GradientBoosting via VotingRegressor with varying weights across three experimental setups, then applies majority voting across the three resulting submission files. Post-processing includes optimizing decision thresholds on out-of-fold predictions using scipy's Nelder-Mead to maximize quadratic weighted kappa.",
+  "insights": [
+    "Rigorous seed fixing across all relevant libraries is essential for reproducible Kaggle results and stable leaderboard scores.",
+    "Compressing high-dimensional time-series data into statistical features or autoencoder embeddings effectively captures temporal patterns for tabular models.",
+    "Threshold optimization on out-of-fold predictions is a critical step for improving ordinal classification metrics like QWK."
+  ],
+  "critical_findings": [
+    "The target variable is highly imbalanced, with approximately half the samples in class 0 and very few in class 3.",
+    "Some features present in the training set are missing in the test set, requiring careful alignment before modeling.",
+    "Missing target values perfectly align with missing values in the PCIAT-PCIAT_Total feature, indicating systematic data collection gaps."
+  ],
+  "what_did_not_work": [
+    ""
+  ],
+  "source_url": "https://www.kaggle.com/code/hideyukizushi/cmi-reproducible-results-fixseed-lgb-cpu-lb-492",
+  "votes": 548
+}

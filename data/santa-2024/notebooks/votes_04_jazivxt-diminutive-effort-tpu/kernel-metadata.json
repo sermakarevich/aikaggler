@@ -1,0 +1,25 @@
+{
+  "id": "jazivxt/diminutive-effort-tpu",
+  "id_no": 72073626,
+  "title": "Diminutive Effort (TPU)",
+  "code_file": "diminutive-effort-tpu.ipynb",
+  "language": "python",
+  "kernel_type": "notebook",
+  "is_private": false,
+  "enable_gpu": false,
+  "enable_tpu": true,
+  "enable_internet": true,
+  "keywords": [],
+  "dataset_sources": [
+    ""
+  ],
+  "kernel_sources": [],
+  "competition_sources": [
+    "santa-2024"
+  ],
+  "model_sources": [
+    "google/gemma-2/Transformers/gemma-2-9b/2"
+  ],
+  "docker_image": "gcr.io/kaggle-private-byod/python-tpuvm@sha256:667f4c004d9435755be7d79ec03707b4b9b1489fe419bdb7e7dfe3e011b55542",
+  "machine_shape": "Tpu1VmV38"
+}

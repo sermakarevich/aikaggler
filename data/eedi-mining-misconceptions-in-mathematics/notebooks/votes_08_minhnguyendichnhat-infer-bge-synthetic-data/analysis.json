@@ -1,0 +1,43 @@
+{
+  "summary": "This notebook demonstrates a synthetic data generation and inference pipeline for a mathematics misconception detection competition. It loads test questions and answer options, formats them into structured prompts with chain-of-thought instructions, and generates responses using a quantized LLM via vLLM. The generated text is then embedded with a pre-trained BGE model and matched against a predefined misconception mapping using cosine similarity to produce final predictions. The approach highlights how to efficiently run large language models on limited GPU resources and leverage semantic embeddings for zero-shot label mapping. Readers should take away practical techniques for prompt engineering, AWQ quantization, and embedding-based classification without fine-tuning.",
+  "purpose": "inference",
+  "competition_flow": "Loads test CSV data, formats it into prompts for a quantized LLM, generates misconception responses via vLLM, embeds the text with BGE, matches against a misconception mapping via cosine similarity, and outputs a formatted submission CSV.",
+  "data_reading": [
+    "pd.read_csv for test data and misconception mapping",
+    "pd.read_parquet for intermediate and output files"
+  ],
+  "data_processing": [
+    "Melts wide answer columns to long format",
+    "Filters out correct answers",
+    "Constructs prompts with chain-of-thought tags",
+    "Extracts responses via regex",
+    "Normalizes embeddings",
+    "Computes cosine similarity",
+    "Formats submission strings"
+  ],
+  "features_engineering": [],
+  "models": [
+    "Meta-Llama-3.1-8B-Instruct-AWQ-INT4",
+    "BGE (SentenceTransformer)"
+  ],
+  "frameworks_used": [
+    "vllm",
+    "transformers",
+    "sentence-transformers",
+    "scikit-learn",
+    "pandas",
+    "numpy"
+  ],
+  "loss_functions": [],
+  "cv_strategy": "",
+  "ensembling": "",
+  "insights": [
+    "AWQ quantization combined with vLLM enables efficient LLM inference on limited GPU memory.",
+    "Explicit chain-of-thought prompting with structured XML-like tags improves reliable output extraction.",
+    "Pre-trained BGE embeddings can effectively map generated text to predefined categories via cosine similarity without task-specific fine-tuning."
+  ],
+  "critical_findings": [],
+  "what_did_not_work": [],
+  "source_url": "https://www.kaggle.com/code/minhnguyendichnhat/infer-bge-synthetic-data",
+  "votes": 320
+}

@@ -1,0 +1,23 @@
+{
+  "id": "cchangyyy/lb-0-482-beginner-friendly-notebook",
+  "id_no": 66925924,
+  "title": "LB: 0.482 Beginner Friendly Notebook",
+  "code_file": "lb-0-482-beginner-friendly-notebook.ipynb",
+  "language": "python",
+  "kernel_type": "notebook",
+  "is_private": false,
+  "enable_gpu": true,
+  "enable_tpu": false,
+  "enable_internet": false,
+  "keywords": [
+    "gpu"
+  ],
+  "dataset_sources": [],
+  "kernel_sources": [],
+  "competition_sources": [
+    "child-mind-institute-problematic-internet-use"
+  ],
+  "model_sources": [],
+  "docker_image": "gcr.io/kaggle-private-byod/python@sha256:141219e230dab548ccc19aa4e62bcf805ed9de0b4d5112227e28f5f1a25991f8",
+  "machine_shape": "NvidiaTeslaT4"
+}

@@ -1,0 +1,28 @@
+{
+  "id": "rin2401/wsdm-cup-lmsys-0805",
+  "id_no": 73827956,
+  "title": "[WSDM CUP] lmsys 0805",
+  "code_file": "wsdm-cup-lmsys-0805.ipynb",
+  "language": "python",
+  "kernel_type": "notebook",
+  "is_private": false,
+  "enable_gpu": true,
+  "enable_tpu": false,
+  "enable_internet": false,
+  "keywords": [
+    "gpu"
+  ],
+  "dataset_sources": [
+    "tascj0/lmsys-checkpoints-0-0805",
+    "tascj0/lmsys-checkpoints-3-0805",
+    "tascj0/lmsys-modules-0805",
+    "tascj0/lmsys-packages"
+  ],
+  "kernel_sources": [],
+  "competition_sources": [
+    "wsdm-cup-multilingual-chatbot-arena"
+  ],
+  "model_sources": [],
+  "docker_image": "gcr.io/kaggle-private-byod/python@sha256:e3f9bf91d1b7b36bf77554565d27c5733585fbe5e2b7f0832e068824e7accc3c",
+  "machine_shape": "NvidiaTeslaT4"
+}

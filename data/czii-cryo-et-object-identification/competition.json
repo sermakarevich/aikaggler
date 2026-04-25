@@ -1,0 +1,113 @@
+{
+  "id": 84969,
+  "competitionName": "czii-cryo-et-object-identification",
+  "title": "CZII - CryoET Object Identification",
+  "briefDescription": "Find small biological structures in large 3D volumes",
+  "dateEnabled": "2024-11-06T18:06:52.830Z",
+  "deadline": "2025-02-05T23:59:00Z",
+  "hasLeaderboard": true,
+  "leaderboardPercentage": 26,
+  "maxDailySubmissions": 5,
+  "numScoredSubmissions": 2,
+  "hasSolution": true,
+  "numPrizes": 10,
+  "forumId": 5873493,
+  "finalLeaderboardHasBeenVerified": true,
+  "userRankMultiplier": 1,
+  "dateCreated": "2024-09-10T20:35:32.159983800Z",
+  "competitionHostSegmentId": 1,
+  "maxTeamSize": 5,
+  "medalsAllowed": true,
+  "enableTeamFiles": true,
+  "teamFileDeadline": "2025-02-22T00:00:00Z",
+  "teamMergerExplicitDeadline": "2025-01-29T23:59:00Z",
+  "prohibitNewEntrantsExplicitDeadline": "2025-01-29T23:59:00Z",
+  "kernelsPublishingDisabledDeadline": "2025-01-29T23:59:00Z",
+  "organizationId": 4820,
+  "hasCoverImageUrl": true,
+  "showPrivateLeaderboard": true,
+  "hasScripts": true,
+  "onlyAllowKernelSubmissions": true,
+  "totalTeams": 931,
+  "totalCompetitors": 1131,
+  "totalSubmissions": 27840,
+  "rulesRequired": true,
+  "usesSynchronousReruns": true,
+  "maxCpuRuntimeMinutes": 720,
+  "maxGpuRuntimeMinutes": 720,
+  "rowIdColumnName": "id",
+  "requiredSubmissionFilename": "submission.csv",
+  "evaluationAlgorithm": {
+    "id": 2503,
+    "name": "CZI_CryoET_ 84969",
+    "isMax": true,
+    "environmentRenderType": "ENVIRONMENT_RENDER_TYPE_JSON",
+    "kernelId": 69532748,
+    "latestCompetitionMetricVersionId": 28337,
+    "state": "AVAILABLE",
+    "passCompleteSubmission": true
+  },
+  "categories": [
+    {
+      "id": 14102,
+      "name": "image",
+      "fullPath": "data type > image",
+      "datasetCount": 62363,
+      "competitionCount": 601,
+      "scriptCount": 6952,
+      "slug": "image-data",
+      "displayName": "Image"
+    },
+    {
+      "id": 17074,
+      "name": "object detection",
+      "fullPath": "task > object-detection",
+      "description": "",
+      "datasetCount": 1352,
+      "competitionCount": 40,
+      "scriptCount": 676,
+      "slug": "object-detection",
+      "displayName": "Object Detection"
+    },
+    {
+      "id": 7100,
+      "name": "biology",
+      "fullPath": "subject > earth and nature > biology",
+      "description": "Explore datasets and kernels about gene expressions, transcriptomics, and even the works of Charles Darwin.",
+      "datasetCount": 17875,
+      "competitionCount": 45,
+      "scriptCount": 4882,
+      "slug": "biology",
+      "displayName": "Biology"
+    },
+    {
+      "name": "custom metric",
+      "description": "This competition's metric is defined under the 'Evaluation' tab",
+      "displayName": "Custom Metric"
+    }
+  ],
+  "organization": {
+    "slug": "cz-imaging-institute",
+    "name": "CZ Imaging Institute",
+    "thumbnailImageUrl": "https://storage.googleapis.com/kaggle-organizations/4820/thumbnail.png",
+    "profileUrl": "/organizations/cz-imaging-institute"
+  },
+  "launched": true,
+  "createdByUserId": 995397,
+  "license": {
+    "id": 1,
+    "name": "CC0: Public Domain",
+    "url": "https://creativecommons.org/publicdomain/zero/1.0/",
+    "agreementRequired": false
+  },
+  "hostName": "CZ Imaging Institute",
+  "scoreTruncationNumDecimals": 5,
+  "locked": true,
+  "totalJoinedUsers": 6846,
+  "requiresIdentityVerification": true,
+  "submissionSizeLimitMb": 20480,
+  "reward": {
+    "id": "USD",
+    "quantity": 75000
+  }
+}

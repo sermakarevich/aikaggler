@@ -1,0 +1,39 @@
+{
+  "summary": "This notebook provides a comprehensive exploratory data analysis (EDA) of the NFL Big Data Bowl 2025 dataset, systematically examining player demographics, game metadata, play-level statistics, and spatial tracking data. Through histograms, bar charts, scatter plots, and heatmaps, the author highlights key distributions such as player birth years, weights, and pre-snap win probabilities while contextualizing NFL-specific features like formations and pass results. The analysis reveals dataset characteristics, identifies potential data quirks like date parsing inconsistencies, and establishes a foundational understanding of the data's structure and spatial dynamics. Readers should gain clear insights into the dataset's statistical properties and spatial patterns to inform downstream predictive modeling efforts.",
+  "purpose": "eda",
+  "competition_flow": "Loads raw NFL competition CSVs, performs extensive statistical and spatial EDA with visualizations, and documents dataset characteristics without training any models.",
+  "data_reading": [
+    "pd.read_csv() for player_play.csv, games.csv, plays.csv, players.csv, and tracking_week_1.csv."
+  ],
+  "data_processing": [
+    "Date parsing with pd.to_datetime(format='mixed') and DatetimeIndex extraction.",
+    "Filtering tracking data by playId, gameId, and playDirection.",
+    "Aggregation via pivot_table and value_counts for categorical distributions."
+  ],
+  "features_engineering": [],
+  "models": [],
+  "frameworks_used": [
+    "pandas",
+    "numpy",
+    "matplotlib",
+    "seaborn",
+    "plotly"
+  ],
+  "loss_functions": [],
+  "cv_strategy": "",
+  "ensembling": "",
+  "insights": [
+    "Player birth years follow a left-skewed distribution with peaks around 1995-1996.",
+    "Player weights are approximately normally distributed with a mean of 246 lbs and median of 236 lbs.",
+    "Pre-snap home team win probability exhibits a normal, unimodal, and symmetric distribution.",
+    "Most NFL games occur on Sundays, typically kicking off at 1:00 PM ET.",
+    "Tracking data can be effectively visualized using 2D scatter plots and heatmaps to understand spatial player movements and tackle locations."
+  ],
+  "critical_findings": [
+    "Some date columns in the dataset do not strictly follow the %Y-%m-%d format, requiring format='mixed' in pd.to_datetime().",
+    "The author notes confusion regarding the most frequent game time (13:00 ET) versus typical NFL scheduling, highlighting a potential data representation quirk."
+  ],
+  "what_did_not_work": [],
+  "source_url": "https://www.kaggle.com/code/mpwolke/nfl-big-data-bowl-2025",
+  "votes": 116
+}

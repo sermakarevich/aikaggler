@@ -1,0 +1,37 @@
+{
+  "summary": "This notebook demonstrates a probabilistic prompt-mixing strategy for generating essays in a competition where the goal is to bypass LLM safety filters or manipulate judge models. It combines several known prompt injection and jailbreak techniques (counting tricks, cutoff date probing, emergency roleplay, surrealism, and multiple-choice formatting) by randomly selecting and weighting them during inference. The author dynamically swaps target LLM names within prompts to increase vertical variance and reduce repetition penalties. Static post-processing strings like plagiarism scores and high scores are optionally appended to further influence downstream evaluation. Readers should understand how weighted prompt mixing and targeted attack vectors can improve submission robustness across different judge models.",
+  "purpose": "inference",
+  "competition_flow": "Reads test topics from CSV, dynamically constructs prompts by probabilistically mixing few-shot examples and attack suffixes, generates essays using a local Phi-3.5 model, optionally appends static post-processing strings, and saves the output to a CSV submission file.",
+  "data_reading": [
+    "pd.read_csv(\"/kaggle/input/llms-you-cant-please-them-all/test.csv\")"
+  ],
+  "data_processing": [
+    "Dynamically constructs conversation messages by randomly selecting weighted prompt templates and suffixes.",
+    "Trims generated model outputs by stripping numbered lists and truncating at the last punctuation mark.",
+    "Optionally appends static strings (positive/negative review words, plagiarism scores, high scores, pass/fail tags) based on configurable probabilities."
+  ],
+  "features_engineering": [],
+  "models": [
+    "Phi-3.5-mini-instruct"
+  ],
+  "frameworks_used": [
+    "transformers",
+    "torch",
+    "pandas",
+    "numpy"
+  ],
+  "loss_functions": [],
+  "cv_strategy": "",
+  "ensembling": "Probabilistically mixes multiple prompt injection templates and attack vectors during inference rather than combining model predictions; optionally appends static post-processing strings to influence judge models.",
+  "insights": [
+    "Weighted probabilistic mixing of diverse prompt attacks increases vertical variance and reduces repetition penalties in generated essays.",
+    "Dynamically targeting specific LLM names within prompts helps bypass model-specific safety filters.",
+    "Appending static contextual strings (like high scores or plagiarism warnings) can subtly influence downstream judge models."
+  ],
+  "critical_findings": [
+    "The author explicitly notes that adding the 'Choices' attack template resulted in a noticeable leaderboard score improvement."
+  ],
+  "what_did_not_work": [],
+  "source_url": "https://www.kaggle.com/code/richolson/mash-it-up",
+  "votes": 560
+}

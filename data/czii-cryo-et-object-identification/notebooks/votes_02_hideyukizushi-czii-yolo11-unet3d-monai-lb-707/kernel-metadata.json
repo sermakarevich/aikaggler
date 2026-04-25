@@ -1,0 +1,31 @@
+{
+  "id": "hideyukizushi/czii-yolo11-unet3d-monai-lb-707",
+  "id_no": 74717976,
+  "title": "CZII|YOLO11+Unet3D-Monai|LB.707",
+  "code_file": "czii-yolo11-unet3d-monai-lb-707.ipynb",
+  "language": "python",
+  "kernel_type": "notebook",
+  "is_private": false,
+  "enable_gpu": true,
+  "enable_tpu": false,
+  "enable_internet": false,
+  "keywords": [
+    "gpu"
+  ],
+  "dataset_sources": [
+    "hideyukizushi/cziials-a-230-unet",
+    "fnands/czii-cryoet-dependencies",
+    "sersasj/czii-yolo-l-trained-with-synthetic-data",
+    "hengck23/hengck-czii-cryo-et-01"
+  ],
+  "kernel_sources": [
+    "fnands/create-numpy-dataset-exp-name",
+    "itsuki9180/ultralytics-for-offline-install"
+  ],
+  "competition_sources": [
+    "czii-cryo-et-object-identification"
+  ],
+  "model_sources": [],
+  "docker_image": "gcr.io/kaggle-private-byod/python@sha256:1003a82bef5df3c098b2041d936cb5f1836e52d7b610e8f0f4dedc194fb3b773",
+  "machine_shape": "NvidiaTeslaT4"
+}

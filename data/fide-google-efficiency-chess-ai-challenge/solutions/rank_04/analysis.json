@@ -1,0 +1,201 @@
+{
+  "summary": "The author placed 4th by heavily optimizing Stockfish 16 to operate within a strict 5MB memory limit on Kaggle. They replaced memory-intensive components like the Magic Bitboard with a classical approach, stripped C++ standard library dependencies, and reduced hash table sizes. To improve the evaluation function without NNUE, they appended a small 3-layer MLP to the Hand-Crafted Evaluation (HCE) system. Training data was generated via self-play using kaggle-environments, and the model was trained using MSE loss. A key insight was that scaling the neural network's output by 0.5 yielded a ~30 Elo gain over HCE alone.",
+  "extensive_summary": "## Overview & Base Engine Selection\nThe solution builds upon Stockfish 16, specifically targeting the Hand-Crafted Evaluation (HCE) system since NNUE support was disabled in this version. The primary constraint was a strict 5MB memory limit on Kaggle, which required extensive code-level optimizations.\n\n## Memory Optimization\nTo fit within the RAM budget, the author drastically reduced hash table sizes (e.g., Pawn Hash Table from 131,072 to 8,192 elements) and replaced the memory-heavy Magic Bitboard for rooks with the Classical Approach from CFish. They also eliminated large page allocations, removed unnecessary modules, and rewrote C++ standard library dependencies to avoid linking libstdc++, which significantly reduced timeout losses.\n\n## Neural Network Integration\nInstead of building a full NNUE, the author extended HCE by adding a small 3-layer MLP. The network takes 99 input features, processes them through a 1,400-parameter first layer (outputting 14 values via 256-bit registers), and passes the result through Clipped ReLU activations and fully connected layers (32x32, then 32x1) for a total of 2,489 trainable parameters. The target for training was the difference between NNUE and HCE evaluations.\n\n## Training & Submission\nApproximately 70,000 games were played using kaggle-environments to generate training positions, sampled at a 1/8,192 probability during search. Training was conducted in Kaggle's GPU environment using MSE loss. The author submitted both a pure HCE agent and an NN-enhanced agent, discovering late in the competition that scaling the NN output by 0.5 provided a ~30 Elo improvement over HCE alone.",
+  "rank": 4,
+  "competition_flow": "The author optimized Stockfish 16's memory footprint to fit a 5MB limit, trained a small 3-layer MLP on self-played chess positions using kaggle-environments, and integrated the network's output into the HCE evaluation function for submission.",
+  "data_reading": [
+    "Positions encountered during search were saved via kaggle-environments and split into eight parts for efficient loading."
+  ],
+  "data_processing": [
+    "Self-play generated ~70,000 games; positions were sampled during search at a 1/8,192 probability and split into eight parts for efficient loading. Attempted QAT was applied, though its effectiveness was uncertain."
+  ],
+  "features_engineering": [
+    "99 input features derived from the HCE evaluation state."
+  ],
+  "models": [
+    "Stockfish 16 (HCE)",
+    "3-layer MLP (99->14->32->32->1)",
+    "NNUE (referenced as baseline)"
+  ],
+  "frameworks_used": [
+    "kaggle-environments",
+    "C++",
+    "Kaggle Notebooks"
+  ],
+  "loss_functions": [
+    "MSE"
+  ],
+  "cv_strategy": "",
+  "ensembling": "The author submitted two separate agents (HCE-only and NN-enhanced) rather than ensembling them, with the final submission using a 0.5 scaling factor on the neural network's output.",
+  "insights": [
+    "Extending HCE with a small neural network is a viable alternative to building a full NNUE when NNUE support is disabled.",
+    "Scaling the neural network's output by 0.5 yielded a ~30 Elo improvement over using HCE alone, a discovery made too late for further experimentation.",
+    "Removing libstdc++ dependencies significantly reduced timeout losses despite the program still being functionally submittable with it linked."
+  ],
+  "critical_findings": [
+    "Adding the full neural network output to HCE resulted in less than a 10 Elo improvement, whereas scaling it by 0.5 provided a 30 Elo gain.",
+    "The Magic Bitboard for rooks consumed excessive memory, making the Classical Approach from CFish a necessary replacement to meet the 5MB limit."
+  ],
+  "what_did_not_work": [
+    "Adding the full NN output to HCE resulted in less than a 10 Elo improvement.",
+    "Attempting QAT yielded uncertain effectiveness, and fine-tuning hash table sizes based on intuition rather than rigorous testing proved suboptimal."
+  ],
+  "github_repos": [
+    {
+      "url": "https://github.com/Lgeu/kaggle-stockfish",
+      "role": "solution"
+    }
+  ],
+  "papers": [],
+  "other_solution_refs": [
+    {
+      "description": "Training data generator notebooks",
+      "url": "https://www.kaggle.com/code/nagiss/chess-042-f040-training-data-generator"
+    },
+    {
+      "description": "Training data generator notebooks",
+      "url": "https://www.kaggle.com/code/nagiss/chess-052-f042-data-generator-use-hce"
+    },
+    {
+      "description": "Training data generator notebooks",
+      "url": "https://www.kaggle.com/code/nagiss/chess-058b-data-generator"
+    },
+    {
+      "description": "Training data generator notebooks",
+      "url": "https://www.kaggle.com/code/nagiss/chess-058c-data-generator-060-params"
+    },
+    {
+      "description": "Data generation notebooks",
+      "url": "https://www.kaggle.com/code/nagiss/chess-043-generate-training-data-seed0"
+    },
+    {
+      "description": "Data generation notebooks",
+      "url": "https://www.kaggle.com/code/nagiss/chess-043b-generate-training-data-seed400"
+    },
+    {
+      "description": "Data generation notebooks",
+      "url": "https://www.kaggle.com/code/nagiss/chess-043c-generate-training-data-seed800"
+    },
+    {
+      "description": "Data generation notebooks",
+      "url": "https://www.kaggle.com/code/nagiss/chess-043d-generate-training-data-seed1200"
+    },
+    {
+      "description": "Data generation notebooks",
+      "url": "https://www.kaggle.com/code/nagiss/chess-043e-generate-training-data-seed1600"
+    },
+    {
+      "description": "Data generation notebooks",
+      "url": "https://www.kaggle.com/code/nagiss/chess-043f-generate-training-data-seed2000"
+    },
+    {
+      "description": "Data generation notebooks",
+      "url": "https://www.kaggle.com/code/nagiss/chess-043g-generate-training-data-seed2400"
+    },
+    {
+      "description": "Data generation notebooks",
+      "url": "https://www.kaggle.com/code/nagiss/chess-043h-generate-training-data-seed2800"
+    },
+    {
+      "description": "Data generation notebooks",
+      "url": "https://www.kaggle.com/code/nagiss/chess-043i-generate-training-data-seed3200"
+    },
+    {
+      "description": "Data generation notebooks",
+      "url": "https://www.kaggle.com/code/nagiss/chess-043j-generate-training-data-seed3600"
+    },
+    {
+      "description": "Data generation notebooks",
+      "url": "https://www.kaggle.com/code/nagiss/chess-043k-generate-training-data-seed4000"
+    },
+    {
+      "description": "Data generation notebooks",
+      "url": "https://www.kaggle.com/code/nagiss/chess-043l-generate-training-data-seed4400"
+    },
+    {
+      "description": "Data generation notebooks",
+      "url": "https://www.kaggle.com/code/nagiss/chess-043m-generate-training-data-seed4800"
+    },
+    {
+      "description": "Data generation notebooks",
+      "url": "https://www.kaggle.com/code/nagiss/chess-043n-generate-training-data-seed5200"
+    },
+    {
+      "description": "Data generation notebooks",
+      "url": "https://www.kaggle.com/code/nagiss/chess-043o-generate-training-data-seed5600"
+    },
+    {
+      "description": "Data generation notebooks",
+      "url": "https://www.kaggle.com/code/nagiss/chess-053-f043l-datagen-hce-seed0"
+    },
+    {
+      "description": "Data generation notebooks",
+      "url": "https://www.kaggle.com/code/nagiss/chess-053b-datagen-hce-seed400"
+    },
+    {
+      "description": "Data generation notebooks",
+      "url": "https://www.kaggle.com/code/nagiss/chess-053c-datagen-hce-seed800"
+    },
+    {
+      "description": "Data generation notebooks",
+      "url": "https://www.kaggle.com/code/nagiss/chess-053d-datagen-hce-seed1200"
+    },
+    {
+      "description": "Data generation notebooks",
+      "url": "https://www.kaggle.com/code/nagiss/chess-053e-datagen-hce-seed1600"
+    },
+    {
+      "description": "Data generation notebooks",
+      "url": "https://www.kaggle.com/code/nagiss/chess-053f-datagen-hce-seed2000-7999"
+    },
+    {
+      "description": "Data generation notebooks",
+      "url": "https://www.kaggle.com/code/nagiss/chess-053g-datagen-hce-seed8000-13999"
+    },
+    {
+      "description": "Data generation notebooks",
+      "url": "https://www.kaggle.com/code/nagiss/chess-059-f053g-datagen-058b-vs-hce-seed0"
+    },
+    {
+      "description": "Data generation notebooks",
+      "url": "https://www.kaggle.com/code/nagiss/chess-059b-datagen-058c-vs-hce-seed0"
+    },
+    {
+      "description": "Data splitting notebooks",
+      "url": "https://www.kaggle.com/code/nagiss/chess-064-f060-split-data-0-8"
+    },
+    {
+      "description": "Data splitting notebooks",
+      "url": "https://www.kaggle.com/code/nagiss/chess-064b-f060-split-data-1-8"
+    },
+    {
+      "description": "Data splitting notebooks",
+      "url": "https://www.kaggle.com/code/nagiss/chess-064c-f060-split-data-2-8"
+    },
+    {
+      "description": "Data splitting notebooks",
+      "url": "https://www.kaggle.com/code/nagiss/chess-064d-f060-split-data-3-8"
+    },
+    {
+      "description": "Data splitting notebooks",
+      "url": "https://www.kaggle.com/code/nagiss/chess-064e-f060-split-data-4-8"
+    },
+    {
+      "description": "Data splitting notebooks",
+      "url": "https://www.kaggle.com/code/nagiss/chess-064f-f060-split-data-5-8"
+    },
+    {
+      "description": "Data splitting notebooks",
+      "url": "https://www.kaggle.com/code/nagiss/chess-064g-f060-split-data-6-8"
+    },
+    {
+      "description": "Data splitting notebooks",
+      "url": "https://www.kaggle.com/code/nagiss/chess-064h-f060-split-data-7-8"
+    },
+    {
+      "description": "Training notebook",
+      "url": "https://www.kaggle.com/code/nagiss/chess-065d-lr-1e-2-epoch-500"
+    }
+  ],
+  "source_url": "https://www.kaggle.com/competitions/fide-google-efficiency-chess-ai-challenge/discussion/563173"
+}

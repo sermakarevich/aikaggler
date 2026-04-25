@@ -1,0 +1,46 @@
+{
+  "summary": "This notebook provides a structured baseline for predicting MCTS agent utility in board games. It demonstrates a comprehensive feature engineering pipeline that parses agent configuration strings, extracts readability metrics from game rules, and constructs numerous ratio-based interactions. The author trains an ensemble of CatBoost regressors using StratifiedGroupKFold grouped by game ruleset to prevent data leakage. Readers should take away the importance of domain-aware feature construction, careful CV stratification, and RMSE-focused post-processing scaling.",
+  "purpose": "baseline",
+  "competition_flow": "Reads CSV data via Polars, applies extensive text parsing, readability metrics, and ratio-based feature engineering, trains two CatBoost models with StratifiedGroupKFold grouped by game ruleset, and averages their clipped predictions for submission.",
+  "data_reading": [
+    "Loaded using polars.read_csv and converted to pandas DataFrames."
+  ],
+  "data_processing": [
+    "String cleaning (lowercasing, punctuation removal), outlier clipping on numerical features, memory type casting, TF-IDF vectorization (max_features=500, ngram_range=(2,3)) on rule texts, one-hot encoding with predefined categories, and dropping hundreds of rule/frequency columns."
+  ],
+  "features_engineering": [
+    "Agent string parsing (selection, exploration_const, playout, score_bounds), agent position binary features, area/row-col equality, 15+ ratio/interaction features (e.g., Playouts/Moves, ComplexityBalanceInteraction), readability scores (ARI, CLRI, McAlpine_EFLAW) for rule texts, TF-IDF features, one-hot encodings for board/piece properties."
+  ],
+  "models": [
+    "CatBoostRegressor"
+  ],
+  "frameworks_used": [
+    "polars",
+    "pandas",
+    "numpy",
+    "scikit-learn",
+    "catboost",
+    "lightgbm",
+    "xgboost",
+    "dill"
+  ],
+  "loss_functions": [
+    "RMSE"
+  ],
+  "cv_strategy": "StratifiedGroupKFold(n_splits=5, shuffle=True, random_state=2024) grouped by GameRulesetName",
+  "ensembling": "Averages predictions from 10 models (2 CatBoost variants \u00d7 5 folds), applies a linear scaling factor (\u00d71.1) and clips outputs to [-0.985, 0.985] to minimize RMSE.",
+  "insights": [
+    "Grouping cross-validation by game ruleset is critical for reliable validation scores.",
+    "Readability metrics (ARI, CLRI, McAlpine) effectively capture complexity in game rule texts.",
+    "Post-processing predictions with scaling and clipping can reduce RMSE even if it slightly increases error on extreme values.",
+    "TF-IDF on game rules provides strong signal for agent utility prediction."
+  ],
+  "critical_findings": [
+    "The author notes that CV and LB scores can diverge, emphasizing the need for careful validation strategy.",
+    "Discretizing the target (round(y*15)) is used to enable stratified grouping by game ruleset.",
+    "Clipping predictions to [-0.985, 0.985] improves overall RMSE by balancing errors across the target distribution."
+  ],
+  "what_did_not_work": [],
+  "source_url": "https://www.kaggle.com/code/bruceqdu/mcts-starter",
+  "votes": 201
+}

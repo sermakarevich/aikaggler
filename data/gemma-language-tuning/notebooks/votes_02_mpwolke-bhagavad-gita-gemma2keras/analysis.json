@@ -1,0 +1,35 @@
+{
+  "summary": "This notebook demonstrates how to fine-tune the Gemma 2 2B causal language model using Keras 3 and parameter-efficient LoRA on a domain-specific dataset of Bhagavad Gita verses. It walks through loading a reduced 52-row CSV, formatting the text into a structured prompt template, and compiling the model with sparse categorical crossentropy for training. The author then evaluates the fine-tuned model on both in-distribution verses and out-of-distribution Hindi questions to assess its generative capabilities. Readers should learn how to adapt Keras 3's keras-nlp API for efficient LLM fine-tuning and manage GPU memory constraints on Kaggle.",
+  "purpose": "tutorial",
+  "competition_flow": "Loads a small CSV dataset of Bhagavad Gita verses, formats them into prompts, fine-tunes a Gemma 2 2B model with LoRA using Keras 3, and evaluates the output on in-distribution and out-of-distribution queries.",
+  "data_reading": [
+    "pd.read_csv with nrows=52 from /kaggle/input/bhagwad-gita-dataset/Bhagwad_Gita.csv"
+  ],
+  "data_processing": [
+    "Custom prompt template formatting using df.apply to map Verse, WordMeaning, and HinMeaning columns into a structured string",
+    "Reduced dataset size to 52 rows to manage GPU memory"
+  ],
+  "features_engineering": [],
+  "models": [
+    "GemmaCausalLM (gemma2_2b_en)"
+  ],
+  "frameworks_used": [
+    "keras",
+    "keras_nlp",
+    "jax"
+  ],
+  "loss_functions": [
+    "SparseCategoricalCrossentropy(from_logits=True)"
+  ],
+  "cv_strategy": "",
+  "ensembling": "",
+  "insights": [
+    "LoRA with a low rank (4) enables efficient fine-tuning of a 2B parameter model on limited GPU memory.",
+    "Reducing the training dataset to 52 rows is a practical workaround for Kaggle's GPU quota constraints.",
+    "The model can generate plausible answers for out-of-distribution questions even without explicit training on them, demonstrating some zero-shot generalization capability."
+  ],
+  "critical_findings": [],
+  "what_did_not_work": [],
+  "source_url": "https://www.kaggle.com/code/mpwolke/bhagavad-gita-gemma2keras",
+  "votes": 100
+}

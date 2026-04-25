@@ -1,0 +1,36 @@
+{
+  "summary": "The author fine-tuned Qwen2.5-14B-Instruct using QLoRA over two training stages: pre-training on external preference datasets followed by fine-tuning on competition-specific data. Key innovations included inserting a character-count placeholder to handle snipped text, training with swapped response pairs within the same batch, and adding an auxiliary model-name classification head. Inference was optimized by sorting samples by token length, distributing them across two GPUs, and selectively applying test-time augmentation only to uncertain predictions.",
+  "extensive_summary": "## Training Strategy\nThe author selected **Qwen2.5-14B-Instruct** as the base model after outperforming alternatives like gemma2-9b-it-fp16 and DeepSeek-R1-Distill-Qwen-14B. Training followed a two-stage approach: the first stage pre-trained the model on large external datasets presumed to capture general human preferences (`dpo_44k`, `ut_157k`, `add_23k`). The second stage fine-tuned the model on competition-aligned data (`WSDM official`, `LMSYS official`) starting from the first-stage checkpoint. Hyperparameters were set to a learning rate of `2e-4`, `lora_r` of `8`, `num_epoch` of `1`, and `max_length` of `2048`.\n\n## Key Techniques\nSeveral architectural and data-level modifications drove performance gains. The author inserted a `(snip <N> chars)` placeholder in the middle of prompts and responses to explicitly signal omitted text, which helped the model handle partial information more effectively. Additionally, responses A and B were swapped during training to improve accuracy, though this required ensuring swapped samples appeared within the same batch to remain effective. An auxiliary classification head was added to predict the model name of responses A/B (weight `0.1`), while a language ID auxiliary task was tested but discarded due to zero improvement.\n\n## Inference Optimization\nInference was heavily optimized for speed and accuracy. Samples were sorted in descending order of token count and alternately assigned to two GPUs. For the second round, only the top 40% of samples with prediction probabilities closest to 0.5 were selected for test-time augmentation (TTA) by averaging predictions with swapped responses. This targeted TTA approach outperformed applying augmentation across the entire dataset, balancing efficiency and accuracy gains.\n\n## Validation & Finalization\nThe author used 5-fold cross-validation, monitoring only `fold_id=0` for faster iteration. The final submission model was retrained on the entire dataset without evaluation splits, using the hyperparameters and techniques validated during cross-validation.",
+  "rank": 12,
+  "competition_flow": "Raw text data was pre-trained on external preference datasets, fine-tuned with QLoRA and an auxiliary head, and then processed through a token-sorted, GPU-alternating inference pipeline with selective TTA before submission.",
+  "data_reading": [],
+  "data_processing": [
+    "Inserted `(snip <N> chars)` placeholders in prompts and responses to indicate omitted text.",
+    "Swapped responses A and B during training, ensuring swapped samples appeared in the same batch.",
+    "Used external datasets (`dpo_44k`, `ut_157k`, `add_23k`) for stage 1 pre-training."
+  ],
+  "features_engineering": [],
+  "models": [
+    "Qwen2.5-14B-Instruct"
+  ],
+  "frameworks_used": [],
+  "loss_functions": [],
+  "cv_strategy": "5-fold cross-validation (only fold_id=0 used for faster evaluation); final model retrained on the full dataset without evaluation splits.",
+  "ensembling": "Averaged predictions with swapped responses A and B for the top 40% of samples with probabilities closest to 0.5 from the first inference round.",
+  "insights": [
+    "Inserting a placeholder with the exact number of omitted characters helped the model handle partial information and improved accuracy.",
+    "Training with swapped responses A and B improved accuracy but required swapped samples to appear in the same batch to be effective.",
+    "Sorting samples by token count and alternating them across two GPUs significantly accelerated inference."
+  ],
+  "critical_findings": [
+    "Using language ID classification as an auxiliary task provided no improvement.",
+    "Applying TTA across the entire dataset was less efficient and accurate than selectively applying it only to uncertain predictions."
+  ],
+  "what_did_not_work": [
+    "Language ID classification auxiliary task (provided no improvement)."
+  ],
+  "github_repos": [],
+  "papers": [],
+  "other_solution_refs": [],
+  "source_url": "https://www.kaggle.com/competitions/wsdm-cup-multilingual-chatbot-arena/discussion/567614"
+}

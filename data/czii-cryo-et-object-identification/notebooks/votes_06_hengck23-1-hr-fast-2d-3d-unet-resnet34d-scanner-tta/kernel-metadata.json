@@ -1,0 +1,26 @@
+{
+  "id": "hengck23/1-hr-fast-2d-3d-unet-resnet34d-scanner-tta",
+  "id_no": 71426434,
+  "title": "1 hr fast 2d/3d-unet resnet34d scanner tta ",
+  "code_file": "1-hr-fast-2d-3d-unet-resnet34d-scanner-tta.ipynb",
+  "language": "python",
+  "kernel_type": "notebook",
+  "is_private": false,
+  "enable_gpu": true,
+  "enable_tpu": false,
+  "enable_internet": false,
+  "keywords": [
+    "gpu"
+  ],
+  "dataset_sources": [
+    "",
+    ""
+  ],
+  "kernel_sources": [],
+  "competition_sources": [
+    "czii-cryo-et-object-identification"
+  ],
+  "model_sources": [],
+  "docker_image": "gcr.io/kaggle-private-byod/python@sha256:141219e230dab548ccc19aa4e62bcf805ed9de0b4d5112227e28f5f1a25991f8",
+  "machine_shape": "NvidiaTeslaT4"
+}

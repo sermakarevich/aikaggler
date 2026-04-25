@@ -1,0 +1,53 @@
+{
+  "summary": "The author split the survival regression task into two parallel streams based on the censored target (`efs`), engineering uniform target ranges per race group and fold to enable binary cross-entropy loss. A robust validation strategy using 4-fold CV across 20\u2013100 random split seeds was implemented to accurately emulate public/private leaderboard correlation. The final pipeline blended gradient boosting regressors via convex combination and stacked neural network classifiers with logistic regression, optimizing all ensemble weights via Bayesian optimization to maximize the concordance index.",
+  "extensive_summary": "## Problem Splitting & Target Engineering\nThe core insight driving this solution was dividing the task into separate regression and classification components based on the `efs` target. The author engineered a uniform target distribution within each training and validation fold, mapping uncensored (`efs = 1`) observations to [0, 1] and censored (`efs = 0`) cases to [1.345, 1.355]. This scaling allowed the use of binary cross-entropy loss instead of mean squared error, which proved significantly more effective for training. For the censored regression stream, all `efs = 0` observations were collapsed to a constant value of 1.35, which was tuned to maximize concordance index performance.\n\n## Validation Strategy\nValidation was treated as the most critical component. The team employed a 4-fold cross-validation scheme, evaluating each fold across 20 to 100 random split seeds depending on computational cost. This multi-seed approach closely emulated the public/private leaderboard correlation, revealing that the public LB score typically sat around the 75th percentile of the validation score distribution. This insight prompted the creation of a second, more private-oriented submission that traded a lower LB score for a significantly better emulated private score.\n\n## Model Zoo & Noise Reduction\nThe model zoo included CatBoost, LightGBM, XGBoost, MLP with ODST, and TabM models, with separate exemplars trained for regression and classification. Neural networks excelled at classification while gradient boosting models dominated regression. Noise reduction was handled by averaging models over random initialization seeds and pruning training observations with extreme regression errors. However, the author explicitly noted that applying this same outlier denoising strategy to classification caused overfitting, as ROC AUC improved while LogLoss degraded.\n\n## Ensembling & Optimization\nThe final pipeline combined these components through a two-stage ensemble: regressors were blended via convex combination, while classifiers were stacked using logistic regression. All blending and stacking weights were optimized simultaneously via Bayesian optimization to maximize the concordance index on out-of-fold predictions. This structured approach to target engineering, validation emulation, and hierarchical ensembling secured the 3rd place finish.",
+  "rank": 3,
+  "competition_flow": "Raw tabular data was split into 4 folds, targets were engineered into uniform ranges per race group, separate regression and classification models were trained, noise was reduced via seed averaging and outlier removal, and the final ensemble was optimized via Bayesian optimization to maximize concordance index before submission.",
+  "data_reading": [],
+  "data_processing": [
+    "Target engineering mapped uncensored observations to [0, 1] and censored observations to [1.345, 1.355] per race group within each fold.",
+    "Noise reduction was achieved by averaging models over random initialization seeds and removing training observations with extreme regression errors.",
+    "The [0, 1] target scaling allowed the use of binary cross-entropy loss instead of mean squared error."
+  ],
+  "features_engineering": [],
+  "models": [
+    "CatBoost",
+    "LightGBM",
+    "XGBoost",
+    "MLP with ODST",
+    "TabM models"
+  ],
+  "frameworks_used": [],
+  "loss_functions": [
+    "binary cross-entropy",
+    "LogLoss"
+  ],
+  "cv_strategy": "4-fold CV evaluated across 20\u2013100 random split seeds per fold to emulate public/private LB correlation and track average fold scores.",
+  "ensembling": "Regressors were blended via convex combination and classifiers were stacked using logistic regression, with all weights optimized simultaneously via Bayesian optimization to maximize the concordance index on out-of-fold predictions.",
+  "insights": [
+    "Splitting the problem into separate regression and classification tasks based on the `efs` target was the most impactful design choice.",
+    "Using a uniform target range of [0, 1] enabled binary cross-entropy loss, which proved more effective than mean squared error.",
+    "A robust validation strategy using multiple random split seeds is essential for accurately tracking public/private leaderboard correlation."
+  ],
+  "critical_findings": [
+    "Collapsing censored (`efs=0`) observations to a constant value (1.35) significantly improved regression performance.",
+    "While averaging models over random seeds and removing high-error observations reduced noise for regression, applying the same outlier denoising to classification caused overfitting (improved ROC AUC but worsened LogLoss).",
+    "The public leaderboard score typically fell around the 75th percentile of the validation score distribution."
+  ],
+  "what_did_not_work": [
+    "Outlier denoising for classification models leads to overfitting, and ranking models showed weaker performance compared to regression/classification approaches."
+  ],
+  "github_repos": [],
+  "papers": [],
+  "other_solution_refs": [
+    {
+      "description": "Author's full code",
+      "url": "https://www.kaggle.com/code/churkinnikita/3rd-place-solution"
+    },
+    {
+      "description": "Best solo model (gold medal top-11 Private LB)",
+      "url": "https://www.kaggle.com/code/ukrainskiydv/3rd-place-solution-nn-solo-0-69694-private-lb"
+    }
+  ],
+  "source_url": "https://www.kaggle.com/competitions/equity-post-HCT-survival-predictions/discussion/566574"
+}

@@ -1,0 +1,46 @@
+{
+  "summary": "The notebook demonstrates a complete training pipeline for a survival prediction task using a custom pairwise ranking loss function. It refactors and explains the architecture of a neural network that handles both categorical and numerical features via embeddings and an MLP. The core innovation is a margin-based hinge loss that constructs valid subject pairs while correctly masking censored observations to prevent ranking bias. Readers learn how to adapt ranking losses for survival data, implement auxiliary tasks for regularization, and enforce fairness across demographic subgroups using a race-group variance penalty.",
+  "purpose": "tutorial",
+  "competition_flow": "Loads tabular survival data, preprocesses features, trains a PyTorch Lightning neural network with a custom pairwise ranking loss over 5 stratified folds, and aggregates predictions to generate a competition submission.",
+  "data_reading": [
+    "pandas.read_csv from Kaggle input paths for train.csv and test.csv"
+  ],
+  "data_processing": [
+    "Label encodes categorical features",
+    "Applies StandardScaler to numerical features",
+    "Imputes missing numerical values with mean using SimpleImputer with add_indicator=True",
+    "Removes constant categorical columns and handles unseen validation/test categories by setting to NaN",
+    "Log-transforms the efs_time target",
+    "Wraps data in PyTorch TensorDataset and DataLoader with batch size 2048"
+  ],
+  "features_engineering": [
+    "is_cyto_score_same: binary indicator if cyto_score matches cyto_score_detail",
+    "year_hct: subtracts 2000 from the year column"
+  ],
+  "models": [
+    "ODST-based MLP with categorical embeddings"
+  ],
+  "frameworks_used": [
+    "pytorch",
+    "pytorch_lightning",
+    "pytorch_tabular",
+    "scikit-learn",
+    "lifelines"
+  ],
+  "loss_functions": [
+    "Margin-based hinge loss (pairwise ranking)",
+    "MSE (auxiliary task)",
+    "Race-group variance penalty"
+  ],
+  "cv_strategy": "StratifiedKFold(n_splits=5) stratified by race_group and age_at_hct==0.044",
+  "ensembling": "Averages predictions across 5 folds and negates the final aggregated scores before saving to submission.",
+  "insights": [
+    "Pairwise ranking losses can be effectively adapted for survival data by carefully masking invalid pairs involving censored observations.",
+    "Adding a race-group variance penalty helps mitigate demographic bias by encouraging consistent model performance across subgroups.",
+    "An auxiliary prediction head on the embeddings acts as a regularizer and improves generalization without significantly increasing compute."
+  ],
+  "critical_findings": [],
+  "what_did_not_work": [],
+  "source_url": "https://www.kaggle.com/code/albansteff/refactoring-nn-pairwise-ranking-loss",
+  "votes": 898
+}

@@ -1,0 +1,23 @@
+{
+  "id": "scchuy/lux-s3-simpledoubledqn",
+  "id_no": 76049714,
+  "title": "lux-s3-simpleDoubleDQN",
+  "code_file": "lux-s3-simpledoubledqn.ipynb",
+  "language": "python",
+  "kernel_type": "notebook",
+  "is_private": false,
+  "enable_gpu": true,
+  "enable_tpu": false,
+  "enable_internet": true,
+  "keywords": [
+    "gpu"
+  ],
+  "dataset_sources": [],
+  "kernel_sources": [],
+  "competition_sources": [
+    "lux-ai-season-3"
+  ],
+  "model_sources": [],
+  "docker_image": "gcr.io/kaggle-private-byod/python@sha256:ff73f172a2ebcff8591eaae2ade447df7b6d2c6b7b4655f628e57f12fab3c687",
+  "machine_shape": "Gpu"
+}

@@ -1,0 +1,21 @@
+{
+  "id": "arshmankhalid/breaking-down-the-nfl-big-bowl",
+  "id_no": 68422141,
+  "title": "Breaking Down the NFL Big Bowl \ud83c\udfdf\ufe0f\ud83d\udcca",
+  "code_file": "breaking-down-the-nfl-big-bowl.ipynb",
+  "language": "python",
+  "kernel_type": "notebook",
+  "is_private": false,
+  "enable_gpu": false,
+  "enable_tpu": false,
+  "enable_internet": false,
+  "keywords": [],
+  "dataset_sources": [],
+  "kernel_sources": [],
+  "competition_sources": [
+    "nfl-big-data-bowl-2025"
+  ],
+  "model_sources": [],
+  "docker_image": "gcr.io/kaggle-images/python@sha256:a16cda2c5d52fa988d413876f3ffad7a46cca58678514601feb175990dc187c0",
+  "machine_shape": "None"
+}

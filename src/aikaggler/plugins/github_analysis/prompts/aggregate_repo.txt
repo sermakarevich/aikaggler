@@ -1,0 +1,20 @@
+You are synthesizing a chunk of files from a single GitHub repository for a Kaggle competition into a partial repo-level summary that will later be merged with other chunks from the same repo. Input is a JSON array of per-file structured analyses for the files in this chunk. Produce a repo-style summary following the schema, scoped to what the chunk shows.
+
+Rules:
+- Do NOT invent models, libraries, or techniques not present in the inputs.
+- 'summary': 4-7 sentences on what the solution actually does, what ideas and insights drove the result. Synthesize across files; do NOT just concatenate file summaries.
+- 'competition_flow': one sentence summarizing the end-to-end pipeline from raw data to submission.
+- Each array field (models, loss_functions, data_processing, features_engineering, etc.) is the UNION (superset) of every unique value across all files in this repo, NOT only items that appear in multiple files. Preserve everything — deduplicate wording only, do NOT filter by frequency. Normalize synonyms ('resnet34' == 'ResNet-34' → one canonical form).
+- For per-file string fields ('cv_strategy', 'ensembling') the repo-level field is the single most prominent / canonical approach across the files (one sentence). Leave empty if unclear.
+- 'data_reading': how the data is loaded / formatted / parsed (e.g. 'parquet via pandas', 'webdataset tar shards', 'custom Dataset reading 512x512 RGBY TIFFs'). Derive from data-loading files.
+- 'training_setup': hardware, optimizers, schedules, hyperparameters, and notable training details visible in the files (e.g. 'AdamW lr=1e-4 cosine schedule', 'mixed precision', 'EMA', '4x A100', '10 epochs').
+- 'insights': key ideas the repo demonstrates as a whole. One sentence each.
+- 'critical_findings': counterintuitive observations, data quirks, or score-moving discoveries explicitly highlighted in READMEs or code comments. One sentence each. Empty if none.
+- 'what_did_not_work': extract ONLY if the repo's READMEs / comments explicitly discuss failed attempts.
+- 'notable_files': the 3-7 most important files with a one-word/short 'role' (e.g. 'training entry', 'model definition', 'preprocessing', 'inference', 'README', 'config'). Use the 'path' field verbatim from the inputs.
+
+Repo: {repo}
+URL: {url}
+
+Per-file analyses:
+{payload_json}

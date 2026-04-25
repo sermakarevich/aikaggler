@@ -1,0 +1,36 @@
+{
+  "summary": "The notebook demonstrates a submission pipeline for localizing 3D particle centers in cryo-electron tomography data. It repurposes a pre-trained 2D object detector (YOLO11) to identify particle projections across sequential image slices, then reconstructs 3D coordinates by aggregating these detections using a geometric graph and depth-first search. The approach bridges 2D detection with volumetric reasoning by enforcing particle-specific radius constraints and confidence thresholds across slices. Readers should learn how to adapt slice-by-slice detectors for 3D tasks and how graph-based aggregation can filter noise to produce precise spatial estimates.",
+  "purpose": "inference",
+  "competition_flow": "Loads pre-trained YOLO weights and test volumetric data, runs slice-by-slice 2D detection, aggregates cross-slice detections via a geometric graph and DFS to estimate 3D sphere centers, and exports the results as a submission CSV.",
+  "data_reading": [
+    "Reads test volumes from Zarr files, extracts sequential 2D slices, and converts them to normalized 8-bit images for model input."
+  ],
+  "data_processing": [
+    "Percentile-based normalization (0.5\u201399.5%), clipping, scaling to 0\u2013255, zero-padding to 630\u00d7630, resizing to 640\u00d7640, and RGB channel stacking."
+  ],
+  "features_engineering": [],
+  "models": [
+    "YOLO11"
+  ],
+  "frameworks_used": [
+    "ultralytics",
+    "torch",
+    "zarr",
+    "numpy",
+    "pandas",
+    "opencv",
+    "tqdm"
+  ],
+  "loss_functions": [],
+  "cv_strategy": "",
+  "ensembling": "Aggregates 2D slice detections into 3D sphere centers using a confidence-weighted depth-first search on a geometric graph, applying particle-specific radius constraints and confidence thresholds to filter false positives.",
+  "insights": [
+    "2D object detectors can be effectively repurposed for 3D volumetric localization by processing sequential slices and aggregating results spatially.",
+    "Graph-based DFS aggregation with geometric tolerance thresholds significantly refines noisy detection outputs into accurate 3D coordinates.",
+    "Particle-specific confidence thresholds and radius constraints are necessary to handle varying detection difficulties across different biological structures."
+  ],
+  "critical_findings": [],
+  "what_did_not_work": [],
+  "source_url": "https://www.kaggle.com/code/itsuki9180/czii-yolo11-submission-baseline",
+  "votes": 334
+}

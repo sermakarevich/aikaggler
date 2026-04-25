@@ -1,0 +1,79 @@
+{
+  "id": 84175,
+  "competitionName": "nfl-big-data-bowl-2025",
+  "title": "NFL Big Data Bowl 2025",
+  "briefDescription": "Help use pre-snap behavior to predict and better understand NFL team and player tendencies",
+  "dateEnabled": "2024-10-10T15:16:58.337Z",
+  "deadline": "2025-01-06T23:59:00Z",
+  "leaderboardPercentage": 30,
+  "maxDailySubmissions": 100,
+  "numScoredSubmissions": 1,
+  "numPrizes": 10,
+  "forumId": 5762493,
+  "disableSubmissions": true,
+  "dateCreated": "2024-08-21T23:28:47.771617200Z",
+  "competitionHostSegmentId": 11,
+  "maxTeamSize": 4,
+  "organizationId": 2177,
+  "hasCoverImageUrl": true,
+  "showPrivateLeaderboard": true,
+  "hasScripts": true,
+  "rulesRequired": true,
+  "clonedFromCompetitionId": 60305,
+  "categories": [
+    {
+      "id": 2603,
+      "name": "football",
+      "fullPath": "subject > health and fitness > exercise > sports > football",
+      "description": "Some call it association football, some call it soccer, most call it sport ball. Come analyze the teams and players of the beautiful game.",
+      "datasetCount": 5486,
+      "competitionCount": 25,
+      "scriptCount": 1099,
+      "slug": "association-football",
+      "displayName": "Football"
+    },
+    {
+      "id": 4141,
+      "name": "sports",
+      "fullPath": "subject > health and fitness > exercise > sports",
+      "description": "The sports tag covers the whole spectrum of sports around the world. We've got tennis, we've got football, and we've even got kitefoil racing.",
+      "datasetCount": 11671,
+      "competitionCount": 44,
+      "scriptCount": 3737,
+      "slug": "sports",
+      "displayName": "Sports"
+    },
+    {
+      "id": 13201,
+      "name": "exploratory data analysis",
+      "fullPath": "technique > exploratory data analysis",
+      "datasetCount": 6882,
+      "competitionCount": 26,
+      "scriptCount": 35511,
+      "slug": "eda",
+      "displayName": "Exploratory Data Analysis"
+    }
+  ],
+  "organization": {
+    "slug": "nfl",
+    "name": "The National Football League",
+    "thumbnailImageUrl": "https://storage.googleapis.com/kaggle-organizations/2177/thumbnail.png",
+    "profileUrl": "/organizations/nfl"
+  },
+  "launched": true,
+  "createdByUserId": 995397,
+  "license": {
+    "id": 42,
+    "name": "Subject to Competition Rules",
+    "agreementRequired": false
+  },
+  "hostName": "The National Football League",
+  "locked": true,
+  "totalJoinedUsers": 7299,
+  "requiresIdentityVerification": true,
+  "submissionSizeLimitMb": 20480,
+  "reward": {
+    "id": "USD",
+    "quantity": 100000
+  }
+}

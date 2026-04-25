@@ -1,0 +1,20 @@
+{
+  "description": "Participants fine-tune Google's Gemma language models to generate text tailored to specific languages or cultural contexts. Competitors work with multilingual text datasets and must adapt the base model to capture unique linguistic or cultural nuances. Success is evaluated based on the quality and cultural relevance of the generated text outputs.",
+  "data_modality": "text",
+  "task_type": "generation",
+  "label_structure": "none",
+  "metric": "unknown",
+  "test_split": "unknown",
+  "format": "code_comp",
+  "dataset_scale": "unknown",
+  "domain": "nlp_text_generation",
+  "data_challenges": [
+    "domain_shift",
+    "cultural_bias",
+    "low_resource_languages"
+  ],
+  "constraints": [
+    "kernels_only",
+    "no_external_data"
+  ]
+}

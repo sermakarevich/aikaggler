@@ -1,0 +1,19 @@
+{
+  "path": "final_versions/07_03_tune_against_mask/agent.py",
+  "analysis": {
+    "summary": "This file implements the inference agent for a Kaggle competition, handling model loading, observation preprocessing, and action generation. It manages a PyTorch-based actor-critic model and maintains LSTM hidden states across game steps to ensure temporal consistency. The core technique is a rotation-based data augmentation strategy that averages policy logits across multiple spatial transformations to improve decision robustness. It also includes dynamic logic for switching between weak and strong models based on game rounds and remaining time, along with a fallback to single-player inference when overtime is low. Readers should note how spatial symmetries are leveraged for inference-time augmentation and how hidden states are carefully sliced to maintain consistency across augmented views.",
+    "purpose": "inference",
+    "competition_flow": "Loads a pre-trained PyTorch model, processes game observations through rotation-based augmentation, averages policy logits across transformed views, and returns Kaggle-compatible actions while managing LSTM hidden states.",
+    "data_reading": [],
+    "data_processing": [],
+    "features_engineering": [],
+    "models": [],
+    "frameworks_used": [],
+    "loss_functions": [],
+    "cv_strategy": "",
+    "ensembling": "",
+    "insights": [],
+    "critical_findings": [],
+    "what_did_not_work": []
+  }
+}

@@ -1,0 +1,23 @@
+{
+  "id": "paultimothymooney/how-to-upload-large-files-to-gemini-1-5",
+  "id_no": 67937233,
+  "title": "How to upload large files to Gemini 1.5",
+  "code_file": "how-to-upload-large-files-to-gemini-1-5.ipynb",
+  "language": "python",
+  "kernel_type": "notebook",
+  "is_private": false,
+  "enable_gpu": false,
+  "enable_tpu": false,
+  "enable_internet": true,
+  "keywords": [],
+  "dataset_sources": [
+    "bisheshworneupane/bish-100-nepali-text-driven-ai-anchor"
+  ],
+  "kernel_sources": [],
+  "competition_sources": [
+    "gemini-long-context"
+  ],
+  "model_sources": [],
+  "docker_image": "gcr.io/kaggle-images/python@sha256:a16cda2c5d52fa988d413876f3ffad7a46cca58678514601feb175990dc187c0",
+  "machine_shape": "None"
+}

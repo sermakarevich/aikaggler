@@ -1,0 +1,54 @@
+{
+  "summary": "This notebook provides an exploratory analysis and baseline modeling pipeline for a survival prediction competition focused on ensuring equitable performance across race groups. It explains the mechanics of censored data, demonstrates how to compute Kaplan-Meier survival and Nelson-Aalen cumulative hazard functions, and evaluates six modeling approaches including Cox proportional hazards, accelerated failure time models, and standard regression with novel target transformations. The author demonstrates that transforming the target to stretch event times and compress survival times significantly improves gradient boosting performance on survival tasks. A key takeaway is that optimizing for demographic equity may require balancing subgroup performance rather than solely maximizing global metrics.",
+  "purpose": "eda",
+  "competition_flow": "Loads tabular clinical data, performs survival analysis EDA, applies multiple target transformations and survival-specific loss functions, trains six model variants using stratified cross-validation, and evaluates them using a custom race-group-aware concordance index metric.",
+  "data_reading": [
+    "pd.read_csv for train, test, and data_dictionary with index_col='ID'",
+    "Categorical columns converted to str then category dtype"
+  ],
+  "data_processing": [
+    "Missing values handled via SimpleImputer(strategy='median') for the linear model",
+    "Categorical features one-hot encoded",
+    "Target values transformed using Kaplan-Meier survival function, partial hazard, rank data, or quantile transformations to handle censoring and distribution skew"
+  ],
+  "features_engineering": [],
+  "models": [
+    "XGBoost (Cox)",
+    "XGBoost (AFT)",
+    "XGBoost (MSE)",
+    "CatBoost (Cox)",
+    "CatBoost (AFT)",
+    "CoxPHFitter (lifelines)"
+  ],
+  "frameworks_used": [
+    "xgboost",
+    "catboost",
+    "lifelines",
+    "scikit-learn",
+    "scipy"
+  ],
+  "loss_functions": [
+    "survival:cox",
+    "Cox",
+    "survival:aft",
+    "SurvivalAft",
+    "MSE"
+  ],
+  "cv_strategy": "StratifiedKFold(n_splits=5, shuffle=True, random_state=1) stratified by race_group",
+  "ensembling": "",
+  "insights": [
+    "Censored data requires specialized survival models or target transformations rather than standard regression metrics.",
+    "Transforming the target to stretch event times and compress survival times significantly improves gradient boosting performance on survival tasks.",
+    "Optimizing for equity across race groups may require intentionally balancing or penalizing high-performing subgroups to meet competition scoring criteria."
+  ],
+  "critical_findings": [
+    "Patient age distribution shows five unnatural modes, with 16 days occurring over 1000 times, indicating synthetic data generation artifacts.",
+    "Race groups in the training set are perfectly balanced (~4800 samples each), which is unrealistic and implies artificial upsampling or downsampling.",
+    "The efs column naming is counterintuitive: efs=1 indicates death, while efs=0 indicates censored/survival."
+  ],
+  "what_did_not_work": [
+    "The linear Cox model underperformed relative to gradient boosting approaches, and the author notes that the accelerated failure time models likely require more extensive hyperparameter tuning to reach their potential."
+  ],
+  "source_url": "https://www.kaggle.com/code/ambrosm/esp-eda-which-makes-sense",
+  "votes": 418
+}

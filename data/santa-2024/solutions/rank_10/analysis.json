@@ -1,0 +1,48 @@
+{
+  "summary": "The author secured 10th place in the Santa 2024 competition by exclusively using Simulated Annealing (SA) to optimize sentence structure and minimize perplexity. Success hinged on crafting highly effective starting sentences using two alphabetically sorted text blocks with stopwords, maintaining precise control over SA hyperparameters and neighborhood generation, and leveraging ample computational resources for rapid iteration. Rather than relying on complex machine learning architectures, the approach focused on algorithmic tuning and strategic initialization to navigate the optimization landscape efficiently.",
+  "extensive_summary": "## Starting Sentence Construction\nThe choice of the initial sentence proved critical, as SA struggled to converge when starting too far from the optimal solution, especially for longer sequences. The author discovered that a structure combining `[stopwords (without and)] + [alphabetically sorted block 1] + [and and and] + [alphabetically sorted block 2]` yielded significantly lower perplexity than a single sorted block. This two-block alphabetical approach allowed the optimization to reach a perplexity of 28.5, which was necessary for top-tier results.\n\n## SA Control and Neighborhood Generation\nThe author emphasized tight control over SA mechanics, specifically the neighborhood generation and temperature scheduling. Only two basic operations were retained: swapping two words and extracting a word to insert it elsewhere. While restricting these operations to stopwords initially sped up optimization, it became counterproductive once stopwords neared optimal positions. More complex neighbor generation strategies were explicitly abandoned due to their high computational cost and lack of tangible benefits.\n\n## Multi-Phase Optimization Strategy\nThree distinct SA run types were combined to navigate the search space effectively: high-temperature exploration to escape poor local minima, warmup runs to deliberately increase perplexity and escape traps, and low-temperature exploration to fine-tune solutions in promising regions. This phased approach, paired with sufficient computational resources, enabled rapid experimentation and hyperparameter tuning throughout the competition.",
+  "rank": 10,
+  "competition_flow": "Raw text samples were initialized with a custom two-block alphabetical structure, then optimized via multi-phase Simulated Annealing using word swap and extract/insert operations to minimize perplexity before final submission.",
+  "data_reading": [],
+  "data_processing": [
+    "Constructed starting sentences using the pattern [stopwords (without and)] + [alphabetically sorted block 1] + [and and and] + [alphabetically sorted block 2], with blocks sampled randomly."
+  ],
+  "features_engineering": [],
+  "models": [],
+  "frameworks_used": [],
+  "loss_functions": [
+    "perplexity"
+  ],
+  "cv_strategy": "",
+  "ensembling": "",
+  "insights": [
+    "Starting sentence initialization is the most critical factor for SA convergence, particularly for long sequences.",
+    "Two alphabetically sorted text blocks produce a lower-perplexity starting point than a single sorted block.",
+    "Basic neighborhood operations (word swap, extract/insert) are sufficient and more compute-efficient than complex neighbor generation strategies.",
+    "Adequate computational resources are essential for rapid SA hyperparameter tuning and multi-phase experimentation."
+  ],
+  "critical_findings": [
+    "SA is highly sensitive to initialization and often fails to reach optimal local minima if the starting sentence is too dissimilar to the target.",
+    "Restricting swap/insert operations to stopwords only accelerates early optimization but becomes ineffective once stopwords are near their optimal positions.",
+    "Complex neighbor generation methods publicly suggested for this competition provided no performance benefit and unnecessarily consumed computational resources."
+  ],
+  "what_did_not_work": [
+    "Using a single alphabetically sorted block as a starting sentence failed to reach the perplexity threshold required for a gold medal.",
+    "Complex neighbor generation strategies suggested by other participants offered no improvement and wasted computational resources.",
+    "Continuing to restrict swap/insert operations to stopwords in later optimization stages proved counterproductive once stopwords were near optimal positions."
+  ],
+  "github_repos": [
+    {
+      "url": "https://github.com/EgorTrushin/Kaggle-Competitions",
+      "role": "solution"
+    }
+  ],
+  "papers": [],
+  "other_solution_refs": [
+    {
+      "description": "Public notebook by @woosungyoon that introduced the two-block alphabetical sorting idea",
+      "url": "https://www.kaggle.com/code/woosungyoon/alphabetical-sample-5"
+    }
+  ],
+  "source_url": "https://www.kaggle.com/competitions/santa-2024/discussion/560531"
+}

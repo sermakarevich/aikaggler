@@ -1,0 +1,39 @@
+{
+  "summary": "This notebook demonstrates how to fine-tune Google's Gemma 2B instruct model using KerasNLP and the JAX backend to translate obsolete Early Hangul text into modern Korean. It walks through environment setup, loading a paired dataset from Hugging Face, formatting inputs with instruct-specific control tokens, and applying Low-Rank Adaptation (LoRA) for efficient parameter updates. The author trains the model for five epochs with a batch size of one, saves LoRA weights after each epoch, and evaluates the output on sample prompts. Readers learn how to adapt open-weight LLMs for historical language translation tasks using lightweight fine-tuning techniques and proper instruction formatting.",
+  "purpose": "tutorial",
+  "competition_flow": "Loads a paired Early Hangul to modern Korean dataset from Hugging Face, formats it with instruct tokens, fine-tunes a Gemma 2B model using LoRA and KerasNLP/JAX for five epochs, and saves the resulting LoRA weights for inference.",
+  "data_reading": [
+    "Loads the `bebechien/HongGildongJeon` dataset from Hugging Face using `datasets.load_dataset` with `split='train'`.",
+    "Extracts the `original` (Early Hangul) and `modern translation` columns and converts them to numpy arrays via `ds.with_format('np', ...)`."
+  ],
+  "data_processing": [
+    "Constructs instruction-tuning prompts using the format `<start_of_turn>user\\n{original}<end_of_turn>\\n<start_of_turn>model\\n{modern translation}<end_of_turn>`.",
+    "Filters out training samples where the tokenized length exceeds the `token_limit` of 256 to prevent memory issues.",
+    "No additional cleaning, normalization, or augmentation is applied."
+  ],
+  "features_engineering": [],
+  "models": [
+    "gemma2_instruct_2b_en"
+  ],
+  "frameworks_used": [
+    "keras",
+    "keras-nlp",
+    "jax",
+    "datasets"
+  ],
+  "loss_functions": [
+    "SparseCategoricalCrossentropy(from_logits=True)"
+  ],
+  "cv_strategy": "",
+  "ensembling": "",
+  "insights": [
+    "LoRA fine-tuning with a rank of 4 is sufficient and memory-efficient for adapting Gemma 2B to historical language translation.",
+    "Instruction-tuning prompts require specific control tokens like `<start_of_turn>` and `<end_of_turn>` to properly guide the model's generation behavior.",
+    "Filtering training samples by token length prevents memory fragmentation and OOM errors during training.",
+    "KerasNLP with the JAX backend enables straightforward fine-tuning workflows on Kaggle's free GPU accelerators."
+  ],
+  "critical_findings": [],
+  "what_did_not_work": [],
+  "source_url": "https://www.kaggle.com/code/bebechien/translator-of-old-korean-literature",
+  "votes": 87
+}

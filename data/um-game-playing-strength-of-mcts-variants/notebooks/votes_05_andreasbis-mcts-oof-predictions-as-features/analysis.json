@@ -1,0 +1,39 @@
+{
+  "summary": "The notebook demonstrates a technique where out-of-fold (OOF) predictions from initial LightGBM and CatBoost models are generated and added as features to the training dataset. It then retrains the models using these OOF features to mitigate overfitting and improve generalization. The workflow includes data loading with Polars, feature dropping, type casting, GroupKFold cross-validation, and final inference via a Kaggle evaluation server. Readers should understand how OOF predictions can serve as robust meta-features to enhance gradient boosting performance.",
+  "purpose": "training",
+  "competition_flow": "Loads game-playing data, trains initial LightGBM and CatBoost models to generate out-of-fold predictions, adds these predictions as new features, retrains the models, and generates final utility predictions for the test set via a Kaggle inference server.",
+  "data_reading": [
+    "Reads CSV files using Polars with a specified batch size, then converts to Pandas DataFrames."
+  ],
+  "data_processing": [
+    "Drops columns with 100% null values, columns with only one unique value, and specific hardcoded columns (Id, LudRules, EnglishRules, win/draw/loss counts). Casts categorical columns to strings then categories, and numeric columns to Int16 or Float32 based on the first non-null value."
+  ],
+  "features_engineering": [
+    "Adds out-of-fold predictions from initial LightGBM and CatBoost models as new features (lgb_oof_preds, ctb_oof_preds) to the training data before retraining."
+  ],
+  "models": [
+    "LightGBM",
+    "CatBoost"
+  ],
+  "frameworks_used": [
+    "lightgbm",
+    "catboost",
+    "scikit-learn",
+    "polars",
+    "pandas"
+  ],
+  "loss_functions": [
+    "RMSE"
+  ],
+  "cv_strategy": "GroupKFold(n_splits=5) grouped by GameRulesetName",
+  "ensembling": "Combines predictions from initial and final models using fixed weights (LightGBM: 1.0, CatBoost: 0.0), effectively relying on the final LightGBM model trained with OOF features.",
+  "insights": [
+    "Using out-of-fold predictions as features helps gradient boosting models generalize better by providing training process information without leaking validation data.",
+    "Grouping cross-validation by GameRulesetName prevents data leakage between similar game configurations.",
+    "Polars efficiently handles large CSV files and type casting before converting to Pandas for model training."
+  ],
+  "critical_findings": [],
+  "what_did_not_work": [],
+  "source_url": "https://www.kaggle.com/code/andreasbis/mcts-oof-predictions-as-features",
+  "votes": 392
+}

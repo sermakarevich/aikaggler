@@ -1,0 +1,27 @@
+{
+  "id": "taimour/wsdm-sentiment-analysis-eda",
+  "id_no": 71336484,
+  "title": "\ud83c\udfc6 WSDM \ud83d\ude42 Sentiment Analysis \ud83d\udcca EDA",
+  "code_file": "wsdm-sentiment-analysis-eda.ipynb",
+  "language": "python",
+  "kernel_type": "notebook",
+  "is_private": false,
+  "enable_gpu": false,
+  "enable_tpu": false,
+  "enable_internet": false,
+  "keywords": [
+    "exploratory data analysis",
+    "data analytics",
+    "data visualization",
+    "pandas",
+    "matplotlib"
+  ],
+  "dataset_sources": [],
+  "kernel_sources": [],
+  "competition_sources": [
+    "wsdm-cup-multilingual-chatbot-arena"
+  ],
+  "model_sources": [],
+  "docker_image": "gcr.io/kaggle-images/python@sha256:a16cda2c5d52fa988d413876f3ffad7a46cca58678514601feb175990dc187c0",
+  "machine_shape": "None"
+}

@@ -1,0 +1,38 @@
+{
+  "summary": "This notebook performs a comprehensive exploratory data analysis on the NFL Big Bowl 2025 player play dataset, focusing on offensive and defensive performance metrics. It aggregates play-level statistics into game-level summaries to visualize distributions of key indicators like rushing/passing efficiency, yards after catch, turnovers, quarterback pressure, and penalties. The analysis demonstrates how situational metrics vary across games and highlights strategic implications for play-calling and defensive adjustments. Readers should take away how granular player tracking data can be synthesized into actionable game-level insights to inform offensive and defensive strategies.",
+  "purpose": "eda",
+  "competition_flow": "Loads the player play CSV, aggregates play-level metrics into game-level statistics, and generates distribution histograms and a 3D scatter plot to visualize offensive and defensive performance trends.",
+  "data_reading": [
+    "pd.read_csv('/kaggle/input/nfl-big-data-bowl-2025/player_play.csv')"
+  ],
+  "data_processing": [
+    "Drops columns containing more than 80% null values."
+  ],
+  "features_engineering": [
+    "Computes game-level aggregations (e.g., mean rushing/passing yards, total fumbles, average sack yards) using pandas groupby.",
+    "Creates play-level transforms (e.g., penalty yards per play, yards after catch per play) using pandas transform."
+  ],
+  "models": [],
+  "frameworks_used": [
+    "pandas",
+    "numpy",
+    "seaborn",
+    "matplotlib",
+    "plotly",
+    "IPython"
+  ],
+  "loss_functions": [],
+  "cv_strategy": "",
+  "ensembling": "",
+  "insights": [
+    "Passing plays exhibit higher variability and potential for large gains compared to the more consistent, short-yardage nature of rushing plays.",
+    "Yards after catch cluster tightly around 0.08 yards per game, suggesting most receptions yield minimal additional yardage.",
+    "Fumble losses are heavily concentrated at 0-1 per game, indicating that ball security is generally maintained but critical when lost.",
+    "Penalty yards per play are extremely rare and minimal, though they can accumulate significantly across a full game.",
+    "Defensive pressure metrics like quarterback hits and sack yards show distinct distribution shapes, with hits clustering at higher pressure values while sack yards are more symmetrically distributed."
+  ],
+  "critical_findings": [],
+  "what_did_not_work": [],
+  "source_url": "https://www.kaggle.com/code/arshmankhalid/big-bowl-eda-crushing-player-stats",
+  "votes": 102
+}

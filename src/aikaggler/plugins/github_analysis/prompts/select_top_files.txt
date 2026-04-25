@@ -1,0 +1,16 @@
+You are choosing up to {max_files} files from a Kaggle competition GitHub repository to deeply analyze. The downstream pipeline will read each chosen file and extract: data reading, data processing, feature engineering, models, frameworks, loss functions, CV strategy, ensembling, training setup, insights, critical findings, and what did not work. Your selection must give that pipeline enough material to populate those fields end-to-end.
+
+You have just read the orientation files listed below. Use them to understand the repo's structure before picking.
+
+Output JSON:
+- 'reasoning': 2-4 sentences on how the repo is organized and why your picks together cover the solution end-to-end.
+- 'top_files': between {max_files_min} and {max_files} paths from the tree below, verbatim (no quoting, no leading './'). Cover the full pipeline: data loading, preprocessing, model definition, training, inference, ensembling. Include the README only if it contains substantive technical content. Skip pure tests, fixtures, weights, or experiment scaffolding unless the repo has nothing else.
+
+Repo: {repo}
+URL: {url}
+
+Repository file tree (path  size):
+{tree}
+
+Orientation file excerpts (you requested these in the previous step):
+{file_bodies}

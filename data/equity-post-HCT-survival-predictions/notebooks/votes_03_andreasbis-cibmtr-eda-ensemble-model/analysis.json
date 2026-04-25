@@ -1,0 +1,47 @@
+{
+  "summary": "This notebook demonstrates a survival prediction pipeline that converts the non-differentiable C-Index metric into a tractable regression problem. It generates surrogate regression targets using cross-validated survival models (Cox PH, Kaplan-Meier, Nelson-Aalen) to prevent target leakage, then trains LightGBM and CatBoost regressors on these targets. The final submission is produced by ranking each model's predictions and combining them via a weighted rank-based ensemble. Readers should learn how to bypass complex survival metrics with surrogate targets, avoid leakage during target generation, and leverage rank-based ensembling when evaluation depends on prediction order rather than magnitude.",
+  "purpose": "ensemble",
+  "competition_flow": "Loads CSV data, recalculates HLA match features, generates surrogate regression targets via out-of-fold survival models, trains LightGBM and CatBoost regressors on these targets, and combines ranked predictions using a weighted rank-based ensemble to produce a final submission.",
+  "data_reading": [
+    "Reads CSV files using polars.read_csv with a batch size, then converts to pandas DataFrames."
+  ],
+  "data_processing": [
+    "Fills missing numeric values with -1 and categorical values with 'Unknown', casts columns to Float32/String/Int32, drops constant columns during survival model fitting, and converts categorical columns to pandas category dtype for tree models."
+  ],
+  "features_engineering": [
+    "Recalculates HLA match features by summing specific HLA match columns (e.g., hla_nmdp_6, hla_low_res_8, hla_high_res_10) with nulls filled as 0, and creates a surrogate Cox-loss target by negating efs_time where efs equals 0."
+  ],
+  "models": [
+    "LightGBM",
+    "CatBoost"
+  ],
+  "frameworks_used": [
+    "polars",
+    "pandas",
+    "lifelines",
+    "lightgbm",
+    "catboost",
+    "scikit-learn",
+    "plotly",
+    "scipy"
+  ],
+  "loss_functions": [
+    "RMSE",
+    "Cox",
+    "regression"
+  ],
+  "cv_strategy": "KFold(n_splits=5, shuffle=True, random_state=42)",
+  "ensembling": "Predictions from 8 models are converted to ranks, then combined via a weighted dot product using weights [2, 1, 6, 3, 6, 3, 6, 6].",
+  "insights": [
+    "The evaluation metric relies on prediction ranking rather than absolute values, making rank-based ensembling a robust strategy.",
+    "Surrogate regression targets generated via out-of-fold survival models effectively bypass the non-differentiable C-Index metric.",
+    "Weighted rank ensembling decouples model weighting from prediction scaling, simplifying hyperparameter tuning."
+  ],
+  "critical_findings": [
+    "Constant columns in survival model folds cause convergence errors due to NaN values in the delta matrix and must be dropped.",
+    "Target leakage is strictly prevented by computing surrogate targets exclusively from out-of-fold survival model predictions."
+  ],
+  "what_did_not_work": [],
+  "source_url": "https://www.kaggle.com/code/andreasbis/cibmtr-eda-ensemble-model",
+  "votes": 882
+}

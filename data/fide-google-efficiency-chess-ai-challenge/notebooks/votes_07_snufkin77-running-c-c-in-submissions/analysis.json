@@ -1,0 +1,32 @@
+{
+  "summary": "This notebook documents a practical workaround for executing compiled C/C++ code within Kaggle competition submission environments. It demonstrates how to bypass common pitfalls like platform incompatibility, submission size limits, and Python subprocess timeouts by compiling binaries locally using a Docker container that matches Kaggle's base image. The author provides a complete pipeline for wrapping the compiled binary in a Python agent script, handling I/O via subprocess, and packaging everything into a .tar.gz archive for submission. Readers should take away the importance of environment parity for compiled binaries and the reliability of subprocess for inter-process communication in Kaggle agents.",
+  "purpose": "utility",
+  "competition_flow": "Compiles C source code into a platform-compatible binary, wraps it in a Python agent script using subprocess for I/O, packages both into a .tar.gz archive, and submits it to the Kaggle competition environment.",
+  "data_reading": [
+    "Passes competition observations (e.g., board state) to the compiled binary via Python subprocess stdin, parsed by C's scanf."
+  ],
+  "data_processing": [],
+  "features_engineering": [],
+  "models": [],
+  "frameworks_used": [
+    "chessnut"
+  ],
+  "loss_functions": [],
+  "cv_strategy": "",
+  "ensembling": "",
+  "insights": [
+    "Compiling C/C++ locally using a Docker container matching the Kaggle submission base image ensures binary compatibility.",
+    "Python's subprocess module is the reliable method for passing inputs to and capturing outputs from compiled binaries in Kaggle submissions.",
+    "Submission archives must be .tar.gz format containing the Python agent script (main.py) and the compiled binary at the root level."
+  ],
+  "critical_findings": [
+    "Directly uploading compiled executables or .zip archives often fails due to platform differences, size limits, or Kaggle's submission prompt restrictions.",
+    "Shell commands invoked directly in Python often fail or cause timeouts in the submission environment, making subprocess the necessary workaround."
+  ],
+  "what_did_not_work": [
+    "Attempting to compile code remotely via shell commands or upload raw executables resulted in timeouts, platform incompatibility, or submission size limit errors.",
+    "Using .zip archives or direct shell invocations failed due to working directory issues and Kaggle's submission agent restrictions."
+  ],
+  "source_url": "https://www.kaggle.com/code/snufkin77/running-c-c-in-submissions",
+  "votes": 106
+}

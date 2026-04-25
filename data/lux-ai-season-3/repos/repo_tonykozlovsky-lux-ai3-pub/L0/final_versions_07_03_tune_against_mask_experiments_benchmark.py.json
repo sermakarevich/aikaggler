@@ -1,0 +1,35 @@
+{
+  "path": "final_versions/07_03_tune_against_mask/experiments/benchmark.py",
+  "analysis": {
+    "summary": "This file implements a synthetic benchmark training loop for a custom coordinate-aware convolutional network designed to predict relative enemy unit positions on a 24x24 grid. It generates its own training data by randomly placing 16 units on both sides and computing ground-truth relative masks. The model extracts features at specific coordinates, processes them through residual blocks with squeeze-and-excitation, and decodes them into 15x15 prediction masks. It demonstrates a complete PyTorch training pipeline with mixed precision, gradient clipping, and metric tracking, serving as a rapid prototyping environment for architectural tuning before applying it to actual competition data.",
+    "purpose": "training",
+    "competition_flow": "Generates synthetic grid data with 16 units per side, trains a coordinate-aware CNN to predict relative enemy positions within an 8-cell radius, and evaluates precision/recall/accuracy over 10,000 epochs.",
+    "data_reading": [],
+    "data_processing": [
+      "Synthetic generation creates two 24x24 binary grids for player and enemy units, computes relative coordinate masks (15x15 per unit) indicating enemy presence within an 8-cell radius, and formats them as PyTorch tensors."
+    ],
+    "features_engineering": [],
+    "models": [
+      "ActionPredictionModel (custom CNN with initial conv block, residual blocks with Squeeze-and-Excitation, coordinate-based feature gathering, and linear decoder)"
+    ],
+    "frameworks_used": [
+      "pytorch",
+      "numpy",
+      "wandb",
+      "scikit-learn"
+    ],
+    "loss_functions": [
+      "BCEWithLogitsLoss"
+    ],
+    "cv_strategy": "",
+    "ensembling": "",
+    "insights": [
+      "Coordinate-based feature extraction allows the network to focus on specific unit locations without relying on fixed grid pooling.",
+      "Squeeze-and-excitation blocks are integrated into residual blocks to adaptively recalibrate channel-wise feature responses.",
+      "Mixed precision training with gradient clipping stabilizes optimization for this synthetic benchmark.",
+      "The model decodes gathered features into spatial masks rather than flattening the entire feature map, preserving spatial locality for relative position prediction."
+    ],
+    "critical_findings": [],
+    "what_did_not_work": []
+  }
+}

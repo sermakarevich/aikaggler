@@ -1,0 +1,39 @@
+{
+  "summary": "The notebook demonstrates an agentic pipeline that automates OpenAPI specification generation for CRMs by leveraging Google Gemini 1.5's 2-million-token context window. It compares traditional RAG with in-context retrieval, showing that direct context injection eliminates the need for vector databases. The workflow includes web crawling, context caching, extracting JSON/CURL examples, and using many-shot prompting via chat history to guide the model. Readers learn how to structure long-context prompts, manage costs with caching, and implement multi-agent refinement loops for API documentation.",
+  "purpose": "tutorial",
+  "competition_flow": "Crawls CRM documentation, caches it via Gemini's context caching, extracts JSON/CURL examples, uses many-shot prompting in chat history, and runs an agentic pipeline to generate and refine OpenAPI specs from user prompts.",
+  "data_reading": [
+    "Web crawling via urllib and BeautifulSoup to extract URLs, followed by aiohttp to asynchronously fetch and parse HTML body text; also loads pre-existing OpenAPI/JSON example files from Kaggle inputs."
+  ],
+  "data_processing": [
+    "Deduplication of crawled URLs, filtering of LLM outputs to remove placeholders and empty responses, LLM-driven conversion of CURL commands to JSON responses, merging of multiple JSON scripts into a single corpus, and context caching for documentation storage."
+  ],
+  "features_engineering": [],
+  "models": [
+    "gemini-1.5-flash-001",
+    "gemini-1.5-pro"
+  ],
+  "frameworks_used": [
+    "google.generativeai",
+    "llama_index",
+    "beautifulsoup4",
+    "aiohttp",
+    "urllib"
+  ],
+  "loss_functions": [],
+  "cv_strategy": "",
+  "ensembling": "",
+  "insights": [
+    "Gemini 1.5's massive context window can effectively replace traditional RAG pipelines for documentation-heavy tasks by enabling direct in-context retrieval.",
+    "Context caching drastically reduces latency and API costs when repeatedly querying large documentation corpora.",
+    "Passing many-shot examples via chat history instead of the system prompt prevents instruction dilution and maintains prompt coherence.",
+    "Multi-agent refinement loops (extraction, conversion, merging, correction) reliably produce syntactically valid OpenAPI specs without manual parsing."
+  ],
+  "critical_findings": [
+    "In-context retrieval proved simpler, faster, and more accurate than a LlamaIndex-based RAG pipeline, eliminating the need for external vector stores.",
+    "Many-shot prompting with 10 large OpenAPI examples (~400k tokens) successfully guided the model without losing the core instruction, proving large-context few-shot works."
+  ],
+  "what_did_not_work": [],
+  "source_url": "https://www.kaggle.com/code/yatharthbisht/generating-openapi-specs-for-crms-using-gemini",
+  "votes": 73
+}

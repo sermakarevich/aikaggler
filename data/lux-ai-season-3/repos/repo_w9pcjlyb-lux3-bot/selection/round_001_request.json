@@ -1,0 +1,10 @@
+{
+  "reasoning": "Reading the README and main.py will clarify the project structure, dependencies, and execution flow, while agent/agent.py and imitation_learning/train.py will reveal the core model architecture, training pipeline, and frameworks used. agent/state.py is included to understand the environment representation and data structures critical for feature engineering and state processing.",
+  "files_to_read": [
+    "README.md",
+    "main.py",
+    "agent/agent.py",
+    "imitation_learning/train.py",
+    "agent/state.py"
+  ]
+}

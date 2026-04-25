@@ -1,0 +1,53 @@
+{
+  "summary": "The author secured 7th place by building an ensemble of LightGBM and XGBoost models, leveraging a baseline notebook as a starting point. Key technical choices included median imputation for missing values, Polars for optimized sequential statistics, Tweedie loss, and pseudo-labeling for samples without the 'sii' target. The pipeline emphasized robustness through threshold optimization using percentiles and Nelder-Mead, alongside extensive seed averaging and Optuna tuning to mitigate variance.",
+  "extensive_summary": "### Model Architecture & Training Strategy\nThe solution builds upon a baseline LightGBM notebook, incorporating XGBoost into the final ensemble. Missing values were addressed via median imputation calculated strictly on the training data for each fold, ensuring no data leakage. Sequential data statistics were computed following the public notebook's methodology but accelerated using Polars for performance. A pivotal technical choice was adopting Tweedie loss as the primary objective function, complemented by a classification component within the ensemble. Additionally, the author generated predictions for samples where the 'sii' target was absent and repurposed them as pseudo-labels to augment the training set. Features explicitly defined as categorical integers in the data dictionary were intentionally utilized in both categorical and numerical formats to capture broader signal patterns.\n\n### Threshold Optimization & Validation Rigor\nThreshold optimization played a central role in maximizing performance. The author optimized thresholds on each fold's training data and applied them to validation/test sets, leveraging percentiles to enhance both accuracy and robustness. Initial threshold values were sourced from a Kaggle discussion, and the optimization process utilized the Nelder-Mead method via SciPy's `minimize` function. To address significant score fluctuations across different random seeds, the author evaluated voting results across 10 seeds per experiment, monitored both voting and average scores, and ran Optuna hyperparameter tuning independently for each seed. Final submissions were constructed via a voting ensemble aggregating predictions from 5 folds \u00d7 10 seeds per model, acknowledging that ranking success heavily depended on mitigating seed variance through this robust validation approach.",
+  "rank": 7,
+  "competition_flow": "Raw data was processed with Polars and median-imputed per fold, trained with Tweedie loss and pseudo-labels, optimized via percentile thresholds and Nelder-Mead, and aggregated into a 5-fold \u00d7 10-seed voting ensemble.",
+  "data_reading": [],
+  "data_processing": [
+    "Median imputation for missing values (computed on training data per fold and applied to validation/test sets)",
+    "Polars-based optimization for sequential data statistics",
+    "Dual usage of integer-defined categorical features as both categorical and numerical inputs"
+  ],
+  "features_engineering": [],
+  "models": [
+    "LightGBM",
+    "XGBoost"
+  ],
+  "frameworks_used": [
+    "lightgbm",
+    "xgboost",
+    "polars",
+    "optuna",
+    "pandas",
+    "scipy"
+  ],
+  "loss_functions": [
+    "Tweedie loss"
+  ],
+  "cv_strategy": "5-fold StratifiedKFold with 10-seed averaging per experiment",
+  "ensembling": "Voting ensemble combining 5 folds \u00d7 10 seeds per model, integrating LightGBM and XGBoost predictions with percentile-based threshold optimization.",
+  "insights": [
+    "Threshold optimization using percentiles and Nelder-Mead significantly improved accuracy and robustness.",
+    "Seed variance can drastically impact scores, making multi-seed averaging and per-seed Optuna tuning essential for reliable validation.",
+    "Generating pseudo-labels for samples with missing 'sii' targets effectively expands the training data."
+  ],
+  "critical_findings": [
+    "Score variance across different random seeds can be substantial, rendering single-seed validation unreliable.",
+    "Features explicitly defined as categorical integers in the data dictionary yield better performance when utilized simultaneously as both categorical and numerical inputs."
+  ],
+  "what_did_not_work": [],
+  "github_repos": [],
+  "papers": [],
+  "other_solution_refs": [
+    {
+      "description": "Baseline notebook used as starting point",
+      "url": "https://www.kaggle.com/code/greysky/cmi-single-lgbm-cv-0-471-lb-0-460"
+    },
+    {
+      "description": "Kaggle discussion providing initial threshold values",
+      "url": "https://www.kaggle.com/competitions/child-mind-institute-problematic-internet-use/discussion/551533"
+    }
+  ],
+  "source_url": "https://www.kaggle.com/competitions/child-mind-institute-problematic-internet-use/discussion/552625"
+}

@@ -1,0 +1,29 @@
+{
+  "id": "sersasj/czii-yolo11-submission-baseline-with-kdtree-update",
+  "id_no": 73998162,
+  "title": "CZII YOLO11 Submission Baseline with KDTree Update",
+  "code_file": "czii-yolo11-submission-baseline-with-kdtree-update.ipynb",
+  "language": "python",
+  "kernel_type": "notebook",
+  "is_private": false,
+  "enable_gpu": true,
+  "enable_tpu": false,
+  "enable_internet": false,
+  "keywords": [
+    "gpu"
+  ],
+  "dataset_sources": [
+    "sersasj/czii-yolo-l-trained-with-synthetic-data",
+    "itsuki9180/czii-yolo11-training-baseline-weight-and-others",
+    "hengck23/hengck-czii-cryo-et-01"
+  ],
+  "kernel_sources": [
+    "itsuki9180/ultralytics-for-offline-install"
+  ],
+  "competition_sources": [
+    "czii-cryo-et-object-identification"
+  ],
+  "model_sources": [],
+  "docker_image": "gcr.io/kaggle-private-byod/python@sha256:1003a82bef5df3c098b2041d936cb5f1836e52d7b610e8f0f4dedc194fb3b773",
+  "machine_shape": "NvidiaTeslaT4"
+}

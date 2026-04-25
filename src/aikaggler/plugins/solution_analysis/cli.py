@@ -319,8 +319,20 @@ def _render_aggregated_markdown(
     return "\n".join(lines)
 
 
+def _solutions_already_run(out: Path) -> bool:
+    sol_dir = out / "solutions"
+    return sol_dir.is_dir() and any(sol_dir.iterdir())
+
+
 def cmd_solutions(args: argparse.Namespace) -> int:
     out = competition_dir(args.slug)
+
+    if not getattr(args, "force", False) and _solutions_already_run(out):
+        print(
+            f"  solutions already analyzed in {out}/solutions/; "
+            f"skipping (use --force to rerun)"
+        )
+        return 0
 
     with KaggleRPC(args.slug) as rpc:
         comp = rpc.competition()
@@ -380,6 +392,8 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("slug")
     parser.add_argument("--limit", type=int, default=20)
     parser.add_argument("--pages", type=int, default=5)
+    parser.add_argument("--force", action="store_true",
+                        help="Re-run even if solutions/ folder is non-empty")
     parser.add_argument("--model", default=OLLAMA_MODEL)
     args = parser.parse_args(argv)
     return cmd_solutions(args)

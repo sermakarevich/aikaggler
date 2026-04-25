@@ -1,0 +1,25 @@
+{
+  "id": "ichigoe/lb0-494-with-tabnet",
+  "id_no": 68139721,
+  "title": "LB0.494 with TabNet",
+  "code_file": "lb0-494-with-tabnet.ipynb",
+  "language": "python",
+  "kernel_type": "notebook",
+  "is_private": false,
+  "enable_gpu": true,
+  "enable_tpu": false,
+  "enable_internet": false,
+  "keywords": [
+    "gpu"
+  ],
+  "dataset_sources": [
+    "ryati131457/pytorchtabnet"
+  ],
+  "kernel_sources": [],
+  "competition_sources": [
+    "child-mind-institute-problematic-internet-use"
+  ],
+  "model_sources": [],
+  "docker_image": "gcr.io/kaggle-private-byod/python@sha256:940180dcea42e703acbeae669a52d68e6fa3130ef60805b36005534a5152a5f3",
+  "machine_shape": "NvidiaTeslaT4"
+}

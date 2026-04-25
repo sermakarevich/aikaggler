@@ -1,0 +1,34 @@
+{
+  "summary": "This notebook demonstrates a prompt injection attack against an LLM-based competition judge rather than training a predictive model. It generates adversarial test submissions by crafting two distinct prompt strategies: a multiple-choice format and a direct instruction override. The test set is split into three equal parts to apply these strategies sequentially. The core takeaway is that automated LLM graders are vulnerable to simple adversarial prompt engineering, highlighting the need for robust input sanitization in automated evaluation pipelines.",
+  "purpose": "utility",
+  "competition_flow": "Loads the test dataset and a word list, generates adversarial prompts for each test case, assigns them to the submission file, and exports the final CSV.",
+  "data_reading": [
+    "Reads test.csv and sample_submission.csv using pandas.",
+    "Loads a plain text word list from a local file using standard Python file I/O."
+  ],
+  "data_processing": [
+    "None explicitly shown; the notebook directly replaces the essay column in the submission DataFrame with generated prompt strings."
+  ],
+  "features_engineering": [
+    ""
+  ],
+  "models": [
+    ""
+  ],
+  "frameworks_used": [
+    "pandas",
+    "random"
+  ],
+  "loss_functions": [],
+  "cv_strategy": "",
+  "ensembling": "",
+  "insights": [
+    "LLM-based judges can be manipulated through carefully crafted prompt injections.",
+    "Splitting the test set allows applying different adversarial strategies to maximize the chance of bypassing the grader.",
+    "Simple text generation combined with instruction override prompts can effectively exploit weak evaluation pipelines."
+  ],
+  "critical_findings": [],
+  "what_did_not_work": [],
+  "source_url": "https://www.kaggle.com/code/bestwater/fork-of-essays-simple-submission-try-more",
+  "votes": 223
+}

@@ -1,0 +1,28 @@
+{
+  "summary": "This notebook demonstrates a practical workflow for uploading and querying large media files using the Google Generative AI API. It walks through secure API key management via Kaggle User Secrets, implements a polling mechanism to handle asynchronous file processing, and configures a multimodal chat session with Gemini 1.5 Flash. Readers learn how to bridge local Kaggle inputs with cloud-based LLM inference for tasks like video transcription. The key takeaway is the reliable pattern for managing large file uploads and state synchronization before prompting.",
+  "purpose": "tutorial",
+  "competition_flow": "Loads a local video file, securely uploads it to the Gemini 1.5 Flash API using a polling loop for processing status, initiates a multimodal chat session, and queries the model for a text transcript.",
+  "data_reading": [],
+  "data_processing": [],
+  "features_engineering": [],
+  "models": [
+    "gemini-1.5-flash"
+  ],
+  "frameworks_used": [
+    "google.generativeai",
+    "kaggle_secrets",
+    "IPython"
+  ],
+  "loss_functions": [],
+  "cv_strategy": "",
+  "ensembling": "",
+  "insights": [
+    "Demonstrates secure API key handling using Kaggle User Secrets instead of hardcoding credentials.",
+    "Shows a reliable polling pattern to wait for asynchronous file processing before making API calls.",
+    "Illustrates configuring generation parameters and initiating a multimodal chat session for large media inputs."
+  ],
+  "critical_findings": [],
+  "what_did_not_work": [],
+  "source_url": "https://www.kaggle.com/code/paultimothymooney/how-to-upload-large-files-to-gemini-1-5",
+  "votes": 165
+}

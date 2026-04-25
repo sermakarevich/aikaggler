@@ -1,0 +1,25 @@
+{
+  "id": "ambrosm/mcts-eda-which-makes-sense",
+  "id_no": 65430554,
+  "title": "MCTS EDA which makes sense \u2b50\ufe0f\u2b50\ufe0f\u2b50\ufe0f\u2b50\ufe0f\u2b50\ufe0f",
+  "code_file": "mcts-eda-which-makes-sense.ipynb",
+  "language": "python",
+  "kernel_type": "notebook",
+  "is_private": false,
+  "enable_gpu": false,
+  "enable_tpu": false,
+  "enable_internet": true,
+  "keywords": [
+    "games",
+    "exploratory data analysis",
+    "model explainability"
+  ],
+  "dataset_sources": [],
+  "kernel_sources": [],
+  "competition_sources": [
+    "um-game-playing-strength-of-mcts-variants"
+  ],
+  "model_sources": [],
+  "docker_image": "gcr.io/kaggle-images/python@sha256:52997f329b43bdd3702614a60ccefaa28c4bcfaffd2a264745ba5295bace806e",
+  "machine_shape": "None"
+}

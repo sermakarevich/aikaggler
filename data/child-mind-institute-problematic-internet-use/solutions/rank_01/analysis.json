@@ -1,0 +1,48 @@
+{
+  "summary": "The author secured first place by prioritizing robustness over complex modeling, ultimately deploying a voted ensemble of tree-based regressors. Key technical decisions included switching the target variable to the 'PCIAT-PCIAT_Total' score, applying PCA to actigraph data, and using Lasso for imputation. The pipeline relied heavily on quantile binning to mitigate noise, manual feature selection down to 39 features, and repeated stratified cross-validation to stabilize parameter tuning. Predictions were finally converted back to the original sii labels for submission.",
+  "extensive_summary": "## Target Strategy and Cross-Validation\nThe author replaced the provided `sii` labels with the `PCIAT-PCIAT_Total` score, converting predictions back to labels post-training. Due to the target's excess zeros, they explored Tweedie loss and sample weights derived from equidistant bins. While weighting did not directly improve optimized scores, it successfully aligned unoptimized scores with optimized ones. A 10-fold stratified KFold stratified by these bins was used for validation, with frequent seed changes to ensure stability. The public leaderboard score was largely ignored to prevent overfitting.\n\n## Data Cleaning and Processing\nRaw data was cleaned by removing implausible values like body fat percentages over 60% or negative bone mineral content, replacing them with NaN. To combat noise, quantile binning was applied to a significant portion of the features. The actigraph data underwent dimensionality reduction via PCA, retaining 15 components. Missing values were handled using Lasso imputation, where models were trained on features with fewer than 40% missing values, falling back to mean imputation when necessary.\n\n## Feature Engineering and Tuning\nFeature creation focused on descriptive actigraph metrics with separate day and night masks, alongside normalized values based on age group means and the difference between daily energy expenditure and basal metabolic rate. Early in the competition, standard parameter tuning proved unstable, prompting a shift to Repeated Stratified KFold (10-20 repeats) for more robust hyperparameter optimization. Feature selection was conducted manually based on importance, ultimately reducing the dataset to 39 features.\n\n## Final Model\nThe solution culminated in a voted ensemble comprising LGBMRegressor, two XGBoost Regressors, CatBoostRegressor, and ExtraTreesRegressor. This combination, built on a heavily regularized and noise-mitigated feature set, formed the core of the winning submission.",
+  "rank": 1,
+  "competition_flow": "Raw data was cleaned and imputed via Lasso, processed with PCA and quantile binning, reduced to 39 features via manual selection, tuned using repeated stratified folds, and finally trained on a voted ensemble of tree regressors before converting predictions back to sii labels.",
+  "data_reading": [],
+  "data_processing": [
+    "Removed implausible values (body fat >60%, negative bone mineral content) and replaced with NaN",
+    "Applied quantile binning to handle feature noise",
+    "Retained 15 PCA components for actigraph data",
+    "Imputed missing values using Lasso with a fallback to mean imputation",
+    "Converted target to 'PCIAT-PCIAT_Total' score"
+  ],
+  "features_engineering": [
+    "Created descriptive actigraph features with separate day and night masks",
+    "Added normalized values based on age group means",
+    "Computed difference between daily energy expenditure and basal metabolic rate",
+    "Reduced dataset to 39 features via manual feature selection"
+  ],
+  "models": [
+    "LGBMRegressor",
+    "XGBoost Regressors",
+    "CatBoostRegressor",
+    "ExtraTreesRegressor"
+  ],
+  "frameworks_used": [],
+  "loss_functions": [
+    "Tweedie"
+  ],
+  "cv_strategy": "10-fold stratified KFold stratified by equidistant bins, with Repeated Stratified KFold (10-20 repeats) used during parameter tuning.",
+  "ensembling": "Voted ensemble of LGBMRegressor, two XGBoost Regressors, CatBoostRegressor, and ExtraTreesRegressor, with predictions converted back to sii labels.",
+  "insights": [
+    "Switching the target to 'PCIAT-PCIAT_Total' and converting predictions back improved overall robustness.",
+    "Quantile binning effectively mitigated noise across a large portion of the feature set.",
+    "Repeated Stratified KFold during parameter tuning yielded significantly more stable results than standard CV setups.",
+    "Sample weights aligned unoptimized scores with optimized scores, even if they did not directly boost the primary metric."
+  ],
+  "critical_findings": [
+    "The target's excess zeros necessitated exploring Tweedie loss and equidistant bin weights rather than standard regression objectives.",
+    "Standard parameter tuning with regular cross-validation produced unstable outcomes, requiring repeated stratified folds for reliability.",
+    "Weighting failed to improve optimized scores directly but successfully bridged the gap between unoptimized and optimized metrics."
+  ],
+  "what_did_not_work": [],
+  "github_repos": [],
+  "papers": [],
+  "other_solution_refs": [],
+  "source_url": "https://www.kaggle.com/competitions/child-mind-institute-problematic-internet-use/discussion/552638"
+}

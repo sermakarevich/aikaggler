@@ -1,0 +1,27 @@
+{
+  "id": "cdeotte/brute-force-first-sample-perplexity-470",
+  "id_no": 71866811,
+  "title": "Brute Force First Sample - Perplexity 470",
+  "code_file": "brute-force-first-sample-perplexity-470.ipynb",
+  "language": "python",
+  "kernel_type": "notebook",
+  "is_private": false,
+  "enable_gpu": true,
+  "enable_tpu": false,
+  "enable_internet": true,
+  "keywords": [
+    "gpu"
+  ],
+  "dataset_sources": [],
+  "kernel_sources": [
+    "jazivxt/diminutive-effort"
+  ],
+  "competition_sources": [
+    "santa-2024"
+  ],
+  "model_sources": [
+    "google/gemma-2/Transformers/gemma-2-9b/2"
+  ],
+  "docker_image": "gcr.io/kaggle-private-byod/python@sha256:141219e230dab548ccc19aa4e62bcf805ed9de0b4d5112227e28f5f1a25991f8",
+  "machine_shape": "NvidiaTeslaT4"
+}

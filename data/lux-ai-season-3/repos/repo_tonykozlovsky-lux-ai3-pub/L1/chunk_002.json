@@ -1,0 +1,113 @@
+{
+  "summary": "This repository implements a distributed reinforcement learning pipeline for the LUX AI Season 3 competition, leveraging the torchbeast framework to train a hybrid neural agent. The core architecture combines convolutional layers, ResNet blocks, LSTMs, and Transformers to process game states, with training stabilized through V-trace off-policy correction and multiple advantage estimators (UP-GO, TD-Lambda). The system dynamically mixes self-play, teacher-student distillation, and frozen baseline policies during training, using adaptive entropy regularization and linear learning rate decay over hundreds of millions of steps. Performance is optimized via aggressive PyTorch/JAX compilation caching, distributed data parallelism, and custom C++ environment extensions for efficient game simulation. Auxiliary prediction tasks, such as coordinate-aware relative position mapping, are integrated to enhance spatial reasoning, while a comprehensive analytics pipeline extracts features from Kaggle replay logs to evaluate opponent strength and game dynamics.",
+  "competition_flow": "The pipeline fetches Kaggle replay data for analytics, configures a hybrid CNN-ResNet-LSTM-Transformer agent via Hydra, trains it using distributed torchbeast with mixed self-play/teacher policies and V-trace corrections, and exports the optimized model for competition submission.",
+  "data_reading": [
+    "Queries Kaggle API endpoints for episode lists, team info, and replay JSONs via POST/GET requests.",
+    "Loads and persists local CSVs using pandas.",
+    "Receives pre-loaded GPU tensors via batch dict during training."
+  ],
+  "data_processing": [
+    "Adjusts episode discounting by resetting to 1.0 when done masks transition from 1 to 0, preventing discount leakage across episode boundaries.",
+    "Masks entropy and KL calculations to exclude steps with no actions taken.",
+    "Synthetic generation creates two 24x24 binary grids for player and enemy units, computes relative coordinate masks (15x15 per unit) indicating enemy presence within an 8-cell radius, and formats them as PyTorch tensors.",
+    "Parses replay JSONs to extract game parameters.",
+    "Computes duration, overtime, and step counts from agent logs.",
+    "Handles request retries, deduplication, and missing data.",
+    "Flags strong opponents based on stderr logs."
+  ],
+  "features_engineering": [
+    "Extracts game configuration parameters (energy node drift, nebula tile stats, unit sap/move costs, sensor range).",
+    "Computes runtime metrics (total duration, overtime, steps).",
+    "Derives an is_strong binary feature from agent log stderr."
+  ],
+  "models": [
+    "monobeast",
+    "ActionPredictionModel (custom CNN with initial conv block, residual blocks with Squeeze-and-Excitation, coordinate-based feature gathering, and linear decoder)",
+    "conv_model",
+    "ResNet",
+    "LSTM",
+    "Transformer_v2",
+    "per_unit_resnet"
+  ],
+  "frameworks_used": [
+    "pytorch",
+    "torch",
+    "torch.distributed",
+    "torch.nn.parallel.DistributedDataParallel",
+    "torch.optim.lr_scheduler.LambdaLR",
+    "torch.compile",
+    "jax",
+    "hydra",
+    "omegaconf",
+    "wandb",
+    "lux-ai-s3",
+    "numpy",
+    "scikit-learn",
+    "pandas",
+    "requests"
+  ],
+  "loss_functions": [
+    "KL divergence",
+    "policy gradient loss",
+    "entropy regularization",
+    "smooth L1 loss",
+    "MSE loss",
+    "custom_policy_gradient_loss",
+    "custom_baseline_loss",
+    "custom_teacher_kl_loss",
+    "custom_entropy_loss",
+    "BCEWithLogitsLoss",
+    "TD-lambda",
+    "UPGO losses"
+  ],
+  "cv_strategy": "",
+  "ensembling": "",
+  "insights": [
+    "Multi-unit RL requires explicit masking of log-probabilities and entropies to prevent gradient updates for units that did not act.",
+    "V-trace stabilizes off-policy learning by clipping importance weights using configurable thresholds for value targets and policy gradients separately.",
+    "Coordinate-based feature extraction allows the network to focus on specific unit locations without relying on fixed grid pooling.",
+    "The training pipeline relies on a curriculum-style policy mixing strategy to stabilize learning across self-play, teacher, and frozen baseline actors.",
+    "Replay JSONs contain static game configuration parameters that can be directly extracted as features."
+  ],
+  "critical_findings": [],
+  "what_did_not_work": [
+    "behavior_cloning_actors is explicitly disabled with a comment noting it is NOT WORKING YET."
+  ],
+  "training_setup": [
+    "Adam optimizer with custom epsilon and linear learning rate decay schedule.",
+    "Adaptive entropy regularization and linearly decaying learning rate over a 300M-step horizon.",
+    "Mixed precision training with gradient clipping.",
+    "Distributed data parallelism (DDP) with periodic weight synchronization between learner and actor processes.",
+    "Aggressive PyTorch Inductor and JAX compilation caching to minimize training overhead."
+  ],
+  "notable_files": [
+    {
+      "path": "final_versions/07_03_tune_against_mask/run_monobeast.py",
+      "role": "entrypoint"
+    },
+    {
+      "path": "final_versions/07_03_tune_against_mask/conf/base.yaml",
+      "role": "config"
+    },
+    {
+      "path": "final_versions/07_03_tune_against_mask/lux_ai/torchbeast/core/batch_and_learn.py",
+      "role": "training loop"
+    },
+    {
+      "path": "final_versions/07_03_tune_against_mask/lux_ai/torchbeast/core/losses_func_selfplay.py",
+      "role": "loss computation"
+    },
+    {
+      "path": "final_versions/07_03_tune_against_mask/lux_ai/torchbeast/core/vtrace.py",
+      "role": "RL algorithm"
+    },
+    {
+      "path": "final_versions/07_03_tune_against_mask/analytics/src.py",
+      "role": "data pipeline"
+    },
+    {
+      "path": "final_versions/07_03_tune_against_mask/experiments/benchmark.py",
+      "role": "architectural prototyping"
+    }
+  ]
+}

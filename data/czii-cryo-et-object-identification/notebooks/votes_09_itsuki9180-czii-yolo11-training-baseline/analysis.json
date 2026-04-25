@@ -1,0 +1,30 @@
+{
+  "summary": "This notebook provides a baseline training pipeline for 2D particle detection using the YOLO11 architecture on the CZII competition dataset. It leverages a pre-adapted YOLO-formatted dataset, loads a pretrained YOLO11-L checkpoint, and trains the model for 100 epochs with configured data augmentations and optimization hyperparameters. The author validates the trained model using standard mAP metrics and demonstrates a quick inference step on a validation image. Readers should learn how to rapidly deploy a YOLO-based object detection baseline, understand the impact of specific augmentations like mixup and copy-paste, and see how Ultralytics simplifies the training workflow.",
+  "purpose": "baseline",
+  "competition_flow": "Loads a YOLO-formatted dataset via YAML, trains a pretrained YOLO11-L model for 100 epochs with data augmentations and AdamW optimizer, validates it using mAP metrics, and demonstrates inference on a sample image.",
+  "data_reading": [
+    "Reads dataset paths and annotations from a YAML configuration file (czii_conf.yaml) that structures the data for YOLO object detection format."
+  ],
+  "data_processing": [
+    "Applies real-time training augmentations including vertical/horizontal flips (0.5 probability), rotation (\u00b145\u00b0), shear (5\u00b0), mixup (0.2), and copy-paste (0.25)."
+  ],
+  "features_engineering": [],
+  "models": [
+    "YOLO11-L"
+  ],
+  "frameworks_used": [
+    "ultralytics"
+  ],
+  "loss_functions": [],
+  "cv_strategy": "",
+  "ensembling": "",
+  "insights": [
+    "Strong augmentations like mixup and copy-paste are effective for improving detection performance on particle imagery.",
+    "Using a pretrained YOLO11 model with AdamW and cosine learning rate scheduling provides a stable and efficient training baseline.",
+    "The Ultralytics YAML configuration format allows quick adaptation of custom datasets without modifying core training code."
+  ],
+  "critical_findings": [],
+  "what_did_not_work": [],
+  "source_url": "https://www.kaggle.com/code/itsuki9180/czii-yolo11-training-baseline",
+  "votes": 243
+}

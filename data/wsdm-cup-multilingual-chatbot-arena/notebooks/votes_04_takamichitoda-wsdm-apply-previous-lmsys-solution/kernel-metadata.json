@@ -1,0 +1,35 @@
+{
+  "id": "takamichitoda/wsdm-apply-previous-lmsys-solution",
+  "id_no": 71123430,
+  "title": "WSDM apply previous LMSYS solution",
+  "code_file": "wsdm-apply-previous-lmsys-solution.ipynb",
+  "language": "python",
+  "kernel_type": "notebook",
+  "is_private": false,
+  "enable_gpu": true,
+  "enable_tpu": false,
+  "enable_internet": false,
+  "keywords": [
+    "gpu"
+  ],
+  "dataset_sources": [
+    "",
+    "",
+    "",
+    "",
+    "",
+    "emiz6413/73zap2gx",
+    "emiz6413/lmsys-wheel-files",
+    "takamichitoda/lmsys-exp15-cont-org-lr-3e5",
+    "takamichitoda/lmsys-gemma2-test"
+  ],
+  "kernel_sources": [],
+  "competition_sources": [
+    "wsdm-cup-multilingual-chatbot-arena"
+  ],
+  "model_sources": [
+    "emiz6413/gemma-2/Transformers/gemma-2-9b-it-4bit/1"
+  ],
+  "docker_image": "gcr.io/kaggle-private-byod/python@sha256:141219e230dab548ccc19aa4e62bcf805ed9de0b4d5112227e28f5f1a25991f8",
+  "machine_shape": "NvidiaTeslaT4"
+}

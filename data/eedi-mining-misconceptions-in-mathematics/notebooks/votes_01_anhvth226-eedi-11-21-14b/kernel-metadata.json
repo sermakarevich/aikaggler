@@ -1,0 +1,33 @@
+{
+  "id": "anhvth226/eedi-11-21-14b",
+  "id_no": 71341107,
+  "title": "EEDI_11_21_14B",
+  "code_file": "eedi-11-21-14b.ipynb",
+  "language": "python",
+  "kernel_type": "notebook",
+  "is_private": false,
+  "enable_gpu": true,
+  "enable_tpu": false,
+  "enable_internet": false,
+  "keywords": [
+    "gpu"
+  ],
+  "dataset_sources": [
+    "",
+    "nbroad/hf-libraries",
+    "abdurrafae/vllm-t4-fix"
+  ],
+  "kernel_sources": [
+    "ironbar/making-wheels-of-necessary-packages-for-vllm",
+    "anhvth226/eedi-library"
+  ],
+  "competition_sources": [
+    "eedi-mining-misconceptions-in-mathematics"
+  ],
+  "model_sources": [
+    "anhvth226/2211-lora-14b/Transformers/default/1",
+    "anhvth226/qw14b-awq/Transformers/default/1"
+  ],
+  "docker_image": "gcr.io/kaggle-private-byod/python@sha256:141219e230dab548ccc19aa4e62bcf805ed9de0b4d5112227e28f5f1a25991f8",
+  "machine_shape": "NvidiaTeslaT4"
+}

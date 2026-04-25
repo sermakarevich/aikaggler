@@ -1,0 +1,42 @@
+{
+  "summary": "The author achieved 3rd place using a two-stage retrieval and reranking pipeline powered by Qwen models. After retrieving candidate misconceptions, they ensembled six LoRA-tuned rerankers and applied a crucial post-processing step that upweighted probabilities for unseen test misconceptions, which were found to dominate the evaluation set. A final input shuffling trick provided a minor additional boost.",
+  "extensive_summary": "The solution follows a two-stage architecture designed to predict mathematical misconceptions. In the retrieval stage, the author ensembled a publicly shared Qwen-14B embedder with a self-trained Qwen-14B embedder using FlagEmbedding to fetch the top 35 candidate misconceptions per question. The reranking stage utilized a Qwen-32B-instruct-AWQ model, fine-tuned with six different LoRA configurations via cross-validation. One LoRA variant incorporated approximately 2,000 GPT-4 mini-generated samples, though this yielded negligible gains.\n\nA pivotal discovery drove the final score improvements: the author identified over 900 misconceptions in the test set that were entirely absent from the training data. Through leaderboard probing, they observed that predictions relying on seen misconceptions scored poorly (0.154), while those relying on unseen misconceptions scored much higher (0.444). This led to the hypothesis that the test set was roughly 75% unseen misconceptions. To exploit this, the author implemented a post-processing step that multiplied the predicted probabilities of unseen misconceptions by a constant factor, adjusting it until unseen items comprised 75% of the top predictions. This dramatically increased the public and private leaderboard scores. A final minor optimization involved randomly shuffling the order of misconceptions fed into the reranker.",
+  "rank": 3,
+  "competition_flow": "Retrieve top 35 candidate misconceptions using Qwen-14B embedders, rerank them with an ensembled Qwen-32B-instruct-AWQ LoRA model, and apply probability scaling for unseen test misconceptions plus input shuffling before submission.",
+  "data_reading": [],
+  "data_processing": [],
+  "features_engineering": [],
+  "models": [
+    "Qwen-14B Embedder",
+    "Qwen-32B-instruct-AWQ reranker",
+    "LoRAs",
+    "GPT4-mini"
+  ],
+  "frameworks_used": [
+    "FlagEmbedding"
+  ],
+  "loss_functions": [],
+  "cv_strategy": "Cross-validation used for training the six LoRA variants.",
+  "ensembling": "Ensembled six LoRA-tuned rerankers with different training parameters; applied post-processing by scaling probabilities of unseen misconceptions to match a 75% ratio, followed by random shuffling of input misconception order.",
+  "insights": [
+    "Unseen test misconceptions dominate the evaluation set and require probability upweighting to achieve high scores.",
+    "Randomly shuffling the input order of candidates during reranking provides a consistent performance boost."
+  ],
+  "critical_findings": [
+    "Leaderboard probing revealed a massive performance gap between seen (0.154) and unseen (0.444) misconceptions, indicating a severe train-test distribution shift.",
+    "The test set contained over 900 misconceptions completely absent from the training data."
+  ],
+  "what_did_not_work": [
+    "A self-trained FlagEmbedding-based retriever degraded performance and was removed.",
+    "Incorporating ~2000 GPT4-mini generated samples into one LoRA model yielded insignificant improvements."
+  ],
+  "github_repos": [],
+  "papers": [],
+  "other_solution_refs": [
+    {
+      "description": "Kaggle discussion highlighting test set distribution quirks",
+      "url": "https://www.kaggle.com/competitions/eedi-mining-misconceptions-in-mathematics/discussion/550875"
+    }
+  ],
+  "source_url": "https://www.kaggle.com/competitions/eedi-mining-misconceptions-in-mathematics/discussion/551498"
+}

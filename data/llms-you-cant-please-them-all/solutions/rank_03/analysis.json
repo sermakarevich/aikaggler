@@ -1,0 +1,45 @@
+{
+  "summary": "The author achieved 3rd place by developing a multi-lingual prompt injection strategy to manipulate LLM-based essay grading judges. By systematically testing attack strings across different model variants (Gemma and Llama), they identified specific prompts that reliably forced divergent grading scores. A key technical insight was building a local verification pipeline using BitsAndBytes-quantized models on consumer hardware to correlate local grading outputs with the public leaderboard, allowing precise tuning of attack distributions.",
+  "extensive_summary": "## Attack Strategy & Model Identification\nThe solution focuses on exploiting vulnerabilities in LLM-based evaluation judges (specifically Gemma and Llama variants) to manipulate essay grading scores. Rather than training a new model, the author engineered multi-lingual attack prompts designed to trigger divergent grading behaviors across different judge architectures. Initial experimentation relied on platforms like together.ai, Google AI Studio, and HuggingFace playground to identify candidate attack strings that could differentiate between Gemma and Llama models. Three core attack patterns (990, 909, 099) were developed to force specific grading splits across the judges.\n\n## Local Verification & Guided Generation\nA major technical challenge was aligning local evaluations with the private leaderboard. The author built a verification system that generated random essays and iteratively filtered them until the local judge outputs matched strict grading criteria (e.g., forcing Gemma models to output 0.0 while forcing Llama to output 9.0). This guided generation process was critical for ensuring attack consistency. The pipeline loaded four models (Gemma 2B, Gemma 9B, Llama 3B, Llama 8B) quantized to 8-bit using BitsAndBytes on a 2xT4 GPU setup.\n\n## Leaderboard Split Deduction & Final Tuning\nBy correlating local grading outputs with public leaderboard splits, the author deduced the private LB composition (roughly 70% random/private split) and adjusted attack distributions accordingly. The final submission combined the three attack types with carefully balanced essay distributions to achieve a perfect score. Ablation studies confirmed that adding Llama 8B to the verification loop was the final key to stabilizing perfect scores, while earlier assumptions about judge composition and LB splits initially caused significant score miscalculations.",
+  "rank": 3,
+  "competition_flow": "The author generated multi-lingual prompt injection attacks, verified their grading manipulation locally using quantized Gemma and Llama models on consumer GPUs, tuned the attack distribution to match the inferred private leaderboard split, and submitted the optimized essays for final grading.",
+  "data_reading": [],
+  "data_processing": [],
+  "features_engineering": [],
+  "models": [
+    "Gemma 2B",
+    "Gemma 9B",
+    "Llama 3B",
+    "Llama 8B"
+  ],
+  "frameworks_used": [
+    "bitsandbytes"
+  ],
+  "loss_functions": [],
+  "cv_strategy": "Local evaluation using 4 quantized LLMs on 2xT4 GPUs to verify grading outputs match target criteria, with public leaderboard correlation used to infer private split distribution.",
+  "ensembling": "The author combined three distinct multi-lingual attack patterns (990, 909, 099) and balanced their distribution across essays to maximize the average grading score, rather than using traditional model ensembling.",
+  "insights": [
+    "Multi-lingual prompt injection can reliably force divergent grading behaviors across different LLM architectures.",
+    "Local grading outputs can be tightly correlated with leaderboard splits to deduce the private evaluation composition.",
+    "Guided generation with iterative verification is necessary to ensure attack consistency across noisy random inputs."
+  ],
+  "critical_findings": [
+    "The private leaderboard was approximately 70% random/private split rather than a full 100% public/private split, which initially caused severe score miscalculations.",
+    "Random word essays required topic relevance to avoid truncation or failure, despite the attack strings themselves being the primary manipulation mechanism.",
+    "Adding Llama 8B to the local verification pipeline was the final key to achieving consistent perfect scores, despite initial assumptions about the judge composition."
+  ],
+  "what_did_not_work": [
+    "Initial chat template strategy that tried to force identity-based grading (outputting 0 or 9 based on model origin) yielded only ~22.8 LB score and failed to consistently separate Gemma variants or force exact 9.0 scores on Llama.",
+    "Relying solely on Conor's hint of 2xGemma2B judges without verifying against the actual LB correlation.",
+    "Assuming the final LB score would be based on a full 100% public+private split rather than a 70% random split."
+  ],
+  "github_repos": [
+    {
+      "url": "https://www.kaggle.com/code/jagatkiran/3rd-place-lang-attacks-verify",
+      "role": "solution"
+    }
+  ],
+  "papers": [],
+  "other_solution_refs": [],
+  "source_url": "https://www.kaggle.com/competitions/llms-you-cant-please-them-all/discussion/566515"
+}

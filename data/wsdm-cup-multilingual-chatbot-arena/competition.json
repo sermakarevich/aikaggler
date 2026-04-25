@@ -1,0 +1,103 @@
+{
+  "id": 86946,
+  "competitionName": "wsdm-cup-multilingual-chatbot-arena",
+  "title": "WSDM Cup - Multilingual Chatbot Arena",
+  "briefDescription": "Predict human preference across multiple languages from real votes in the Chatbot Arena.",
+  "dateEnabled": "2024-11-18T17:55:19.020Z",
+  "deadline": "2025-03-10T23:59:00Z",
+  "hasLeaderboard": true,
+  "maxDailySubmissions": 5,
+  "numScoredSubmissions": 2,
+  "hasSolution": true,
+  "numPrizes": 5,
+  "forumId": 6102659,
+  "finalLeaderboardHasBeenVerified": true,
+  "userRankMultiplier": 1,
+  "dateCreated": "2024-10-15T22:55:53.530827600Z",
+  "competitionHostSegmentId": 1,
+  "maxTeamSize": 5,
+  "medalsAllowed": true,
+  "enableTeamFiles": true,
+  "teamFileDeadline": "2025-03-29T00:00:00Z",
+  "teamMergerExplicitDeadline": "2025-01-27T23:59:00Z",
+  "prohibitNewEntrantsExplicitDeadline": "2025-01-27T23:59:00Z",
+  "organizationId": 4808,
+  "hasCoverImageUrl": true,
+  "showPrivateLeaderboard": true,
+  "isTeamCountOverridden": true,
+  "hasScripts": true,
+  "onlyAllowKernelSubmissions": true,
+  "totalTeams": 950,
+  "totalCompetitors": 1150,
+  "totalSubmissions": 1550,
+  "rulesRequired": true,
+  "usesSynchronousReruns": true,
+  "maxCpuRuntimeMinutes": 720,
+  "maxGpuRuntimeMinutes": 720,
+  "clonedFromCompetitionId": 66631,
+  "rowIdColumnName": "id",
+  "requiredSubmissionFilename": "submission.csv",
+  "evaluationAlgorithm": {
+    "id": 474,
+    "name": "Accuracy Score",
+    "isMax": true,
+    "isPublic": true,
+    "environmentRenderType": "ENVIRONMENT_RENDER_TYPE_JSON",
+    "kernelId": 39243584,
+    "latestCompetitionMetricVersionId": 17210,
+    "state": "AVAILABLE"
+  },
+  "categories": [
+    {
+      "id": 2107,
+      "name": "languages",
+      "fullPath": "subject > culture and humanities > languages",
+      "description": "Language is a method of communication that consists of using words arranged into meaningful patterns. This is a good place to find natural language processing datasets and kernels to study languages and train your chat bots.",
+      "datasetCount": 1025,
+      "competitionCount": 10,
+      "scriptCount": 378,
+      "slug": "languages",
+      "displayName": "Languages"
+    },
+    {
+      "id": 16723,
+      "name": "text conversation",
+      "fullPath": "task > text-conversation",
+      "description": "",
+      "datasetCount": 99,
+      "competitionCount": 5,
+      "scriptCount": 46,
+      "slug": "text-conversation",
+      "displayName": "Text Conversation"
+    },
+    {
+      "name": "accuracy score",
+      "description": "Accuracy classification score. See https://scikit-learn.org/stable/modules/generated/sklearn.metrics.accuracy_score.html",
+      "displayName": "Accuracy Score"
+    }
+  ],
+  "organization": {
+    "slug": "lmarena",
+    "name": "Chatbot Arena",
+    "thumbnailImageUrl": "https://storage.googleapis.com/kaggle-organizations/4808/thumbnail.jpg",
+    "profileUrl": "/organizations/lmarena"
+  },
+  "launched": true,
+  "createdByUserId": 1095143,
+  "license": {
+    "id": 14,
+    "name": "Attribution-NonCommercial 4.0 International (CC BY-NC 4.0)",
+    "url": "https://creativecommons.org/licenses/by-nc/4.0/",
+    "agreementRequired": false
+  },
+  "hostName": "Chatbot Arena",
+  "scoreTruncationNumDecimals": 6,
+  "locked": true,
+  "totalJoinedUsers": 4517,
+  "requiresIdentityVerification": true,
+  "submissionSizeLimitMb": 20480,
+  "reward": {
+    "id": "USD",
+    "quantity": 50000
+  }
+}

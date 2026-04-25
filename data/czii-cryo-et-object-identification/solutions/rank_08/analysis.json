@@ -1,0 +1,82 @@
+{
+  "summary": "The team achieved 8th place by training four complementary 3D U-Net model soups on CryoET tomogram data to identify and segment overlapping particles. They leveraged patch-based training with synthetic pretraining, large inference windows, and logit-level ensembling combined with GPU-accelerated watershed segmentation. Key technical choices included using MONAI's 3D U-Net, applying geometric augmentations, and optimizing post-processing pipelines to maximize leaderboard performance. The approach highlights the importance of inference patch size, logit fusion, and model soup techniques for complex 3D medical imaging tasks.",
+  "extensive_summary": "## Approach Overview\nThe solution centers on training four distinct 3D U-Net architectures using the MONAI library, designed to capture complementary features through varied channel depths, residual units, and training data compositions. All models were trained on patch sizes of (128, 128, 128) but inferred with significantly larger windows of (160, 384, 384) using a 25% overlap and Gaussian reconstruction to mitigate border artifacts.\n\n## Training & Preprocessing\nModels were pre-trained on six synthetic tomograms denoised via Gaussian filtering, which accelerated convergence and improved the leaderboard score by ~0.01. Training employed `RandCropByLabelClassesd` and spatial flips across all three axes. The loss function combined Dice and Cross-Entropy (`DiceCELoss`), optimized with AdamW and a plateau-based learning rate scheduler. Dropout (0.2-0.3) and Exponential Moving Average (EMA) were also utilized in specific configurations.\n\n## Inference & Post-Processing\nInference relied on sliding window predictions with large patches, which proved to be a major score booster. Instead of averaging probabilities, the team fused predictions at the logit level to improve particle detection. Post-processing involved watershed segmentation to separate touching particles, using distance transforms and local maxima as markers. Blob thresholding was applied per particle type to reduce false positives, and the pipeline was accelerated by switching from `skimage` to `cucim` and `cupy`. Geometric TTA (flips and transposes) was applied during inference.\n\n## Ensembling & Validation\nThe final submission combined four model soups (averaged weights from k-fold models) with varying architectures and training data (denoised, IsoNet-corrected, CTF-deconvolved). Validation relied on 7-fold cross-validation per tomography, with ensemble ranking occasionally dependent on leaked data scores. The team also documented several failed strategies, including 2D U-Nets, CutMix/MixUp, and direct probability averaging.",
+  "rank": 8,
+  "competition_flow": "Raw tomogram data is preprocessed with Gaussian denoising and synthetic pretraining, fed into multiple 3D U-Net architectures trained with patch-based augmentations, then inferred using large sliding windows with Gaussian reconstruction, followed by logit-level ensembling and GPU-accelerated watershed segmentation for final particle detection.",
+  "data_reading": [],
+  "data_processing": [
+    "Gaussian denoising on synthetic tomograms for pretraining",
+    "Training transforms: RandCropByLabelClassesd (spatial size 128x128x128, 16 samples) and RandFlipd (prob 0.5 on x, y, z axes)",
+    "Inference: sliding window with 25% overlap and Gaussian reconstruction",
+    "Geometric TTA (flips, transpose)",
+    "Post-processing: logit-level fusion, watershed segmentation with distance transforms/local maxima markers, per-particle blob thresholding, switching from skimage to cucim/cupy for speed"
+  ],
+  "features_engineering": [],
+  "models": [
+    "3D U-Net",
+    "YOLO"
+  ],
+  "frameworks_used": [
+    "MONAI",
+    "skimage",
+    "cucim",
+    "cupy"
+  ],
+  "loss_functions": [
+    "DiceCELoss"
+  ],
+  "cv_strategy": "7-fold cross-validation per tomography (train on all except one), out-of-fold predictions; ensemble validation occasionally relied on leaked data scores.",
+  "ensembling": "The final submission combined four model soups (averaged weights from k-fold models) with varying architectures and training data, fused at the logit level rather than probability level, followed by watershed segmentation and blob thresholding for post-processing.",
+  "insights": [
+    "Larger inference patches significantly boost performance compared to training patch sizes.",
+    "Fusing predictions at the logit level improves particle detection over probability averaging.",
+    "Model soup effectively manages and leverages multiple complementary model variants.",
+    "Pretraining on synthetic denoised data accelerates convergence and improves leaderboard scores."
+  ],
+  "critical_findings": [
+    "Using inference patches of (160, 384, 384) boosted the score by ~0.01 over (128, 128, 128).",
+    "Combining predictions at the logits level rather than averaging probabilities improved particle detection.",
+    "Watershed segmentation successfully separated touching/overlapping particles.",
+    "Gaussian denoising, while simple, provided a practical and effective preprocessing step that improved visualization and downstream performance."
+  ],
+  "what_did_not_work": [
+    "Increased augmentations",
+    "CutMix, MixUp",
+    "2D U-Net approaches",
+    "Ensembling with YOLO for the final solution",
+    "Bigger and deeper U-Nets",
+    "Cross-entropy only loss functions"
+  ],
+  "github_repos": [
+    {
+      "url": "https://github.com/czimaginginstitute/2024_czii_mlchallenge_notebooks",
+      "role": "reference"
+    },
+    {
+      "url": "https://github.com/IAmPara0x/czii-8th-solution",
+      "role": "solution"
+    }
+  ],
+  "papers": [
+    {
+      "title": "Model Soup paper",
+      "url": "https://arxiv.org/abs/2203.05482",
+      "arxiv_id": "2203.05482"
+    }
+  ],
+  "other_solution_refs": [
+    {
+      "description": "Host's example notebook",
+      "url": "https://www.kaggle.com/code/fnands/baseline-unet-train-submit"
+    },
+    {
+      "description": "Submission Notebook",
+      "url": "https://www.kaggle.com/code/iamparadox/czii-final-sub-reproduce"
+    },
+    {
+      "description": "Submission Notebook Clean Version",
+      "url": "https://www.kaggle.com/code/sirapoabchaikunsaeng/czii-final-sub-reproduce"
+    }
+  ],
+  "source_url": "https://www.kaggle.com/competitions/czii-cryo-et-object-identification/discussion/561515"
+}

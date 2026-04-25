@@ -1,0 +1,26 @@
+{
+  "id": "armanzhalgasbayev/kazakh-llm-based-on-gemma-2b-kz",
+  "id_no": 74599716,
+  "title": "Kazakh LLM based on Gemma 2B [KZ]",
+  "code_file": "kazakh-llm-based-on-gemma-2b-kz.ipynb",
+  "language": "python",
+  "kernel_type": "notebook",
+  "is_private": false,
+  "enable_gpu": true,
+  "enable_tpu": false,
+  "enable_internet": true,
+  "keywords": [
+    "gpu"
+  ],
+  "dataset_sources": [],
+  "kernel_sources": [],
+  "competition_sources": [
+    "gemma-language-tuning"
+  ],
+  "model_sources": [
+    "keras/gemma/Keras/gemma_instruct_2b_en/2",
+    "google/gemma-2/Transformers/gemma-2-2b-it/2"
+  ],
+  "docker_image": "gcr.io/kaggle-private-byod/python@sha256:1003a82bef5df3c098b2041d936cb5f1836e52d7b610e8f0f4dedc194fb3b773",
+  "machine_shape": "Gpu"
+}

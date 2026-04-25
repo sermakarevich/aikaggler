@@ -1,0 +1,98 @@
+{
+  "id": 83035,
+  "competitionName": "llms-you-cant-please-them-all",
+  "title": "LLMs - You Can't Please Them All",
+  "briefDescription": "Are LLM-judges robust to adversarial inputs?",
+  "dateEnabled": "2024-12-03T21:42:53.257Z",
+  "deadline": "2025-03-04T23:59:00Z",
+  "hasLeaderboard": true,
+  "leaderboardPercentage": 30,
+  "maxDailySubmissions": 5,
+  "numScoredSubmissions": 2,
+  "hasSolution": true,
+  "numPrizes": 5,
+  "forumId": 5580705,
+  "finalLeaderboardHasBeenVerified": true,
+  "userRankMultiplier": 1,
+  "dateCreated": "2024-07-18T18:41:42.974771500Z",
+  "competitionHostSegmentId": 1,
+  "maxTeamSize": 5,
+  "medalsAllowed": true,
+  "teamMergerExplicitDeadline": "2025-02-25T23:59:00Z",
+  "prohibitNewEntrantsExplicitDeadline": "2025-02-25T23:59:00Z",
+  "kernelsPublishingDisabledDeadline": "2025-02-25T23:59:59Z",
+  "organizationId": 4,
+  "hasCoverImageUrl": true,
+  "showPrivateLeaderboard": true,
+  "hasScripts": true,
+  "onlyAllowKernelSubmissions": true,
+  "totalTeams": 1692,
+  "totalCompetitors": 1995,
+  "totalSubmissions": 58905,
+  "rulesRequired": true,
+  "usesSynchronousReruns": true,
+  "maxCpuRuntimeMinutes": 540,
+  "maxGpuRuntimeMinutes": 540,
+  "rowIdColumnName": "id",
+  "requiredSubmissionFilename": "submission.csv",
+  "evaluationAlgorithm": {
+    "id": 2780,
+    "name": "LLMYCPTA metric 20241120",
+    "isMax": true,
+    "environmentRenderType": "ENVIRONMENT_RENDER_TYPE_JSON",
+    "kernelId": 72209307,
+    "latestCompetitionMetricVersionId": 29753,
+    "state": "AVAILABLE"
+  },
+  "categories": [
+    {
+      "id": 16696,
+      "name": "text generation",
+      "fullPath": "task > text-generation",
+      "description": "",
+      "datasetCount": 534,
+      "competitionCount": 24,
+      "scriptCount": 613,
+      "slug": "text-generation",
+      "displayName": "Text Generation"
+    },
+    {
+      "id": 13210,
+      "name": "statistical analysis",
+      "fullPath": "analysis > statistical analysis",
+      "datasetCount": 1304,
+      "competitionCount": 6,
+      "scriptCount": 3340,
+      "slug": "statistical-analysis",
+      "displayName": "Statistical Analysis"
+    },
+    {
+      "name": "custom metric",
+      "description": "This competition's metric is defined under the 'Evaluation' tab",
+      "displayName": "Custom Metric"
+    }
+  ],
+  "organization": {
+    "slug": "kaggle",
+    "name": "Kaggle",
+    "thumbnailImageUrl": "https://storage.googleapis.com/kaggle-organizations/4/thumbnail.png",
+    "profileUrl": "/organizations/kaggle"
+  },
+  "launched": true,
+  "createdByUserId": 1314380,
+  "license": {
+    "id": 42,
+    "name": "Subject to Competition Rules",
+    "agreementRequired": false
+  },
+  "hostName": "Kaggle",
+  "scoreTruncationNumDecimals": 3,
+  "locked": true,
+  "totalJoinedUsers": 6906,
+  "requiresIdentityVerification": true,
+  "submissionSizeLimitMb": 20480,
+  "reward": {
+    "id": "USD",
+    "quantity": 50000
+  }
+}

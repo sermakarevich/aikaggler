@@ -1,0 +1,284 @@
+# um-game-playing-strength-of-mcts-variants: cross-solution summary
+
+This competition focused on predicting game balance and agent utility from tabular match data and rule descriptions, where winning approaches heavily relied on robust cross-validation management, extensive symmetry-based data augmentation, and strategic post-processing. Top solutions consistently combined gradient boosting models (CatBoost, LightGBM) with custom neural networks or stacking pipelines, leveraging MCTS-derived features, distribution-matching scaling, and careful ensemble weight tuning to bridge the gap between validation and leaderboard performance.
+
+## Competition flows
+- Raw game data and rulesets processed with supplemental MCTS-based balance features and augmented training data, fed into grouped cross-validated ensemble of CatBoost, LightGBM, and TabM, post-processed with isotonic regression and tuned via Nelder-Mead.
+- Raw data augmented via custom flip strategy, processed with TF-IDF-SVD and null-importance feature selection, validated using StratifiedGroupKFold, modeled in two-stage stacking pipeline with LightGBM and CatBoost, blended across seeds, and scaled by coefficient before submission.
+- Raw data processed with custom adjusted advantage features and TF-IDF rule embeddings, augmented via agent swapping and label inversion, trained on CatBoost, LightGBM, and DeepTables using group-based cross-validation, then weighted-blended and post-processed.
+- Raw tabular game data cleaned, augmented via zero-cost feature inversion and agent swapping, enriched with manual and OpenFE-generated features, fed into two-stage CatBoost/LightGBM/MLP pipeline with stratified group validation, followed by scaling/clipping adjustment.
+- Raw data processed with manual cross features and target encoding, fed into 10-fold LightGBM and 5-fold CatBoost models, while custom PyTorch NN uses binned features and tree leaf indices with CIN+FM pooling; predictions linearly scaled via OOF optimization and blended.
+- Raw tabular match data processed with targeted augmentations and feature selection, fed into CatBoost and LightGBM Dart models trained with 8-fold GroupKFold, combined via optimized linear weights and clipping.
+- Raw tabular data augmented by flipping agent roles and transforming features, concatenated with original dataset, fed into CatBoost model trained across 10 folds; final predictions scaled by constant factor before submission.
+- Community notebooks adapted to generate predictions, combined via manual cascade merging process with multipliers and adders, clipped and offset, before final submission.
+- Raw data processed using polars to accelerate feature engineering, augmented via agent swapping and equivalence transitivity, fed into single CatBoost model with 10-fold CV, post-processed with 1.2x prediction multiplier.
+
+## Data processing
+- Dropping 43 features with local consistency but competition data discrepancies (Ludii version mismatches)
+- Generating synthetic training rows via GAVEL and LLMs (Llama 3.1 70B, Qwen 2.5 32B) with heavy downsampling
+- Applying tree search noise augmentation and recomputing nondeterministic features with uniform sampling
+- Weighting extra training data differently per model to mitigate label noise
+- Custom flip augmentation (swapping agent1/agent2, transforming AdvantageP1 to 1-AdvantageP1, negating utility_agent1)
+- Modifying minor class of utility_agent1 to neighbor class
+- Applying TF-IDF-SVD on EnglishRules
+- Null importance feature selection
+- Agent swapping (switching agent1-agent2)
+- Label inversion (inverting advantage and utility labels)
+- Augmented inference row generation for mean blending
+- Min-max scaling
+- Post-processing on final predictions
+- Dropping constant columns and GameRulesetName, LudRules, EnglishRules
+- Memory optimization
+- Zero-cost data generation (swap agent strings, invert target, invert Balance column)
+- Filling NaNs with -100
+- Applying quantile transformer to numerical features for DNNs
+- Inference post-processing via np.clip(predictions * 1.175, -1, 1)
+- Test time TTA by combining flipped data
+- Binning top numeric features
+- Label augmentation (multinomial)
+- Reimplementing pandas operations with polars for speed
+- Applying equivalence relations/transitivity augmentation
+- Duplicating dataset by swapping agent roles and transforming features
+- Binning AdvantageP1 into 10 categories while retaining original
+- Scaling final predictions by constant factor (1.25 or 1.2)
+
+## Features engineering
+- Supplemental game balance metrics via 15-second MCTS tree searches on starting positions
+- Search speed metrics (actions & iterations per second)
+- Piecewise linear embeddings for continuous numerical features
+- TF-IDF-SVD features of EnglishRules
+- Features from external MCTS starter notebook
+- Splitting agent strings into selection, exploration, playout, and bounds components
+- Efficiency ratios (e.g., Playouts/Moves, ComplexityBalanceInteraction, AdvantageBalanceRatio)
+- Cross-agent features combining p1/p2 subtypes
+- Automatic feature generation via OpenFE (top-500 features, pruning group-aggregated/frequency features)
+- Adjusted advantages: ((AdvantageP1 * Completion) + Drawishness/2) for both players
+- TF-IDF features from EnglishRules, LudRules, agent1, and agent2
+- Manual cross-features of top 20 numerical features (multiplication/division)
+- Target encoding
+- LightGBM leaf indices (depth 5, 200 trees)
+- Modified AdvantageP1 representing win/loss difference instead of probability
+- Stabilized target features (utility_agent1 - AdvantageP1) reversed post-prediction
+- Synthesized transitivity features from intermediate agent wins/losses/draws
+- Binned AdvantageP1 into 10 discrete values
+- Ludii domain-specific features (board shape, piece types, randomness presence, rule complexity, special movement patterns)
+
+## Models
+- CatBoost
+- LightGBM (including Dart variant)
+- TabM
+- Isotonic regression
+- Two-stage stacking model
+- DeepTables
+- DNN/MLP (including custom PyTorch NN with CIN + FM pooling)
+- XGBoost
+- GBDT
+- MCTS variants
+- Matryoshka embeddings
+
+## Frameworks used
+- catboost
+- lightgbm
+- tabm
+- deeptables
+- xgboost
+- torch (PyTorch)
+- scikit-learn
+- optuna
+- openfe
+- scipy
+- pandas
+- polars
+- numpy
+- cir-model
+
+## Loss functions
+- RMSE
+- MultiRMSE
+
+## CV strategies
+- GroupKFoldShuffle partitioned on ruleset names
+- StratifiedGroupKFold grouped by GameRulesetName
+- Stratified Group 10-Fold / 6-Fold / 5-Fold
+- GroupKFold grouped by 'Game' or 'GamerulesetName', stratified by label
+- 8-folds GroupKFold
+- Increased folds from 5 to 10 for ensemble diversity
+- 5-fold groupKFold (5gkf)
+- 10-fold CV
+- Nested CV (5x5 folds) for leakage-free OOF predictions
+- Multi-seed cross-validation
+
+## Ensembling
+- Stacked ensemble of CatBoost, LightGBM, and TabM with weights tuned via Nelder-Mead on CV
+- Blending LightGBM and CatBoost models averaged across 3 random seeds
+- Weighted blend of pipelines with mean blending of original and augmented inference predictions
+- Weighted ensemble optimized via scipy.minimize based on CV score
+- Simple weighted blend of 10-fold LightGBM and 5-fold NN (weights 1.0 and 0.75)
+- Cascading manual merging of ~12 community models using sequential multipliers and adders
+- Linear scaling (a*x + b) optimized on OOF predictions for RMSE
+- Post-processing with centered or scikit-learn isotonic regression on OOF predictions
+- Multiplicative coefficient scaling (e.g., 1.12, 1.175, 1.25, 1.2) to align prediction means with target distribution
+- Clipping predictions to [-0.98, 0.98] or [-1, 1] with sign-based offset adjustments
+
+## Insights
+- Trusting cross-validation over the public leaderboard for final model selection yielded better private leaderboard results.
+- Supplemental game balance features computed via a fast 15-second MCTS tree search on starting positions significantly improved scores compared to simulating full games or training language models.
+- Carefully weighting and downsampled noisy extra training data generated via GAVEL and LLMs provided marginal but consistent score improvements.
+- Centered isotonic regression on out-of-fold predictions served as an effective post-processing step that improved both CV and LB correlation.
+- Dropping 43 features that showed perfect consistency locally but differed from the competition's data consistently improved CV scores, whereas importance-based filtering failed to identify them.
+- The "Trust CV" strategy for final ensemble selection outperformed the "Trust LB" strategy despite the public leaderboard heavily penalizing CV-tuned ensembles in early experiments.
+- Scaling up the amount of supplemental training data produced severely diminishing returns and increased label noise, suggesting annotating fewer games with more compute per game would have been more effective.
+- A stable CV-LB pipeline is critical since public and private datasets share the same distribution.
+- Data augmentation, particularly flip augmentation, is a key driver of performance.
+- Null importance feature selection effectively removes features that shift too much under target shift.
+- The private leaderboard showed almost no shake, confirming distribution alignment between public and private data.
+- Multiplying the final prediction means by 1.12 improved the LB score by 0.002.
+- Adjusting advantages by combining completion and drawishness was sufficient as the sole feature for CatBoost.
+- Label and agent swapping augmentations effectively expanded the dataset and improved model robustness.
+- TF-IDF features extracted from rule texts provided valuable signal for the GBDT models.
+- Stratifying GroupKFold by both target and agent1 significantly improved CV stability compared to using GameRulesetName alone.
+- Inverting the Balance feature during zero-cost data generation was crucial to closing the gap between original and generated OOF predictions.
+- Treating the task as a regression problem optimizing RMSE yielded better results than classification with QWK.
+- Using CatBoost out-of-fold predictions as features for secondary models effectively boosted performance despite CatBoost being the strongest single model.
+- Addressing train-test distribution shift near the competition's end via simple scaling and clipping was more impactful than complex post-processing.
+- Inverting the AdvantageP1 column initially seemed logical but actually decreased the score, revealing that swapping agents/targets without inverting this specific feature brought no new signal.
+- Automatic feature generation via OpenFE produced unstable results on the public LB when features were aggregated by groups or based on frequency, requiring their removal.
+- Applying the same distribution-matching scaling to the CV ensemble only marginally improved the public score, indicating the shift was specific to the public/private test split rather than a general data issue.
+- One-hot, label, target encoding, and scaling/normalizing numerical features were ineffective for tree models (only useful for the DNN).
+- Pseudo-labeling by training a model without group split criteria did not improve the score.
+- Dropping features based on correlation, variance, or unique values per group did not work better than feature importance alone.
+- XGBoost models and meta-models predicting corner cases/draws were not effective.
+- Using simple 5-fold model outputs for OOF predictions caused leakage, necessitating a nested CV approach.
+- Tree models are more stable on the public leaderboard than neural networks.
+- Manual cross features of top numerical features significantly improve both CV and LB scores.
+- Target encoding provides a modest but consistent LB boost.
+- CV strategies grouped by 'Game' or 'GamerulesetName' may not align with the public leaderboard, so trusting LB is crucial.
+- CatBoost's Dart mode improves CV but hurts LB performance.
+- The NN model is highly unstable on LB due to randomness, requiring careful selection of the best LB run.
+- The CV strategy using GKF + Game + stratification with label did not align with PB, leading to suboptimal ensemble weights.
+- CatBoost single model did not contribute to the final PB score.
+- LightGBM's Dart mode improved CV but hurt LB.
+- The GKF + Game + stratified label CV strategy did not align with the public leaderboard.
+- Using 8-folds GroupKFold provided more stable CV correlation than 5 or 10 folds.
+- Predicting a stabilized target (utility_agent1 - AdvantageP1) and reversing it post-prediction significantly improved CV.
+- Modifying AdvantageP1 to match the target's win/loss difference structure aligned feature distribution with the target.
+- Training on synthetic augmentations improved CV but often hurt LB due to overfitting, making original data + TTA more robust.
+- Optimizing ensemble weights and clipping values is crucial for translating CV gains to LB improvements.
+- Augmentations that boosted CV by ~0.01 actually degraded LB performance, highlighting a CV/LB leakage or overfitting risk.
+- Predicting wins/n and losses/n separately improved CV but worsened LB, likely because the model over-relied on AdvantageP1's distribution matching the target.
+- Using 8 folds instead of the more common 5 or 10 folds unexpectedly stabilized the validation process and improved correlation.
+- Self-play and transitivity augmentations improved CV but did not translate to LB gains and caused training instability.
+- Training per-agent models improved CV but yielded worse private scores.
+- Reducing target unique values and using a classifier with expectation mapping did not help CV or LB.
+- Pseudo-labeling on test predictions provided no improvement in CV or LB.
+- Doubling the dataset via symmetry-based augmentation is highly effective when pseudo-labelling fails due to high error rates.
+- Binning noisy but critical features can improve model stability without losing information if the original is retained.
+- Scaling model outputs by a constant can effectively correct distribution mismatches and improve leaderboard scores.
+- The CatBoost model consistently squeezed predictions toward zero, creating a distribution mismatch that was resolved by multiplying outputs by 1.25.
+- Pseudo-labelling failed because the initial error rate (>0.4) made fake data too noisy to be useful as ground truth.
+- Neural networks performed poorly despite showing good cross-validation scores, indicating potential data leakage or overfitting to CV splits.
+- Pseudo-labelling
+- Creating advp2 and complex feature interactions
+- Training neural network models
+- Manual cascade merging with multipliers and adders effectively reduces RMSE across strong community models.
+- A stacking strategy with groupKFold validation helps balance the risk of Public LB overfitting.
+- The 35%-65% train/test split was likely a simple random sampling process, causing a distribution mismatch between training and test data.
+- Overfitting to the Public Leaderboard was actually the winning strategy initially, contrary to standard advice.
+- Modifying gradient boosting model parameters without success.
+- Relying on CV results to guide selection for a Public LB-overfitted submission.
+- Optimizing feature engineering speed with Polars drastically improved iteration time.
+- Validating improvements concurrently with parameter tuning led to poor prioritization of tasks.
+- Exploring the underlying game library (Ludii) provided valuable structural patterns for feature design.
+- Multiplying predictions by 1.2 based on public LB feedback was a high-risk but effective post-processing step.
+- Equivalence-based transitivity augmentation was theoretically sound but ultimately did not improve the ensemble score.
+- Ensembling with a model trained on equivalence-transitivity augmented data did not help.
+
+## Critical findings
+- Dropping 43 features that showed perfect consistency locally but differed from the competition's data (likely due to Ludii player version discrepancies) consistently improved CV scores, whereas importance-based filtering failed to identify them.
+- The "Trust CV" strategy for final ensemble selection outperformed the "Trust LB" strategy despite the public leaderboard heavily penalizing CV-tuned ensembles in early experiments.
+- Scaling up the amount of supplemental training data produced severely diminishing returns and increased label noise, suggesting annotating fewer games with more compute per game would have been more effective.
+- The private leaderboard showed almost no shake, confirming distribution alignment between public and private data.
+- Multiplying the final prediction means by 1.12 improved the LB score by 0.002.
+- Inverting the AdvantageP1 column initially seemed logical but actually decreased the score, revealing that swapping agents/targets without inverting this specific feature brought no new signal.
+- Automatic feature generation via OpenFE produced unstable results on the public LB when features were aggregated by groups or based on frequency, requiring their removal.
+- Applying the same distribution-matching scaling to the CV ensemble only marginally improved the public score, indicating the shift was specific to the public/private test split rather than a general data issue.
+- CatBoost's Dart mode improves CV but hurts LB performance.
+- The NN model is highly unstable on LB due to randomness, requiring careful selection of the best LB run.
+- The CV strategy using GKF + Game + stratification with label did not align with PB, leading to suboptimal ensemble weights.
+- Augmentations that boosted CV by ~0.01 actually degraded LB performance, highlighting a CV/LB leakage or overfitting risk.
+- Predicting wins/n and losses/n separately improved CV but worsened LB, likely because the model over-relied on AdvantageP1's distribution matching the target.
+- Using 8 folds instead of the more common 5 or 10 folds unexpectedly stabilized the validation process and improved correlation.
+- The CatBoost model consistently squeezed predictions toward zero, creating a distribution mismatch that was resolved by multiplying outputs by 1.25.
+- Pseudo-labelling failed because the initial error rate (>0.4) made fake data too noisy to be useful as ground truth.
+- Neural networks performed poorly despite showing good cross-validation scores, indicating potential data leakage or overfitting to CV splits.
+- The 35%-65% train/test split was likely a simple random sampling process, causing a distribution mismatch between training and test data.
+- Overfitting to the Public Leaderboard was actually the winning strategy initially, contrary to standard advice.
+- Multiplying predictions by 1.2 based on public LB feedback was a high-risk but effective post-processing step.
+- Equivalence-based transitivity augmentation was theoretically sound but ultimately did not improve the ensemble score.
+
+## What did not work
+- Using unsplitted agent strings as categorical features
+- TF-IDF & LSA
+- MLPs & XGBoost
+- Various deep learning approaches for text embeddings
+- Training language models to predict game balance
+- OpenFE & iterative feature selection
+- Importance-based feature selection
+- Training models to predict average Elo ratings for MCTS configs
+- Training tabular classification models to identify imbalanced/drawish games
+- Adding random noise for augmentation
+- Enforcing monotonicity constraints with CatBoost
+- Using CatBoost's finetuning functionality
+- Ensembles of multiple MCTS algorithms for starting position evals
+- LudRules tfidf
+- bert embeddings
+- pseudo label with more agent1-agent2-games groups
+- neural network
+- One-hot, label, target encoding, and scaling/normalizing numerical features were ineffective for tree models (only useful for the DNN).
+- Pseudo-labeling by training a model without group split criteria did not improve the score.
+- Dropping features based on correlation, variance, or unique values per group did not work better than feature importance alone.
+- XGBoost models and meta-models predicting corner cases/draws were not effective.
+- Using simple 5-fold model outputs for OOF predictions caused leakage, necessitating a nested CV approach.
+- CatBoost single model did not contribute to the final PB score.
+- LightGBM's Dart mode improved CV but hurt LB.
+- The GKF + Game + stratified label CV strategy did not align with the public leaderboard.
+- Self-play and transitivity augmentations improved CV but did not translate to LB gains and caused training instability.
+- Training per-agent models improved CV but yielded worse private scores.
+- Reducing target unique values and using a classifier with expectation mapping did not help CV or LB.
+- Pseudo-labeling on test predictions provided no improvement in CV or LB.
+- Pseudo-labelling
+- Creating advp2 and complex feature interactions
+- Training neural network models
+- Modifying gradient boosting model parameters without success.
+- Relying on CV results to guide selection for a Public LB-overfitted submission.
+- Ensembling with a model trained on equivalence-transitivity augmented data did not help.
+
+## Notable individual insights
+- rank 1 (1st Place Solution): Supplemental game balance features computed via a fast 15-second MCTS tree search on starting positions significantly improved scores compared to simulating full games or training language models.
+- rank 6 (The 6th place solution (CV 0.39)): Stratifying GroupKFold by both target and agent1 significantly improved CV stability compared to using GameRulesetName alone.
+- rank 9 (9th Place Solution: Various Augmentations + A lot of Modeling tricks): Augmentations that boosted CV by ~0.01 actually degraded LB performance, highlighting a CV/LB leakage or overfitting risk.
+- rank 10 (10th place solution): Doubling the dataset via symmetry-based augmentation is highly effective when pseudo-labelling fails due to high error rates.
+- rank 4 (4th Place Solution - Wow! - Code Sharing): Overfitting to the Public Leaderboard was actually the winning strategy initially, contrary to standard advice.
+
+## Solutions indexed
+- #1 [[solutions/rank_01/solution|1st Place Solution]]
+- #3 [[solutions/rank_03/solution|3rd place solution - two stage flip augmentation stacking with code]]
+- #4 [[solutions/rank_04/solution| 4th Place Solution - Wow! - Code Sharing]]
+- #5 [[solutions/rank_05/solution|5th Place Solution]]
+- #6 [[solutions/rank_06/solution|The 6th place solution (CV 0.39)]]
+- #7 [[solutions/rank_07/solution|[7th Solution] Ensemble of Tree + NN]]
+- #8 [[solutions/rank_08/solution|8th place solution: a 10-day challenge]]
+- #9 [[solutions/rank_09/solution|9th Place Solution: Various Augmentations + A lot of Modeling tricks]]
+- #10 [[solutions/rank_10/solution|10th place solution]]
+
+## GitHub links
+- [yandex-research/tabm](https://github.com/yandex-research/tabm) _(library)_ — from [[solutions/rank_01/solution|1st Place Solution]]
+- [scikit-learn/scikit-learn](https://github.com/scikit-learn/scikit-learn) _(library)_ — from [[solutions/rank_01/solution|1st Place Solution]]
+- [jday96314/MCTS](https://github.com/jday96314/MCTS) _(solution)_ — from [[solutions/rank_01/solution|1st Place Solution]]
+- [IIIS-Li-Group/OpenFE](https://github.com/IIIS-Li-Group/OpenFE) _(library)_ — from [[solutions/rank_06/solution|The 6th place solution (CV 0.39)]]
+- [vadimtimakin/Kaggle-MCTS-6th-place-solution](https://github.com/vadimtimakin/Kaggle-MCTS-6th-place-solution) _(solution)_ — from [[solutions/rank_06/solution|The 6th place solution (CV 0.39)]]
+- [smly/vscode-fast-kaggle](https://github.com/smly/vscode-fast-kaggle) _(reference)_ — from [[solutions/rank_08/solution|8th place solution: a 10-day challenge]]
+
+## Papers cited
+- [GAVEL](https://arxiv.org/pdf/2407.09388)
+- [TabM](https://arxiv.org/pdf/2410.24210)

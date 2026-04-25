@@ -1,0 +1,61 @@
+{
+  "summary": "This notebook explores the behavior of the Quadratic Weighted Kappa (QWK) metric and demonstrates a multi-model baseline for the Child Mind Institute competition. It combines tabular demographics, physical measurements, and time-series statistics, then engineers domain-specific interactions and autoencoder-encoded features. The author trains an ensemble of gradient boosting models and TabNet via 5-fold stratified CV, optimizes prediction thresholds for QWK, and generates a final submission via majority voting. The notebook highlights how QWK's ordinal weighting and discretization can produce counterintuitive score changes, and shows that technically flawed techniques (like separate autoencoder fitting) can still yield competitive leaderboard results.",
+  "purpose": "ensemble",
+  "competition_flow": "Loads tabular and time-series data, engineers interaction and autoencoder features, trains an ensemble of gradient boosting and TabNet models via 5-fold stratified CV, optimizes prediction thresholds for QWK, and generates a final submission via majority voting.",
+  "data_reading": [
+    "Main train/test data loaded via pd.read_csv from CSV files.",
+    "Time-series data loaded from parquet files using pd.read_parquet within a ThreadPoolExecutor, then aggregated via df.describe().values.reshape(-1)."
+  ],
+  "data_processing": [
+    "Merges time-series statistics into the main tabular dataset.",
+    "Fills categorical missing values with 'Missing' and converts to category type.",
+    "Applies custom integer mapping for categorical features.",
+    "Imputes numeric missing values with KNNImputer(n_neighbors=5).",
+    "Scales numeric data with StandardScaler for autoencoder input.",
+    "Drops 'id' and 'Season' columns."
+  ],
+  "features_engineering": [
+    "Creates domain-derived interaction and ratio features (e.g., BMI \u00d7 Age, Internet Hours \u00d7 SDS score, Muscle-to-Fat ratio, Hydration Status, HeartRate \u00d7 Age ratio).",
+    "Applies a custom PyTorch autoencoder to time-series statistics to generate encoded features.",
+    "Adds 1 to internet hours to prevent division by zero in ratio features."
+  ],
+  "models": [
+    "LGBMRegressor",
+    "XGBRegressor",
+    "CatBoostRegressor",
+    "TabNetRegressor",
+    "VotingRegressor"
+  ],
+  "frameworks_used": [
+    "scikit-learn",
+    "lightgbm",
+    "xgboost",
+    "catboost",
+    "pytorch",
+    "pytorch_tabnet",
+    "scipy",
+    "pandas",
+    "numpy",
+    "matplotlib",
+    "seaborn",
+    "plotly"
+  ],
+  "loss_functions": [
+    "MSELoss (used for autoencoder feature extraction)"
+  ],
+  "cv_strategy": "StratifiedKFold(n_splits=5, shuffle=True, random_state=42)",
+  "ensembling": "Combines LightGBM, XGBoost, CatBoost, and TabNet predictions using a weighted VotingRegressor (weights vary by model variant); final submission aggregates three separate model runs via majority voting; applies threshold optimization via scipy.optimize.minimize (Nelder-Mead) to map continuous predictions to discrete classes.",
+  "insights": [
+    "The QWK metric can be counterintuitive, as predicting an incorrect class sometimes yields a higher score than predicting the true class due to its ordinal weighting.",
+    "Discretizing continuous predictions into classes loses valuable ranking information within thresholds, potentially masking model nuances.",
+    "Fitting autoencoders separately on train and test sets can cause distribution shifts, yet such techniques may still produce competitive leaderboard scores."
+  ],
+  "critical_findings": [
+    "Predicting class 3 instead of the true class 2 can sometimes increase the QWK score for a single additional observation.",
+    "The threshold optimizer using Nelder-Mead often converges to a local maximum rather than the global optimum.",
+    "Training autoencoders independently on train and test data can produce severely different encodings for identical inputs."
+  ],
+  "what_did_not_work": [],
+  "source_url": "https://www.kaggle.com/code/shodaifuruya/lb-497-multi-model-feature-importance-analysis",
+  "votes": 490
+}

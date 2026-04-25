@@ -1,7 +1,7 @@
 """Entry point: run full competition pipeline on every completed money-based Kaggle competition.
 
 Pipeline per competition:
-  solutions analysis → notebooks analysis → classification.
+  solutions analysis → notebooks analysis → github repo analysis → classification.
 
 Discovery pipeline:
 1. List competitions via the kaggle CLI (paginated CSV).
@@ -23,6 +23,11 @@ from pathlib import Path
 
 from aikaggler.plugins.code_analysis.config import TOP_NOTEBOOKS
 from aikaggler.plugins.competition_analysis.cli import cmd_competition
+from aikaggler.plugins.github_analysis.config import (
+    CHUNK_SIZE,
+    DEFAULT_ROLES,
+    MAX_FILES_PER_REPO,
+)
 from aikaggler.plugins.solution_analysis.config import DEFAULT_OUTPUT_ROOT, OLLAMA_MODEL
 
 
@@ -123,6 +128,24 @@ def main(argv: list[str] | None = None) -> int:
                         help="Forum pages to scan per competition")
     parser.add_argument("--top", type=int, default=TOP_NOTEBOOKS,
                         help="Top-N notebooks to pull per competition")
+    parser.add_argument("--chunk-size", type=int, default=CHUNK_SIZE,
+                        help="Files merged per ollama call at each repo aggregation level")
+    parser.add_argument("--max-files", type=int, default=MAX_FILES_PER_REPO,
+                        help=("Cap on files deep-analyzed per repo (selection step "
+                              "kicks in for repos with more files than this)."))
+    parser.add_argument(
+        "--roles", nargs="*", default=list(DEFAULT_ROLES),
+        help=(
+            "GitHub repo roles to analyze (solution|library|reference). "
+            "Pass --roles with no values to disable filtering."
+        ),
+    )
+    parser.add_argument("--skip-repos", action="store_true",
+                        help="Skip GitHub repo analysis step")
+    parser.add_argument("--force", action="store_true",
+                        help=("Re-run every stage of every competition even if "
+                              "cached artefacts exist (bypasses the outer "
+                              "data/<slug>/ skip)"))
     parser.add_argument("--model", default=OLLAMA_MODEL)
     parser.add_argument("--data-root", type=Path, default=DEFAULT_OUTPUT_ROOT)
     parser.add_argument("--max-competitions", type=int, default=0,
@@ -132,12 +155,20 @@ def main(argv: list[str] | None = None) -> int:
     args = parser.parse_args(argv)
 
     comps = collect_competitions(args.pages)
-    pending = [c for c in comps if not _already_processed(c.slug, args.data_root)]
-    skipped = len(comps) - len(pending)
-    print(
-        f"Found {len(comps)} completed USD-prize competitions "
-        f"({skipped} already in {args.data_root}, {len(pending)} pending)"
-    )
+    if args.force:
+        pending = list(comps)
+        print(
+            f"Found {len(comps)} completed USD-prize competitions "
+            f"(--force: all {len(pending)} queued, every per-stage cache will "
+            f"be ignored)"
+        )
+    else:
+        pending = [c for c in comps if not _already_processed(c.slug, args.data_root)]
+        skipped = len(comps) - len(pending)
+        print(
+            f"Found {len(comps)} completed USD-prize competitions "
+            f"({skipped} already in {args.data_root}, {len(pending)} pending)"
+        )
 
     if args.max_competitions > 0:
         pending = pending[: args.max_competitions]
@@ -159,6 +190,11 @@ def main(argv: list[str] | None = None) -> int:
             limit=args.limit,
             pages=args.topic_pages,
             top=args.top,
+            chunk_size=args.chunk_size,
+            max_files=args.max_files,
+            force=args.force,
+            roles=args.roles,
+            skip_repos=args.skip_repos,
             model=args.model,
             data_root=args.data_root,
         )

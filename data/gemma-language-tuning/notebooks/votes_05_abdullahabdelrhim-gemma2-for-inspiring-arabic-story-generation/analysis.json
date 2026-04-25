@@ -1,0 +1,52 @@
+{
+  "summary": "This notebook provides a step-by-step tutorial on fine-tuning the Gemma 2 2B instruction-tuned model for generating culturally appropriate Arabic stories. It covers dataset curation from the AraStories MSA subset, text normalization, and GPT-4-based quality assurance. The core technical focus is on parameter-efficient fine-tuning using QLoRA with 4-bit quantization, LoRA adapters, and memory optimization techniques like gradient checkpointing and paged optimizers. The author demonstrates the full pipeline from data preparation to training with `trl`'s SFTTrainer, adapter merging, and optimized inference setup. Readers should learn how to adapt large language models for low-resource or culturally specific tasks while managing strict GPU memory constraints.",
+  "purpose": "tutorial",
+  "competition_flow": "Loads the AraStories MSA dataset, applies text cleaning and GPT-4-based quality filtering, formats it into chat templates, fine-tunes a 4-bit quantized Gemma 2 2B model using QLoRA and the SFTTrainer, and exports the merged adapter for inference.",
+  "data_reading": [
+    "Loaded via kagglehub from a CSV file ('Formatted-MSA-prompts-stories-for-fine-tuning.csv') containing 'Prompt' and 'Story' columns."
+  ],
+  "data_processing": [
+    "Regex-based text cleaning (removing emoticons and non-Arabic characters)",
+    "Diacritics removal via PyArabic and Hamza/Alef standardization",
+    "GPT-4 automated quality scoring for coherence and fluency",
+    "Chat template formatting using apply_chat_template",
+    "90/10 train-test split"
+  ],
+  "features_engineering": [],
+  "models": [
+    "Gemma 2 2B (instruction-tuned)",
+    "QLoRA/LoRA adapters"
+  ],
+  "frameworks_used": [
+    "transformers",
+    "trl",
+    "peft",
+    "datasets",
+    "huggingface_hub",
+    "bitsandbytes",
+    "accelerate",
+    "liger-kernel",
+    "torch",
+    "kagglehub",
+    "matplotlib"
+  ],
+  "loss_functions": [],
+  "cv_strategy": "holdout 10%",
+  "ensembling": "",
+  "insights": [
+    "QLoRA with 4-bit NormalFloat quantization and double quantization drastically reduces VRAM requirements, enabling fine-tuning of large models on consumer GPUs.",
+    "Right-sided padding is critical to prevent numerical instability and buffer overflows during mixed-precision (fp16) training.",
+    "Gradient checkpointing combined with paged_adamw_32bit optimizer significantly lowers memory overhead by trading compute for VRAM savings.",
+    "Merging LoRA adapters into the base model simplifies deployment and inference without requiring PEFT dependencies."
+  ],
+  "critical_findings": [
+    "Disabling model caching (use_cache=False) is mandatory during training to ensure correct gradient computation and prevent memory leaks.",
+    "Paged AdamW optimizer is specifically chosen over standard AdamW to manage optimizer states more efficiently under tight memory constraints.",
+    "Right-sided padding mitigates a known float16 overflow issue that occurs with left-sided padding during training."
+  ],
+  "what_did_not_work": [
+    "NEFTune (neftune_noise_alpha=0.01) was tested but explicitly noted as not working for this setup."
+  ],
+  "source_url": "https://www.kaggle.com/code/abdullahabdelrhim/gemma2-for-inspiring-arabic-story-generation",
+  "votes": 81
+}

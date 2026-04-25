@@ -1,0 +1,23 @@
+{
+  "id": "rishirajacharya/legal-ai-assistant-for-india-s-new-laws",
+  "id_no": 68114595,
+  "title": "Legal AI Assistant for India's New Laws",
+  "code_file": "legal-ai-assistant-for-india-s-new-laws.ipynb",
+  "language": "python",
+  "kernel_type": "notebook",
+  "is_private": false,
+  "enable_gpu": false,
+  "enable_tpu": false,
+  "enable_internet": true,
+  "keywords": [],
+  "dataset_sources": [
+    "rishirajacharya/indiacode"
+  ],
+  "kernel_sources": [],
+  "competition_sources": [
+    "gemini-long-context"
+  ],
+  "model_sources": [],
+  "docker_image": "gcr.io/kaggle-images/python@sha256:a16cda2c5d52fa988d413876f3ffad7a46cca58678514601feb175990dc187c0",
+  "machine_shape": "None"
+}

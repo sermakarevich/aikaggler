@@ -1,0 +1,34 @@
+{
+  "id": "yekenot/mcts-deeptables-nn",
+  "id_no": 66608887,
+  "title": "MCTS: DeepTables NN",
+  "code_file": "mcts-deeptables-nn.ipynb",
+  "language": "python",
+  "kernel_type": "notebook",
+  "is_private": false,
+  "enable_gpu": true,
+  "enable_tpu": false,
+  "enable_internet": false,
+  "keywords": [
+    "tabular",
+    "regression",
+    "neural networks",
+    "automl",
+    "board games",
+    "gpu"
+  ],
+  "dataset_sources": [
+    "yekenot/deeptables-v0-2-5",
+    "lonnieqin/tensorflow-2-15",
+    "snufkin77/um-gps-of-mcts-variants-constant-columns"
+  ],
+  "kernel_sources": [
+    "peilwang/fix-deeptables"
+  ],
+  "competition_sources": [
+    "um-game-playing-strength-of-mcts-variants"
+  ],
+  "model_sources": [],
+  "docker_image": "gcr.io/kaggle-private-byod/python@sha256:940180dcea42e703acbeae669a52d68e6fa3130ef60805b36005534a5152a5f3",
+  "machine_shape": "NvidiaTeslaT4"
+}

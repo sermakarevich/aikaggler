@@ -1,0 +1,27 @@
+{
+  "id": "mpwolke/chinese-culture-gemma2keras",
+  "id_no": 67170692,
+  "title": "Chinese Culture \u4e2d\u570b\u6587\u5316 Gemma2Keras",
+  "code_file": "chinese-culture-gemma2keras.ipynb",
+  "language": "python",
+  "kernel_type": "notebook",
+  "is_private": false,
+  "enable_gpu": false,
+  "enable_tpu": true,
+  "enable_internet": true,
+  "keywords": [
+    "tpu"
+  ],
+  "dataset_sources": [
+    "readever/chinese-culture-db-2024"
+  ],
+  "kernel_sources": [],
+  "competition_sources": [
+    "gemma-language-tuning"
+  ],
+  "model_sources": [
+    "keras/gemma2/Keras/gemma2_9b_en/2"
+  ],
+  "docker_image": "gcr.io/kaggle-private-byod/python-tpuvm@sha256:667f4c004d9435755be7d79ec03707b4b9b1489fe419bdb7e7dfe3e011b55542",
+  "machine_shape": "Tpu1VmV38"
+}

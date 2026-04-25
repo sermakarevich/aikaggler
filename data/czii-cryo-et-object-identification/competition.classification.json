@@ -1,0 +1,16 @@
+{
+  "description": "Participants identify small biological structures within large 3D cryo-electron tomography volumes. The task requires detecting or segmenting these subcellular objects from high-dimensional, noisy image data. Success is measured using a custom competition-specific metric on a held-out test set.",
+  "data_modality": "image",
+  "task_type": "detection",
+  "label_structure": "multi_label",
+  "metric": "CZI_CryoET_ 84969",
+  "test_split": "unknown",
+  "format": "standard",
+  "dataset_scale": "unknown",
+  "domain": "biological_imaging",
+  "data_challenges": [
+    "class_imbalance",
+    "large_volume_processing"
+  ],
+  "constraints": []
+}

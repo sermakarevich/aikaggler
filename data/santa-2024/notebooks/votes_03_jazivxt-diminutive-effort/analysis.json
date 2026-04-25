@@ -1,0 +1,35 @@
+{
+  "summary": "This notebook demonstrates a submission optimization recipe for the Santa 2024 competition by treating a frozen LLM as a fixed perplexity scorer. It implements a custom inference loop to compute sequence perplexity without gradient updates, then applies meta-heuristic search techniques to rearrange word order. The workflow combines brute-force permutations, simulated annealing, and cyclic shifting to iteratively reduce perplexity across the dataset. Readers learn how to leverage pre-trained models as objective functions for discrete text optimization and how to manage GPU memory for large model inference. The approach proves that careful word rearrangement can significantly improve perplexity scores without any model fine-tuning.",
+  "purpose": "baseline",
+  "competition_flow": "Reads a sample submission, loads a frozen Gemma-2-9B model to compute sequence perplexity, and iteratively optimizes the word order of each text using brute-force permutations, simulated annealing, and cyclic shifting to minimize perplexity before saving the final submission.",
+  "data_reading": [
+    "Loads sample_submission.csv via pandas, extracts the text column, and computes initial word lengths."
+  ],
+  "data_processing": [
+    "Splits text into words, applies brute-force permutations, simulated annealing, and cyclic shifting to rearrange word order. Handles NaN perplexity scores by reshuffling. Sets OMP_NUM_THREADS and CUDA memory config for inference stability."
+  ],
+  "features_engineering": [],
+  "models": [
+    "Gemma-2-9B"
+  ],
+  "frameworks_used": [
+    "transformers",
+    "pytorch",
+    "pandas",
+    "numpy"
+  ],
+  "loss_functions": [
+    "CrossEntropyLoss"
+  ],
+  "cv_strategy": "",
+  "ensembling": "",
+  "insights": [
+    "A frozen LLM can serve as a fixed perplexity scorer for text rearrangement without gradient updates.",
+    "Meta-heuristic search methods like simulated annealing and cyclic shifting effectively optimize discrete word order to minimize perplexity.",
+    "Configuring CUDA memory and thread counts is critical for running large models like Gemma-2-9B on limited GPU resources."
+  ],
+  "critical_findings": [],
+  "what_did_not_work": [],
+  "source_url": "https://www.kaggle.com/code/jazivxt/diminutive-effort",
+  "votes": 373
+}

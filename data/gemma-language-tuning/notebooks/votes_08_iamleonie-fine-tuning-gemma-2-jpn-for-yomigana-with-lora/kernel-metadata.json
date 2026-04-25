@@ -1,0 +1,30 @@
+{
+  "id": "iamleonie/fine-tuning-gemma-2-jpn-for-yomigana-with-lora",
+  "id_no": 73329694,
+  "title": "Fine-tuning Gemma 2 JPN for Yomigana with LoRA",
+  "code_file": "fine-tuning-gemma-2-jpn-for-yomigana-with-lora.ipynb",
+  "language": "python",
+  "kernel_type": "notebook",
+  "is_private": false,
+  "enable_gpu": true,
+  "enable_tpu": false,
+  "enable_internet": true,
+  "keywords": [
+    "gpu"
+  ],
+  "dataset_sources": [
+    "iamleonie/huriganacorpus-shosi-dataset"
+  ],
+  "kernel_sources": [
+    "iamleonie/evaluating-gemma-2-jpn-for-yomigana-generation"
+  ],
+  "competition_sources": [
+    "gemma-language-tuning"
+  ],
+  "model_sources": [
+    "google/gemma-2-2b-jpn-it/Transformers/gemma-2-2b-jpn-it/1",
+    "iamleonie/gemma-2-2b-jpn-yomigana-it/Transformers/default/11"
+  ],
+  "docker_image": "gcr.io/kaggle-private-byod/python@sha256:1003a82bef5df3c098b2041d936cb5f1836e52d7b610e8f0f4dedc194fb3b773",
+  "machine_shape": "NvidiaTeslaT4"
+}

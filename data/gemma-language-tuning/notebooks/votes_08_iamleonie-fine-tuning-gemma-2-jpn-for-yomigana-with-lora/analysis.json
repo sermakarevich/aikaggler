@@ -1,0 +1,52 @@
+{
+  "summary": "This tutorial demonstrates how to efficiently fine-tune the Gemma 2 2B Japanese instruction-tuned model for generating Yomigana (furigana) from Japanese text using Low-Rank Adaptation (LoRA) and the Unsloth library. It establishes the necessity of supervised fine-tuning by benchmarking zero-shot and few-shot prompting against a rule-based MeCab baseline, showing both are insufficient for accurate transcription. The author walks through the complete pipeline: data preparation from the Shosi dataset, model loading with 4-bit quantization, LoRA adapter configuration, hyperparameter tuning experiments, and training with gradient accumulation to fit within a free T4 GPU's memory. The final model outperforms MeCab in accuracy and BLEU score, proving that parameter-efficient fine-tuning is a viable, cost-effective approach for specialized Japanese NLP tasks.",
+  "purpose": "tutorial",
+  "competition_flow": "Loads the Shosi dataset, formats it into instruction prompts, fine-tunes the Gemma 2 2B JPN model using LoRA and Unsloth on a T4 GPU, and evaluates the resulting model against zero-shot, few-shot, and MeCab baselines using accuracy and BLEU scores.",
+  "data_reading": [
+    "Data is loaded from Kaggle-hosted TSV files using kagglehub.load_dataset with pandas_kwargs to limit rows, containing Japanese_text and Yomigana columns."
+  ],
+  "data_processing": [
+    "The raw dataset is cleaned by replacing periods with Japanese full stops and preserving the particle \u306f instead of its spoken pronunciation \u308f.",
+    "Inputs are formatted into a fixed Japanese Alpaca-style instruction prompt template, and an EOS_TOKEN is appended to all sequences to prevent infinite generation."
+  ],
+  "features_engineering": [
+    ""
+  ],
+  "models": [
+    "Gemma-2-2b-jpn-it"
+  ],
+  "frameworks_used": [
+    "unsloth",
+    "transformers",
+    "trl",
+    "kagglehub",
+    "wandb",
+    "torch",
+    "scikit-learn",
+    "nltk",
+    "pandas",
+    "matplotlib"
+  ],
+  "loss_functions": [
+    ""
+  ],
+  "cv_strategy": "Fixed train/validation split (1,000 validation samples loaded from a separate CSV file).",
+  "ensembling": "",
+  "insights": [
+    "Zero-shot and few-shot prompting are insufficient for accurate Yomigana generation, making supervised fine-tuning necessary.",
+    "Parameter-efficient fine-tuning with LoRA and 4-bit quantization allows LLM fine-tuning on consumer-grade hardware without full model retraining.",
+    "Higher LoRA rank and scaling factor consistently improve both training/validation loss and validation metrics.",
+    "Using a linear learning rate scheduler slightly outperforms cosine scheduling when paired with the AdamW optimizer for this task.",
+    "The choice of prompt wording and language significantly impacts training loss curves, even if validation metrics remain stable."
+  ],
+  "critical_findings": [
+    "Zero-shot prompting accuracy was 0.0 and performed worse than a baseline BLEU score for non-transcribed text, highlighting the need for task-specific alignment.",
+    "The particle \u306f is pronounced as \u308f in speech but must be kept as \u306f in the dataset to avoid confusing the model during transcription.",
+    "Training and validation loss curves can be heavily influenced by prompt wording and language, even when validation metrics stay consistent."
+  ],
+  "what_did_not_work": [
+    "Experimenting with varied weight_decay and max_grad_norm values led to decreased validation metrics compared to the baseline, so the author reverted to the default regularization settings."
+  ],
+  "source_url": "https://www.kaggle.com/code/iamleonie/fine-tuning-gemma-2-jpn-for-yomigana-with-lora",
+  "votes": 59
+}

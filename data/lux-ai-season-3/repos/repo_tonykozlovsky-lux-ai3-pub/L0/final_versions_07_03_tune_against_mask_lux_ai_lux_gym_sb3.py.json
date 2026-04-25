@@ -1,0 +1,36 @@
+{
+  "path": "final_versions/07_03_tune_against_mask/lux_ai/lux_gym/sb3.py",
+  "analysis": {
+    "summary": "This file implements a Gym environment wrapper (`SB3Wrapper`) for the Lux AI Season 3 competition, designed to feed rich, state-aware observations into a reinforcement learning agent. It wraps the official `LuxAIS3GymEnv` and injects hand-crafted features that infer hidden game mechanics, such as energy reduction on nebula tiles, SAP dropoff factors, vision reduction, and map shifts. By comparing current and previous observations, it uses frequency voting over discrete candidate values to estimate these parameters. The wrapper also handles unit tracking, unexpected energy change mapping, and shift detection, effectively bridging the gap between raw environment outputs and RL-ready state representations.",
+    "purpose": "utility",
+    "competition_flow": "",
+    "data_reading": [
+      "Loads observations via `LuxAIS3GymEnv(numpy_output=True)` from `luxai_s3.wrappers`, returning dictionary-based state dicts containing `map_features`, `units`, `sensor_mask`, and `steps`."
+    ],
+    "data_processing": [
+      "Applies convolution-like kernels for vision mapping, computes frequency-voted estimates for energy reduction and SAP dropoff, tracks unit positions across timesteps, and detects map shifts by comparing tile types between steps."
+    ],
+    "features_engineering": [
+      "Hand-crafted features include `nebula_tile_energy_reduction`, `unit_sap_dropoff_factor`, `min/max_nebula_vision_reduction`, `unit_energy_void_factor`, `my/enemy_unexpected_energy_change`, `shift_param`, and `steps_to_shift`, all inferred via discrete candidate voting and state comparison."
+    ],
+    "models": [],
+    "frameworks_used": [
+      "gym",
+      "numpy",
+      "torch",
+      "luxai_s3"
+    ],
+    "loss_functions": [],
+    "cv_strategy": "",
+    "ensembling": "",
+    "insights": [
+      "Comparing current and previous observations allows accurate inference of hidden game mechanics like SAP dropoff and energy void factors without explicit environment exposure.",
+      "Frequency voting over discrete candidate values provides a robust way to estimate continuous or hidden parameters in partially observable environments.",
+      "Tracking units across timesteps via position/energy proximity handles ID switching and unit spawning/death gracefully."
+    ],
+    "critical_findings": [
+      "The unit matching logic includes a fallback for a rare edge case where position/energy proximity checks fail, indicating potential instability in state tracking under specific conditions."
+    ],
+    "what_did_not_work": []
+  }
+}

@@ -1,0 +1,40 @@
+{
+  "summary": "This notebook demonstrates a two-stage retrieval-augmented generation pipeline for predicting mathematical misconceptions. It first retrieves top-100 candidate misconceptions using a fine-tuned BGE embedding model based on question metadata, then prompts a Qwen-2.5 32B AWQ LLM to reason about the incorrect answer. The LLM's output is post-processed and combined with the original prompt for a second embedding retrieval to produce the final top-25 misconception predictions. Readers should learn how iterative retrieval and LLM reasoning can be chained to improve semantic matching in a constrained, multi-label classification task.",
+  "purpose": "inference",
+  "competition_flow": "Loads question and misconception data, performs an initial semantic retrieval to build an LLM prompt, generates reasoning via Qwen-2.5, post-processes the output, and executes a second semantic retrieval to output final misconception IDs for submission.",
+  "data_reading": [
+    "train.csv",
+    "test.csv",
+    "misconception_mapping.csv"
+  ],
+  "data_processing": [
+    "Text normalization (lowercasing, URL/special character removal, punctuation/whitespace standardization)",
+    "Prompt templating combining question text, answer options, and retrieved misconceptions",
+    "Post-processing LLM outputs by mapping generated serial numbers back to known misconception IDs using a precomputed dictionary"
+  ],
+  "features_engineering": [],
+  "models": [
+    "Qwen-2.5 32B Instruct (AWQ quantized)",
+    "BGE (fine-tuned embedding model)"
+  ],
+  "frameworks_used": [
+    "vllm",
+    "sentence-transformers",
+    "transformers",
+    "pandas",
+    "numpy",
+    "torch"
+  ],
+  "loss_functions": [],
+  "cv_strategy": "Holdout sample of 100 rows from training data for validation.",
+  "ensembling": "",
+  "insights": [
+    "Iterative retrieval improves LLM reasoning by providing targeted context before and after generation.",
+    "Post-processing LLM outputs by mapping serial numbers to known candidates prevents hallucination and ensures valid IDs.",
+    "Combining LLM reasoning with semantic embeddings in a second retrieval step refines the final prediction set."
+  ],
+  "critical_findings": [],
+  "what_did_not_work": [],
+  "source_url": "https://www.kaggle.com/code/takanashihumbert/eedi-qwen-2-5-32b-awq-two-time-retrieval",
+  "votes": 650
+}

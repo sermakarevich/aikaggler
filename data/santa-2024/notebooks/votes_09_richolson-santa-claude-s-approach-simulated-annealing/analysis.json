@@ -1,0 +1,34 @@
+{
+  "summary": "The notebook implements a Simulated Annealing optimizer to refine word sequences in text submissions for the Santa's Workshop 2024 competition. It loads a prior submission CSV, evaluates each row's perplexity using a frozen Gemma-2-9B model, and iteratively swaps random word pairs to minimize perplexity according to a cooling schedule. The author demonstrates how temperature scheduling and step counts control exploration versus exploitation, and provides a practical recipe for post-processing generated text to improve competition scores. Readers should understand how to leverage a frozen LLM as a scoring function and apply meta-heuristic optimization to discrete text rearrangement problems.",
+  "purpose": "utility",
+  "competition_flow": "Loads a prior text submission CSV, evaluates each row's perplexity using a frozen Gemma-2-9B model, applies a custom Simulated Annealing algorithm to rearrange words and minimize perplexity, and saves the optimized text back to a new submission CSV.",
+  "data_reading": [
+    "Reads a CSV file containing id and text columns (either a prior submission or sample submission) using pandas.read_csv."
+  ],
+  "data_processing": [
+    "Splits text into space-separated words, iteratively swaps random word pairs, handles NaN perplexity scores by skipping or shuffling, and applies a temperature cooling schedule to guide the optimization."
+  ],
+  "features_engineering": [],
+  "models": [
+    "Gemma-2-9B"
+  ],
+  "frameworks_used": [
+    "transformers",
+    "accelerate",
+    "bitsandbytes",
+    "numpy",
+    "pandas"
+  ],
+  "loss_functions": [],
+  "cv_strategy": "",
+  "ensembling": "",
+  "insights": [
+    "Simulated annealing can effectively optimize discrete text arrangements by balancing exploration at high temperatures with exploitation at low temperatures.",
+    "Using a frozen LLM as a perplexity scorer allows direct optimization of language model likelihood without requiring gradient updates or fine-tuning.",
+    "Handling NaN scores gracefully is critical when evaluating generated text with external scorers, as invalid sequences can halt the optimization loop."
+  ],
+  "critical_findings": [],
+  "what_did_not_work": [],
+  "source_url": "https://www.kaggle.com/code/richolson/santa-claude-s-approach-simulated-annealing",
+  "votes": 278
+}

@@ -1,0 +1,21 @@
+{
+  "id": "marianadeem755/nfl-big-data-bowl-complete-data-exploration",
+  "id_no": 74092364,
+  "title": "\ud83c\udfc6NFL Big Data Bowl | Complete Data Exploration\ud83d\udcca",
+  "code_file": "nfl-big-data-bowl-complete-data-exploration.ipynb",
+  "language": "python",
+  "kernel_type": "notebook",
+  "is_private": false,
+  "enable_gpu": false,
+  "enable_tpu": false,
+  "enable_internet": true,
+  "keywords": [],
+  "dataset_sources": [],
+  "kernel_sources": [],
+  "competition_sources": [
+    "nfl-big-data-bowl-2025"
+  ],
+  "model_sources": [],
+  "docker_image": "gcr.io/kaggle-images/python@sha256:820f58c1c0aae98e031ad41630a374db9ae9875c6f1dea078c4e3bee7c444803",
+  "machine_shape": "None"
+}

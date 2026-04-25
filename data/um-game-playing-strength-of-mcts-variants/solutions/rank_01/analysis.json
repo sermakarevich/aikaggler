@@ -1,0 +1,98 @@
+{
+  "summary": "The author won 1st place by computing supplemental game balance features via a fast 15-second MCTS tree search on each game's starting position, which proved significantly faster and more effective than simulating full games or training language models. These features, combined with standard inputs and carefully weighted extra training data, were fed into a stacked ensemble of CatBoost, LightGBM, and TabM models. Key insights included trusting cross-validation over the public leaderboard for final model selection, using data augmentation to mitigate feature noise, and applying isotonic regression as a post-processing step. The winning pipeline relied on strategic feature engineering, robust validation management, and precise ensemble weight tuning.",
+  "extensive_summary": "## Overview & Core Strategy\nThe winning approach centered on computing supplemental game balance metrics by running a brief tree search on each game's starting position. This method yielded results comparable to simulating games between non-random agents but was roughly 250x faster. These metrics, combined with standard features, were fed into a stacked ensemble of CatBoost, LightGBM, TabM, and isotonic regression models. Ensemble weights were tuned via Nelder-Mead on cross-validation.\n\n## Feature Engineering & Data Augmentation\nThe author generated 14,365 extra training rows across 484 unique rulesets using a mix of GAVEL and instruction-tuned LLMs (Llama 3.1 70B & Qwen 2.5 32B). Due to label noise in the extra data, samples were downsampled and weighted differently per model (CatBoost: 0.25, LightGBM: 1.0, TabM: 0.5). Data augmentation was applied in two ways: randomly selecting tree search feature values from 10 runs to expose models to noise, and recomputing nondeterministic features 5 times to estimate \"real\" values. Additionally, 43 features showing version discrepancies between the author's local Ludii player (v1.3.13) and the competition's were dropped, which surprisingly improved CV scores.\n\n## Model Selection & Training\nHyperparameter tuning was conducted via Optuna with GroupKFoldShuffle partitioned on ruleset names, followed by validation with 10-fold CV and multiple seeds. TabM proved highly competitive, benefiting from piecewise linear embeddings for continuous features and a config outside the paper's original search space (wide hidden layers, small batches, low learning rates). LightGBM required the `dart` boosting strategy to perform well, despite a 5-10x training slowdown. Isotonic regression was used as a post-processing step on OOF predictions, with centered isotonic regression (cir-model) preferred for most models due to strict monotonicity constraints, except for CatBoost which required scikit-learn's non-centered implementation.\n\n## CV vs. LB Strategy & Ensembling\nEach model block actually consisted of an ensemble of 20 models (10-fold CV repeated for 2 seeds). The author ran two parallel final strategies: \"Trust LB\" (tuning weights to the public leaderboard) and \"Trust CV\" (tuning hyperparameters, data weights, and feature selection to CV). Contrary to expectations, the \"Trust CV\" strategy outperformed \"Trust LB\" on both leaderboards, highlighting the importance of robust validation over direct leaderboard optimization. The author also noted missing the flip/inversion augmentation trick used by other top teams, which likely accounts for the small score gap between their solution and others.",
+  "rank": 1,
+  "competition_flow": "Raw game data and rulesets were processed with supplemental MCTS-based balance features and augmented training data, then fed into a grouped cross-validated ensemble of CatBoost, LightGBM, and TabM models, post-processed with isotonic regression and tuned via Nelder-Mead to produce the final submission.",
+  "data_reading": [],
+  "data_processing": [
+    "Dropped 43 features that showed perfect consistency locally but differed from the competition's data due to suspected Ludii player version discrepancies.",
+    "Generated 14,365 extra training rows across 484 unique rulesets using GAVEL and LLMs (Llama 3.1 70B, Qwen 2.5 32B), heavily downsampled due to quality issues.",
+    "Applied two augmentation strategies: (1) randomly selecting tree search feature values from 10 runs to expose models to noise, (2) recomputing nondeterministic features 5 times and uniformly sampling between estimates and original values.",
+    "Weighted extra training data differently per model to mitigate label noise."
+  ],
+  "features_engineering": [
+    "Supplemental game balance metrics computed via 15-second MCTS tree searches on starting positions.",
+    "Search speed metrics (actions & search iterations per second).",
+    "Piecewise linear embeddings for continuous numerical features in TabM."
+  ],
+  "models": [
+    "CatBoost",
+    "LightGBM",
+    "TabM",
+    "isotonic regression"
+  ],
+  "frameworks_used": [
+    "catboost",
+    "lightgbm",
+    "tabm",
+    "scikit-learn",
+    "optuna",
+    "cir-model"
+  ],
+  "loss_functions": [],
+  "cv_strategy": "GroupKFoldShuffle partitioned on ruleset names, validated with 10-fold CV across multiple seeds.",
+  "ensembling": "Stacked ensemble of CatBoost, LightGBM, and TabM (20 models from 10-fold CV \u00d7 2 seeds) with weights tuned via Nelder-Mead on CV, followed by post-processing using centered or scikit-learn isotonic regression on OOF predictions.",
+  "insights": [
+    "Trusting cross-validation over the public leaderboard for final model selection and hyperparameter tuning yielded better private leaderboard results.",
+    "Supplemental game balance features computed via a fast 15-second MCTS tree search on starting positions significantly improved scores compared to simulating full games or training language models.",
+    "Carefully weighting and downsampled noisy extra training data generated via GAVEL and LLMs provided marginal but consistent score improvements.",
+    "Centered isotonic regression on out-of-fold predictions served as an effective post-processing step that improved both CV and LB correlation."
+  ],
+  "critical_findings": [
+    "Dropping 43 features that showed perfect consistency locally but differed from the competition's data (likely due to Ludii player version discrepancies) consistently improved CV scores, whereas importance-based filtering failed to identify them.",
+    "The \"Trust CV\" strategy for final ensemble selection outperformed the \"Trust LB\" strategy despite the public leaderboard heavily penalizing CV-tuned ensembles in early experiments.",
+    "Scaling up the amount of supplemental training data produced severely diminishing returns and increased label noise, suggesting annotating fewer games with more compute per game would have been more effective."
+  ],
+  "what_did_not_work": [
+    "Using unsplitted agent strings as categorical features",
+    "TF-IDF & LSA",
+    "MLPs & XGBoost",
+    "Various deep learning approaches for text embeddings",
+    "Training language models to predict game balance",
+    "OpenFE & iterative feature selection",
+    "Importance-based feature selection",
+    "Training models to predict average Elo ratings for MCTS configs",
+    "Training tabular classification models to identify imbalanced/drawish games",
+    "Adding random noise for augmentation",
+    "Enforcing monotonicity constraints with CatBoost",
+    "Using CatBoost's finetuning functionality",
+    "Ensembles of multiple MCTS algorithms for starting position evals"
+  ],
+  "github_repos": [
+    {
+      "url": "https://github.com/yandex-research/tabm",
+      "role": "library"
+    },
+    {
+      "url": "https://github.com/scikit-learn/scikit-learn",
+      "role": "library"
+    },
+    {
+      "url": "https://github.com/jday96314/MCTS",
+      "role": "solution"
+    }
+  ],
+  "papers": [
+    {
+      "title": "GAVEL",
+      "url": "https://arxiv.org/pdf/2407.09388",
+      "arxiv_id": "2407.09388"
+    },
+    {
+      "title": "TabM",
+      "url": "https://arxiv.org/pdf/2410.24210",
+      "arxiv_id": "2410.24210"
+    }
+  ],
+  "other_solution_refs": [
+    {
+      "description": "@goldenlock's writeup",
+      "url": "https://www.kaggle.com/competitions/um-game-playing-strength-of-mcts-variants/discussion/549617"
+    },
+    {
+      "description": "Past competition winning solution",
+      "url": "https://www.kaggle.com/competitions/playground-series-s4e10/discussion/543725"
+    }
+  ],
+  "source_url": "https://www.kaggle.com/competitions/um-game-playing-strength-of-mcts-variants/discussion/549801"
+}

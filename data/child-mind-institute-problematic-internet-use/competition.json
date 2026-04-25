@@ -1,0 +1,112 @@
+{
+  "id": 81933,
+  "competitionName": "child-mind-institute-problematic-internet-use",
+  "title": "Child Mind Institute \u2014 Problematic Internet Use",
+  "briefDescription": "Relating Physical Activity to Problematic Internet Use",
+  "dateEnabled": "2024-09-19T19:57:55.047Z",
+  "deadline": "2024-12-19T23:59:00Z",
+  "hasLeaderboard": true,
+  "leaderboardPercentage": 38,
+  "maxDailySubmissions": 5,
+  "numScoredSubmissions": 2,
+  "hasSolution": true,
+  "numPrizes": 8,
+  "forumId": 5413072,
+  "finalLeaderboardHasBeenVerified": true,
+  "userRankMultiplier": 1,
+  "dateCreated": "2024-06-21T16:30:59.290657Z",
+  "competitionHostSegmentId": 1,
+  "maxTeamSize": 5,
+  "medalsAllowed": true,
+  "enableTeamFiles": true,
+  "teamFileDeadline": "2025-01-31T00:00:00Z",
+  "teamMergerExplicitDeadline": "2024-12-12T23:59:00Z",
+  "prohibitNewEntrantsExplicitDeadline": "2024-12-12T23:59:00Z",
+  "kernelsPublishingDisabledDeadline": "2024-12-12T23:59:00Z",
+  "organizationId": 3842,
+  "hasCoverImageUrl": true,
+  "showPrivateLeaderboard": true,
+  "hasScripts": true,
+  "onlyAllowKernelSubmissions": true,
+  "totalTeams": 3559,
+  "totalCompetitors": 4483,
+  "totalSubmissions": 84049,
+  "rulesRequired": true,
+  "usesSynchronousReruns": true,
+  "maxCpuRuntimeMinutes": 540,
+  "maxGpuRuntimeMinutes": 540,
+  "clonedFromCompetitionId": 53666,
+  "rowIdColumnName": "id",
+  "requiredSubmissionFilename": "submission.csv",
+  "evaluationAlgorithm": {
+    "id": 485,
+    "name": "Cohen Kappa Score",
+    "isMax": true,
+    "isPublic": true,
+    "environmentRenderType": "ENVIRONMENT_RENDER_TYPE_JSON",
+    "kernelId": 39243606,
+    "latestCompetitionMetricVersionId": 9162,
+    "state": "AVAILABLE"
+  },
+  "categories": [
+    {
+      "id": 11111,
+      "name": "health",
+      "fullPath": "subject > health and fitness > health",
+      "description": "Consider the health tag your data science gym. Get in there and work out those data science muscles on health analytics. Analyze heart disease until you sweat. Then recover with with a nice candy production dataset.",
+      "datasetCount": 23647,
+      "competitionCount": 540,
+      "scriptCount": 8393,
+      "slug": "health",
+      "displayName": "Health"
+    },
+    {
+      "id": 13209,
+      "name": "time series analysis",
+      "fullPath": "technique > time series analysis",
+      "datasetCount": 4035,
+      "competitionCount": 837,
+      "scriptCount": 4295,
+      "slug": "time-series-analysis",
+      "displayName": "Time Series Analysis"
+    },
+    {
+      "id": 14202,
+      "name": "multiclass classification",
+      "fullPath": "task > multiclass classification",
+      "datasetCount": 1692,
+      "competitionCount": 1012,
+      "scriptCount": 4038,
+      "slug": "multiclass-classification",
+      "displayName": "Multiclass Classification"
+    },
+    {
+      "name": "cohen kappa score",
+      "description": "Compute Cohen's kappa: a statistic that measures inter-annotator agreement. See https://scikit-learn.org/stable/modules/generated/sklearn.metrics.cohen_kappa_score.html",
+      "displayName": "Cohen Kappa Score"
+    }
+  ],
+  "organization": {
+    "slug": "childmindinstitute",
+    "name": "Child Mind Institute",
+    "thumbnailImageUrl": "https://storage.googleapis.com/kaggle-organizations/3842/thumbnail.jpg?t=2025-07-07-16-46-43",
+    "profileUrl": "/organizations/childmindinstitute"
+  },
+  "launched": true,
+  "createdByUserId": 995397,
+  "license": {
+    "id": 42,
+    "name": "Subject to Competition Rules",
+    "agreementRequired": false
+  },
+  "hostName": "Child Mind Institute",
+  "scoreTruncationNumDecimals": 3,
+  "locked": true,
+  "totalJoinedUsers": 15664,
+  "requiresIdentityVerification": true,
+  "submissionSizeLimitMb": 20480,
+  "reward": {
+    "id": "USD",
+    "quantity": 60000
+  }
+}

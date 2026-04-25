@@ -1,0 +1,52 @@
+{
+  "summary": "This writeup serves as a curated reference list of winning and honorable mention solutions for the \"Google \u2013 AI Assistants for Data Tasks with Gemma\" Kaggle competition. It highlights five distinct notebook approaches that leverage Google's Gemma model, primarily utilizing techniques like QLoRA, LoRA, Retrieval-Augmented Generation (RAG), ReAct prompting, and few-shot learning. The author emphasizes how these methods, combined with carefully curated datasets and heuristic prompt engineering, enable the creation of specialized AI assistants for data science and programming tasks. The collection is intended to help readers understand effective notebook organization and implementation strategies for similar LLM-based agent projects.",
+  "extensive_summary": "This post functions as a curated bibliography of top-performing Kaggle notebooks for the \"Google \u2013 AI Assistants for Data Tasks with Gemma\" competition. Rather than detailing a single competition pipeline, it catalogs five distinct winning and honorable mention solutions to illustrate effective architectural and prompting strategies for building LLM-powered data assistants.\n\nThe first referenced solution demonstrates how to combine QLoRA, RAG, and ReAct prompting to construct a specialized AI assistant capable of teaching and explaining data science concepts. Another entry focuses on heuristic algorithms paired with the Gemma model to create a teacher-like assistant. A third solution integrates LlamaIndex and Pinecone to build a RAG system, while a fourth combines LoRA and RAG with domain-specific datasets to create PyGem, a chatbot tailored for Python programming questions. \n\nFinally, the fifth approach leverages few-shot prompting alongside general heuristics to establish a robust RAG system for answering Kaggle platform questions. The author notes that providing a representative sample of 25 prompt/output pairs for evaluation significantly improved output structure, reliability, and the model's ability to appropriately decline unanswerable questions. Across these solutions, careful dataset curation, strategic prompt engineering, and explicit evaluation samples are highlighted as the core drivers of success.",
+  "rank": null,
+  "competition_flow": "Not applicable; the text is a curated bibliography of reference kernels rather than a single competition pipeline description.",
+  "data_reading": [],
+  "data_processing": [],
+  "features_engineering": [],
+  "models": [
+    "Gemma",
+    "Gemma-7b-it"
+  ],
+  "frameworks_used": [
+    "LlamaIndex",
+    "Pinecone"
+  ],
+  "loss_functions": [],
+  "cv_strategy": "",
+  "ensembling": "",
+  "insights": [
+    "Combining LoRA/QLoRA with RAG and ReAct prompting effectively creates specialized AI assistants for domain-specific tasks.",
+    "Providing a representative sample of prompt/output pairs for evaluation significantly improves the structure, style, and reliability of RAG outputs.",
+    "Carefully curated datasets are essential for building robust and accurate LLM-based assistants."
+  ],
+  "critical_findings": [],
+  "what_did_not_work": [],
+  "github_repos": [],
+  "papers": [],
+  "other_solution_refs": [
+    {
+      "description": "Build AI Agents With Google's LLM Gemma",
+      "url": "https://www.kaggle.com/code/sitaberete/build-ai-agents-with-google-s-llm-gemma"
+    },
+    {
+      "description": "teacher-gemma-heuristic-algorithm",
+      "url": "https://www.kaggle.com/code/woosungyoon/teacher-gemma-heuristic-algorithm"
+    },
+    {
+      "description": "data-science-with-gemma-llamaindex-and-pinecone",
+      "url": "https://www.kaggle.com/code/hserdaraltan/data-science-with-gemma-llamaindex-and-pinecone"
+    },
+    {
+      "description": "PyGEM: A Chatbot for Python Questions using Gemma",
+      "url": "https://www.kaggle.com/code/davidtroxellucla/pygem-a-chatbot-for-python-questions-using-gemma"
+    },
+    {
+      "description": "KaggleBot - Gemma-7b-it RAG w few-shot prompting",
+      "url": "https://www.kaggle.com/code/vbookshelf/kagglebot-gemma-7b-it-rag-w-few-shot-prompting"
+    }
+  ],
+  "source_url": "https://www.kaggle.com/competitions/gemma-language-tuning/discussion/537393"
+}

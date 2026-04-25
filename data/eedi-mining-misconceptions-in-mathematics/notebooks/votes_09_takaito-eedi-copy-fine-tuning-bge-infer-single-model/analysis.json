@@ -1,0 +1,34 @@
+{
+  "summary": "This notebook demonstrates an inference pipeline for the EEDI competition using a fine-tuned `bge-large-en-v1.5` model to retrieve relevant misconceptions for math questions. It constructs semantic query strings by concatenating question metadata and answer options, encodes them alongside a misconception vocabulary, and ranks the top 25 matches per query using cosine similarity. The author notes that while the approach achieves a competitive ~10th place score, the lack of validation data makes early stopping difficult to determine. It serves as a practical baseline showing how dense retrieval embeddings can be applied to structured educational data without complex tabular modeling.",
+  "purpose": "inference",
+  "competition_flow": "Loads test questions and answer options, formats them into semantic text strings, encodes them alongside a misconception vocabulary using a fine-tuned BGE model, computes cosine similarity to rank the top 25 misconceptions per query, filters out correct answers, and exports the ranked IDs as a CSV submission.",
+  "data_reading": [
+    "Reads `test.csv` and `misconception_mapping.csv` from the local Kaggle input directory using `polars.read_csv`."
+  ],
+  "data_processing": [
+    "Unpivots answer columns (A-D) into long format, concatenates metadata and answer text into a single string with semantic tags, normalizes embeddings during encoding, computes cosine similarity to rank misconceptions, and filters out rows matching the correct answer."
+  ],
+  "features_engineering": [],
+  "models": [
+    "bge-large-en-v1.5 (fine-tuned)"
+  ],
+  "frameworks_used": [
+    "sentence-transformers",
+    "sklearn",
+    "polars",
+    "pandas",
+    "numpy"
+  ],
+  "loss_functions": [],
+  "cv_strategy": "",
+  "ensembling": "",
+  "insights": [
+    "Fine-tuning a dense retrieval model on educational text pairs effectively captures semantic relationships for misconception prediction.",
+    "Formatting raw text with explicit semantic tags improves embedding quality and retrieval performance.",
+    "The absence of validation data makes determining optimal training epochs challenging, highlighting the need for proxy metrics in similar retrieval tasks."
+  ],
+  "critical_findings": [],
+  "what_did_not_work": [],
+  "source_url": "https://www.kaggle.com/code/takaito/eedi-copy-fine-tuning-bge-infer-single-model",
+  "votes": 303
+}

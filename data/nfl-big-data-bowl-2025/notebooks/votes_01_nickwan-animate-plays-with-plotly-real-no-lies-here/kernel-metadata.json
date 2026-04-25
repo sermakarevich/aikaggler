@@ -1,0 +1,27 @@
+{
+  "id": "nickwan/animate-plays-with-plotly-real-no-lies-here",
+  "id_no": 67767384,
+  "title": "Animate Plays with Plotly (real, no lies here)",
+  "code_file": "animate-plays-with-plotly-real-no-lies-here.ipynb",
+  "language": "python",
+  "kernel_type": "notebook",
+  "is_private": false,
+  "enable_gpu": false,
+  "enable_tpu": false,
+  "enable_internet": true,
+  "keywords": [
+    "art",
+    "crime",
+    "cyber security",
+    "sports",
+    "data visualization"
+  ],
+  "dataset_sources": [],
+  "kernel_sources": [],
+  "competition_sources": [
+    "nfl-big-data-bowl-2025"
+  ],
+  "model_sources": [],
+  "docker_image": "gcr.io/kaggle-images/python@sha256:a16cda2c5d52fa988d413876f3ffad7a46cca58678514601feb175990dc187c0",
+  "machine_shape": "None"
+}

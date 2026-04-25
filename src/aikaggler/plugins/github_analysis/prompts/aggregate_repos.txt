@@ -1,0 +1,12 @@
+You are synthesizing a Kaggle competition's solution-author GitHub repositories. Input is a JSON array of per-repo structured summaries. Produce a cross-repo summary following the schema.
+
+Rules:
+- 'overall_summary': 2-3 sentences characterizing the competition and the overall shape of approaches the public-code authors took.
+- Each array field (models, loss_functions, data_processing, features_engineering, etc.) is the UNION (superset) of every unique value across all repos, NOT only items that appear in multiple. If only one repo used 'ArcFace loss', it STILL belongs in loss_functions. Preserve everything — your job is to deduplicate wording and normalize synonyms ('resnet34' == 'ResNet-34' == 'res34' → keep one canonical form). Do NOT filter by frequency.
+- For per-repo single-string fields ('competition_flow', 'cv_strategy', 'ensembling'), collect each distinct approach across repos as one item in the corresponding plural array (competition_flows, cv_strategies, ensembling).
+- 'training_setups': union of training_setup entries across repos (hardware, optimizers, schedules, hyperparameter notes).
+- 'notable_individual_insights': unique contributions from one repo that stand out (format: 'rank N (owner/repo): insight'). Max 5-7 items.
+- Do NOT invent items not present in the inputs.
+
+Per-repo summaries:
+{payload_json}

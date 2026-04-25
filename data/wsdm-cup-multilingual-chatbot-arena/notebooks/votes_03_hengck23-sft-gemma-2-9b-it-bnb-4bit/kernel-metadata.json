@@ -1,0 +1,29 @@
+{
+  "id": "hengck23/sft-gemma-2-9b-it-bnb-4bit",
+  "id_no": 73734387,
+  "title": "[sft] gemma-2-9b-it-bnb-4bit",
+  "code_file": "sft-gemma-2-9b-it-bnb-4bit.ipynb",
+  "language": "python",
+  "kernel_type": "notebook",
+  "is_private": false,
+  "enable_gpu": true,
+  "enable_tpu": false,
+  "enable_internet": false,
+  "keywords": [
+    "gpu"
+  ],
+  "dataset_sources": [
+    "",
+    "",
+    "emiz6413/lmsys-wheel-files"
+  ],
+  "kernel_sources": [],
+  "competition_sources": [
+    "wsdm-cup-multilingual-chatbot-arena"
+  ],
+  "model_sources": [
+    "leimeng46/gemma-2-9b-4bit-it-unsloth/Transformers/default/1"
+  ],
+  "docker_image": "gcr.io/kaggle-private-byod/python@sha256:1003a82bef5df3c098b2041d936cb5f1836e52d7b610e8f0f4dedc194fb3b773",
+  "machine_shape": "NvidiaTeslaT4"
+}

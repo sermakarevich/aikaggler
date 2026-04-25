@@ -1,0 +1,51 @@
+[
+  {
+    "topic_id": 563173,
+    "title": "4th place solution",
+    "owner": "Lgeu",
+    "repo": "kaggle-stockfish",
+    "url": "https://github.com/Lgeu/kaggle-stockfish"
+  },
+  {
+    "topic_id": 563866,
+    "title": "Niboshi's solution",
+    "owner": "chettub",
+    "repo": "Niboshi",
+    "url": "https://github.com/chettub/Niboshi"
+  },
+  {
+    "topic_id": 567106,
+    "title": "[9th Place Solution] Cfish + Simple SPSA",
+    "owner": "ymgaq",
+    "repo": "Cfish_kaggle",
+    "url": "https://github.com/ymgaq/Cfish_kaggle"
+  },
+  {
+    "topic_id": 567106,
+    "title": "[9th Place Solution] Cfish + Simple SPSA",
+    "owner": "syzygy1",
+    "repo": "Cfish",
+    "url": "https://github.com/syzygy1/Cfish"
+  },
+  {
+    "topic_id": 567106,
+    "title": "[9th Place Solution] Cfish + Simple SPSA",
+    "owner": "official-stockfish",
+    "repo": "fishtest",
+    "url": "https://github.com/official-stockfish/fishtest"
+  },
+  {
+    "topic_id": 567106,
+    "title": "[9th Place Solution] Cfish + Simple SPSA",
+    "owner": "AndyGrant",
+    "repo": "OpenBench",
+    "url": "https://github.com/AndyGrant/OpenBench"
+  },
+  {
+    "topic_id": 567106,
+    "title": "[9th Place Solution] Cfish + Simple SPSA",
+    "owner": "zamar",
+    "repo": "spsa",
+    "url": "https://github.com/zamar/spsa"
+  }
+]

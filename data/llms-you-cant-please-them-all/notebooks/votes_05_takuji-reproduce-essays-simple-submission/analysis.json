@@ -1,0 +1,31 @@
+{
+  "summary": "This notebook implements a minimal submission strategy for an LLM evaluation competition by generating prompts designed to manipulate a judge model's scoring behavior. It randomly splits the test set into two groups: one receives a direct prompt injection instructing the model to assign a score of 9, while the other receives a multiple-choice prompt asking the model to select a summary. The approach demonstrates how simple prompt engineering and instruction overrides can serve as a functional baseline without training any models. Readers should understand that LLM judges can be vulnerable to direct command injection and that randomized prompt mixing is a common tactic in adversarial submissions.",
+  "purpose": "baseline",
+  "competition_flow": "Loads test topics and a word list, randomly splits the dataset into two groups, generates prompt injection and multiple-choice prompts for each, and exports the combined prompts as a CSV submission.",
+  "data_reading": [
+    "Loads test data and sample submission via pandas CSV readers.",
+    "Reads a local word list file using Python's built-in file I/O."
+  ],
+  "data_processing": [
+    "Applies string formatting to construct prompts.",
+    "Randomly shuffles test indices and partitions them into two groups."
+  ],
+  "features_engineering": [],
+  "models": [],
+  "frameworks_used": [
+    "pandas",
+    "random"
+  ],
+  "loss_functions": [],
+  "cv_strategy": "",
+  "ensembling": "",
+  "insights": [
+    "Simple prompt injection can reliably override an LLM evaluation criteria when direct instructions are provided.",
+    "Randomly partitioning prompts may help evade detection or exploit judge model inconsistencies.",
+    "Zero-shot prompt engineering is sufficient to generate a valid baseline submission for LLM-based competitions."
+  ],
+  "critical_findings": [],
+  "what_did_not_work": [],
+  "source_url": "https://www.kaggle.com/code/takuji/reproduce-essays-simple-submission",
+  "votes": 297
+}

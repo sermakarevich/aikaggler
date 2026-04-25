@@ -1,0 +1,24 @@
+{
+  "id": "albansteff/cibmtr-eda-ensemble-model-recalculate-hla",
+  "id_no": 74088489,
+  "title": "CIBMTR | EDA & Ensemble Model - Recalculate HLA",
+  "code_file": "cibmtr-eda-ensemble-model-recalculate-hla.ipynb",
+  "language": "python",
+  "kernel_type": "notebook",
+  "is_private": false,
+  "enable_gpu": true,
+  "enable_tpu": false,
+  "enable_internet": false,
+  "keywords": [],
+  "dataset_sources": [],
+  "kernel_sources": [
+    "metric/eefs-concordance-index",
+    "cdeotte/pip-install-lifelines"
+  ],
+  "competition_sources": [
+    "equity-post-HCT-survival-predictions"
+  ],
+  "model_sources": [],
+  "docker_image": "gcr.io/kaggle-private-byod/python@sha256:f9647cc12ad6b5bff2567807c9baa993ae44f17e770a4e099dbde5f4e3a2f1ae",
+  "machine_shape": "Gpu"
+}

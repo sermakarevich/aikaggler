@@ -1,0 +1,93 @@
+{
+  "id": 88046,
+  "competitionName": "santa-2024",
+  "title": "Santa 2024 - The Perplexity Permutation Puzzle",
+  "briefDescription": "Help Rudolph descramble holiday-related words to make the LLMs happy!",
+  "dateEnabled": "2024-11-21T18:56:41.407Z",
+  "deadline": "2025-01-31T23:59:00Z",
+  "hasLeaderboard": true,
+  "leaderboardPercentage": 100,
+  "maxDailySubmissions": 100,
+  "numScoredSubmissions": 2,
+  "hasSolution": true,
+  "numPrizes": 4,
+  "forumId": 6256227,
+  "finalLeaderboardHasBeenVerified": true,
+  "userRankMultiplier": 1,
+  "dateCreated": "2024-11-05T17:58:19.820501200Z",
+  "competitionHostSegmentId": 1,
+  "maxTeamSize": 5,
+  "medalsAllowed": true,
+  "totalSolutionRows": 6,
+  "teamMergerExplicitDeadline": "2025-01-24T23:59:00Z",
+  "prohibitNewEntrantsExplicitDeadline": "2025-01-24T23:59:00Z",
+  "kernelsPublishingDisabledDeadline": "2025-01-24T23:59:00Z",
+  "organizationId": 4,
+  "hasCoverImageUrl": true,
+  "showPrivateLeaderboard": true,
+  "hasScripts": true,
+  "totalTeams": 1514,
+  "totalCompetitors": 1720,
+  "totalSubmissions": 23729,
+  "rulesRequired": true,
+  "clonedFromCompetitionId": 65704,
+  "rowIdColumnName": "id",
+  "evaluationAlgorithm": {
+    "id": 2615,
+    "name": "Santa 2024 Metric",
+    "environmentRenderType": "ENVIRONMENT_RENDER_TYPE_JSON",
+    "kernelId": 71069344,
+    "latestCompetitionMetricVersionId": 28737,
+    "state": "AVAILABLE"
+  },
+  "categories": [
+    {
+      "id": 15002,
+      "name": "optimization",
+      "fullPath": "technique > optimization",
+      "datasetCount": 294,
+      "competitionCount": 26,
+      "scriptCount": 1585,
+      "slug": "optimization",
+      "displayName": "Optimization"
+    },
+    {
+      "id": 16278,
+      "name": "holidays and cultural events",
+      "fullPath": "subject > people and society > people > holidays and cultural events",
+      "datasetCount": 1250,
+      "competitionCount": 8,
+      "scriptCount": 152,
+      "slug": "holidays-and-seasonal-events",
+      "displayName": "Holidays and Cultural Events"
+    },
+    {
+      "name": "custom metric",
+      "description": "This competition's metric is defined under the 'Evaluation' tab",
+      "displayName": "Custom Metric"
+    }
+  ],
+  "organization": {
+    "slug": "kaggle",
+    "name": "Kaggle",
+    "thumbnailImageUrl": "https://storage.googleapis.com/kaggle-organizations/4/thumbnail.png",
+    "profileUrl": "/organizations/kaggle"
+  },
+  "launched": true,
+  "createdByUserId": 995397,
+  "license": {
+    "id": 42,
+    "name": "Subject to Competition Rules",
+    "agreementRequired": false
+  },
+  "hostName": "Kaggle",
+  "scoreTruncationNumDecimals": 5,
+  "locked": true,
+  "totalJoinedUsers": 6175,
+  "requiresIdentityVerification": true,
+  "submissionSizeLimitMb": 20480,
+  "reward": {
+    "id": "USD",
+    "quantity": 50000
+  }
+}

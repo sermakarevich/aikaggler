@@ -1,0 +1,23 @@
+{
+  "reasoning": "The repository is structured around a custom IMPALA-based RL training loop (`torchbeast`), a multi-head transformer-convolutional network (`nns`), and environment wrappers (`lux_gym`) that handle the 24\u00d724 partial-observability space. The selected files span the complete pipeline: observation/reward engineering and data wrapping, core architecture blocks, V-trace loss implementation, multi-GPU training orchestration, and benchmarking/ensembling scripts. Together with the detailed README and analytics modules, they provide exhaustive coverage of feature extraction, model design, training dynamics, evaluation strategy, and critical ablation insights.",
+  "top_files": [
+    "README.md",
+    "final_versions/07_03_tune_against_mask/agent.py",
+    "final_versions/07_03_tune_against_mask/lux_ai/nns/models.py",
+    "final_versions/07_03_tune_against_mask/lux_ai/nns/transformer.py",
+    "final_versions/07_03_tune_against_mask/lux_ai/nns/conv_blocks.py",
+    "final_versions/07_03_tune_against_mask/lux_ai/lux_gym/obs_spaces.py",
+    "final_versions/07_03_tune_against_mask/lux_ai/lux_gym/wrappers.py",
+    "final_versions/07_03_tune_against_mask/lux_ai/lux_gym/sb3.py",
+    "final_versions/07_03_tune_against_mask/lux_ai/lux_gym/reward_spaces.py",
+    "final_versions/07_03_tune_against_mask/lux_ai/torchbeast/core/losses.py",
+    "final_versions/07_03_tune_against_mask/lux_ai/torchbeast/core/losses_func_selfplay.py",
+    "final_versions/07_03_tune_against_mask/lux_ai/torchbeast/core/vtrace.py",
+    "final_versions/07_03_tune_against_mask/lux_ai/torchbeast/core/batch_and_learn.py",
+    "final_versions/07_03_tune_against_mask/conf/base.yaml",
+    "final_versions/07_03_tune_against_mask/run_monobeast.py",
+    "final_versions/07_03_tune_against_mask/experiments/benchmark.py",
+    "final_versions/07_03_tune_against_mask/submission_model/config.yaml",
+    "final_versions/07_03_tune_against_mask/analytics/src.py"
+  ]
+}

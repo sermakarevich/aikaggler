@@ -1,0 +1,100 @@
+{
+  "id": 70942,
+  "competitionName": "equity-post-HCT-survival-predictions",
+  "title": "CIBMTR - Equity in post-HCT Survival Predictions",
+  "briefDescription": "Improve prediction of transplant survival rates equitably for allogeneic HCT patients",
+  "dateEnabled": "2024-12-04T19:07:47.047Z",
+  "deadline": "2025-03-05T23:59:41Z",
+  "hasLeaderboard": true,
+  "leaderboardPercentage": 25,
+  "maxDailySubmissions": 5,
+  "numScoredSubmissions": 2,
+  "hasSolution": true,
+  "numPrizes": 5,
+  "forumId": 4556207,
+  "finalLeaderboardHasBeenVerified": true,
+  "userRankMultiplier": 1,
+  "dateCreated": "2024-02-19T18:00:10.848532600Z",
+  "competitionHostSegmentId": 2,
+  "maxTeamSize": 5,
+  "medalsAllowed": true,
+  "enableTeamFiles": true,
+  "teamFileDeadline": "2025-03-22T00:00:00Z",
+  "teamMergerExplicitDeadline": "2025-02-26T23:59:00Z",
+  "prohibitNewEntrantsExplicitDeadline": "2025-02-26T23:59:00Z",
+  "kernelsPublishingDisabledDeadline": "2025-02-26T23:59:00Z",
+  "organizationId": 4821,
+  "hasCoverImageUrl": true,
+  "showPrivateLeaderboard": true,
+  "hasScripts": true,
+  "onlyAllowKernelSubmissions": true,
+  "totalTeams": 3325,
+  "totalCompetitors": 3892,
+  "totalSubmissions": 78768,
+  "rulesRequired": true,
+  "usesSynchronousReruns": true,
+  "maxCpuRuntimeMinutes": 540,
+  "maxGpuRuntimeMinutes": 540,
+  "rowIdColumnName": "ID",
+  "requiredSubmissionFilename": "submission.csv",
+  "evaluationAlgorithm": {
+    "id": 2574,
+    "name": "eefs_concordance_index",
+    "isMax": true,
+    "environmentRenderType": "ENVIRONMENT_RENDER_TYPE_JSON",
+    "kernelId": 70384193,
+    "latestCompetitionMetricVersionId": 29260,
+    "state": "AVAILABLE"
+  },
+  "categories": [
+    {
+      "id": 13213,
+      "name": "survey analysis",
+      "fullPath": "analysis > survey analysis",
+      "datasetCount": 412,
+      "competitionCount": 6,
+      "scriptCount": 598,
+      "slug": "survey-analysis",
+      "displayName": "Survey Analysis"
+    },
+    {
+      "id": 4202,
+      "name": "healthcare",
+      "fullPath": "subject > health and fitness > health > healthcare",
+      "description": "AI in healthcare is a growing interest. One of the major problems is simply converting research into an application. Should be easy, right?",
+      "datasetCount": 2756,
+      "competitionCount": 36,
+      "scriptCount": 2248,
+      "slug": "healthcare",
+      "displayName": "Healthcare"
+    },
+    {
+      "name": "custom metric",
+      "description": "This competition's metric is defined under the 'Evaluation' tab",
+      "displayName": "Custom Metric"
+    }
+  ],
+  "organization": {
+    "slug": "CIBMTR",
+    "name": "CIBMTR",
+    "thumbnailImageUrl": "https://storage.googleapis.com/kaggle-organizations/4821/thumbnail.jpeg",
+    "profileUrl": "/organizations/CIBMTR"
+  },
+  "launched": true,
+  "createdByUserId": 16861288,
+  "license": {
+    "id": 42,
+    "name": "Subject to Competition Rules",
+    "agreementRequired": false
+  },
+  "hostName": "CIBMTR",
+  "scoreTruncationNumDecimals": 5,
+  "locked": true,
+  "totalJoinedUsers": 11186,
+  "requiresIdentityVerification": true,
+  "submissionSizeLimitMb": 20480,
+  "reward": {
+    "id": "USD",
+    "quantity": 50000
+  }
+}

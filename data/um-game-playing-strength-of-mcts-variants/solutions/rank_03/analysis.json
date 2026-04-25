@@ -1,0 +1,59 @@
+{
+  "summary": "The author achieved 3rd place by prioritizing a stable cross-validation to leaderboard pipeline and implementing a novel flip data augmentation strategy. They designed a two-stage stacking approach where a model trained on flipped data generates out-of-fold predictions that serve as features for a second modeling stage. Final predictions were blended across LightGBM and CatBoost models with multiple random seeds, followed by a simple multiplicative coefficient scaling step to align prediction means with the target distribution.",
+  "extensive_summary": "## Overview & Core Philosophy\nThe solution emphasizes that data augmentation and a stable CV-LB pipeline are the primary drivers of success. The author notes that the public and private leaderboards share nearly identical distributions, making pipeline stability more critical than complex modeling tricks.\n\n## Data Augmentation\nA custom flip augmentation is applied to the agent1-agent2 pairs. This involves swapping the agents, transforming AdvantageP1 to 1-AdvantageP1, and negating utility_agent1, while keeping other features unchanged. This augmentation is used to train the first stage of the pipeline.\n\n## Cross-Validation Strategy\nValidation is handled via StratifiedGroupKFold grouped by GameRulesetName. To improve stability and reduce noise, the author modifies the minor class of utility_agent1 to its neighbor class before splitting.\n\n## Feature Engineering & Selection\nFeatures are sourced from an external MCTS starter notebook and augmented with TF-IDF-SVD features derived from EnglishRules, with max_features tuned directly on the LB score. Feature selection relies on null importance to remove features that exhibit high variance under target shift.\n\n## Modeling & Ensembling\nA two-stage stacking architecture is employed. In stage one, models trained on the flipped augmentation data predict the original train and test sets to generate OOF predictions. These OOF predictions serve as features for stage two. The final submission blends LightGBM and CatBoost models averaged across three random seeds.\n\n## Post-Processing\nSince the final prediction means were lower than the original target means, the author applies a multiplicative coefficient of 1.12 to the predictions, yielding a 0.002 LB score improvement.",
+  "rank": 3,
+  "competition_flow": "Raw data is augmented via a custom flip strategy, processed with TF-IDF-SVD and null-importance feature selection, validated using StratifiedGroupKFold, modeled in a two-stage stacking pipeline with LightGBM and CatBoost, blended across seeds, and finally scaled by a coefficient of 1.12 before submission.",
+  "data_reading": [],
+  "data_processing": [
+    "Custom flip augmentation (swapping agent1/agent2, transforming AdvantageP1 to 1-AdvantageP1, negating utility_agent1)",
+    "Modifying minor class of utility_agent1 to neighbor class",
+    "TF-IDF-SVD on EnglishRules",
+    "Null importance feature selection"
+  ],
+  "features_engineering": [
+    "TF-IDF-SVD features of EnglishRules",
+    "Features from external MCTS starter notebook",
+    "Null importance feature selection to drop features sensitive to target shift"
+  ],
+  "models": [
+    "LightGBM",
+    "CatBoost",
+    "two-stage stacking model"
+  ],
+  "frameworks_used": [
+    "lightgbm",
+    "catboost",
+    "optuna"
+  ],
+  "loss_functions": [],
+  "cv_strategy": "StratifiedGroupKFold grouped by GameRulesetName, with minor class of utility_agent1 modified to neighbor class.",
+  "ensembling": "Blending LightGBM and CatBoost models averaged across 3 random seeds, followed by multiplying final predictions by a coefficient of 1.12.",
+  "insights": [
+    "A stable CV-LB pipeline is critical since public and private datasets share the same distribution.",
+    "Data augmentation, particularly flip augmentation, is a key driver of performance.",
+    "Null importance feature selection effectively removes features that shift too much under target shift."
+  ],
+  "critical_findings": [
+    "The private leaderboard showed almost no shake, confirming distribution alignment between public and private data.",
+    "Multiplying the final prediction means by 1.12 improved the LB score by 0.002."
+  ],
+  "what_did_not_work": [
+    "LudRules tfidf",
+    "bert embeddings",
+    "pseudo label with more agent1-agent2-games groups",
+    "neural network"
+  ],
+  "github_repos": [],
+  "papers": [],
+  "other_solution_refs": [
+    {
+      "description": "External notebook used for feature engineering",
+      "url": "https://www.kaggle.com/code/yunsuxiaozi/mcts-starter"
+    },
+    {
+      "description": "Author's final submission notebook",
+      "url": "https://www.kaggle.com/code/senkin13/um-final-sub-1"
+    }
+  ],
+  "source_url": "https://www.kaggle.com/competitions/um-game-playing-strength-of-mcts-variants/discussion/549588"
+}

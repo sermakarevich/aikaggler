@@ -1,0 +1,44 @@
+{
+  "summary": "This notebook serves as a comprehensive exploratory data analysis (EDA) for the NFL Big Data Bowl 2025 dataset, consolidating insights from a series of prior analyses. It demonstrates how to load, merge, and clean four core datasets (games, plays, player_play, players) while systematically handling missing values and structural conflicts. The author performs extensive statistical aggregation and visualization to uncover team-level offensive and defensive performance trends, player contributions, and temporal patterns across the season. Readers should take away a clear understanding of the dataset's structure, key feature distributions, and how to derive meaningful tactical insights from raw play-by-play and tracking data without relying on machine learning models.",
+  "purpose": "eda",
+  "competition_flow": "Loads and merges four NFL CSV datasets, cleans missing values, computes aggregated offensive/defensive statistics, and generates comprehensive team and temporal visualizations to identify performance trends.",
+  "data_reading": [
+    "pd.read_csv loads games.csv, player_play.csv, players.csv, and plays.csv from the Kaggle input directory."
+  ],
+  "data_processing": [
+    "Merges DataFrames on gameId, playId, and nflId using inner joins; renames conflicting penaltyYards columns; imputes missing values by filling object columns with mode, numeric columns with mean, and boolean columns with mode; filters to selected columns for analysis."
+  ],
+  "features_engineering": [
+    "Derives composite defensive metrics (totalTackles, totalFumbles, totalSackYards, totalTacklesForLoss) by summing related columns; aggregates yards and action counts by team, player (nflId), and game date; computes pairwise correlations and group-wise descriptive statistics."
+  ],
+  "models": [],
+  "frameworks_used": [
+    "pandas",
+    "numpy",
+    "matplotlib",
+    "plotly.express",
+    "plotly.graph_objects",
+    "seaborn",
+    "scipy.stats",
+    "sklearn.preprocessing",
+    "sklearn.impute"
+  ],
+  "loss_functions": [],
+  "cv_strategy": "",
+  "ensembling": "",
+  "insights": [
+    "Passing and receiving plays collectively dominate total yardage, while rushing plays contribute less but remain strategically vital.",
+    "Teams like JAX, GB, KC, and SF excel at gaining yards after the catch, whereas HOU and TB struggle with ball security.",
+    "Defensive pressure and sack metrics vary significantly by team, with PIT and BUF showing strong pass-rush capabilities.",
+    "Correlations between major offensive yardage metrics are near zero, indicating they operate largely independently at the play level.",
+    "Missing data is heavily concentrated in defensive flags and penalty names, requiring careful imputation or exclusion for downstream modeling."
+  ],
+  "critical_findings": [
+    "Receiving yards total slightly exceeds passing yards total, highlighting the value of yards after catch in the dataset.",
+    "Pairwise correlations between rushing, passing, and receiving yards are extremely weak (~-0.007 to 0.003), suggesting play-type yardage is not linearly coupled.",
+    "Defensive metrics like causedPressure and wasInitialPassRusher have substantial missingness, indicating they are only recorded for specific play types or players."
+  ],
+  "what_did_not_work": [],
+  "source_url": "https://www.kaggle.com/code/marianadeem755/nfl-big-data-bowl-complete-data-exploration",
+  "votes": 64
+}

@@ -1,0 +1,47 @@
+{
+  "overall_summary": "This competition centered on LLM-as-a-Judge essay grading, where participants engineered prompt injection attacks to manipulate model outputs toward specific target scores. Winning approaches universally relied on systematic exploitation of model behavioral quirks, language-specific instruction following, and rigorous local-to-leaderboard correlation rather than traditional ML modeling. Success hinged on mathematical partitioning of test sets, strategic repetition of stable prompts, and bypassing evaluation metrics like language confidence and sequence similarity.",
+  "competition_flows": [
+    "Crafted prompt injection payloads using multilingual text, HTML/JS masking, and word list insertion to bypass safety filters on Gemma, Qwen, and Phi, then submitted the optimized prompts with a curated article set and seed 1144 to achieve the target score.",
+    "The pipeline involved probing LLM judge internals to discover prompt injection attacks, mathematically optimizing the public test set partition to maximize English confidence scores, and iteratively refining prompt templates for stability before final submission.",
+    "The pipeline involved generating synthetic essays using curated wordlists and prompt injection suffixes, locally testing them against templated system prompts to verify grade outputs, batching and distributing exploits across public/private splits, and submitting the optimized batch to maximize the grading metric.",
+    "The author generated multi-lingual prompt injection attacks, verified their grading manipulation locally using quantized Gemma and Llama models on consumer GPUs, tuned the attack distribution to match the inferred private leaderboard split, and submitted the optimized essays for final grading.",
+    "Craft adversarial prompts using targeted exploits (nonsense text, direct commands, conflicting instructions, code execution, identity targeting), verify their purity through strategic submission combinations and linear index mapping, repeat verified samples to satisfy constraints, and submit to achieve perfect public and private leaderboard scores.",
+    "The pipeline involved iteratively testing prompt injection templates, simulating score distributions with fixed random seeds to filter unstable attacks, and submitting a highly repeated test set to stabilize the final judge score."
+  ],
+  "data_reading": [],
+  "data_processing": [
+    "Sampled ~70 essay topics and clipped them to 450 or 600 characters.",
+    "Appended English and Japanese exploit suffixes to essay text.",
+    "Curated and updated wordlists (positive, negative, stopwords) to influence model behavior.",
+    "Extended random word portions to 600 characters to circumvent language confidence and similarity metrics.",
+    "Filtered essay batches by computing mean and maximum similarity scores across multiple methods, retaining only those with a maximum similarity < ~0.195."
+  ],
+  "features_engineering": [],
+  "models": [
+    "Gemma",
+    "Qwen",
+    "Phi",
+    "LLaMA"
+  ],
+  "frameworks_used": [
+    "bitsandbytes"
+  ],
+  "loss_functions": [],
+  "cv_strategies": [
+    "Local evaluation using 4 quantized LLMs on 2xT4 GPUs to verify grading outputs match target criteria, with public leaderboard correlation used to infer private split distribution."
+  ],
+  "ensembling": [
+    "The author combined three distinct multi-lingual attack patterns (990, 909, 099) and balanced their distribution across essays to maximize the average grading score, rather than using traditional model ensembling."
+  ],
+  "insights": [],
+  "critical_findings": [],
+  "what_did_not_work": [],
+  "notable_individual_insights": [
+    "rank 1 (1st Place Solution): The precise placement of a single comma was critical for successful prompt injection.",
+    "rank 5 (5th Place Solution): Kaggle's leaderboard rounding behavior can be mathematically leveraged to precisely determine test set partition sizes with minimal submissions.",
+    "rank 4 (4th Place Solution): The competition's standard deviation calculation used `ddof=1`, which was a critical detail for maximizing the final score.",
+    "rank 3 (3rd place solution): The private leaderboard was approximately 70% random/private split rather than a full 100% public/private split, which initially caused severe score miscalculations.",
+    "rank 2 ([2nd] path to the perfect score): Code execution commands bypass text-based evaluation metrics entirely.",
+    "rank 1 (Stable gold medal solution 29.303 public / 29.395 private): Reducing the number of unique test samples and heavily repeating them can drastically lower evaluation variance when relying on stochastic judges."
+  ]
+}

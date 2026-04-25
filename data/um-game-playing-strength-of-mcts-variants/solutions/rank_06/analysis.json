@@ -1,0 +1,89 @@
+{
+  "summary": "The author achieved 6th place by combining a custom zero-cost data generation technique (swapping agent strings and inverting the `Balance` feature) with extensive manual and automatic feature engineering. They implemented a two-stage modeling pipeline where CatBoost served as the primary model and provided leakage-free out-of-fold predictions as features for LightGBM and a custom MLP. A key insight was addressing train-test distribution shift near the competition's end by applying a simple scaling and clipping transformation to align predictions with the public test distribution. The validation strategy was refined from GroupKFold to a stratified version using `GameRulesetName` and `agent1` to improve local stability.",
+  "extensive_summary": "## Validation Strategy\nThe author refined the baseline GroupKFold by adding stratification on the target and `agent1` columns, using `GameRulesetName` as the group key. Five folds provided the best balance of stability and score, while a nested 5x5 fold approach was specifically implemented to generate leakage-free out-of-fold (OOF) predictions for the second modeling stage.\n\n## Zero-Cost Data Generation\nA core technique was \"zero-cost data generation\" involving swapping agent strings and inverting the target. Initial attempts to invert `AdvantageP1` were abandoned after they degraded performance, revealing that blind inversion added no new signal. Inverting the `Balance` feature (the second highest importance feature) successfully closed the gap between original and generated OOF predictions. Pseudo-labeling and self-play data generation were tested but found less valuable.\n\n## Feature Engineering\nManual features included parsing agent strings into selection, exploration, playout, and bounds components, creating efficiency ratios (e.g., `Playouts/Moves`, `ComplexityBalanceInteraction`), and generating cross-agent interaction features. Automatic feature generation was handled via the `OpenFE` library, where the author patched multiprocessing and data type bugs, adjusted it to use StratifiedGroupKFold, and filtered out group-aggregated and frequency features that caused public LB instability. The final feature set was pruned to ~400 columns based on CV importance.\n\n## Modeling Pipeline\nThe task was framed as regression optimizing RMSE, with CatBoost emerging as the strongest single model (GPU-accelerated, 30k iterations, lr 0.01, depth 10). A two-stage architecture was built: CatBoost OOF predictions served as features for LightGBM and a custom DNN. The DNN utilized an embedding layer for categoricals, a quantile transformer for numerics, and a dense MLP with 0.9 dropout and Hardswish activations, optimized via MADGRAD. CatBoost was also tested with OOF predictions as a baseline initialization.\n\n## Distribution Matching\nNoticing a train-test distribution shift, the author applied a simple post-processing step near the competition's end: `np.clip(predictions * 1.175, -1, 1)`. This scaling and clipping aligned the predictions with the public test distribution, improving the public score from 0.421 to 0.417, and ultimately secured the final ranking.",
+  "rank": 6,
+  "competition_flow": "Raw tabular game data was cleaned, augmented via zero-cost feature inversion and agent swapping, enriched with manual and OpenFE-generated features, and fed into a two-stage CatBoost/LightGBM/MLP pipeline with stratified group validation, followed by a final scaling/clipping adjustment to align with the public test distribution.",
+  "data_reading": [],
+  "data_processing": [
+    "Drop constant columns and drop `GameRulesetName`, `LudRules`, `EnglishRules`.",
+    "Memory optimization.",
+    "Zero-cost data generation: swap agent strings, invert target, invert `Balance` column.",
+    "Fill NaNs with -100 value.",
+    "Quantile transformer applied to numerical features for the DNN.",
+    "Inference post-processing: `np.clip(predictions * 1.175, -1, 1)` to match public distribution."
+  ],
+  "features_engineering": [
+    "Splitting agent strings into selection, exploration, playout, and bounds components.",
+    "Efficiency ratios from litsea's notebook (e.g., `Playouts/Moves`, `ComplexityBalanceInteraction`, `AdvantageBalanceRatio`).",
+    "Cross-agent features combining p1/p2 subtypes.",
+    "Automatic feature generation via OpenFE (top-500 features, removed group-aggregated and frequency features).",
+    "Final selection pruned to ~400 columns based on CV importance."
+  ],
+  "models": [
+    "CatBoost",
+    "LightGBM",
+    "XGBoost",
+    "DNN/MLP (with embedding layer, quantile transformer, Hardswish activations)"
+  ],
+  "frameworks_used": [
+    "catboost",
+    "lightgbm",
+    "xgboost",
+    "openfe",
+    "scipy"
+  ],
+  "loss_functions": [
+    "RMSE"
+  ],
+  "cv_strategy": "Stratified GroupKFold with `GameRulesetName` as group key and stratification by target and `agent1` (5 folds); Nested CV (5x5 folds) used specifically for generating leakage-free OOF predictions.",
+  "ensembling": "Weighted ensemble of multiple models with positive weights optimized via `scipy.minimize` based on CV score, followed by a final scaling and clipping transformation (`predictions * 1.175` clipped to `[-1, 1]`) to align with the public test distribution.",
+  "insights": [
+    "Stratifying GroupKFold by both target and `agent1` significantly improved CV stability compared to using `GameRulesetName` alone.",
+    "Inverting the `Balance` feature during zero-cost data generation was crucial to closing the gap between original and generated OOF predictions.",
+    "Treating the task as a regression problem optimizing RMSE yielded better results than classification with QWK.",
+    "Using CatBoost out-of-fold predictions as features for secondary models effectively boosted performance despite CatBoost being the strongest single model.",
+    "Addressing train-test distribution shift near the competition's end via simple scaling and clipping was more impactful than complex post-processing."
+  ],
+  "critical_findings": [
+    "Inverting the `AdvantageP1` column initially seemed logical but actually decreased the score, revealing that swapping agents/targets without inverting this specific feature brought no new signal.",
+    "Automatic feature generation via OpenFE produced unstable results on the public LB when features were aggregated by groups or based on frequency, requiring their removal.",
+    "Applying the same distribution-matching scaling (`* 1.175`) to the CV ensemble only marginally improved the public score, indicating the shift was specific to the public/private test split rather than a general data issue."
+  ],
+  "what_did_not_work": [
+    "One-hot, label, target encoding, and scaling/normalizing numerical features were ineffective for tree models (only useful for the DNN).",
+    "Pseudo-labeling by training a model without group split criteria did not improve the score.",
+    "Dropping features based on correlation, variance, or unique values per group did not work better than feature importance alone.",
+    "XGBoost models and meta-models predicting corner cases/draws were not effective.",
+    "Using simple 5-fold model outputs for OOF predictions caused leakage, necessitating a nested CV approach."
+  ],
+  "github_repos": [
+    {
+      "url": "https://github.com/IIIS-Li-Group/OpenFE",
+      "role": "library"
+    },
+    {
+      "url": "https://github.com/vadimtimakin/Kaggle-MCTS-6th-place-solution",
+      "role": "solution"
+    }
+  ],
+  "papers": [],
+  "other_solution_refs": [
+    {
+      "description": "Notebook by @litsea used for manual feature ratios",
+      "url": "https://www.kaggle.com/code/litsea/mcts-baseline-fe-lgbm"
+    },
+    {
+      "description": "Discussion explaining nested CV for OOF generation",
+      "url": "https://www.kaggle.com/competitions/um-game-playing-strength-of-mcts-variants/discussion/543756"
+    },
+    {
+      "description": "Notebook by @martinapreusse demonstrating stacked CatBoost",
+      "url": "https://www.kaggle.com/code/martinapreusse/mcts-stacked-catboost"
+    },
+    {
+      "description": "Discussion by @tomooinubushi confirming train-test distribution shift",
+      "url": "https://www.kaggle.com/competitions/um-game-playing-strength-of-mcts-variants/discussion/533210"
+    }
+  ],
+  "source_url": "https://www.kaggle.com/competitions/um-game-playing-strength-of-mcts-variants/discussion/549582"
+}

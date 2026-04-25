@@ -1,0 +1,27 @@
+{
+  "id": "shreeshaaithal/transform-long-videos-into-engaging-short",
+  "id_no": 69635572,
+  "title": "Transform Long Videos into Engaging Short",
+  "code_file": "transform-long-videos-into-engaging-short.ipynb",
+  "language": "python",
+  "kernel_type": "notebook",
+  "is_private": false,
+  "enable_gpu": false,
+  "enable_tpu": false,
+  "enable_internet": false,
+  "keywords": [
+    "python",
+    "programming",
+    "artificial intelligence",
+    "computer vision",
+    "deep learning"
+  ],
+  "dataset_sources": [],
+  "kernel_sources": [],
+  "competition_sources": [
+    "gemini-long-context"
+  ],
+  "model_sources": [],
+  "docker_image": "gcr.io/kaggle-images/python@sha256:a16cda2c5d52fa988d413876f3ffad7a46cca58678514601feb175990dc187c0",
+  "machine_shape": "None"
+}

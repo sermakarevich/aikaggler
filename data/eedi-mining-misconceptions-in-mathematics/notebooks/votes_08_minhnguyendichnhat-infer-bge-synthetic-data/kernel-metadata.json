@@ -1,0 +1,31 @@
+{
+  "id": "minhnguyendichnhat/infer-bge-synthetic-data",
+  "id_no": 66326634,
+  "title": "Infer BGE Synthetic Data ",
+  "code_file": "infer-bge-synthetic-data.ipynb",
+  "language": "python",
+  "kernel_type": "notebook",
+  "is_private": false,
+  "enable_gpu": true,
+  "enable_tpu": false,
+  "enable_internet": false,
+  "keywords": [
+    "gpu"
+  ],
+  "dataset_sources": [
+    "nbroad/hf-libraries",
+    "abdurrafae/vllm-t4-fix"
+  ],
+  "kernel_sources": [
+    "mousecat1/hugging-quants-meta-llama-3-1-8b-instruct-awq-int4",
+    "ironbar/making-wheels-of-necessary-packages-for-vllm",
+    "sinchir0/eedi-library",
+    "ndnm2k3/train-bge-synthetic-data"
+  ],
+  "competition_sources": [
+    "eedi-mining-misconceptions-in-mathematics"
+  ],
+  "model_sources": [],
+  "docker_image": "gcr.io/kaggle-private-byod/python@sha256:d5f66652dfa098a9521987ed589d1c7791b33008c97533fe0ddfc3182d7daad0",
+  "machine_shape": "NvidiaTeslaT4"
+}

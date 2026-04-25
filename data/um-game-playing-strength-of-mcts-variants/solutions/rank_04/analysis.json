@@ -1,0 +1,109 @@
+{
+  "summary": "The author secured 4th place by combining multiple community-contributed models into a manually tuned cascading ensemble. Initially overfitting to the Public Leaderboard yielded strong results, prompting a shift to a stacking strategy with 5-fold groupKFold validation to mitigate distribution shift risks. The core technical contribution is a sequential merging process using manual multipliers and adders, followed by clipping and offset adjustments, rather than novel feature engineering or architecture design.",
+  "extensive_summary": "The solution leverages a \"scary\" combination of existing Kaggle notebooks, primarily focusing on MCTS (Monte Carlo Tree Search) variants, DeepTables neural networks, LightGBM, CatBoost, and Matryoshka embeddings. The author began by experimenting with gradient boosting parameters but quickly pivoted to ensembling the top public notebooks (\"yukiZ\" and \"yunbase\"), later adding two \"demidov\" neural networks to push the Public LB score to 0.422. Recognizing the risk of Public LB overfitting and potential train/test distribution mismatch (noting a likely simple random 35-65 split), they developed a stacking strategy validated via 5-fold groupKFold (CV: 0.407221). The final submission relies on a manual cascade merging technique: predictions from ~12 models are sequentially combined using manually tuned multipliers and adders. The pipeline concludes with clipping predictions to [-0.98, 0.98] and applying a small sign-dependent offset. The author emphasizes that this approach serves as an effective RMSE reduction function for strong community models, though they acknowledge minimal original feature engineering or architectural innovation.",
+  "rank": 4,
+  "competition_flow": "Community notebooks are adapted to generate predictions, which are then combined via a manual cascade merging process with multipliers and adders, clipped and offset, before final submission.",
+  "data_reading": [],
+  "data_processing": [],
+  "features_engineering": [],
+  "models": [
+    "MCTS variants",
+    "DeepTables NN",
+    "LightGBM",
+    "CatBoost",
+    "Matryoshka embeddings"
+  ],
+  "frameworks_used": [],
+  "loss_functions": [],
+  "cv_strategy": "5-fold groupKFold (5gkf)",
+  "ensembling": "Cascading manual merging of ~12 community models using sequential multipliers and adders, followed by clipping to [-0.98, 0.98] and a sign-based offset adjustment.",
+  "insights": [
+    "Manual cascade merging with multipliers and adders effectively reduces RMSE across strong community models.",
+    "A stacking strategy with groupKFold validation helps balance the risk of Public LB overfitting."
+  ],
+  "critical_findings": [
+    "The 35%-65% train/test split was likely a simple random sampling process, causing a distribution mismatch between training and test data.",
+    "Overfitting to the Public Leaderboard was actually the winning strategy initially, contrary to standard advice."
+  ],
+  "what_did_not_work": [
+    "Modifying gradient boosting model parameters without success.",
+    "Relying on CV results to guide selection for a Public LB-overfitted submission."
+  ],
+  "github_repos": [],
+  "papers": [],
+  "other_solution_refs": [
+    {
+      "description": "MCTS: DeepTables NN -Version16",
+      "url": "https://www.kaggle.com/code/yekenot/mcts-deeptables-nn"
+    },
+    {
+      "description": "MCTS Starter -Version15",
+      "url": "https://www.kaggle.com/code/yunsuxiaozi/mcts-starter?scriptVersionId=201806533"
+    },
+    {
+      "description": "MCTS Simple Yunbase -Version6",
+      "url": "https://www.kaggle.com/code/yunsuxiaozi/mcts-simple-yunbase?scriptVersionId=207721774"
+    },
+    {
+      "description": "MCTS - OOF Predictions as Features-HP tune[.427] -Version2",
+      "url": "https://www.kaggle.com/code/hideyukizushi/mcts-oof-predfe-pubnb-blending-lb-425?scriptVersionId=202448545"
+    },
+    {
+      "description": "Matryoshka embeddings & training -Version15",
+      "url": "https://www.kaggle.com/code/verracodeguacas/matryoshka-embeddings-training?scriptVersionId=202642583"
+    },
+    {
+      "description": "UM Game playing -Version28",
+      "url": "https://www.kaggle.com/code/ghulamhiader/um-game-playing?scriptVersionId=201362002"
+    },
+    {
+      "description": "notebook MCTS -Version25",
+      "url": "https://www.kaggle.com/code/longggl/notebook-mcts?scriptVersionId=19815415"
+    },
+    {
+      "description": "sklearn pipelines feat eng + ensemble -Version2",
+      "url": "https://www.kaggle.com/code/xiaoleilian/sklearn-pipelines-feat-eng-ensemble?scriptVersionId=198755034"
+    },
+    {
+      "description": "MCTS - Baseline + FE - LGBM -Version3",
+      "url": "https://www.kaggle.com/code/litsea/mcts-baseline-fe-lgbm"
+    },
+    {
+      "description": "MCTS EDA which makes sense -Version4",
+      "url": "https://www.kaggle.com/code/ambrosm/mcts-eda-which-makes-sense/notebook"
+    },
+    {
+      "description": "MCTS - Stacked CatBoost -Version1",
+      "url": "https://www.kaggle.com/code/martinapreusse/mcts-stacked-catboost"
+    },
+    {
+      "description": "fix DeepTables",
+      "url": "https://www.kaggle.com/code/peilwang/fix-deeptables"
+    },
+    {
+      "description": "Fix DeepTables Save & Load Error discussion",
+      "url": "https://www.kaggle.com/competitions/um-game-playing-strength-of-mcts-variants/discussion/542932#3032020"
+    },
+    {
+      "description": "MCTS-4th-Place-Solution-Private-LB",
+      "url": "https://www.kaggle.com/code/coreacasa/fork-of-fork-of-fork-of-fork-of-fork-of-for-08af2f"
+    },
+    {
+      "description": "MCTS-4th-Place-Solution-Referenced-Workspace",
+      "url": "https://www.kaggle.com/code/coreacasa/mcts-4th-place-solution-referenced-workspace?scriptVersionId=211879845"
+    },
+    {
+      "description": "MCTS | OOF Predictions as Features",
+      "url": "https://www.kaggle.com/code/andreasbis/mcts-oof-predictions-as-features"
+    },
+    {
+      "description": "Submission2-Stacking-Solution",
+      "url": "https://www.kaggle.com/code/coreacasa/mcts-inference-public-submissions-v7?scriptVersionId=210635717"
+    },
+    {
+      "description": "mcts-debugging-cross-validation",
+      "url": "https://www.kaggle.com/code/coreacasa/mcts-debugging-cross-validation?scriptVersionId=210632159"
+    }
+  ],
+  "source_url": "https://www.kaggle.com/competitions/um-game-playing-strength-of-mcts-variants/discussion/549603"
+}

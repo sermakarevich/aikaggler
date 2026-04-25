@@ -1,0 +1,33 @@
+{
+  "summary": "The notebook demonstrates a prompt engineering strategy for a two-judge LLM competition where submissions must satisfy specific counting and identity-check constraints. It uses Phi-3.5-mini-instruct with a custom generation pipeline to produce essays that explicitly list items, request their total, and embed a hidden test to detect if the judge is Qwen. The approach highlights how structured prompting and controlled sampling parameters can reliably force LLMs to follow complex, multi-part instructions without fine-tuning. Readers should learn how to design prompts that embed counting tasks and model identification checks directly into the generation process.",
+  "purpose": "inference",
+  "competition_flow": "Loads test CSV, constructs prompts with embedded counting and identity-check instructions, generates text using Phi-3.5-mini-instruct via Hugging Face transformers, concatenates responses, and saves a submission CSV.",
+  "data_reading": [
+    "pd.read_csv(\"/kaggle/input/llms-you-cant-please-them-all/test.csv\")"
+  ],
+  "data_processing": [
+    "Input data requires no preprocessing beyond prompt formatting; generated responses are trimmed by stripping whitespace and truncating at the last occurring punctuation mark to remove conversational filler."
+  ],
+  "features_engineering": [],
+  "models": [
+    "Phi-3.5-mini-instruct"
+  ],
+  "frameworks_used": [
+    "torch",
+    "transformers",
+    "pandas",
+    "numpy"
+  ],
+  "loss_functions": [],
+  "cv_strategy": "",
+  "ensembling": "Concatenates generated responses from multiple example sets with a space separator; no formal model ensembling or post-processing is applied.",
+  "insights": [
+    "Structured prompting with explicit counting instructions and identity checks can reliably guide LLM outputs for multi-judge evaluation scenarios.",
+    "Using nucleus sampling (top_p=0.9) and temperature (0.9) balances creative generation with adherence to strict constraints.",
+    "Trimming responses at the last punctuation mark prevents trailing conversational filler from affecting evaluation metrics."
+  ],
+  "critical_findings": [],
+  "what_did_not_work": [],
+  "source_url": "https://www.kaggle.com/code/kawchar85/13-003-lb-add-it-up-for-two-judge",
+  "votes": 285
+}

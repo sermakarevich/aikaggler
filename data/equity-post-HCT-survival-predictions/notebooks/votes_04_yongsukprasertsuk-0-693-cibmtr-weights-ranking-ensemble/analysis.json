@@ -1,0 +1,57 @@
+{
+  "summary": "This notebook demonstrates an ensemble strategy for a survival prediction competition by combining three distinct modeling approaches: a custom PyTorch pairwise ranking neural network with event masking, tree-based models trained on survival-derived targets, and an XGBoost classifier for event prediction. It highlights how engineering survival-specific targets (Cox PH, Kaplan-Meier, Nelson-Aalen) and explicitly handling censoring via pairwise loss masks significantly improves predictive performance. The author shows that stratifying cross-validation by race and newborn status stabilizes scores, while auxiliary tasks and Stochastic Weight Averaging (SWA) enhance neural network generalization. Readers should take away practical techniques for adapting tabular models to time-to-event data and effectively combining heterogeneous model families.",
+  "purpose": "ensemble",
+  "competition_flow": "Loads CSV data, engineers survival-specific targets and HLA features, trains a PyTorch pairwise ranking NN, XGBoost classifier, and LightGBM/CatBoost models via 5-fold stratified CV, applies event-based offsets and weighted averaging to their predictions, and generates a final submission CSV.",
+  "data_reading": [
+    "pd.read_csv and pl.read_csv from /kaggle/input/equity-post-HCT-survival-predictions/"
+  ],
+  "data_processing": [
+    "Fills numerical NAs with median, categorical NAs with 'Unknown'/'N/A', standard scales numerical features, label encodes categoricals, log-transforms efs_time, replaces specific outlier values (e.g., year_hct=2020 -> 2019), casts dtypes, and drops constant columns."
+  ],
+  "features_engineering": [
+    "HLA locus matching aggregations (summing low/high matches for 6/8/10 loci)",
+    "Relative year calculation (year_hct - 2000)",
+    "Cross features (donor_age - age_at_hct, comorbidity/karnofsky sum/diff/product/div)",
+    "Binary column combinations",
+    "Survival-derived targets (Cox PH partial hazard, KM survival probability, Nelson-Aalen cumulative hazard, flipped censored time)"
+  ],
+  "models": [
+    "LitNN (PyTorch Lightning with ODST/MLP)",
+    "XGBClassifier",
+    "LightGBMRegressor",
+    "CatBoostRegressor"
+  ],
+  "frameworks_used": [
+    "pytorch",
+    "pytorch_lightning",
+    "xgboost",
+    "lightgbm",
+    "catboost",
+    "lifelines",
+    "polars",
+    "pandas",
+    "scikit-learn"
+  ],
+  "loss_functions": [
+    "Pairwise hinge loss with event masking",
+    "MSE (auxiliary task)",
+    "RMSE/MAE (tree models)",
+    "Cox loss (CatBoost target training)"
+  ],
+  "cv_strategy": "StratifiedKFold(n_splits=5) stratified on race_group and newborn status for NN/XGB; KFold(n_splits=5) for tree models",
+  "ensembling": "Combines predictions from the pairwise ranking NN, XGBoost mask, LightGBM, and CatBoost models using a fixed offset (+0.2 to NN predictions where XGB predicts an event) and weighted averaging across folds and model families.",
+  "insights": [
+    "Survival data with censoring requires explicit masking in pairwise comparisons to avoid invalid rankings.",
+    "Engineering targets from survival analysis methods (Cox, KM, Nelson-Aalen) effectively captures time-to-event dynamics for tree models.",
+    "Stratifying CV by race and newborn status stabilizes cross-validation scores.",
+    "Auxiliary tasks and Stochastic Weight Averaging (SWA) improve neural network generalization."
+  ],
+  "critical_findings": [
+    "Censored observations cannot be reliably ranked against events, necessitating a strict event mask in the pairwise loss.",
+    "Specific HLA and demographic columns contain rare outlier values that must be manually corrected to prevent model confusion.",
+    "Race-group stratification is critical for both target engineering and CV stability due to distribution shifts."
+  ],
+  "what_did_not_work": [],
+  "source_url": "https://www.kaggle.com/code/yongsukprasertsuk/0-693-cibmtr-weights-ranking-ensemble",
+  "votes": 858
+}

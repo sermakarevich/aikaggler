@@ -1,0 +1,48 @@
+{
+  "summary": "This notebook provides a modular, reusable baseline pipeline for the WSDM Cup Multilingual Chatbot Arena competition, focusing on classical machine learning for binary classification. It demonstrates how to handle data symmetry by swapping response columns and flipping labels, extract hand-crafted string features, and train multiple gradient boosting models alongside a logistic regression ensemble. The author emphasizes using smoother metrics like AUC or logloss for early stopping rather than accuracy, and implements a post-training threshold search to optimize final predictions. Readers should take away a structured, efficient approach to building, evaluating, and blending classical ML baselines without relying on complex deep learning architectures.",
+  "purpose": "baseline",
+  "competition_flow": "Loads parquet training and test data, applies symmetry-based augmentation and hand-crafted string features, trains CatBoost, LightGBM, and XGBoost models via 5-fold stratified cross-validation, blends their OOF predictions with a logistic regression model, tunes a probability cutoff, and generates a submission CSV.",
+  "data_reading": [
+    "pd.read_parquet for train and test sets",
+    "pd.read_csv for sample submission"
+  ],
+  "data_processing": [
+    "Duplicates training rows by swapping response_a and response_b columns and flipping the winner label to enforce symmetry",
+    "Drops raw text, IDs, and metadata columns before modeling",
+    "No explicit normalization or tokenization is applied"
+  ],
+  "features_engineering": [
+    "Hand-crafted string features including length, space/punctuation/special character counts, bracket balance, digit/letter ratios, Chinese character presence, and JSON keyword detection for prompt, response_a, and response_b"
+  ],
+  "models": [
+    "CatBoost",
+    "LightGBM",
+    "XGBoost",
+    "Logistic Regression"
+  ],
+  "frameworks_used": [
+    "lightgbm",
+    "xgboost",
+    "scikit-learn",
+    "joblib",
+    "pandas",
+    "numpy"
+  ],
+  "loss_functions": [
+    "Logloss",
+    "logloss",
+    "binary:logistic"
+  ],
+  "cv_strategy": "StratifiedKFold(n_splits=5, shuffle=True, random_state=42)",
+  "ensembling": "Blends base model OOF predictions using a Logistic Regression model trained on the competition data, with final weights derived from the mean of the fitted coefficients.",
+  "insights": [
+    "Using a smoother metric like AUC or logloss for early stopping is more effective than accuracy for gradient boosting models.",
+    "Swapping response columns and flipping labels effectively doubles the training data while preserving the binary classification structure.",
+    "Threshold tuning on OOF predictions can yield better accuracy than the default 0.5 cutoff.",
+    "A modular, reusable training pipeline simplifies experimentation across different classical ML models."
+  ],
+  "critical_findings": [],
+  "what_did_not_work": [],
+  "source_url": "https://www.kaggle.com/code/ravi20076/wsdm2024-baseline-v1",
+  "votes": 176
+}

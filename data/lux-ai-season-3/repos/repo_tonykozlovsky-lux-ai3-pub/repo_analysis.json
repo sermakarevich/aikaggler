@@ -1,0 +1,185 @@
+{
+  "summary": "This repository implements a distributed reinforcement learning pipeline for the Lux AI Season 3 competition, combining hybrid CNN, ResNet, ConvLSTM, and Transformer architectures to process spatial-temporal game states. Training leverages the IMPALA and torchbeast frameworks with V-trace off-policy correction, dynamic reward scaling, and adaptive entropy regularization to stabilize learning in sparse, non-stationary environments. The system integrates a teacher-student distillation strategy alongside mixed self-play and frozen baseline policies, while carefully masking log-probabilities and entropies to prevent gradient updates for inactive units. Hand-crafted features are derived from observation deltas and Kaggle replay analytics to infer hidden game mechanics, and auxiliary prediction tasks enhance spatial reasoning. The pipeline concludes with strategic mixed-model submissions and logit noise injection to accurately evaluate performance while mitigating imitation learning risks on the public leaderboard.",
+  "competition_flow": "Raw environment observations and Kaggle replay data are parsed, normalized, and enriched with hand-crafted temporal/spatial features, processed by a hybrid CNN-ResNet-LSTM-Transformer agent, trained via distributed IMPALA/torchbeast with V-trace corrections and mixed policy mixing, and exported as masked action logits for strategic mixed-model competition submissions.",
+  "data_reading": [
+    "Observations are loaded as dictionary-based state dicts from LuxAIS3GymEnv (numpy_output=True), containing map features, units, sensor masks, and steps, which are then normalized, discretized, and converted to standardized tensors.",
+    "Queries Kaggle API endpoints for episode lists, team info, and replay JSONs via POST/GET requests.",
+    "Loads and persists local CSVs using pandas.",
+    "Receives pre-loaded GPU tensors via batch dict during training."
+  ],
+  "data_processing": [
+    "Continuous features normalized and discretized via binning into one-hot vectors",
+    "x/y coordinates flipped during inference for data augmentation",
+    "Coordinates normalized to [-1, 1] for grid sampling",
+    "Nearest-neighbor patches extracted via F.grid_sample",
+    "One-hot and continuous unit features concatenated and merged with spatial patches via linear merger",
+    "Parallel environment outputs stacked into batched numpy arrays",
+    "Numpy arrays converted to PyTorch tensors with dtype validation and GPU pinning",
+    "Rewards aggregated and scaled",
+    "Standard Gym tuple outputs converted to dictionaries",
+    "Convolution-like kernels applied for vision mapping",
+    "Frequency-voted estimates computed for energy reduction and SAP dropoff",
+    "Unit positions tracked across timesteps",
+    "Map shifts detected by comparing tile types between steps",
+    "Adjusts episode discounting by resetting to 1.0 when done masks transition from 1 to 0, preventing discount leakage across episode boundaries.",
+    "Masks entropy and KL calculations to exclude steps with no actions taken.",
+    "Synthetic generation creates two 24x24 binary grids for player and enemy units, computes relative coordinate masks (15x15 per unit) indicating enemy presence within an 8-cell radius, and formats them as PyTorch tensors.",
+    "Parses replay JSONs to extract game parameters.",
+    "Computes duration, overtime, and step counts from agent logs.",
+    "Handles request retries, deduplication, and missing data.",
+    "Flags strong opponents based on stderr logs."
+  ],
+  "features_engineering": [
+    "Temporal gaps tracking steps since last observation or enemy sighting",
+    "Aggregated internal state parameters like estimated vision reduction",
+    "Per-unit attributes including energy and tile ID combined with spatial patches",
+    "One-hot encoding of discrete features (103 classes)",
+    "Continuous feature vectors (5 dims) concatenated with one-hot encodings",
+    "Derived metrics including max/sum energy per tile, estimated move/sap capacity, energy deltas, relic probabilities, spawn distances, visibility/unseen ticks, and scaled game parameters",
+    "Hand-crafted features inferred via discrete candidate voting including nebula_tile_energy_reduction, unit_sap_dropoff_factor, min/max_nebula_vision_reduction, unit_energy_void_factor, my/enemy_unexpected_energy_change, shift_param, and steps_to_shift",
+    "Extracts game configuration parameters (energy node drift, nebula tile stats, unit sap/move costs, sensor range).",
+    "Computes runtime metrics (total duration, overtime, steps).",
+    "Derives an is_strong binary feature from agent log stderr."
+  ],
+  "models": [
+    "IMPALA",
+    "ResNet",
+    "ConvLSTM",
+    "Transformer",
+    "MLP",
+    "Enemy Future Prediction Head",
+    "Value Function Head",
+    "Movement Head",
+    "Sap-Target Head",
+    "SpatialTransformer",
+    "ConvLSTMCell",
+    "Sliser",
+    "Predictor",
+    "DictSeparateActorResnBinary",
+    "DictSeparateActorResn",
+    "ResidualBlockNoMask",
+    "CrossAttentionTransformer",
+    "TransformerWithPosEmbed",
+    "DictInputLayer",
+    "Custom Self-Attention Transformer",
+    "Custom Cross-Attention Transformer",
+    "2D Sinusoidal Positional Embedding",
+    "SELayerNoMask",
+    "ParallelDilationResidualBlock",
+    "monobeast",
+    "ActionPredictionModel (custom CNN with initial conv block, residual blocks with Squeeze-and-Excitation, coordinate-based feature gathering, and linear decoder)",
+    "conv_model",
+    "LSTM",
+    "Transformer_v2",
+    "per_unit_resnet"
+  ],
+  "frameworks_used": [
+    "pytorch",
+    "gym",
+    "numpy",
+    "einops",
+    "lux-ai-s3",
+    "torch.distributed",
+    "torch.nn.parallel.DistributedDataParallel",
+    "torch.optim.lr_scheduler.LambdaLR",
+    "torch.compile",
+    "jax",
+    "hydra",
+    "omegaconf",
+    "wandb",
+    "scikit-learn",
+    "pandas",
+    "requests"
+  ],
+  "loss_functions": [
+    "Weighted binary cross-entropy",
+    "KL divergence",
+    "Teacher baseline loss",
+    "TD-lambda",
+    "Entropy regularization",
+    "policy gradient loss",
+    "smooth L1 loss",
+    "MSE loss",
+    "custom_policy_gradient_loss",
+    "custom_baseline_loss",
+    "custom_teacher_kl_loss",
+    "custom_entropy_loss",
+    "BCEWithLogitsLoss",
+    "UPGO losses"
+  ],
+  "cv_strategy": "",
+  "ensembling": "A two-model submission strategy is used where a weaker model plays 85% of matches and a stronger model plays 15%, with additional logit noise injection for larger models to mask capabilities and evaluate true win rates.",
+  "insights": [
+    "Large-scale self-play combined with ResNet, ConvLSTM, and Transformer architectures effectively learns complex multi-agent policies.",
+    "Adaptive reward scaling and dynamic entropy scheduling stabilize training in sparse, non-stationary environments.",
+    "Teacher-student frameworks and frozen opponent pools prevent catastrophic forgetting and overfitting to self-play dynamics.",
+    "Strategic mixed-model submissions allow accurate leaderboard evaluation while protecting against imitation learning.",
+    "Combining local patch extraction with global spatial features allows the model to capture both fine-grained unit details and broader map context.",
+    "Using fixed 2D sinusoidal positional embeddings instead of learnable ones ensures spatial consistency and generalization across different grid resolutions.",
+    "Applying available action masks directly to logits before sampling enables efficient handling of multi-discrete action spaces with dynamic constraints.",
+    "Integrating a ConvLSTM with explicit termination mask handling preserves temporal state across episodes while correctly resetting hidden/cell states upon episode end.",
+    "The architecture uses pre-normalization (LayerNorm before attention/FFN) to stabilize training dynamics.",
+    "Parallel dilated convolutions efficiently capture multi-scale receptive fields without increasing model parameters.",
+    "Squeeze-and-Excitation blocks adaptively recalibrate channel-wise feature responses to emphasize informative channels.",
+    "Comparing current and previous observations allows accurate inference of hidden game mechanics like SAP dropoff and energy void factors without explicit environment exposure.",
+    "Frequency voting over discrete candidate values provides a robust way to estimate continuous or hidden parameters in partially observable environments.",
+    "Tracking units across timesteps via position/energy proximity handles ID switching and unit spawning/death gracefully.",
+    "Reward shaping is implemented as a weighted sum of discrete, interpretable components rather than a single dense signal.",
+    "Multipliers are used to isolate specific behaviors during different training phases without rewriting core logic.",
+    "Multi-unit RL requires explicit masking of log-probabilities and entropies to prevent gradient updates for units that did not act.",
+    "V-trace stabilizes off-policy learning by clipping importance weights using configurable thresholds for value targets and policy gradients separately.",
+    "Coordinate-based feature extraction allows the network to focus on specific unit locations without relying on fixed grid pooling.",
+    "The training pipeline relies on a curriculum-style policy mixing strategy to stabilize learning across self-play, teacher, and frozen baseline actors.",
+    "Replay JSONs contain static game configuration parameters that can be directly extracted as features."
+  ],
+  "critical_findings": [
+    "Imitation learning opponents can copy strong strategies, making it necessary to obscure model capabilities during public testing.",
+    "Pure self-play eventually plateaus, requiring teacher KL alignment and diverse opponent pools to maintain progress.",
+    "The unit matching logic includes a fallback for a rare edge case where position/energy proximity checks fail, indicating potential instability in state tracking under specific conditions."
+  ],
+  "what_did_not_work": [
+    "Behavior cloning from external replays was implemented but ultimately abandoned because the RL pipeline already achieved significant improvements without it.",
+    "The explore_reward component is explicitly marked as broken in the code comments.",
+    "The my_stuck_reward is noted as difficult to implement correctly without pathfinding.",
+    "Several other granular rewards (unit stacking, energy waste, sensor mask, near units) are disabled via zero multipliers, indicating they were abandoned during tuning.",
+    "behavior_cloning_actors is explicitly disabled with a comment noting it is NOT WORKING YET."
+  ],
+  "training_setup": [
+    "Training utilizes the IMPALA algorithm with dynamic reward scaling, adaptive entropy scheduling, and a teacher-student framework to stabilize learning in sparse, non-stationary environments.",
+    "Adam optimizer with custom epsilon and linear learning rate decay schedule.",
+    "Adaptive entropy regularization and linearly decaying learning rate over a 300M-step horizon.",
+    "Mixed precision training with gradient clipping.",
+    "Distributed data parallelism (DDP) with periodic weight synchronization between learner and actor processes.",
+    "Aggressive PyTorch Inductor and JAX compilation caching to minimize training overhead."
+  ],
+  "notable_files": [
+    {
+      "path": "README.md",
+      "role": "documentation"
+    },
+    {
+      "path": "final_versions/07_03_tune_against_mask/run_monobeast.py",
+      "role": "entrypoint"
+    },
+    {
+      "path": "final_versions/07_03_tune_against_mask/conf/base.yaml",
+      "role": "config"
+    },
+    {
+      "path": "final_versions/07_03_tune_against_mask/lux_ai/nns/models.py",
+      "role": "model definition"
+    },
+    {
+      "path": "final_versions/07_03_tune_against_mask/lux_ai/torchbeast/core/vtrace.py",
+      "role": "RL algorithm"
+    },
+    {
+      "path": "final_versions/07_03_tune_against_mask/lux_ai/torchbeast/core/losses_func_selfplay.py",
+      "role": "loss computation"
+    },
+    {
+      "path": "final_versions/07_03_tune_against_mask/analytics/src.py",
+      "role": "data pipeline"
+    }
+  ]
+}

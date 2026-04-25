@@ -1,0 +1,36 @@
+{
+  "summary": "The notebook demonstrates a heuristic optimization approach for a text reordering competition by leveraging a pre-trained LLM (Gemma-2-9b) as a perplexity-based scoring function. It implements a greedy permutation search combined with local window optimizations to systematically minimize the model's perplexity for each input text. The author caches computed scores in a dictionary to avoid redundant inference and visualizes word frequency patterns across optimized outputs. Readers should understand how to use LLM perplexity as a proxy metric for text quality and apply combinatorial search techniques for text manipulation without fine-tuning.",
+  "purpose": "inference",
+  "competition_flow": "Loads a sample submission with short texts, iteratively permutes word orderings for each text to minimize Gemma-2-9b perplexity using greedy and local search strategies, caches scores for efficiency, and exports the optimized texts as a final submission.",
+  "data_reading": [
+    "Reads sample_submission.csv from Kaggle input using pd.read_csv, extracting id and text columns."
+  ],
+  "data_processing": [
+    "Splits text into words, separates stopwords from content words, applies alphabetical sorting to word groups, and caches computed perplexity scores in a dictionary to avoid redundant LLM inference."
+  ],
+  "features_engineering": [],
+  "models": [
+    "Gemma-2-9b"
+  ],
+  "frameworks_used": [
+    "transformers",
+    "torch",
+    "nltk",
+    "pandas",
+    "numpy"
+  ],
+  "loss_functions": [
+    "torch.nn.CrossEntropyLoss(reduction='none') applied per-token, averaged, then exponentiated to compute perplexity."
+  ],
+  "cv_strategy": "",
+  "ensembling": "",
+  "insights": [
+    "Pre-trained LLM perplexity can effectively serve as a proxy scoring metric for text reordering tasks without fine-tuning.",
+    "Caching computed permutations significantly reduces inference time during combinatorial search.",
+    "Greedy word permutation combined with local window optimization can systematically improve text coherence according to a language model."
+  ],
+  "critical_findings": [],
+  "what_did_not_work": [],
+  "source_url": "https://www.kaggle.com/code/jazivxt/to-winning-sort-off",
+  "votes": 373
+}

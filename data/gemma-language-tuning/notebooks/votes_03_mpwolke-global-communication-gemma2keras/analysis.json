@@ -1,0 +1,37 @@
+{
+  "summary": "The notebook demonstrates how to fine-tune the Gemma 2-2B model using Keras 3 and the JAX backend with LoRA adaptation. It loads a small subset of a \"Hello World in programming languages\" dataset, formats the data into a structured prompt template, and trains the model for 10 epochs. The author then tests the adapted model on both seen and unseen language queries before saving the weights. Readers learn the practical workflow for parameter-efficient fine-tuning of open-weight LLMs in Keras 3, including backend configuration, LoRA integration, and causal language model compilation.",
+  "purpose": "tutorial",
+  "competition_flow": "Loads a small subset of a programming language dataset, formats it into prompts, fine-tunes a Gemma 2-2B model with LoRA using Keras 3/JAX, and demonstrates inference on new queries.",
+  "data_reading": [
+    "pd.read_csv(f\"{Config.dataset_path}/index.csv\", nrows=52)"
+  ],
+  "data_processing": [
+    "Manual replacement of a single missing value",
+    "Formatting raw CSV columns into a custom prompt template",
+    "Converting to a list of strings for training"
+  ],
+  "features_engineering": [],
+  "models": [
+    "GemmaCausalLM (gemma2_2b_en)"
+  ],
+  "frameworks_used": [
+    "keras",
+    "keras_nlp",
+    "jax",
+    "kagglehub"
+  ],
+  "loss_functions": [
+    "SparseCategoricalCrossentropy(from_logits=True)"
+  ],
+  "cv_strategy": "",
+  "ensembling": "",
+  "insights": [
+    "Parameter-efficient fine-tuning with LoRA (rank=4) enables adapting large LLMs to specific domains with minimal compute.",
+    "Keras 3 supports multi-backend execution, allowing seamless switching to JAX for efficient training.",
+    "Structured prompt templates are essential for effectively instructing causal LLMs during fine-tuning."
+  ],
+  "critical_findings": [],
+  "what_did_not_work": [],
+  "source_url": "https://www.kaggle.com/code/mpwolke/global-communication-gemma2keras",
+  "votes": 98
+}

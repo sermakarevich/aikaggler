@@ -1,0 +1,21 @@
+{
+  "id": "rishirajacharya/fine-tuning-gemma-2-for-bengali-poetry-generation",
+  "id_no": 66914787,
+  "title": "Fine-Tuning Gemma 2 for Bengali Poetry Generation",
+  "code_file": "fine-tuning-gemma-2-for-bengali-poetry-generation.ipynb",
+  "language": "python",
+  "kernel_type": "notebook",
+  "is_private": false,
+  "enable_gpu": false,
+  "enable_tpu": false,
+  "enable_internet": false,
+  "keywords": [],
+  "dataset_sources": [],
+  "kernel_sources": [],
+  "competition_sources": [
+    "gemma-language-tuning"
+  ],
+  "model_sources": [],
+  "docker_image": "gcr.io/kaggle-images/python@sha256:a16cda2c5d52fa988d413876f3ffad7a46cca58678514601feb175990dc187c0",
+  "machine_shape": "None"
+}

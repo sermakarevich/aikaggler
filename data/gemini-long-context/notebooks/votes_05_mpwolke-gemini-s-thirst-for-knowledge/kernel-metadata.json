@@ -1,0 +1,25 @@
+{
+  "id": "mpwolke/gemini-s-thirst-for-knowledge",
+  "id_no": 68367202,
+  "title": "Gemini's thirst for knowledge",
+  "code_file": "gemini-s-thirst-for-knowledge.ipynb",
+  "language": "python",
+  "kernel_type": "notebook",
+  "is_private": false,
+  "enable_gpu": false,
+  "enable_tpu": false,
+  "enable_internet": true,
+  "keywords": [],
+  "dataset_sources": [
+    ""
+  ],
+  "kernel_sources": [],
+  "competition_sources": [
+    "gemini-long-context"
+  ],
+  "model_sources": [
+    "google/gemini-1.5-flash-api/Api/gemini-1.5-flash/1"
+  ],
+  "docker_image": "gcr.io/kaggle-images/python@sha256:a16cda2c5d52fa988d413876f3ffad7a46cca58678514601feb175990dc187c0",
+  "machine_shape": "None"
+}

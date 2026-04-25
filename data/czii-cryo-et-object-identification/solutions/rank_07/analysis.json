@@ -1,0 +1,44 @@
+{
+  "summary": "The author secured 7th place by training 3D segmentation models to predict per-class Gaussian heatmaps for particle localization in tomograms. The pipeline involved pre-training on a simulated dataset and fine-tuning on an experimental dataset using a 4-fold CV strategy. Key technical choices included heavy data augmentations, weighted BCE loss with high positive weights, sliding window inference with TTA, and logit averaging across an ensemble of three model soups. The author also developed a novel probing method to estimate TP/FP/FN counts from the leaderboard to trust the LB over CV.",
+  "extensive_summary": "## Data & Preprocessing\nThe author applied minimal preprocessing, consisting of percentile clipping (0.1\u201399.9%) and dataset-specific scaling factors (simulated \u00d71.0, WBP \u00d71e4, denoised \u00d71e5). Training data was generated using a sliding window approach with a stride of 64, creating 64 windows per experiment with random coordinate shifts. Heavy augmentations were applied during training, including Mixup, Cutmix, RandomFlip, rot90 (xy plane only), contrast, gamma, and gaussian noise. Affine transformations were restricted to pre-training.\n\n## Model Architecture & Training\nThe final submission utilized three models: two U-Net variants (backbones: ResNet50d and EfficientNetV2-M) and one DeepLabV3+ model (backbone: ResNet50d). For the ResNet50d models, only the first four feature stages were used to preserve high-resolution feature maps critical for particle localization. All models were trained with ModelEMA (decay 0.995) and a weighted BCE loss with very high positive weights to encourage more positive predictions. Class weights and positive pixel weights were carefully tuned per model and class.\n\n## Inference & Post-processing\nInference operated on padded volumes using a sliding window strategy that generated 81 windows per tomogram. The author applied 4x flip TTA and averaged logits across windows rather than sigmoided heatmaps. To mitigate edge artifacts, a sloped weight function was applied. Post-processing shifted from connected component labeling to maxpool for local maxima detection, preceded by gaussian blur (kernel 5, sigma 1.0) and followed by weighted box fusion (radius = 0.5 \u00d7 particle radius). Thresholds were applied directly in logit space per class.\n\n## Ensemble & Leaderboard Probing\nThe final ensemble averaged logits across three model soups (each combining four folds) with 4x flip TTA and 4x sliding window. A key methodological insight was probing the LB by submitting controlled variations (normal, added FPs, doubled predictions) to solve a linear system for TP/FP/FN counts. This revealed the LB matched the paper's stated particle distribution, allowing the author to confidently trust the LB over internal CV.",
+  "rank": 7,
+  "competition_flow": "Raw tomogram data is preprocessed with percentile clipping and scaling, split into sliding windows, fed through pre-trained/fine-tuned 3D segmentation models predicting Gaussian heatmaps, then post-processed via maxpool and weighted box fusion before logit averaging in an ensemble for final submission.",
+  "data_reading": [],
+  "data_processing": [
+    "Percentile clipping (0.1\u201399.9%)",
+    "Dataset-specific scaling (simulated \u00d71.0, WBP \u00d71e4, denoised \u00d71e5)",
+    "Sliding window cropping (stride 64, 64 windows/experiment) with random coordinate shifts",
+    "Train-time augmentations: Mixup, Cutmix, RandomFlip, rot90 (xy plane), affine (pre-train only), contrast (0.7\u20131.5), gamma (0.8\u20131.2), gaussian noise (0\u20130.05, fine-tune only)",
+    "TTA: 4x flip augmentations, 4x sliding window, sloped edge weight function"
+  ],
+  "features_engineering": [],
+  "models": [
+    "3D U-Net",
+    "DeepLabV3+",
+    "ResNet50d",
+    "EfficientNetV2-M"
+  ],
+  "frameworks_used": [],
+  "loss_functions": [
+    "Weighted BCE with high positive weights"
+  ],
+  "cv_strategy": "Pre-training on simulated dataset (1-fold, WBP as validation), fine-tuning on experimental dataset (4-fold).",
+  "ensembling": "Averaged logits across an ensemble of three model soups (each combining four folds), applied 4x flip TTA and 4x sliding window, and applied per-class logit-space thresholds.",
+  "insights": [
+    "Averaging logits during ensemble outperformed averaging sigmoided heatmaps or applying WBF on final predictions.",
+    "Using only the first 4 stages of ResNet50d preserved high-resolution features that improved particle localization.",
+    "Probing the LB with controlled FP/TP injections allowed accurate estimation of particle counts, revealing the LB was a reliable proxy for the private test set distribution."
+  ],
+  "critical_findings": [
+    "The high positive weights in the loss function caused the model to predict many false positives, which actually helped when combined with logit-space thresholds to capture more true positives.",
+    "Switching from connected component labeling + center of mass to maxpool for local maxima detection significantly improved inference speed with negligible performance loss."
+  ],
+  "what_did_not_work": [
+    "Training a model with an offset prediction head to improve localization performance did not work.",
+    "Using connected component labeling (CCL) + center of mass for coordinate detection was inefficient and replaced by maxpool."
+  ],
+  "github_repos": [],
+  "papers": [],
+  "other_solution_refs": [],
+  "source_url": "https://www.kaggle.com/competitions/czii-cryo-et-object-identification/discussion/561447"
+}

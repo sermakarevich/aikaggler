@@ -1,0 +1,39 @@
+{
+  "summary": "The notebook demonstrates how to fine-tune the BAAI/bge-large-en-v1.5 embedding model for a mathematics misconception mining task. It constructs training triplets by combining question metadata and answer text as anchors, correct misconceptions as positives, and top-25 retrieved misconceptions as negatives. The author uses cosine similarity with the base model to generate retrieval data, then fine-tunes the model using the sentence_transformers library and Triplet Loss. Readers should learn how to automate triplet generation for semantic retrieval fine-tuning and configure the SentenceTransformerTrainer for efficient training.",
+  "purpose": "training",
+  "competition_flow": "Loads raw CSVs, constructs anchor/positive/negative triplets via top-k cosine retrieval, and fine-tunes the BGE embedding model using Triplet Loss.",
+  "data_reading": [
+    "Reads train.csv and misconception_mapping.csv using Polars."
+  ],
+  "data_processing": [
+    "Unpivots wide answer and misconception columns to long format.",
+    "Concatenates metadata and answer text into anchor strings.",
+    "Computes top-25 cosine similarity retrievals using the base BGE model.",
+    "Filters identical positive/negative pairs and converts to HuggingFace Dataset format."
+  ],
+  "features_engineering": [],
+  "models": [
+    "BAAI/bge-large-en-v1.5"
+  ],
+  "frameworks_used": [
+    "sentence_transformers",
+    "polars",
+    "datasets",
+    "wandb",
+    "scikit-learn"
+  ],
+  "loss_functions": [
+    "TripletLoss"
+  ],
+  "cv_strategy": "",
+  "ensembling": "",
+  "insights": [
+    "Top-k cosine similarity retrieval with a base embedding model can effectively generate negative samples for triplet training.",
+    "Concatenating structured metadata and answer text creates a robust anchor for semantic matching.",
+    "The SentenceTransformerTrainer simplifies fine-tuning by handling batch samplers, gradient accumulation, and logging out of the box."
+  ],
+  "critical_findings": [],
+  "what_did_not_work": [],
+  "source_url": "https://www.kaggle.com/code/sinchir0/fine-tuning-bge-train",
+  "votes": 433
+}

@@ -1,0 +1,47 @@
+{
+  "summary": "The author participated in a 10-day Kaggle competition primarily to showcase a custom VS Code extension, ultimately finishing in 8th place. They optimized their workflow by replacing pandas with polars, drastically cutting feature engineering time, and derived domain-specific features by analyzing game patterns from the Ludii Game Library. The final submission relied on a single CatBoost model trained with 10-fold cross-validation, augmented data via agent swapping and equivalence transitivity, and a public-leaderboard-tuned prediction multiplier of 1.2.",
+  "extensive_summary": "The author entered a 10-day Kaggle competition to demonstrate a VS Code extension they were developing, finishing in 8th place. Rather than building from scratch, they cloned the top public kernel (\"MCTS Starter\") and focused heavily on optimizing the feature engineering pipeline. By reimplementing pandas operations with polars, they reduced processing time from ~410 seconds to just 7 seconds, which significantly accelerated their iterative workflow.\n\nTo design effective features, the author explored the Ludii Game Library to identify structural patterns common across different game types. This led to the creation of hand-crafted features capturing board shape, piece types, presence of randomness, rule complexity, and special movement patterns. For data augmentation, they applied a simple agent-swapping technique (swapping agent1 and agent2) and a more complex strategy based on equivalence relations and transitivity (e.g., generating `A > C` from `A > B` and `B = C`).\n\nModeling was kept simple: a single CatBoost model was trained using 10-fold cross-validation. The author averaged the 10-fold predictions and applied a post-processing step, multiplying the outputs by a coefficient of 1.2 that was optimized against the public leaderboard. While they experimented with ensembling a model trained on the transitivity-augmented data, it ultimately provided no improvement. The author explicitly notes they did not test XGBoost, LightGBM, or TabNet, and cautions that the aggressive post-processing multiplier was a calculated risk dependent on the private leaderboard's distribution.",
+  "rank": 8,
+  "competition_flow": "Raw data was processed using polars to accelerate feature engineering, augmented via agent swapping and equivalence transitivity, fed into a single CatBoost model with 10-fold CV, and post-processed with a 1.2x prediction multiplier before submission.",
+  "data_reading": [],
+  "data_processing": [
+    "Reimplemented pandas operations using polars for speed.",
+    "Applied data augmentation via swapping agent1/agent2 and equivalence relations/transitivity.",
+    "Post-processed predictions by multiplying by 1.2."
+  ],
+  "features_engineering": [
+    "Features based on patterns common to multiple games: board shape, piece types, presence of randomness, rule complexity, and special movement patterns."
+  ],
+  "models": [
+    "CatBoost"
+  ],
+  "frameworks_used": [
+    "polars",
+    "pandas",
+    "catboost"
+  ],
+  "loss_functions": [],
+  "cv_strategy": "10-fold CV",
+  "ensembling": "Averaged 10-fold predictions from a single CatBoost model; attempted ensembling with a model trained on equivalence-transitivity augmented data but it provided no benefit.",
+  "insights": [
+    "Optimizing feature engineering speed with Polars drastically improved iteration time.",
+    "Validating improvements concurrently with parameter tuning led to poor prioritization of tasks.",
+    "Exploring the underlying game library (Ludii) provided valuable structural patterns for feature design."
+  ],
+  "critical_findings": [
+    "Multiplying predictions by 1.2 based on public LB feedback was a high-risk but effective post-processing step.",
+    "Equivalence-based transitivity augmentation was theoretically sound but ultimately did not improve the ensemble score."
+  ],
+  "what_did_not_work": [
+    "Ensembling with a model trained on equivalence-transitivity augmented data did not help."
+  ],
+  "github_repos": [
+    {
+      "url": "https://github.com/smly/vscode-fast-kaggle",
+      "role": "reference"
+    }
+  ],
+  "papers": [],
+  "other_solution_refs": [],
+  "source_url": "https://www.kaggle.com/competitions/um-game-playing-strength-of-mcts-variants/discussion/549616"
+}

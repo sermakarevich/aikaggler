@@ -1,0 +1,39 @@
+{
+  "summary": "The notebook implements a two-stage LLM pipeline to identify mathematical misconceptions from test data. It first uses a quantized Qwen2.5-14B model to generate dense embeddings and retrieve top-25 candidate misconceptions via cosine similarity. It then passes these candidates to a quantized Qwen2.5-32B-Instruct model via vLLM, using a logits processor to constrain outputs to specific choice indices. The pipeline demonstrates how to combine efficient retrieval with constrained generation to produce reliable multiple-choice predictions for a competition submission.",
+  "purpose": "inference",
+  "competition_flow": "Loads test questions and a misconception mapping CSV, generates dense embeddings with a quantized Qwen2.5-14B model to retrieve top-25 candidates via cosine similarity, then uses a quantized Qwen2.5-32B-Instruct model with vLLM and a logits processor to iteratively select the best misconception from an expanding shortlist, finally outputting a formatted submission CSV.",
+  "data_reading": [
+    "Reads test.csv and misconception_mapping.csv from Kaggle datasets using pandas.read_csv, then saves intermediate processed data as parquet files."
+  ],
+  "data_processing": [
+    "Constructs structured prompts with subject, construct, question, and answer fields, applies regex cleaning to remove URLs and extra punctuation, extracts embeddings via last-token pooling and L2 normalization, and performs cosine similarity retrieval using sklearn.neighbors.NearestNeighbors."
+  ],
+  "features_engineering": [],
+  "models": [
+    "Qwen2.5-14B (with LoRA)",
+    "Qwen2.5-32B-Instruct-AWQ"
+  ],
+  "frameworks_used": [
+    "torch",
+    "transformers",
+    "peft",
+    "bitsandbytes",
+    "vllm",
+    "logits_processor_zoo",
+    "sklearn",
+    "pandas",
+    "numpy"
+  ],
+  "loss_functions": [],
+  "cv_strategy": "",
+  "ensembling": "",
+  "insights": [
+    "Dense retrieval with a smaller quantized LLM efficiently narrows down a large candidate space for downstream reasoning tasks.",
+    "Constraining LLM outputs to specific choices via logits processors improves reliability and reduces hallucination in multiple-choice settings.",
+    "Iteratively expanding the candidate pool during generation balances precision and recall without overwhelming the context window."
+  ],
+  "critical_findings": [],
+  "what_did_not_work": [],
+  "source_url": "https://www.kaggle.com/code/jagatkiran/qwen14b-retrieval-qwen32b-logits-processor-zoo",
+  "votes": 672
+}

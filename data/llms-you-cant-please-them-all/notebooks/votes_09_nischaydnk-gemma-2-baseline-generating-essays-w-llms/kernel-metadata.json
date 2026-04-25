@@ -1,0 +1,30 @@
+{
+  "id": "nischaydnk/gemma-2-baseline-generating-essays-w-llms",
+  "id_no": 72210871,
+  "title": "Gemma 2 Baseline: Generating Essays w/ LLMs ",
+  "code_file": "gemma-2-baseline-generating-essays-w-llms.ipynb",
+  "language": "python",
+  "kernel_type": "notebook",
+  "is_private": false,
+  "enable_gpu": true,
+  "enable_tpu": false,
+  "enable_internet": false,
+  "keywords": [
+    "gpu"
+  ],
+  "dataset_sources": [
+    "nischaydnk/gemma-pytorch",
+    "nischaydnk/immutabledict",
+    "fernandosr85/sentencepiece-0-2-0-cp310-cp310-manylinux"
+  ],
+  "kernel_sources": [],
+  "competition_sources": [
+    "llms-you-cant-please-them-all"
+  ],
+  "model_sources": [
+    "google/gemma-2/PyTorch/gemma-2-9b-it/1",
+    "google/gemma-2/PyTorch/gemma-2-2b-it/1"
+  ],
+  "docker_image": "gcr.io/kaggle-private-byod/python@sha256:f9647cc12ad6b5bff2567807c9baa993ae44f17e770a4e099dbde5f4e3a2f1ae",
+  "machine_shape": "Gpu"
+}

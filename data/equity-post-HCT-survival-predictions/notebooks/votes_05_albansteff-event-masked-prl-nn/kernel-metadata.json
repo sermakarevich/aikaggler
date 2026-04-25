@@ -1,0 +1,27 @@
+{
+  "id": "albansteff/event-masked-prl-nn",
+  "id_no": 76802645,
+  "title": "Event-masked PRL-NN",
+  "code_file": "event-masked-prl-nn.ipynb",
+  "language": "python",
+  "kernel_type": "notebook",
+  "is_private": false,
+  "enable_gpu": true,
+  "enable_tpu": false,
+  "enable_internet": false,
+  "keywords": [
+    "gpu"
+  ],
+  "dataset_sources": [],
+  "kernel_sources": [
+    "cdeotte/pip-install-lifelines",
+    "albansteff/metric",
+    "dreamingtree/download-lightning-and-pytorch-tabular"
+  ],
+  "competition_sources": [
+    "equity-post-HCT-survival-predictions"
+  ],
+  "model_sources": [],
+  "docker_image": "gcr.io/kaggle-private-byod/python@sha256:57cb636a65386fd6c74fc9969211623034c487f7d483f9cd2c8456ebe2619345",
+  "machine_shape": "NvidiaTeslaT4"
+}

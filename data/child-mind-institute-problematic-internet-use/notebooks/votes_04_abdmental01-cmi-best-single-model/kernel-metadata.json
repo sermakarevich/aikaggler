@@ -1,0 +1,21 @@
+{
+  "id": "abdmental01/cmi-best-single-model",
+  "id_no": 66116961,
+  "title": "CMI | Best Single Model",
+  "code_file": "cmi-best-single-model.ipynb",
+  "language": "python",
+  "kernel_type": "notebook",
+  "is_private": false,
+  "enable_gpu": false,
+  "enable_tpu": false,
+  "enable_internet": false,
+  "keywords": [],
+  "dataset_sources": [],
+  "kernel_sources": [],
+  "competition_sources": [
+    "child-mind-institute-problematic-internet-use"
+  ],
+  "model_sources": [],
+  "docker_image": "gcr.io/kaggle-images/python@sha256:52997f329b43bdd3702614a60ccefaa28c4bcfaffd2a264745ba5295bace806e",
+  "machine_shape": "None"
+}

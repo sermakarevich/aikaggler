@@ -1,0 +1,64 @@
+{
+  "summary": "This notebook provides a comprehensive EDA and baseline pipeline for predicting the game-playing strength of Monte Carlo Tree Search (MCTS) variants across different board games. It demonstrates how to properly handle group-based cross-validation to prevent data leakage from unseen test games, extracts meaningful features from player names, and uses permutation importance and ExplainableBoostingRegressor to identify key features and interactions. The author proves that only a fraction of the hundreds of game features are useful, highlights the dominance of the AdvantageP1 feature, and shows how player strategies interact with game properties. Key takeaways include the necessity of GroupKFold for unseen test games, the importance of feature selection, and the value of interpretable models for understanding strategy-game interactions.",
+  "purpose": "eda",
+  "competition_flow": "Loads training and test CSVs, extracts player strategy components, filters features via permutation importance, trains LightGBM/XGBoost/CatBoost baselines with GroupKFold, blends them via Ridge regression weights, and saves models for inference.",
+  "data_reading": [
+    "pl.read_csv() for train/test CSVs",
+    "pd.read_csv() for concepts.csv"
+  ],
+  "data_processing": [
+    "Drops constant columns",
+    "Converts Polars to Pandas",
+    "Drops target/game ruleset/freetext columns",
+    "Converts string columns to Pandas Categorical dtype",
+    "Clips predictions to (-1, 1)"
+  ],
+  "features_engineering": [
+    "Extracts 4 MCTS strategy components (selection, exploration, playout, bounds) from agent1/agent2 strings",
+    "Creates interaction features (p_selection, p_exploration, p_playout, p_bounds) by combining player attributes",
+    "Filters features using permutation importance"
+  ],
+  "models": [
+    "LightGBM",
+    "XGBoost",
+    "CatBoost",
+    "Random Forest",
+    "ExtraTrees",
+    "Linear Regression",
+    "Ridge",
+    "KNeighborsRegressor",
+    "ExplainableBoostingRegressor",
+    "DummyRegressor"
+  ],
+  "frameworks_used": [
+    "polars",
+    "pandas",
+    "numpy",
+    "matplotlib",
+    "lightgbm",
+    "xgboost",
+    "catboost",
+    "scikit-learn",
+    "interpret"
+  ],
+  "loss_functions": [
+    "Mean Squared Error (MSE) / RMSE (used as objective in gradient boosting models and for evaluation)"
+  ],
+  "cv_strategy": "GroupKFold(n_splits=5) split by GameRulesetName; GroupShuffleSplit(n_splits=5) for feature importance calculation",
+  "ensembling": "Blends out-of-fold predictions from LightGBM, XGBoost, CatBoost, Linear Regression, Kernel Approximation, and KNN using Ridge regression weights learned on training data; post-processes predictions by clipping to (-1, 1).",
+  "insights": [
+    "Test games are unseen in training, necessitating GroupKFold by GameRulesetName to prevent data leakage.",
+    "Only ~30-40% of the hundreds of game features are actually useful for prediction.",
+    "AdvantageP1 (first-player win rate in random play) is consistently the most important feature.",
+    "Player MCTS strategies interact with game properties, such as ProgressiveHistory performing best with low PlayoutsPerSecond.",
+    "The target distribution is heavily skewed toward draws (-1, 0, 1), requiring careful handling or clipping."
+  ],
+  "critical_findings": [
+    "AdvantageP1 = 1.0 does not guarantee player 1 wins in the actual game, requiring cautious interpretation.",
+    "DrawFrequency = 1.0 only results in a draw about one-third of the time, indicating a weak direct correlation.",
+    "The training set has more extreme target values than the test set, but the distribution difference is not statistically significant."
+  ],
+  "what_did_not_work": [],
+  "source_url": "https://www.kaggle.com/code/ambrosm/mcts-eda-which-makes-sense",
+  "votes": 372
+}

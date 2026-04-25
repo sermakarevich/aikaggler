@@ -1,0 +1,64 @@
+{
+  "summary": "The author secured 9th place by heavily optimizing the Cfish chess engine for Kaggle's strict memory and compute constraints. He stripped NNUE components, reduced transposition and hash table sizes, and simplified indexing to bring memory usage down to ~4MB while compressing the binary to under 64KB. By adapting Cfish's search to mimic Stockfish 16's HCE methods and implementing a custom SPSA optimizer to tune evaluation parameters via concurrent cutechess-cli matches, he achieved roughly 60 ELO of improvement, ultimately submitting two identical binaries to secure a Gold Medal.",
+  "extensive_summary": "## Base Engine Selection & Memory Optimization\nThe author evaluated multiple chess engines and selected Cfish due to its lower memory footprint (via glibc) and marginally better single-core search speed in Kaggle's environment. To comply with a strict memory constraint, he disabled NNUE entirely and relied exclusively on Hand-Crafted Evaluation (HCE). He aggressively reduced memory by shrinking the Transposition Table to 1MB, merging branching conditions in the Counter Move History logic, and changing its indexing from specific pieces to piece types. Material and Pawn Hash Tables were also downsized to 1024, bringing total memory usage to approximately 4MB.\n\n## Binary Size Compression & Build Tweaks\nTo minimize the binary footprint, unnecessary components like NNUE, Bench, TBProbe, PolyBook, and NUMA were stripped out, along with unused UCI options. The build process was optimized with GCC flags (`-ffunction-sections -fdata-sections` and `-Wl,--gc-sections`), followed by `strip` and `upx --lzma` compression. This allowed the binary to stay under 64KB even when compiled with `-O3` instead of `-Os`.\n\n## Search Adaptation & SPSA Parameter Tuning\nThe engine's search was modified to align with Stockfish 16's HCE search methods and parameters, yielding a ~30 ELO improvement. Compiling with `-O3` provided an additional 8-9% search speed boost. For parameter optimization, the author implemented a custom SPSA (Simultaneous Perturbation Stochastic Approximation) script (~400 lines) rather than using heavy frameworks like fishtest or OpenBench. This script leveraged `cutechess-cli` to run concurrent matches with a 2000-opening book and 10-second time controls, successfully tuning evaluation weights for another ~30 ELO gain. The final submission consisted of two identical binaries to account for leaderboard randomness.",
+  "rank": 9,
+  "competition_flow": "The pipeline involved selecting and heavily memory-optimized Cfish, compressing its binary, adapting its search to Stockfish 16's HCE methods, tuning evaluation parameters via a custom SPSA script running concurrent cutechess-cli matches, and submitting two identical binaries to mitigate leaderboard variance.",
+  "data_reading": [],
+  "data_processing": [],
+  "features_engineering": [],
+  "models": [
+    "Cfish",
+    "Stockfish"
+  ],
+  "frameworks_used": [],
+  "loss_functions": [],
+  "cv_strategy": "",
+  "ensembling": "The author submitted two identical binaries to account for leaderboard randomness.",
+  "insights": [
+    "Cfish's glibc-based memory efficiency makes it superior to C++ Stockfish variants in single-core Kaggle environments.",
+    "Aggressive memory reduction (removing NNUE, shrinking tables, simplifying indexing) is critical for meeting strict embedded-like constraints.",
+    "Custom SPSA implementations can be highly effective and efficient for chess engine parameter tuning without relying on heavy external frameworks.",
+    "Submitting multiple identical copies can mitigate leaderboard randomness in chess competitions."
+  ],
+  "critical_findings": [
+    "Removing NNUE and relying solely on HCE evaluation outperformed training a (768x2)-10-1 NNUE network using bullet.",
+    "SPSA adjustments for time control parameters yielded no improvement in LB testing, showing that evaluation weights are more critical than time allocation in this setup.",
+    "Compiling with -O3 instead of -Os actually improved search speed by 8-9% in Kaggle's CPU environment, contrary to typical embedded optimization advice."
+  ],
+  "what_did_not_work": [
+    "Training a (768x2)-10-1 NNUE network using bullet failed to surpass HCE performance.",
+    "SPSA adjustments for time control parameters were ineffective in LB testing.",
+    "Memory optimization strategies for HCE versions of Stockfish 6 to 16 were insufficient to meet the 5MB constraint."
+  ],
+  "github_repos": [
+    {
+      "url": "https://github.com/ymgaq/Cfish_kaggle",
+      "role": "solution"
+    },
+    {
+      "url": "https://github.com/syzygy1/Cfish",
+      "role": "reference"
+    },
+    {
+      "url": "https://github.com/official-stockfish/fishtest",
+      "role": "reference"
+    },
+    {
+      "url": "https://github.com/AndyGrant/OpenBench",
+      "role": "reference"
+    },
+    {
+      "url": "https://github.com/zamar/spsa",
+      "role": "reference"
+    }
+  ],
+  "papers": [
+    {
+      "title": "SPSA",
+      "url": "http://www.jhuapl.edu/spsa/PDF-SPSA/Spall_Implementation_of_the_Simultaneous.PDF",
+      "arxiv_id": null
+    }
+  ],
+  "other_solution_refs": [],
+  "source_url": "https://www.kaggle.com/competitions/fide-google-efficiency-chess-ai-challenge/discussion/567106"
+}

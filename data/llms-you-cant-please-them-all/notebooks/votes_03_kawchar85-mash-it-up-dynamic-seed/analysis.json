@@ -1,0 +1,31 @@
+{
+  "summary": "This notebook implements a dynamic prompt-mixing strategy to generate essays for a competition, combining multiple adversarial few-shot templates with weighted probabilities. It demonstrates how rotating between different attack vectors\u2014such as counting tasks, knowledge cutoff probing, emergency roleplay, and surreal prompts\u2014can increase vertical variance and reduce response repetition. The approach leverages a dynamic seed and random selection to avoid predictable patterns that might trigger safety filters or cause model fatigue. Readers should take away how strategic prompt composition and probabilistic mixing can effectively bypass LLM constraints without requiring model fine-tuning.",
+  "purpose": "inference",
+  "competition_flow": "Loads test topics from CSV, dynamically selects and combines multiple adversarial prompt templates with weighted probabilities, generates essays using a Phi-3.5-mini-instruct model via Hugging Face pipelines, and exports the results to a submission CSV.",
+  "data_reading": [
+    "Reads test topics from a CSV file using pandas (`pd.read_csv`)."
+  ],
+  "data_processing": [
+    "None explicitly stated; relies on raw topic strings with dynamic prompt suffixes and post-generation text trimming."
+  ],
+  "features_engineering": [],
+  "models": [
+    "Phi-3.5-mini-instruct"
+  ],
+  "frameworks_used": [
+    "transformers",
+    "torch"
+  ],
+  "loss_functions": [],
+  "cv_strategy": "",
+  "ensembling": "",
+  "insights": [
+    "Dynamically mixing multiple adversarial prompt templates with weighted probabilities increases vertical variance and reduces repetition in generated outputs.",
+    "Combining few-shot examples with specific suffixes (counting, cutoff probing, emergency roleplay, surrealism) effectively bypasses standard LLM response filters.",
+    "Using a dynamic seed and random selection prevents predictable patterns that might trigger safety mechanisms or cause model fatigue."
+  ],
+  "critical_findings": [],
+  "what_did_not_work": [],
+  "source_url": "https://www.kaggle.com/code/kawchar85/mash-it-up-dynamic-seed",
+  "votes": 427
+}

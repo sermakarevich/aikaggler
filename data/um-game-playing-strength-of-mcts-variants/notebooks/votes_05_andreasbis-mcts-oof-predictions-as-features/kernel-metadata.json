@@ -1,0 +1,23 @@
+{
+  "id": "andreasbis/mcts-oof-predictions-as-features",
+  "id_no": 66424288,
+  "title": "MCTS | OOF Predictions as Features",
+  "code_file": "mcts-oof-predictions-as-features.ipynb",
+  "language": "python",
+  "kernel_type": "notebook",
+  "is_private": false,
+  "enable_gpu": false,
+  "enable_tpu": false,
+  "enable_internet": false,
+  "keywords": [],
+  "dataset_sources": [],
+  "kernel_sources": [
+    "andreasbis/mcts-gbdt-select-200-features"
+  ],
+  "competition_sources": [
+    "um-game-playing-strength-of-mcts-variants"
+  ],
+  "model_sources": [],
+  "docker_image": "gcr.io/kaggle-images/python@sha256:5439620d9e9d1944f6c7ed0711374b2f8a603e27bdda6f44b3a207c225454d7b",
+  "machine_shape": "None"
+}

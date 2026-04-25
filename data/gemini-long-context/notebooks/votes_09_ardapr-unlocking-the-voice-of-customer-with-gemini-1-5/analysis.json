@@ -1,0 +1,41 @@
+{
+  "summary": "This notebook demonstrates a practical workflow for analyzing large-scale customer service complaints using Gemini 1.5\u2019s 2-million-token context window. It walks through data ingestion, time-format conversion, and exploratory visualizations before implementing context caching to feed thousands of interactions into a single prompt. The author uses structured prompting to extract JSON-formatted categories, subcategories, and actionable recommendations. A validation step compares this long-context approach against iterative per-item predictions using Gemini 1.5 Flash. Readers should take away the significant efficiency and cost advantages of long-context processing, the viability of in-context retrieval over RAG for this use case, and effective prompt design patterns for reliable LLM outputs.",
+  "purpose": "tutorial",
+  "competition_flow": "Loads a 30k-row airline customer service Excel dataset, cleans and converts time metrics, caches 10k text interactions into Gemini 1.5 Pro, prompts for categorization and recommendations, and validates results against an iterative Flash model to benchmark efficiency and accuracy.",
+  "data_reading": [
+    "Reads an Excel file (`Chat_Team_CaseStudy FINAL.xlsx`) from Kaggle input using `pd.read_excel()`, focusing on the 'Text' column containing initial customer messages."
+  ],
+  "data_processing": [
+    "Filters non-NaN values from the 'Text' column, concatenates the first 10,000 entries with a '|' delimiter, converts time-based columns from HH:MM:SS strings to datetime objects and then to seconds, and removes empty strings from 'Customer Comment' and 'Customer Rating' columns."
+  ],
+  "features_engineering": [],
+  "models": [
+    "gemini-1.5-pro-002",
+    "gemini-1.5-flash-002"
+  ],
+  "frameworks_used": [
+    "pandas",
+    "numpy",
+    "matplotlib",
+    "seaborn",
+    "google.generativeai",
+    "kaggle_secrets",
+    "json",
+    "datetime"
+  ],
+  "loss_functions": [],
+  "cv_strategy": "",
+  "ensembling": "",
+  "insights": [
+    "Leveraging a 2-million-token context window enables direct in-context retrieval, eliminating the need for RAG or vector databases for large-scale text analysis.",
+    "Context caching significantly reduces API latency and computational costs by avoiding redundant processing of the same dataset.",
+    "Strict prompt engineering with temperature=0 and JSON output constraints yields highly consistent and structured categorization results."
+  ],
+  "critical_findings": [
+    "Minor categorization discrepancies between long-context and iterative methods stem from ambiguous interactions where global context shifts interpretation.",
+    "Iterative per-item prediction is 15\u201320 times slower and substantially more expensive than long-context processing, despite yielding similar accuracy."
+  ],
+  "what_did_not_work": [],
+  "source_url": "https://www.kaggle.com/code/ardapr/unlocking-the-voice-of-customer-with-gemini-1-5",
+  "votes": 56
+}

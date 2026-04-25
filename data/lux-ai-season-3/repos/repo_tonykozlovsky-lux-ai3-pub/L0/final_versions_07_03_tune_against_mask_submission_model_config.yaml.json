@@ -1,0 +1,31 @@
+{
+  "path": "final_versions/07_03_tune_against_mask/submission_model/config.yaml",
+  "analysis": {
+    "summary": "This YAML file serves as the central configuration for a large-scale reinforcement learning training run in the LUX AI competition. It defines hyperparameters for a hybrid neural architecture combining convolutional, ResNet, LSTM, and Transformer components, alongside RL-specific settings like a 300M-step horizon, Adam optimizer, and adaptive entropy regularization. The configuration also manages a mixed-policy evaluation loop that weights self-play, teacher, and frozen baseline actors during training. Additionally, it specifies experiment tracking via Weights & Biases and handles checkpoint paths for model loading and saving.",
+    "purpose": "config",
+    "competition_flow": "",
+    "data_reading": [],
+    "data_processing": [],
+    "features_engineering": [],
+    "models": [
+      "conv_model",
+      "ResNet",
+      "LSTM",
+      "Transformer_v2",
+      "per_unit_resnet"
+    ],
+    "frameworks_used": [
+      "wandb"
+    ],
+    "loss_functions": [],
+    "cv_strategy": "",
+    "ensembling": "",
+    "insights": [
+      "The training pipeline relies on a curriculum-style policy mixing strategy to stabilize learning across self-play, teacher, and frozen baseline actors.",
+      "Adaptive entropy regularization and a linearly decaying learning rate schedule are implemented to fine-tune the agent over 300 million steps.",
+      "The architecture integrates spatial convolutions, residual blocks, sequence modeling, and attention mechanisms to process the game state."
+    ],
+    "critical_findings": [],
+    "what_did_not_work": []
+  }
+}

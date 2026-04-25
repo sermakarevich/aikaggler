@@ -1,0 +1,30 @@
+{
+  "id": "sayoulala/use-llm-embedding-recall-infer",
+  "id_no": 69371372,
+  "title": "Use LLM Embedding Recall Infer ",
+  "code_file": "use-llm-embedding-recall-infer.ipynb",
+  "language": "python",
+  "kernel_type": "notebook",
+  "is_private": false,
+  "enable_gpu": true,
+  "enable_tpu": false,
+  "enable_internet": false,
+  "keywords": [
+    "gpu"
+  ],
+  "dataset_sources": [
+    "",
+    "",
+    "emiz6413/lmsys-wheel-files",
+    "sayoulala/v7-recall"
+  ],
+  "kernel_sources": [],
+  "competition_sources": [
+    "eedi-mining-misconceptions-in-mathematics"
+  ],
+  "model_sources": [
+    "mistral-ai/mistral/PyTorch/7b-v0.1-hf/1"
+  ],
+  "docker_image": "gcr.io/kaggle-private-byod/python@sha256:141219e230dab548ccc19aa4e62bcf805ed9de0b4d5112227e28f5f1a25991f8",
+  "machine_shape": "Gpu"
+}

@@ -1,0 +1,36 @@
+{
+  "summary": "This notebook demonstrates a prompt engineering strategy to manipulate an automated LLM-based scoring judge in a Kaggle competition. It uses the Phi-3.5 Mini Instruct model to generate essays containing hidden lists of items, followed by explicit instructions asking the judge to count them. Approximately 10% of the outputs are standard essays to maintain vertical variance and avoid detection. The core takeaway is how carefully crafted few-shot prompts and counting directives can reliably game automated evaluation metrics.",
+  "purpose": "inference",
+  "competition_flow": "Reads test prompts from a CSV, generates essays using a few-shot prompt template with Phi-3.5 via the Hugging Face transformers pipeline, trims outputs to the last punctuation mark, and saves the results to a CSV submission file.",
+  "data_reading": [
+    "pd.read_csv(\"/kaggle/input/llms-you-cant-please-them-all/test.csv\")"
+  ],
+  "data_processing": [
+    "Trims generated model responses to the last occurring punctuation mark (., ?, !, ]) and strips leading/trailing whitespace."
+  ],
+  "features_engineering": [],
+  "models": [
+    "Phi-3.5 Mini Instruct"
+  ],
+  "frameworks_used": [
+    "transformers",
+    "torch",
+    "pandas",
+    "numpy"
+  ],
+  "loss_functions": [],
+  "cv_strategy": "",
+  "ensembling": "",
+  "insights": [
+    "Few-shot prompting with explicit counting instructions can reliably manipulate LLM-based scoring judges.",
+    "Injecting a small percentage (~10%) of standard essays helps maintain output diversity and avoid potential detection of the exploit.",
+    "Trimming model outputs to the last punctuation mark ensures cleaner, more predictable submission formats."
+  ],
+  "critical_findings": [
+    "The author explicitly notes that some vertical variance is required in the output to maintain scores, warning against purely repetitive exploit patterns.",
+    "The scoring judge appears to be vulnerable to explicit counting directives embedded within the generated text."
+  ],
+  "what_did_not_work": [],
+  "source_url": "https://www.kaggle.com/code/richolson/add-it-up",
+  "votes": 331
+}

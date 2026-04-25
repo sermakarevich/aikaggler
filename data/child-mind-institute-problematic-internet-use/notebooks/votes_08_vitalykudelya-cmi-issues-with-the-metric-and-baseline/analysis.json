@@ -1,0 +1,69 @@
+{
+  "summary": "The notebook investigates the behavior of the Quadratic Weighted Kappa (QWK) metric, highlighting its non-intuitive properties and the pitfalls of threshold optimization for ordinal regression. It then presents multiple baseline pipelines for the Child Mind Institute competition, comparing different feature engineering strategies such as raw time-series statistics versus autoencoder embeddings. Readers learn how QWK can be misleading in edge cases, how to properly handle ordinal targets, and how to construct robust tabular baselines using gradient boosting and deep learning models. The author demonstrates that metric optimization and autoencoder fitting strategies require careful validation to avoid distribution shifts or local optima.",
+  "purpose": "tutorial",
+  "competition_flow": "Loads CSV and parquet time-series data, applies statistical or autoencoder-based feature engineering, trains gradient boosting and TabNet models via stratified k-fold cross-validation, optimizes prediction thresholds for QWK, and generates a final submission via majority voting.",
+  "data_reading": [
+    "pd.read_csv for tabular train/test/sample_submission files",
+    "pd.read_parquet with ThreadPoolExecutor for time-series data",
+    "Merged on 'id' column"
+  ],
+  "data_processing": [
+    "Fills missing values with 'Missing' or imputers (SimpleImputer, KNNImputer)",
+    "Maps categorical features to integers via custom unique-value mappings",
+    "Scales features with StandardScaler for autoencoder input",
+    "Drops 'step' and 'Season' columns",
+    "Replaces infinities with NaN",
+    "Rounds target variable to integers"
+  ],
+  "features_engineering": [
+    "Descriptive statistics from time-series parquet files",
+    "Custom PyTorch autoencoder embeddings for time-series reduction",
+    "Hand-crafted interaction and ratio features (e.g., BMI_Age, Hydration_Status, Muscle_to_Fat)",
+    "Integer mappings for categorical variables"
+  ],
+  "models": [
+    "XGBRegressor",
+    "LGBMRegressor",
+    "CatBoostRegressor",
+    "TabNetRegressor",
+    "VotingRegressor",
+    "RandomForestRegressor",
+    "GradientBoostingRegressor"
+  ],
+  "frameworks_used": [
+    "pandas",
+    "numpy",
+    "scikit-learn",
+    "xgboost",
+    "lightgbm",
+    "catboost",
+    "torch",
+    "pytorch_tabnet",
+    "scipy",
+    "tqdm",
+    "polars",
+    "matplotlib",
+    "seaborn",
+    "plotly"
+  ],
+  "loss_functions": [],
+  "cv_strategy": "StratifiedKFold(n_splits=5, shuffle=True, random_state=42)",
+  "ensembling": "Combines LightGBM, XGBoost, CatBoost, and TabNet predictions using a VotingRegressor with custom weights; final submission is generated via majority voting across three separate model pipelines.",
+  "insights": [
+    "QWK can be counterintuitive, sometimes rewarding incorrect predictions over correct ones in specific edge cases.",
+    "Threshold optimization for ordinal targets is highly sensitive to initialization and may converge to local optima.",
+    "Autoencoders trained separately on train and test splits can introduce distribution shifts that degrade encoding consistency.",
+    "Ordinal regression requires careful threshold tuning rather than simple rounding of continuous outputs."
+  ],
+  "critical_findings": [
+    "Predicting class 3 instead of class 2 for a single observation can increase the QWK score.",
+    "Fitting autoencoders separately on train and test data produces severely different encodings for identical inputs.",
+    "The Nelder-Mead optimizer for thresholds frequently finds local extrema instead of the global maximum."
+  ],
+  "what_did_not_work": [
+    "Fitting autoencoders separately on train and test datasets leads to severely different encodings for the same data.",
+    "Using scipy.optimize.minimize with Nelder-Mead for threshold optimization often converges to local extrema rather than the global maximum."
+  ],
+  "source_url": "https://www.kaggle.com/code/vitalykudelya/cmi-issues-with-the-metric-and-baseline",
+  "votes": 393
+}

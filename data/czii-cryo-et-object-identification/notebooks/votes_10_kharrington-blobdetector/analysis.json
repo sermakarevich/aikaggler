@@ -1,0 +1,41 @@
+{
+  "summary": "This notebook implements a classical computer vision pipeline for detecting and localizing macromolecular particles in 3D cryo-electron tomograms. It demonstrates how to adapt spatial resolution and processing scales based on known particle radii, using GPU-accelerated PyTorch convolutions for Hessian-based blob detection, morphological operations, and watershed segmentation. The author shows how to integrate with the copick ecosystem to read multi-resolution zarr tomograms and format outputs for a competition submission. Readers should learn how to build efficient, resolution-aware 3D detection workflows without deep learning, leveraging mathematical morphology and distance transforms.",
+  "purpose": "inference",
+  "competition_flow": "Loads multi-resolution 3D tomograms via the copick library, applies a resolution-adaptive Hessian-based blob detection and watershed segmentation pipeline, and exports detected particle centroids as a CSV submission file.",
+  "data_reading": [
+    "Reads tomogram data from zarr stores using the copick library and a custom JSON configuration, selecting resolution levels (z['0'] or z['1']) based on a radius threshold of 16."
+  ],
+  "data_processing": [
+    "Applies Gaussian smoothing, Hessian-based filtering, binary thresholding, spherical erosion/dilation, distance transform, local maxima detection, and watershed segmentation; dynamically scales processing radii and coordinates based on effective voxel spacing and particle size."
+  ],
+  "features_engineering": [
+    ""
+  ],
+  "models": [
+    ""
+  ],
+  "frameworks_used": [
+    "torch",
+    "scikit-image",
+    "scipy",
+    "copick",
+    "zarr",
+    "numpy",
+    "matplotlib",
+    "tqdm"
+  ],
+  "loss_functions": [
+    ""
+  ],
+  "cv_strategy": "",
+  "ensembling": "",
+  "insights": [
+    "Classical Hessian-based filtering combined with watershed segmentation can effectively detect 3D blobs in cryo-ET data without requiring neural networks.",
+    "Adapting processing scales and resolution levels to match known particle radii significantly improves detection accuracy across heterogeneous datasets.",
+    "GPU-accelerated PyTorch convolutions can efficiently replace traditional scikit-image operations for large 3D tomograms while maintaining mathematical equivalence."
+  ],
+  "critical_findings": [],
+  "what_did_not_work": [],
+  "source_url": "https://www.kaggle.com/code/kharrington/blobdetector",
+  "votes": 236
+}

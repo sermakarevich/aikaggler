@@ -1,0 +1,29 @@
+{
+  "path": "final_versions/07_03_tune_against_mask/lux_ai/nns/conv_blocks.py",
+  "analysis": {
+    "summary": "This file defines custom PyTorch neural network building blocks for a convolutional architecture. It implements a Squeeze-and-Excitation attention mechanism, a standard residual block, and a parallel dilated residual block that processes inputs through two concurrent branches with different dilation rates. The blocks dynamically compute padding to preserve spatial dimensions across varying kernel sizes and strides. These modules are designed to be composed into larger CNNs for extracting spatial features from grid-based game states.",
+    "purpose": "model_definition",
+    "competition_flow": "",
+    "data_reading": [],
+    "data_processing": [],
+    "features_engineering": [],
+    "models": [
+      "SELayerNoMask",
+      "ResidualBlockNoMask",
+      "ParallelDilationResidualBlock"
+    ],
+    "frameworks_used": [
+      "pytorch"
+    ],
+    "loss_functions": [],
+    "cv_strategy": "",
+    "ensembling": "",
+    "insights": [
+      "Dynamic padding calculation ensures exact spatial dimension preservation regardless of kernel size, stride, or dilation parameters.",
+      "Parallel dilated convolutions efficiently capture multi-scale receptive fields without increasing model parameters.",
+      "Squeeze-and-Excitation blocks adaptively recalibrate channel-wise feature responses to emphasize informative channels."
+    ],
+    "critical_findings": [],
+    "what_did_not_work": []
+  }
+}

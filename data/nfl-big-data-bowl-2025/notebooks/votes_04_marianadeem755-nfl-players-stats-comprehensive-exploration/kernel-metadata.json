@@ -1,0 +1,21 @@
+{
+  "id": "marianadeem755/nfl-players-stats-comprehensive-exploration",
+  "id_no": 72689111,
+  "title": "\ud83c\udfc6NFL Players Stats:Comprehensive Exploration\ud83c\udfc3\u200d\u2642\ufe0f",
+  "code_file": "nfl-players-stats-comprehensive-exploration.ipynb",
+  "language": "python",
+  "kernel_type": "notebook",
+  "is_private": false,
+  "enable_gpu": false,
+  "enable_tpu": false,
+  "enable_internet": true,
+  "keywords": [],
+  "dataset_sources": [],
+  "kernel_sources": [],
+  "competition_sources": [
+    "nfl-big-data-bowl-2025"
+  ],
+  "model_sources": [],
+  "docker_image": "gcr.io/kaggle-images/python@sha256:d6c239c710c9732d8a999bd7f81f4f5ff3a4e6c9ddfb331cba95ea5c2968fc1a",
+  "machine_shape": "None"
+}

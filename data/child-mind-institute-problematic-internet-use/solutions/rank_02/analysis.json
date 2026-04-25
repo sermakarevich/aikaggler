@@ -1,0 +1,44 @@
+{
+  "summary": "The author secured 2nd place by modifying a starter notebook that combined Polars for data manipulation and CatBoost for modeling. The core contribution was replacing the notebook's implicit missing value handling with an explicit, domain-aware imputation strategy tailored to each column's semantics. They mapped numeric/float features to mean imputation and integer/categorical features to a 'max+1' placeholder, arguing that human domain knowledge better captures feature meaning than automatic model handling. Despite a lower public leaderboard score during development, this approach ultimately yielded a strong private leaderboard result.",
+  "extensive_summary": "## Approach Overview\nThe solution builds upon a forked starter notebook that leverages Polars for data manipulation and CatBoost for modeling. The author's primary intervention focused on replacing the notebook's implicit missing value handling with an explicit, domain-driven imputation strategy.\n\n## Custom Imputation Strategy\nRecognizing that CatBoost's automatic missing value handling might not fully capture the semantic meaning of certain features, the author implemented a column-specific replacement dictionary. Numeric and float-based features (e.g., age, blood pressure, heart rate, endurance metrics) were imputed using the mean of existing values. Integer-based or categorical features (e.g., sex, FGC zones, BIA metrics) were assigned a \"new_number\" strategy, where missing entries were replaced with the column's maximum value plus one (or \"Null\" for string categories). This distinction was made to preserve the discrete, non-ordered nature of certain IDs and categories while respecting the continuous nature of physiological metrics.\n\n## Validation and Results\nThe author increased the cross-validation folds from 5 to 20 to stabilize the validation process. Interestingly, this change improved the internal CV score but initially resulted in a lower public leaderboard score compared to the baseline. Despite this discrepancy, the custom imputation strategy ultimately secured 2nd place on the private leaderboard. The author notes the unexpected gap between public and private scores and invites community feedback on the phenomenon.",
+  "rank": 2,
+  "competition_flow": "Data is loaded and manipulated using Polars, missing values are explicitly imputed using a domain-aware column-specific strategy, and the cleaned dataset is trained with CatBoost before submitting predictions.",
+  "data_reading": [
+    "Polars DataFrame API"
+  ],
+  "data_processing": [
+    "Column-specific missing value imputation: numeric/float features use mean ('average') imputation, while integer/categorical features use a 'new_number' strategy (max value + 1 or 'Null') to preserve discrete semantics."
+  ],
+  "features_engineering": [],
+  "models": [
+    "CatBoost"
+  ],
+  "frameworks_used": [
+    "polars",
+    "catboost"
+  ],
+  "loss_functions": [],
+  "cv_strategy": "Increased cross-validation folds from 5 to 20.",
+  "ensembling": "No ensembling or post-processing was applied; final predictions were submitted directly after training.",
+  "insights": [
+    "Explicit, domain-aware imputation can outperform a model's built-in missing value handling by preserving feature semantics.",
+    "Increasing cross-validation folds can improve internal validation stability without guaranteeing public leaderboard gains."
+  ],
+  "critical_findings": [
+    "Improving the internal CV score by increasing folds to 20 initially resulted in a lower public leaderboard score, indicating a potential public/private data distribution shift."
+  ],
+  "what_did_not_work": [],
+  "github_repos": [],
+  "papers": [],
+  "other_solution_refs": [
+    {
+      "description": "Author's final approach notebook",
+      "url": "https://www.kaggle.com/code/aradhyeagarwal/starter-notebook-with-polars-gpu"
+    },
+    {
+      "description": "Original starter notebook forked for this solution",
+      "url": "https://www.kaggle.com/code/onodera/starter-notebook-with-polars-gpu"
+    }
+  ],
+  "source_url": "https://www.kaggle.com/competitions/child-mind-institute-problematic-internet-use/discussion/552712"
+}

@@ -1,0 +1,25 @@
+{
+  "id": "vitalykudelya/cmi-issues-with-the-metric-and-baseline",
+  "id_no": 72864688,
+  "title": "CMI: Issues with the Metric and Baseline",
+  "code_file": "cmi-issues-with-the-metric-and-baseline.ipynb",
+  "language": "python",
+  "kernel_type": "notebook",
+  "is_private": false,
+  "enable_gpu": true,
+  "enable_tpu": false,
+  "enable_internet": false,
+  "keywords": [
+    "gpu"
+  ],
+  "dataset_sources": [
+    "ryati131457/pytorchtabnet"
+  ],
+  "kernel_sources": [],
+  "competition_sources": [
+    "child-mind-institute-problematic-internet-use"
+  ],
+  "model_sources": [],
+  "docker_image": "gcr.io/kaggle-private-byod/python@sha256:940180dcea42e703acbeae669a52d68e6fa3130ef60805b36005534a5152a5f3",
+  "machine_shape": "NvidiaTeslaT4"
+}

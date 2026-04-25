@@ -1,0 +1,40 @@
+{
+  "summary": "This notebook establishes a baseline regression pipeline for the UM Game Playing Strength of MCTS Variants competition using LightGBM. It demonstrates efficient data ingestion with Polars, memory optimization through strategic type casting, and robust validation via GroupKFold to prevent leakage across game rulesets. The author also integrates Plotly for exploratory analysis and packages the final model into Kaggle's official inference server for seamless local testing and competition submission. Readers should take away practical patterns for building fast tabular baselines, managing memory constraints, and structuring notebooks for Kaggle's automated evaluation environment.",
+  "purpose": "baseline",
+  "competition_flow": "Reads training data with Polars, preprocesses and casts datatypes, trains a LightGBM regressor via GroupKFold cross-validation, and wraps the inference logic in a Kaggle MCTS evaluation server for automated submission generation.",
+  "data_reading": [
+    "Loads CSV files using Polars with `pl.read_csv` and a specified batch size."
+  ],
+  "data_processing": [
+    "Drops columns with 100% null values and columns containing only one unique value.",
+    "Casts categorical columns (`GameRulesetName`, `agent1`, `agent2`) to string and numeric columns to `Int16` or `Float32` based on the first non-null value.",
+    "Converts Polars DataFrames to Pandas for compatibility with scikit-learn and LightGBM."
+  ],
+  "features_engineering": [],
+  "models": [
+    "LightGBM (LGBMRegressor)"
+  ],
+  "frameworks_used": [
+    "lightgbm",
+    "polars",
+    "pandas",
+    "plotly",
+    "scikit-learn",
+    "kaggle_evaluation"
+  ],
+  "loss_functions": [
+    "rmse"
+  ],
+  "cv_strategy": "GroupKFold(n_splits=5) grouped by GameRulesetName",
+  "ensembling": "Averages predictions across the 5 GroupKFold folds during inference.",
+  "insights": [
+    "Using Polars with batch reading significantly reduces memory overhead during data ingestion.",
+    "Casting numeric columns to Int16 or Float32 optimizes memory usage for large tabular datasets.",
+    "GroupKFold is essential here to prevent data leakage between different game rulesets.",
+    "Kaggle's kaggle_evaluation package streamlines the transition from local testing to competition submission."
+  ],
+  "critical_findings": [],
+  "what_did_not_work": [],
+  "source_url": "https://www.kaggle.com/code/andreasbis/mcts-lightgbm-baseline",
+  "votes": 197
+}

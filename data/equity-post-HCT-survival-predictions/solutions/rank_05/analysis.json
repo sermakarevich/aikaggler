@@ -1,0 +1,47 @@
+{
+  "summary": "The author achieved 5th place by splitting the prediction task into two separate ensembles: one for classifying cases as unsafe (EFS=1) and another for ranking those unsafe cases. These outputs were combined using a custom mathematical formula that weights the ranking probability against a derived safe ratio. Key technical choices included training on raw logits with margin-based RMSE, applying logit scaling and shifting for post-processing to improve locality ranking, and deliberately minimizing feature engineering while strategically rounding age columns to prevent overfitting to synthetic noise.",
+  "extensive_summary": "The solution departs from standard multi-target blending by focusing on a two-ensemble architecture centered on Event-Free Survival (EFS). The author first identified that outliers comprise only ~2% of the dataset, using an `efs_time` cutoff of 13.326 to construct a binary 'unsafe' label. Ensemble A predicts the probability of a case being unsafe, while Ensemble B ranks only the unsafe subset. These are merged via the formula `p = (a * b) - ((1 - a) * (S_RATIO))`, where `a` is the unsafe prediction, `b` is the rank probability, and `S_RATIO` is calculated from exact win/loss distributions (~0.425).\n\nTo optimize the formula's behavior, Ensemble A was trained on raw logits, while Ensemble B used a min-max margin approach, mapping evenly spaced values from 0.03 to 0.97 to logits and optimizing with RMSE. Post-processing involved adding/subtracting a logit offset to positive/negative predictions and multiplying both logit scores by 1.5 before converting to probabilities. This scaling effectively \"zooms in\" on the extremes, improving the relative ranking of the bottom 100 cases where global metrics are less relevant.\n\nFeature engineering was intentionally sparse. The author preserved a \"magic\" HLA column (`hla_nlmp6`) across all models, replaced other HLA sums for GBDT/AutoGluon, and dropped specific HLA sums for neural networks. Continuous age features (`donor_age` and `age_at_hct`) were rounded to reduce overfitting to synthetic noise. The final submission integrated roughly 900 zero-shot AutoGluon models alongside hand-tuned models and public notebook solutions, relying heavily on mathematical combination and logit scaling rather than complex architectures.",
+  "rank": 5,
+  "competition_flow": "The pipeline involved creating a binary 'unsafe' label via an `efs_time` cutoff, training two separate ensembles (one for unsafe classification, one for ranking unsafe cases) using AutoGluon and other models on raw logits with RMSE, combining their outputs with a custom weighted formula, applying logit scaling/shifting post-processing, and submitting the final ranked predictions.",
+  "data_reading": [],
+  "data_processing": [
+    "Created a binary 'unsafe' label using an `efs_time` cutoff of 13.326.",
+    "Rounded `donor_age` to every other year and `age_at_hct` to the first decimal digit to prevent overfitting to synthetic noise."
+  ],
+  "features_engineering": [
+    "Preserved `hla_nlmp6` column across all models.",
+    "Replaced other HLA sums for GBDT/AutoGluon using the recalc HLA trick.",
+    "Dropped `_6` and `_8` HLA sum columns for neural networks.",
+    "Applied target encoding to 150 models."
+  ],
+  "models": [
+    "AutoGluon",
+    "GBDT",
+    "Neural Networks",
+    "hand-tuned models"
+  ],
+  "frameworks_used": [
+    "AutoGluon"
+  ],
+  "loss_functions": [
+    "RMSE"
+  ],
+  "cv_strategy": "",
+  "ensembling": "Combined two ensembles (unsafe prediction and ranking) using the formula `p = (a * b) - ((1 - a) * (S_RATIO))`, integrated ~900 zero-shot AutoGluon models, and applied post-processing by scaling logits by 1.5 and adding/subtracting logit offsets to positive/negative predictions.",
+  "insights": [
+    "Outliers are rare (~2%) and can be effectively handled by a simple time cutoff to create a binary label.",
+    "Multiplying logits before conversion acts as a non-linear zoom that improves locality ranking for the bottom tier of predictions.",
+    "Rounding continuous age features marginally improves CV by balancing pattern learning with noise reduction.",
+    "Preserving \"magic\" domain-specific columns is critical even when using synthetic data or automated modeling tools."
+  ],
+  "critical_findings": [
+    "The safe ratio (`S_RATIO`) in the combination formula converges to ~0.425 after centering and normalizing win/loss distributions, which outperforms the intuitive -0.5.",
+    "Multiplying raw logit scores by 1.5 before converting to probabilities unexpectedly improved CV by emphasizing extremes, though it required conservative tuning to avoid LB overfitting.",
+    "Adding/subtracting logit offsets to positive/negative predictions decreases impact further from the middle, effectively balancing the global vs. local ranking emphasis."
+  ],
+  "what_did_not_work": [],
+  "github_repos": [],
+  "papers": [],
+  "other_solution_refs": [],
+  "source_url": "https://www.kaggle.com/competitions/equity-post-HCT-survival-predictions/discussion/566541"
+}

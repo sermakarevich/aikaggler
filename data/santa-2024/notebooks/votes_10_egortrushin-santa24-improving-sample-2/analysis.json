@@ -1,0 +1,36 @@
+{
+  "summary": "This notebook demonstrates how to optimize a single text permutation for the Santa 2024 competition by minimizing its perplexity using a pre-trained large language model as a fixed scoring function. It implements a custom Simulated Annealing optimizer that explores word swaps and shifts, evaluating each candidate via a 4-bit quantized Gemma-2-9B model. The author shows how to validate permutations, compute token-wise cross-entropy loss, and manage GPU memory efficiently during inference. Readers should understand how to adapt LLMs as scoring functions for combinatorial optimization and how simulated annealing can effectively reduce perplexity without fine-tuning.",
+  "purpose": "other",
+  "competition_flow": "Reads a sample submission text, initializes a 4-bit quantized Gemma-2-9B model to compute perplexity, runs a Simulated Annealing algorithm with swap/shift neighbors to minimize perplexity, and writes the optimized text back to the submission file.",
+  "data_reading": [
+    "Loads sample submission text from a CSV file using pandas, extracts the target row, and splits it into a list of words."
+  ],
+  "data_processing": [
+    "Normalizes whitespace by splitting and rejoining strings; validates that submitted permutations contain identical word counts to the original; sorts words initially to set a baseline; manages GPU memory by clearing caches and deleting model references after scoring."
+  ],
+  "features_engineering": [],
+  "models": [
+    "Gemma-2-9B"
+  ],
+  "frameworks_used": [
+    "transformers",
+    "torch",
+    "pandas",
+    "numpy"
+  ],
+  "loss_functions": [
+    "CrossEntropyLoss (token-wise, manually averaged over valid tokens)"
+  ],
+  "cv_strategy": "",
+  "ensembling": "",
+  "insights": [
+    "Using a pre-trained LLM as a fixed scoring function allows combinatorial optimization without fine-tuning or training overhead.",
+    "4-bit quantization (fp4) enables running large models like Gemma-2-9B on limited Kaggle GPU memory.",
+    "Simulated annealing with both swap and shift operations effectively navigates the discrete permutation space to reduce perplexity.",
+    "Exponential cooling schedules provide a good balance between exploration and exploitation for this type of optimization."
+  ],
+  "critical_findings": [],
+  "what_did_not_work": [],
+  "source_url": "https://www.kaggle.com/code/egortrushin/santa24-improving-sample-2",
+  "votes": 240
+}

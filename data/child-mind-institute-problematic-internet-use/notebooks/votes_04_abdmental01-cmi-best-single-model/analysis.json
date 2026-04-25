@@ -1,0 +1,41 @@
+{
+  "summary": "This notebook demonstrates a baseline pipeline for the Child Mind Institute competition, focusing on converting time-series parquet data into descriptive statistics and merging them with tabular demographic and clinical features. It trains a single LightGBM regressor using 5-fold stratified cross-validation, then optimizes rounding thresholds on out-of-fold predictions to maximize the quadratic weighted kappa metric. The author shows how to handle ordinal regression targets by post-processing continuous predictions with learned thresholds rather than relying on native ordinal classifiers. Readers should learn efficient parallel time-series feature extraction, consistent categorical encoding across splits, and threshold optimization for ordinal metrics.",
+  "purpose": "baseline",
+  "competition_flow": "Loads tabular and time-series data, extracts descriptive statistics from the time series, trains a LightGBM regressor with 5-fold stratified CV, optimizes rounding thresholds on out-of-fold predictions, and generates a submission CSV.",
+  "data_reading": [
+    "Reads tabular data via pd.read_csv and time-series data from parquet files in series_train.parquet and series_test.parquet directories.",
+    "Uses pd.read_parquet to load each file, drops the 'step' column, and computes .describe() statistics.",
+    "Parallelizes file loading with ThreadPoolExecutor."
+  ],
+  "data_processing": [
+    "Merges time-series stats with tabular data on 'id', drops 'id', and selects predefined feature columns.",
+    "Drops rows with missing target.",
+    "Fills categorical columns with 'Missing', converts to category dtype, and applies consistent integer mappings derived from the training set to both train and test sets."
+  ],
+  "features_engineering": [
+    "Descriptive statistics (mean, std, min, max, quartiles, etc.) extracted from time-series parquet files using .describe().values, creating Stat_0 to Stat_N columns.",
+    "No other hand-crafted features are explicitly generated."
+  ],
+  "models": [
+    "LightGBM (LGBMRegressor)"
+  ],
+  "frameworks_used": [
+    "lightgbm",
+    "scikit-learn",
+    "pandas",
+    "numpy",
+    "scipy"
+  ],
+  "loss_functions": [],
+  "cv_strategy": "StratifiedKFold(n_splits=5, shuffle=False)",
+  "ensembling": "Averages predictions across 5 CV folds and applies a learned threshold vector (optimized via Nelder-Mead on OOF predictions) to round continuous outputs to ordinal classes for submission.",
+  "insights": [
+    "Parallel processing with ThreadPoolExecutor significantly speeds up loading and processing multiple parquet files.",
+    "Ordinal regression targets can be effectively handled by training a regressor and optimizing rounding thresholds on out-of-fold predictions.",
+    "Consistent categorical encoding requires building mappings from the training set and applying them identically to the test set to prevent leakage or mismatched indices."
+  ],
+  "critical_findings": [],
+  "what_did_not_work": [],
+  "source_url": "https://www.kaggle.com/code/abdmental01/cmi-best-single-model",
+  "votes": 825
+}

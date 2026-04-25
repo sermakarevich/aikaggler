@@ -1,0 +1,39 @@
+{
+  "summary": "This notebook implements a memory-efficient inference pipeline for 3D cryo-electron tomography object detection. It processes large volumetric data using a custom sliding window scanner that overlaps slices and applies weighted averaging to reconstruct full-volume predictions. Test-time augmentation is achieved by rotating input slices and averaging the model outputs. The pipeline concludes with class-specific probability thresholds, connected components analysis, and coordinate scaling to extract precise particle centroids for submission. Readers should learn how to adapt 2D/3D models for large-scale scientific imaging inference while managing GPU constraints and maintaining detection accuracy.",
+  "purpose": "inference",
+  "competition_flow": "Loads pre-trained ResNet34D weights, processes 3D cryo-ET volumes via a sliding window scanner with TTA, applies class-specific thresholds and connected components for centroid extraction, and outputs a formatted submission CSV.",
+  "data_reading": [
+    "Loads 3D volumetric data and scale factors using a custom `read_one_data` function from a local `dataset` module, which parses static experiment directories."
+  ],
+  "data_processing": [
+    "Normalizes volumes using 5th to 99th percentile scaling.",
+    "Implements a custom `Scanner` class for overlapping sliding window inference with linear weight blending.",
+    "Applies TTA by rotating input slices 90 degrees and averaging predictions.",
+    "Post-processing includes class-specific thresholding, connected components analysis via `cc3d`, centroid extraction, and coordinate scaling."
+  ],
+  "features_engineering": [],
+  "models": [
+    "ResNet34D"
+  ],
+  "frameworks_used": [
+    "pytorch",
+    "numpy",
+    "pandas",
+    "scipy",
+    "cc3d",
+    "cv2",
+    "matplotlib"
+  ],
+  "loss_functions": [],
+  "cv_strategy": "",
+  "ensembling": "Averages TTA probability maps and applies class-specific thresholds followed by connected components analysis to extract centroids.",
+  "insights": [
+    "Sliding window inference with overlapping slices and weighted averaging effectively handles large 3D volumes that exceed GPU memory limits.",
+    "Simple rotation-based TTA improves prediction robustness without significant computational overhead.",
+    "Class-specific thresholds and connected components analysis are essential for accurate centroid extraction in noisy cryo-ET data."
+  ],
+  "critical_findings": [],
+  "what_did_not_work": [],
+  "source_url": "https://www.kaggle.com/code/hengck23/1-hr-fast-2d-3d-unet-resnet34d-scanner-tta",
+  "votes": 295
+}

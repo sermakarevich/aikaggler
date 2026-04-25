@@ -1,0 +1,28 @@
+{
+  "id": "itsuki9180/czii-yolo11-submission-baseline",
+  "id_no": 72354062,
+  "title": "CZII YOLO11 Submission Baseline",
+  "code_file": "czii-yolo11-submission-baseline.ipynb",
+  "language": "python",
+  "kernel_type": "notebook",
+  "is_private": false,
+  "enable_gpu": true,
+  "enable_tpu": false,
+  "enable_internet": false,
+  "keywords": [
+    "gpu"
+  ],
+  "dataset_sources": [
+    "itsuki9180/czii-yolo11-training-baseline-weight-and-others",
+    "hengck23/hengck-czii-cryo-et-01"
+  ],
+  "kernel_sources": [
+    "itsuki9180/ultralytics-for-offline-install"
+  ],
+  "competition_sources": [
+    "czii-cryo-et-object-identification"
+  ],
+  "model_sources": [],
+  "docker_image": "gcr.io/kaggle-private-byod/python@sha256:f9647cc12ad6b5bff2567807c9baa993ae44f17e770a4e099dbde5f4e3a2f1ae",
+  "machine_shape": "NvidiaTeslaT4"
+}

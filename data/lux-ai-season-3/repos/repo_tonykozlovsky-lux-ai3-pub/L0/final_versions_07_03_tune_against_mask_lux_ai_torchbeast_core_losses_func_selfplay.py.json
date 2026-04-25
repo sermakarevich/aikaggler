@@ -1,0 +1,36 @@
+{
+  "path": "final_versions/07_03_tune_against_mask/lux_ai/torchbeast/core/losses_func_selfplay.py",
+  "analysis": {
+    "summary": "This file computes the composite training loss for a self-play reinforcement learning agent in the LUX-AI competition. It aggregates policy gradient losses using V-trace and UP-GO advantage estimators, value baseline losses via TD-Lambda, entropy regularization, and teacher KL divergence. It also incorporates auxiliary prediction tasks (position, proximity, sensor mask) using weighted BCE losses. The function handles episode discounting, reset masking, and warmup phases before returning individual and combined loss components for backpropagation.",
+    "purpose": "training",
+    "competition_flow": "Computes multi-component RL loss from batched environment data and learner outputs to update the agent's weights.",
+    "data_reading": [
+      "Receives pre-loaded GPU tensors via `batch` dict (actions, policy logits, rewards, done masks, ground truth masks) and `learner_outputs`/`teacher_output` dicts."
+    ],
+    "data_processing": [
+      "Adjusts episode discounting by resetting to 1.0 when `done` masks transition from 1 to 0, preventing discount leakage across episode boundaries.",
+      "Masks entropy and KL calculations to exclude steps with no actions taken."
+    ],
+    "features_engineering": [],
+    "models": [],
+    "frameworks_used": [
+      "pytorch"
+    ],
+    "loss_functions": [
+      "custom_policy_gradient_loss",
+      "custom_baseline_loss",
+      "custom_teacher_kl_loss",
+      "custom_entropy_loss",
+      "BCEWithLogitsLoss"
+    ],
+    "cv_strategy": "",
+    "ensembling": "",
+    "insights": [
+      "Uses multiple advantage estimators (V-trace, UP-GO, TD-Lambda) to stabilize policy gradient updates.",
+      "Implements dynamic positive class weighting for auxiliary prediction tasks via shared multiprocessing values.",
+      "Handles episode boundaries explicitly to prevent discount leakage across resets."
+    ],
+    "critical_findings": [],
+    "what_did_not_work": []
+  }
+}

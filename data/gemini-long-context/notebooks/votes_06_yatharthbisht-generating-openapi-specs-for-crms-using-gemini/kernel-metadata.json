@@ -1,0 +1,26 @@
+{
+  "id": "yatharthbisht/generating-openapi-specs-for-crms-using-gemini",
+  "id_no": 71077728,
+  "title": "Generating Openapi specs for CRMs using Gemini",
+  "code_file": "generating-openapi-specs-for-crms-using-gemini.ipynb",
+  "language": "python",
+  "kernel_type": "notebook",
+  "is_private": false,
+  "enable_gpu": false,
+  "enable_tpu": false,
+  "enable_internet": true,
+  "keywords": [],
+  "dataset_sources": [
+    "yatharthbisht/context-for-openapi-generation-using-gemini"
+  ],
+  "kernel_sources": [],
+  "competition_sources": [
+    "gemini-long-context"
+  ],
+  "model_sources": [
+    "google/gemini-1.5-flash-api/Api/gemini-1.5-flash/1",
+    "google/gemini-1.5-pro-api/Api/gemini-1.5-pro/1"
+  ],
+  "docker_image": "gcr.io/kaggle-images/python@sha256:a16cda2c5d52fa988d413876f3ffad7a46cca58678514601feb175990dc187c0",
+  "machine_shape": "None"
+}

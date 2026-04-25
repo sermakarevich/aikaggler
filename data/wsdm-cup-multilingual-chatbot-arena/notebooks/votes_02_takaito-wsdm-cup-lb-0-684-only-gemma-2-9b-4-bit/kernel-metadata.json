@@ -1,0 +1,28 @@
+{
+  "id": "takaito/wsdm-cup-lb-0-684-only-gemma-2-9b-4-bit",
+  "id_no": 73716328,
+  "title": "[WSDM Cup] LB:0.684 Only Gemma-2 9b 4-bit",
+  "code_file": "wsdm-cup-lb-0-684-only-gemma-2-9b-4-bit.ipynb",
+  "language": "python",
+  "kernel_type": "notebook",
+  "is_private": false,
+  "enable_gpu": true,
+  "enable_tpu": false,
+  "enable_internet": false,
+  "keywords": [
+    "gpu"
+  ],
+  "dataset_sources": [
+    "takaito/wsdm2025-multilingual-chatbot-arena",
+    "emiz6413/lmsys-wheel-files"
+  ],
+  "kernel_sources": [],
+  "competition_sources": [
+    "wsdm-cup-multilingual-chatbot-arena"
+  ],
+  "model_sources": [
+    "emiz6413/gemma-2/Transformers/gemma-2-9b-it-4bit/1"
+  ],
+  "docker_image": "gcr.io/kaggle-private-byod/python@sha256:1003a82bef5df3c098b2041d936cb5f1836e52d7b610e8f0f4dedc194fb3b773",
+  "machine_shape": "NvidiaTeslaT4"
+}

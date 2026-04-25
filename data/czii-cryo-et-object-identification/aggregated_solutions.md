@@ -1,0 +1,272 @@
+# czii-cryo-et-object-identification: cross-solution summary
+
+This competition focused on 3D cryo-ET particle detection and segmentation, requiring participants to process volumetric tomograms and accurately localize overlapping biological structures. Winning approaches predominantly leveraged 3D UNet variants and lightweight architectures, combining custom loss functions, extensive spatial augmentations, and sophisticated post-processing pipelines. Success hinged on architectural diversity, strategic normalization layer swaps, precise ground-truth mask radius tuning, and advanced ensembling techniques like model soups and logit-level fusion.
+
+## Competition flows
+- Raw 3D cryo-ET volumes are tiled via a sliding window, processed by an ensemble of anchor-free point detection models with stride-2 feature maps, accelerated via TensorRT, and postprocessed with class-specific thresholds and greedy NMS.
+- Raw 3D cryo-ET volumes are normalized and split into patches, fed into MONAI-based partly U-Net and object detection models trained with weighted CrossEntropy and custom augmentations, then feature maps are rank-scaled and blended before final object detection post-processing.
+- Raw 3D voxel volumes are converted into ground truth heatmaps using Gaussian masks with a 1.0 coordinate offset, trained via two 2.5D UNet variants with a balanced MSE loss, and deployed using TensorRT-optimized inference with NMS and coordinate scaling.
+- Raw 3D particle data was processed using a host-provided baseline, fed into a 3D UNet with ResNet101 backbone trained via EMA and extensive 3D augmentations, post-processed with cc3d, and submitted as a 4-fold, 7-kfold average ensemble.
+- Raw 3D volumetric data is normalized and windowed for training, fed into an ensemble of customized 3D ConvNeXt-like segmentation models, and post-processed via cc3d centroid extraction and DBSCAN filtering.
+- Raw cryo-ET volumes are segmented using an ensemble of lightweight 3D UNet-based models, followed by connected component analysis (CC3D) to extract particle centroids and filter clusters by size and certainty threshold.
+- Raw 3D volumetric data is cropped into fixed patch resolutions, fed into 3D or 2.5D UNet/YOLO architectures trained with custom segmentation/heatmap losses, and post-processed via TTA, model soup, or 2D classification.
+- Raw tomogram data is preprocessed with percentile clipping and scaling, split into sliding windows, fed through pre-trained/fine-tuned 3D segmentation models predicting Gaussian heatmaps, then post-processed via maxpool and weighted box fusion before logit averaging.
+- Raw tomogram data is preprocessed with Gaussian denoising and synthetic pretraining, fed into multiple 3D U-Net architectures trained with patch-based augmentations, then inferred using large sliding windows with Gaussian reconstruction, followed by logit-level ensembling and GPU-accelerated watershed segmentation.
+
+## Data processing
+- Fixed random crops per study and around particle instances
+- Z-axis rotations (±180°), X/Y rotations (±10°), scale jitter (±5%), XYZ flips
+- Validation/inference tiling: 192x128x128 sliding window, 1x9x9 tiles, weighted averaging aggregation
+- Standard normalization (subtract mean, divide by std) on 630x630x184 3D images before splitting into 96x96x96 patches
+- Training augmentations: RandomCrop, axis-wise Flip, rotation, and custom MixUp implementation
+- Validation patches stored in RAM
+- Ground truth heatmaps generated via Gaussian masks at particle centers (sigma=6 or size-dependent)
+- Input volumes standardized to 32×128×128 (D×H×W)
+- Coordinate system adjusted with a 1.0 offset during heatmap creation to align with pixel centers
+- Host-provided baseline processing
+- Training input size (64, 128, 128) vs inference size (64, 256, 256)
+- Halved original radius during training
+- Train-time augmentations: axis flips (x, y, z), axis swapping, denoising/correction algorithms ('denoised', 'wbp', 'ctfdeconvolved', 'isonetcorrected'), copy-paste, mixup
+- TTA: averaging predictions with flipped and rotated inputs
+- Post-processing with cc3d
+- Percentile-based normalization (clipping at 1st and 99th percentiles, then min-max scaling)
+- Ground truth mask radii scaled per particle class (e.g., r/2 or r/3)
+- Training augmentations: rot90, 180, 270, xyz flip
+- Inference TTA: rot90, 180, 270
+- Custom per-particle-type ground truth mask radii (e.g., 60x0.5, 90x0.5, 150x0.5)
+- Patch sizes: [128, 200, 200], [128, 256, 256], or [128, 384, 384]
+- RandCropByLabelClassesd with balanced sampling ratios [1, 1, 1, 1, 2, 1, 2]
+- RandRotate90d, RandFlipd, RandAffined, RandGaussianNoised, RandShiftIntensityd
+- Patch-based training with resolutions ranging from 32x128x128 to 128x256x256
+- Radius adjustments (e.g., radius * 0.5, 1/3 particle radius)
+- Smoothing predictions before peak detection
+- Drop path, dropblock, and stochastic depth regularization
+- Normalization layer swaps (InstanceNorm to BatchNorm)
+- Multi-directional TTA (flips x,y,z; rotations 90/180/270)
+- Percentile clipping (0.1–99.9%)
+- Dataset-specific scaling (simulated ×1.0, WBP ×1e4, denoised ×1e5)
+- Sliding window cropping (stride 64, 64 windows/experiment) with random coordinate shifts
+- Train-time augmentations: Mixup, Cutmix, RandomFlip, rot90 (xy plane), affine (pre-train only), contrast (0.7–1.5), gamma (0.8–1.2), gaussian noise (0–0.05, fine-tune only)
+- TTA: 4x flip augmentations, 4x sliding window, sloped edge weight function
+- Gaussian denoising on synthetic tomograms for pretraining
+- Training transforms: RandCropByLabelClassesd (spatial size 128x128x128, 16 samples) and RandFlipd (prob 0.5 on x, y, z axes)
+- Inference: sliding window with 25% overlap and Gaussian reconstruction
+- Geometric TTA (flips, transpose)
+- Post-processing: logit-level fusion, watershed segmentation with distance transforms/local maxima markers, per-particle blob thresholding, switching from skimage to cucim/cupy for speed
+
+## Models
+- SegResNet
+- DynUNet
+- FlexibleUnet
+- 3D U-Net
+- ResNet34
+- EfficientNet-B3
+- Partly U-Net
+- 2.5D UNet
+- ConvNeXt Nano
+- ResNetRS-50
+- Joint Pyramid Upsampling
+- SESC Attention
+- UNet + ResNet101
+- ConvNeXt
+- U-Net
+- 3D ConvNeXt-like
+- UNet3D
+- VoxResNet
+- VoxHRNet
+- DenseVNet
+- UNet2E3D
+- MONAI UNet
+- 3D YOLO
+- ResNet101
+- ResNet50D
+- EfficientNetV2-M
+- 2.5D Enc-3D Dec
+- DeepFinder-like Network
+- 2D-3D UNet
+- ResNeXt101
+- EfficientNetB4
+- EfficientNetB5
+- WMCSFB
+- Pixel Shuffle Decoder
+- R3D50
+- R3D34
+- R3D18
+- DeepLabV3+
+- YOLO
+
+## Frameworks used
+- MONAI
+- PyTorch
+- TensorRT
+- ONNX
+- torch.jit
+- onnxruntime
+- TensorFlow
+- accelerate
+- segmentation_models_pytorch_3d
+- numpy
+- cc3d
+- DBSCAN
+- skimage
+- cucim
+- cupy
+
+## Loss functions
+- Reduced Focal Loss (CenterNet baseline)
+- Varifocal Loss
+- IoU-based Distance Regression Loss (custom PP-YOLO mimic)
+- Weighted Cross-Entropy
+- Pixel-wise Loss on Penultimate Feature Map
+- Balanced MSE Loss
+- Cross-Entropy Loss
+- BCE
+- Tversky Loss
+- Dice Loss
+- PP-YOLO Loss
+- FocalTversky++
+- Label Smoothing Cross-Entropy
+- DiceCELoss
+- Distance Loss
+- Tversky Loss with Class Weights
+
+## CV strategies
+- 5-fold cross-validation (2 validation, 5 training studies per fold), with validation set augmented via flips and 90-degree rotations to smooth F-beta curves and reduce CV-LB gap
+- 7 folds split by experiment, with individual class thresholds optimized via grid-search per epoch and recalibrated using OOF predictions across folds
+- K-fold cross-validation used primarily for checkpoint selection and metric sanity checks, with final model selection heavily reliant on the public leaderboard (LB)
+- 4-fold cross-validation with 7-kfold averaging
+- 7-fold CV
+- Pre-training on simulated dataset (1-fold, WBP as validation), fine-tuning on experimental dataset (4-fold)
+- 7-fold cross-validation per tomography (train on all except one), out-of-fold predictions; ensemble validation occasionally relied on leaked data scores
+
+## Ensembling
+- Combines 10 models via weighted averaging of classmaps, followed by class-specific confidence thresholds, Centernet-like NMS, Top-K selection, and greedy pairwise IoU NMS, with thresholds optimized using OOF F-beta curves
+- Predictions aligned using rank-based scaling to match feature map distributions, then directly blended before object detection post-processing, with models exported via JIT or TensorRT to enable a larger ensemble
+- Ensembled seven models with post-processing involving non-maximum suppression (kernel size 7), particle-type-specific thresholding, and coordinate transformation (centering, 1.0 offset subtraction, and 10.012 scaling)
+- 4-fold, 7-kfold average ensemble of UNet+ResNet101 models, with TTA predictions averaged alongside original outputs and post-processed using cc3d
+- Ensemble of multiple trained models, with predictions post-processed via cc3d for centroid computation and DBSCAN filtering, combined with rotation-based TTAs
+- Averages predictions from 7 to 11 selected models with a certainty threshold of 0.15, followed by CC3D-based cluster extraction and size filtering to isolate valid particle centroids
+- Averaged logits across an ensemble of three model soups (each combining four folds), applied 4x flip TTA and 4x sliding window, and applied per-class logit-space thresholds
+- Combined four model soups (averaged weights from k-fold models) with varying architectures and training data, fused at the logit level rather than probability level, followed by watershed segmentation and blob thresholding
+- Combined diverse architectures and seeds using model soup and logit averaging, frequently applying multi-directional TTA (flips, rotations) and post-processing steps like WBF or 2D classification to refine final predictions
+
+## Insights
+- Using stride-2 feature maps offers the optimal balance between inference speed and detection accuracy.
+- Direct offset prediction to particle centers eliminates sensitivity to systematic coordinate shifts.
+- Augmenting the validation set with flips and rotations smooths F-beta curves and improves threshold reliability.
+- The penultimate feature map yields higher accuracy than the final output layer.
+- Box regression provides negligible gains because particles of the same type share similar sizes.
+- Loss function design is more critical than model size for this task.
+- Including an unscored class (beta-amylase) improves differentiation from a closely related scored class (beta-galactosidase).
+- Pooling depth dimensions in a 2D backbone preserves feature maps more effectively than strided 3D convolutions.
+- A 1.0 coordinate offset during heatmap generation correctly aligns with pixel centers, outperforming the standard 0.5 offset.
+- Pixel shuffle upsampling provides better computational efficiency and fewer artifacts compared to deconvolution.
+- Using a larger inference input size (64, 256, 256) than training size (64, 128, 128) provided a consistent score improvement.
+- Halving the original radius during training aligned better with the evaluation metric.
+- EMA was chosen over SWA for easier implementation despite SWA's theoretical advantages.
+- Adjusting ground truth mask radii to align with the centroid evaluation metric yields measurable score improvements.
+- Reducing the encoder stem size and kernel dimensions improves small particle detection without harming cross-validation performance.
+- Replacing nn.ConvTranspose3d with nn.Upsample effectively reduces model parameters for spherical segmentation tasks.
+- Lightweight models with fewer parameters consistently outperform heavy transformer-based architectures, which are prone to overfitting.
+- Swapping MONAI's default InstanceNorm3d and PReLU for BatchNorm3d/GroupNorm and ReLU dramatically improves training stability and convergence for several architectures.
+- Applying customized ground truth mask radii tailored to specific particle types is essential for achieving high segmentation recall.
+- Architectural and strategy diversity is a common trait among top solutions.
+- Model soup is widely adopted and effective for combining similar models.
+- Swapping InstanceNorm for BatchNorm can improve performance.
+- Smoothing predictions before peak detection yields better results.
+- Using a fraction of the particle radius (e.g., 0.5x or 1/3) significantly impacts detection accuracy.
+- Averaging logits during ensemble outperformed averaging sigmoided heatmaps or applying WBF on final predictions.
+- Using only the first 4 stages of ResNet50d preserved high-resolution features that improved particle localization.
+- Probing the LB with controlled FP/TP injections allowed accurate estimation of particle counts, revealing the LB was a reliable proxy for the private test set distribution.
+- Larger inference patches significantly boost performance compared to training patch sizes.
+- Fusing predictions at the logit level improves particle detection over probability averaging.
+- Model soup effectively manages and leverages multiple complementary model variants.
+- Pretraining on synthetic denoised data accelerates convergence and improves leaderboard scores.
+
+## Critical findings
+- Large particles tend to migrate to stride-4 feature maps while small classes remain on stride-2, but using both heads together yields no gain over stride-2 alone.
+- A large CV-to-LB score gap exists due to study count differences, which can be narrowed by augmenting the validation set with flips and rotations.
+- Using the penultimate feature map for loss computation surprisingly outperforms the final output layer.
+- Relying on box regression yields negligible improvements due to consistent particle sizes within classes.
+- Training on an unscored class (beta-amylase) significantly aids the model in distinguishing it from a scored class (beta-galactosidase).
+- Replacing depth pooling with strided 3D convolutions in a 2.5D UNet degrades performance despite seeming intuitive.
+- A two-stage refinement model that crops and classifies heatmap-detected regions achieved strong CV scores but failed to translate to LB improvements.
+- The final model achieved an identical score of 0.783 on both the public and private leaderboards, indicating no data leakage or overfitting to the LB.
+- MONAI's default InstanceNorm3d and PReLU combination causes convergence instability and performance fluctuations in several 3D segmentation architectures, necessitating manual normalization/activation swaps.
+- Adjusting the ground truth mask radius multiplier per particle type (e.g., 0.5 vs 0.4) directly impacts segmentation quality and requires careful tuning per class.
+- Replacing InstanceNorm with BatchNorm unexpectedly improved results for some participants.
+- Post-processing with a 2D classification head on 3D outputs boosted detection performance.
+- Using a smaller radius (radius * 0.5 or 1/3 particle radius) was a critical, non-obvious tuning step.
+- Model soup often outperformed traditional weighted ensembling for similar architectures.
+- The high positive weights in the loss function caused the model to predict many false positives, which actually helped when combined with logit-space thresholds to capture more true positives.
+- Switching from connected component labeling + center of mass to maxpool for local maxima detection significantly improved inference speed with negligible performance loss.
+- Using inference patches of (160, 384, 384) boosted the score by ~0.01 over (128, 128, 128).
+- Combining predictions at the logits level rather than averaging probabilities improved particle detection.
+- Watershed segmentation successfully separated touching/overlapping particles.
+- Gaussian denoising, while simple, provided a practical and effective preprocessing step that improved visualization and downstream performance.
+
+## What did not work
+- Mixup, Copy-Paste, and Random-Erasing augmentations
+- 2.5-D models
+- 3D versions of HRNet and ConvNeXt
+- Gaussian noise and anisotropic scale jitter
+- Knowledge distillation
+- Using supplemental data (external or simulated)
+- Alternative augmentations
+- Alternative losses (Tversky, Dice)
+- A two-stage refinement model that crops regions around heatmap-detected points and applies a classification model achieved strong CV scores but failed to improve LB performance.
+- Pretraining on the external data provided by the host.
+- Ensembling UNet with different backbones like ResNet34 and ResNet10.
+- Pretraining with synthetic data provided by the host
+- Using excessively smaller mask scaling factors (e.g., 0.25 for large particles, 0.4 for small particles)
+- Using flip TTA instead of rotation TTA
+- Synthetic data
+- Second-stage classification
+- Heavy-weight models (transformer-based models)
+- Training a model with an offset prediction head to improve localization performance did not work.
+- Using connected component labeling (CCL) + center of mass for coordinate detection was inefficient and replaced by maxpool.
+- Increased augmentations
+- CutMix, MixUp
+- 2D U-Net approaches
+- Ensembling with YOLO for the final solution
+- Bigger and deeper U-Nets
+- Cross-entropy only loss functions
+
+## Notable individual insights
+- Rank 1 (1st place solution [segmentation with partly U-NET and ensembling part]): Computing loss on the penultimate feature map instead of the final output layer improves accuracy and eliminates Gaussian heatmap targets.
+- Rank 1 (1st place solution [Object Detection Part]): Using stride-2 feature maps provides the optimal balance between inference speed and detection accuracy.
+- Rank 2 (2nd Place Solution): Swapping MONAI's default InstanceNorm3d and PReLU for BatchNorm3d/GroupNorm and ReLU dramatically improves training stability.
+- Rank 3 (3rd Place Solution): Using a larger inference input size (64, 256, 256) than training size (64, 128, 128) consistently improves scores.
+- Rank 4 (4th Place Solution): Pooling depth dimensions in a 2D backbone preserves feature maps more effectively than strided 3D convolutions.
+- Rank 7 (7th place solution): Probing the LB with controlled FP/TP injections allows accurate estimation of particle counts, revealing the LB is a reliable proxy for the private test set.
+- Rank 8 (8th Place Solution): Fusing predictions at the logit level improves particle detection over probability averaging.
+
+## Solutions indexed
+- #1 [[solutions/rank_01/solution|1st place solution [Object Detection Part] +Train Code +Inference +Models released]]
+- #1 [[solutions/rank_01/solution|1st place solution [segmentation with partly U-NET and ensembling part]]]
+- #2 [[solutions/rank_02/solution|2nd Place Solution]]
+- #3 [[solutions/rank_03/solution|3rd Place Solution]]
+- #4 [[solutions/rank_04/solution|4th Place Solution [Source Codes & Submission Notebook Released!]]]
+- #7 [[solutions/rank_07/solution|7th place solution [3D-UNet with gaussian heatmaps]]]
+- #8 [[solutions/rank_08/solution|8th Place Solution for the CZII - CryoET Object Identification Competition + Code Released]]
+- #9 [[solutions/rank_09/solution|9th place solution]]
+- ? [[solutions/rank_xx_563862/solution|Summary of solutions (1~43)]]
+
+## GitHub links
+- [BloodAxe/Kaggle-2024-CryoET](https://github.com/BloodAxe/Kaggle-2024-CryoET) _(solution)_ — from [[solutions/rank_01/solution|1st place solution [Object Detection Part] +Train Code +Inference +Models released]]
+- [Project-MONAI/tutorials](https://github.com/Project-MONAI/tutorials) _(reference)_ — from [[solutions/rank_01/solution|1st place solution [segmentation with partly U-NET and ensembling part]]]
+- [Project-MONAI/MONAI](https://github.com/Project-MONAI/MONAI) _(library)_ — from [[solutions/rank_01/solution|1st place solution [segmentation with partly U-NET and ensembling part]]]
+- [ChristofHenkel/kaggle-cryoet-1st-place-segmentation](https://github.com/ChristofHenkel/kaggle-cryoet-1st-place-segmentation) _(solution)_ — from [[solutions/rank_01/solution|1st place solution [segmentation with partly U-NET and ensembling part]]]
+- [tattaka/czii-cryo-et-object-identification-public](https://github.com/tattaka/czii-cryo-et-object-identification-public) _(solution)_ — from [[solutions/rank_04/solution|4th Place Solution [Source Codes & Submission Notebook Released!]]]
+- [czimaginginstitute/2024_czii_mlchallenge_notebooks](https://github.com/czimaginginstitute/2024_czii_mlchallenge_notebooks) _(reference)_ — from [[solutions/rank_04/solution|4th Place Solution [Source Codes & Submission Notebook Released!]]]
+- [yu4u/kaggle-czii-4th](https://github.com/yu4u/kaggle-czii-4th) _(solution)_ — from [[solutions/rank_04/solution|4th Place Solution [Source Codes & Submission Notebook Released!]]]
+- [ZFTurbo/segmentation_models_pytorch_3d](https://github.com/ZFTurbo/segmentation_models_pytorch_3d) _(library)_ — from [[solutions/rank_03/solution|3rd Place Solution]]
+- [luoziqianX/CZII-CryoET-Object-Identification-2nd-luoziqian](https://github.com/luoziqianX/CZII-CryoET-Object-Identification-2nd-luoziqian) _(solution)_ — from [[solutions/rank_02/solution|2nd Place Solution]]
+- [GWwangshuo/Kaggle-2024-CZII-Pub](https://github.com/GWwangshuo/Kaggle-2024-CZII-Pub) _(solution)_ — from [[solutions/rank_02/solution|2nd Place Solution]]
+- [czimaginginstitute/2024_czii_mlchallenge_notebooks](https://github.com/czimaginginstitute/2024_czii_mlchallenge_notebooks) _(reference)_ — from [[solutions/rank_08/solution|8th Place Solution for the CZII - CryoET Object Identification Competition + Code Released]]
+- [IAmPara0x/czii-8th-solution](https://github.com/IAmPara0x/czii-8th-solution) _(solution)_ — from [[solutions/rank_08/solution|8th Place Solution for the CZII - CryoET Object Identification Competition + Code Released]]
+
+## Papers cited
+- [Joint Pyramid Upsampling](https://arxiv.org/abs/1903.11816)
+- SHREC 2020: Classification in cryo-electron tomograms
+- [Model Soup paper](https://arxiv.org/abs/2203.05482)

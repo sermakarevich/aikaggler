@@ -1,0 +1,74 @@
+{
+  "summary": "The author compiled a curated list of high-scoring solutions from a previous LMSYS Chatbot Arena competition. The post serves as a reference guide, linking to the top-ranked submissions to help participants get started. It does not present a new technical approach or detailed methodology.",
+  "extensive_summary": "This post functions as a curated directory rather than a technical writeup. The author aggregates links to the highest-ranking solutions from a prior iteration of the LMSYS Chatbot Arena competition. By organizing them by rank (1st through 26th place), the post provides a quick starting point for competitors looking to study past methodologies.\n\nNo specific data pipelines, model architectures, or training strategies are detailed within this text itself. Instead, it acts as a meta-resource, pointing readers to external discussion threads where the actual technical breakdowns, code, and insights are hosted.",
+  "rank": null,
+  "competition_flow": "",
+  "data_reading": [],
+  "data_processing": [],
+  "features_engineering": [],
+  "models": [],
+  "frameworks_used": [],
+  "loss_functions": [],
+  "cv_strategy": "",
+  "ensembling": "",
+  "insights": [],
+  "critical_findings": [],
+  "what_did_not_work": [],
+  "github_repos": [],
+  "papers": [],
+  "other_solution_refs": [
+    {
+      "description": "1st Place Solution: Distill is all you need",
+      "url": "https://www.kaggle.com/competitions/lmsys-chatbot-arena/discussion/527629"
+    },
+    {
+      "description": "2nd place solution",
+      "url": "https://www.kaggle.com/competitions/lmsys-chatbot-arena/discussion/527685"
+    },
+    {
+      "description": "3rd Place Solution",
+      "url": "https://www.kaggle.com/competitions/lmsys-chatbot-arena/discussion/527766"
+    },
+    {
+      "description": "4th Place Solution",
+      "url": "https://www.kaggle.com/competitions/lmsys-chatbot-arena/discussion/529067"
+    },
+    {
+      "description": "5th Place Solution: Team Danube",
+      "url": "https://www.kaggle.com/competitions/lmsys-chatbot-arena/discussion/527669"
+    },
+    {
+      "description": "9th Place Solution",
+      "url": "https://www.kaggle.com/competitions/lmsys-chatbot-arena/discussion/527704"
+    },
+    {
+      "description": "13th Place Solution: Task-Domain Adaptation, Prompting and Focal Loss",
+      "url": "https://www.kaggle.com/competitions/lmsys-chatbot-arena/discussion/540876"
+    },
+    {
+      "description": "16th Place - So Close to Gold Medal",
+      "url": "https://www.kaggle.com/competitions/lmsys-chatbot-arena/discussion/527596"
+    },
+    {
+      "description": "18th solution: More data + Higher rank (QLoRA)",
+      "url": "https://www.kaggle.com/competitions/lmsys-chatbot-arena/discussion/527595"
+    },
+    {
+      "description": "19th Place Solution",
+      "url": "https://www.kaggle.com/competitions/lmsys-chatbot-arena/discussion/528288"
+    },
+    {
+      "description": "21st place - Pseudo Labels, Feature Engineering and stable validation scores",
+      "url": "https://www.kaggle.com/competitions/lmsys-chatbot-arena/discussion/527627"
+    },
+    {
+      "description": "22nd solution: base model, training, and post-processing",
+      "url": "https://www.kaggle.com/competitions/lmsys-chatbot-arena/discussion/527673"
+    },
+    {
+      "description": "26th Solution for LMSYS - Chatbot Arena Human Preference Predictions",
+      "url": "https://www.kaggle.com/competitions/lmsys-chatbot-arena/discussion/527591"
+    }
+  ],
+  "source_url": "https://www.kaggle.com/competitions/wsdm-cup-multilingual-chatbot-arena/discussion/547480"
+}

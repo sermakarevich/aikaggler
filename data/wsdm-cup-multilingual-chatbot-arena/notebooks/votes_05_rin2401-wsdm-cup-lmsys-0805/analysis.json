@@ -1,0 +1,39 @@
+{
+  "summary": "This notebook demonstrates an inference pipeline for the WSDM CUP LMSYS Chatbot Arena competition. It loads pre-trained Gemma2-9B and Llama3-8B models, formats chat prompts using a custom processor, and performs GPU inference with manual pipeline parallelism across two devices. The author shows how to handle variable-length sequences, compute prediction probabilities, and generate a final submission CSV. Readers learn how to adapt LLMs for pairwise preference tasks and optimize inference memory usage without relying on heavy orchestration frameworks.",
+  "purpose": "inference",
+  "competition_flow": "Loads test data, formats prompts for Gemma2-9B and Llama3-8B, runs inference with manual pipeline parallelism across two GPUs, computes prediction probabilities, and exports a winner submission CSV.",
+  "data_reading": [
+    "pandas.read_parquet on test.parquet (or train.parquet for local testing)",
+    "Dummy labels injected for local validation"
+  ],
+  "data_processing": [
+    "Custom ProcessorPAB constructs conversation templates with system/user roles and handles null values",
+    "AutoTokenizer tokenizes inputs with max_length=4096",
+    "ShardedMaxTokensCollator and VarlenCollator manage variable-length batching",
+    "Response swapping prepared for test-time augmentation"
+  ],
+  "features_engineering": [],
+  "models": [
+    "Gemma2-9B",
+    "Llama3-8B"
+  ],
+  "frameworks_used": [
+    "torch",
+    "transformers",
+    "xformers",
+    "pandas",
+    "numpy"
+  ],
+  "loss_functions": [],
+  "cv_strategy": "",
+  "ensembling": "Commented-out code shows an attempt to average predictions from Gemma2 and Llama3 with weights [2, 1] and swap model B predictions, but the final submission uses only the Llama3-8B probabilities.",
+  "insights": [
+    "Manual pipeline parallelism across two GPUs can be implemented by splitting layer forward passes and transferring hidden states between devices.",
+    "Variable-length batching with token-sharded collators effectively manages VRAM during inference.",
+    "Swapping response order can help verify prediction consistency or act as a simple test-time augmentation."
+  ],
+  "critical_findings": [],
+  "what_did_not_work": [],
+  "source_url": "https://www.kaggle.com/code/rin2401/wsdm-cup-lmsys-0805",
+  "votes": 229
+}

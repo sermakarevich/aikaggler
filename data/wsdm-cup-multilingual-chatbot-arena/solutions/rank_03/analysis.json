@@ -1,0 +1,78 @@
+{
+  "summary": "The author secured 3rd place in the WSDM Cup by fine-tuning Qwen2.5-14B-Instruct and Phi-4 with a custom loss function that computes cross-entropy only on the choice tokens 'A' and 'B'. They replaced the originally intended 72B teacher model with self-distillation using the 14B model's logits, finding it equally effective due to soft logit label cleaning. The solution heavily relies on engineering optimizations, including auto-round quantization, vLLM inference, and a dynamic ensemble strategy that weights models based on prompt token length quantiles.",
+  "extensive_summary": "## Preprocessing & Data Preparation\nThe pipeline begins with fasttext to infer the language of each prompt. Prompts and responses are capped at 2048 tokens, resulting in a maximum input length of approximately 6144 tokens. Custom prompt templates are used to structure system instructions, user requests, and response placeholders.\n\n## Training & Loss Customization\nThe author overrides the `compute_loss` function in `SFTTrainer` to calculate loss exclusively on tokens 32 ('A') and 33 ('B'). This targeted cross-entropy approach avoids unnecessary gradient updates on irrelevant tokens. Post-pretraining utilizes the ultrafeedback dataset and data from the 2nd place LMSYS solution. Training data combines WSDM Cup data, LMSYS conversations, and the aforementioned post-pretrain datasets.\n\n## Hyperparameters & Distillation\nA learning rate of 10e-5 proved optimal for the 14B model, with 14e-5 causing loss spikes. Instead of relying on a heavy 72B teacher model, the author implements self-distillation using the 14B model's own logits. KL divergence loss with a temperature of 5.0 and a distillation weight of 0.9 yields the best results, demonstrating that soft logit label cleaning is the primary driver of improvement.\n\n## Quantization & Inference Engineering\nAuto-round quantization is applied with heavy settings (sequence length 6144, 512 samples, 3000 iterations) to minimize accuracy degradation. Inference is handled via vLLM, with dynamic time allocation based on test set size. The test data is sorted by token length, with the first 25% receiving 25% TTA from Qwen2.5-14B, while the remainder is processed by Phi-4.\n\n## Submission Strategy\nModels are trained with different seeds and linearly merged. A length-aware ensemble strategy dynamically adjusts Phi-4's weight based on prompt length quantiles (q2=0.5, q3=0.75), capitalizing on Phi-4's strength with short prompts while relying on Qwen2.5-14B for longer ones.",
+  "rank": 3,
+  "competition_flow": "Raw prompts are processed with fasttext for language inference, fine-tuned via a custom token-targeted loss and self-distillation, quantized with auto-round, and deployed via vLLM with a dynamic token-length-based ensemble to generate the final submission.",
+  "data_reading": [],
+  "data_processing": [
+    "fasttext language inference on prompts",
+    "prompt and response lengths capped at 2048 tokens",
+    "custom system/user/response prompt templates",
+    "linear weight merging of models trained with different seeds"
+  ],
+  "features_engineering": [],
+  "models": [
+    "Qwen2.5-14B-Instruct",
+    "Phi-4",
+    "Qwen2.5-72B",
+    "Athene-V2-Chat",
+    "Qwen2.5-3B"
+  ],
+  "frameworks_used": [
+    "vllm",
+    "deepspeed",
+    "auto-round",
+    "fasttext",
+    "transformers",
+    "pytorch"
+  ],
+  "loss_functions": [
+    "Cross-entropy (custom implementation targeting only tokens 'A' and 'B')",
+    "KL divergence loss (temperature 5.0, weight 0.9)"
+  ],
+  "cv_strategy": "Single fold (Fold 0) used for hyperparameter sweeps and ablation studies.",
+  "ensembling": "Linear weight merging of models trained with different seeds, combined with dynamic token-length-based weighting where Qwen2.5-14B receives 25% TTA and Phi-4's weight is adjusted by prompt length quantiles.",
+  "insights": [
+    "Self-distillation using the 14B model's own logits is as effective as using a 72B teacher model, likely due to the label cleaning effect of soft logits.",
+    "Heavy quantization settings (long sequence length and high iteration counts) are necessary to suppress accuracy drops during auto-round quantization.",
+    "Dynamic ensemble weighting by prompt length effectively leverages each model's strengths, improving overall leaderboard performance."
+  ],
+  "critical_findings": [
+    "A learning rate of 14e-5 causes loss spikes for the 14B model, making 10e-5 the optimal choice.",
+    "Phi-4 performs well on short prompts but degrades significantly on long prompts, necessitating length-aware ensemble tuning."
+  ],
+  "what_did_not_work": [
+    "Distilling Qwen2.5-3B to generate CoT improved scores slightly but caused frequent inference timeouts due to excessive latency.",
+    "Using Qwen2.5-14B distilled by deepseek and Qwen2.5-14B-1m resulted in poor leaderboard scores."
+  ],
+  "github_repos": [
+    {
+      "url": "https://github.com/LIHANG-HONG/WSDM-Cup-3rd-place-solution",
+      "role": "solution"
+    },
+    {
+      "url": "https://github.com/tascj/kaggle-lmsys-chatbot-arena",
+      "role": "reference"
+    }
+  ],
+  "papers": [],
+  "other_solution_refs": [
+    {
+      "description": "Eedi Rerank Model discussion",
+      "url": "https://www.kaggle.com/competitions/eedi-mining-misconceptions-in-mathematics/discussion/551651"
+    },
+    {
+      "description": "1st place LMSYS solution discussion",
+      "url": "https://www.kaggle.com/competitions/lmsys-chatbot-arena/discussion/527629"
+    },
+    {
+      "description": "Author's inference code",
+      "url": "https://www.kaggle.com/code/honglihang/wsdm-submission-nocot-public?scriptVersionId=228251584"
+    },
+    {
+      "description": "LMSYS 2nd place data collection scripts",
+      "url": "https://github.com/tascj/kaggle-lmsys-chatbot-arena/tree/main/scripts/sakaku"
+    }
+  ],
+  "source_url": "https://www.kaggle.com/competitions/wsdm-cup-multilingual-chatbot-arena/discussion/567584"
+}

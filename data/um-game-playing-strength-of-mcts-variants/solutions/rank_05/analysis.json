@@ -1,0 +1,57 @@
+{
+  "summary": "The authors secured 5th place by combining two distinct pipelines into a weighted ensemble. Anil's approach relied exclusively on CatBoost, leveraging a custom adjusted advantage feature and label/agent swapping augmentations to expand the training data. Sercan's pipeline blended CatBoost, LightGBM, and DeepTables, incorporating TF-IDF features from rule texts and applying group-based cross-validation. The final submission was a weighted blend of both pipelines' predictions, utilizing TTA and post-processing to achieve a gold medal.",
+  "extensive_summary": "## Anil's Pipeline\nAnil's approach centered on a single model architecture: CatBoost. The core insight was that highly engineered tabular features could replace complex architectures. He constructed a single adjusted advantage feature by multiplying the advantage by the completion rate and adding half the drawishness value. To combat data scarcity, he applied aggressive augmentations during training by swapping agent1 and agent2, inverting advantage and utility labels, and generating mirrored inference rows for mean blending. The model was trained using a stratified group 10-fold cross-validation scheme with RMSE as the objective.\n\n## Sercan's Pipeline\nSercan's strategy focused on model diversity through a blend of CatBoost, LightGBM, and DeepTables. The DeepTables component utilized min-max scaling, a group 6-fold validation scheme, and an Adam optimizer with a learning rate scheduler. It combined multiple network architectures (dnn_nets, fm_nets, cin_nets, ipnn_nets) with specific hidden unit configurations and embedding dropout. The GBDT component stacked LightGBM and CatBoost with a group 5-fold scheme, extracting TF-IDF features from EnglishRules, LudRules, agent1, and agent2 to capture textual patterns. Both pipelines applied post-processing to their final predictions.\n\n## Final Ensemble\nThe submission was finalized by applying a weighted blend to the outputs of both pipelines. This ensemble strategy effectively combined the robustness of the adjusted CatBoost features with the representational capacity of the DeepTables and GBDT models, securing the top 5 ranking.",
+  "rank": 5,
+  "competition_flow": "Raw data was processed with custom adjusted advantage features and TF-IDF rule embeddings, augmented via agent swapping and label inversion, then trained on CatBoost, LightGBM, and DeepTables using group-based cross-validation before being weighted-blended and post-processed for submission.",
+  "data_reading": [],
+  "data_processing": [
+    "agent swapping (switching agent1-agent2)",
+    "label inversion (inverting advantage and utility labels)",
+    "augmented inference row generation for mean blending",
+    "min-max scaling",
+    "post-processing on final predictions"
+  ],
+  "features_engineering": [
+    "adjusted advantages: ((AdvantageP1 * Completion) + Drawishness/2) and same for P2",
+    "TF-IDF features from EnglishRules, LudRules, agent1, and agent2"
+  ],
+  "models": [
+    "CatBoost",
+    "LightGBM",
+    "DeepTables",
+    "dnn_nets",
+    "fm_nets",
+    "cin_nets",
+    "ipnn_nets"
+  ],
+  "frameworks_used": [
+    "catboost",
+    "lightgbm",
+    "deeptables"
+  ],
+  "loss_functions": [
+    "RMSE"
+  ],
+  "cv_strategy": "Stratified Group 10-Fold, Group 6-Fold, Group 5-Fold",
+  "ensembling": "Weighted blend of Anil's and Sercan's model sets, with mean blending of original and augmented inference predictions and post-processing applied to the final submission.",
+  "insights": [
+    "Adjusting advantages by combining completion and drawishness was sufficient as the sole feature for CatBoost.",
+    "Label and agent swapping augmentations effectively expanded the dataset and improved model robustness.",
+    "TF-IDF features extracted from rule texts provided valuable signal for the GBDT models."
+  ],
+  "critical_findings": [],
+  "what_did_not_work": [],
+  "github_repos": [],
+  "papers": [],
+  "other_solution_refs": [
+    {
+      "description": "Anil's pipeline code",
+      "url": "https://www.kaggle.com/code/nlztrk/um-5th-place-solution-catboost-part"
+    },
+    {
+      "description": "Final ensemble code",
+      "url": "https://www.kaggle.com/code/sercanyesiloz/um-mcts-5th-place-solution"
+    }
+  ],
+  "source_url": "https://www.kaggle.com/competitions/um-game-playing-strength-of-mcts-variants/discussion/549585"
+}

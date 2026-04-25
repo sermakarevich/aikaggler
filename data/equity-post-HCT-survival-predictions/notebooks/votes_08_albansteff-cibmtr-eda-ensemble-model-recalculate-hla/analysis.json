@@ -1,0 +1,45 @@
+{
+  "summary": "This notebook demonstrates a survival prediction pipeline for the CIBMTR competition by generating surrogate targets from classical survival models and training gradient boosting models to predict them. It highlights a technique to handle missing HLA match sums by recalculating them from raw allele match columns, then combines multiple model predictions using a weighted rank aggregation strategy. Readers should learn how to convert survival analysis outputs into regression targets for tree-based models and how rank-based ensembling can effectively leverage diverse prediction distributions without strict probability calibration. The approach proves that leveraging established statistical survival methods can create robust training signals for modern ML models in medical domains.",
+  "purpose": "ensemble",
+  "competition_flow": "Loads CSV data with Polars, recalculates missing HLA match sums, generates surrogate survival targets via KFold cross-validation, trains LightGBM and CatBoost models on these targets, and combines their predictions using a weighted rank aggregation formula to produce a final submission.",
+  "data_reading": [
+    "Loaded via polars.read_csv with a batch size of 32768."
+  ],
+  "data_processing": [
+    "Missing values filled with -1 for numeric columns and 'Unknown' for categorical columns; categorical columns cast to pandas category dtype; constant columns dynamically dropped during survival model fitting to prevent convergence errors."
+  ],
+  "features_engineering": [
+    "Recalculated missing HLA match sums (e.g., hla_nmdp_6, hla_low_res_10) by summing corresponding low/high resolution allele match columns; one-hot encoding applied to categorical features for survival model inputs."
+  ],
+  "models": [
+    "LightGBM",
+    "CatBoost"
+  ],
+  "frameworks_used": [
+    "polars",
+    "pandas",
+    "lifelines",
+    "lightgbm",
+    "catboost",
+    "scikit-learn",
+    "scipy"
+  ],
+  "loss_functions": [
+    "RMSE",
+    "Cox"
+  ],
+  "cv_strategy": "KFold(n_splits=5, shuffle=True, random_state=42)",
+  "ensembling": "Combines predictions from 8 models using weighted rank aggregation, where each model's predictions are converted to ranks and multiplied by predefined weights before summation.",
+  "insights": [
+    "Surrogate targets derived from classical survival models can effectively guide gradient boosting models for survival prediction tasks.",
+    "Rank-based ensembling allows combining models with different prediction scales without requiring weights to sum to 1 or predictions to be calibrated probabilities.",
+    "Recalculating missing HLA sum features from raw allele match columns recovers valuable genetic compatibility information that was originally incomplete."
+  ],
+  "critical_findings": [
+    "Constant columns in a CV fold can cause lifelines convergence errors, so they must be dynamically dropped before fitting survival models.",
+    "The competition metric evaluates prediction order rather than magnitude, making rank aggregation a natural and effective ensembling strategy."
+  ],
+  "what_did_not_work": [],
+  "source_url": "https://www.kaggle.com/code/albansteff/cibmtr-eda-ensemble-model-recalculate-hla",
+  "votes": 413
+}

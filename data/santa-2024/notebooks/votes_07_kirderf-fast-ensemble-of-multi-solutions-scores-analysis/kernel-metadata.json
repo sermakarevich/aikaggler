@@ -1,0 +1,66 @@
+{
+  "id": "kirderf/fast-ensemble-of-multi-solutions-scores-analysis",
+  "id_no": 74328828,
+  "title": "Fast ensemble of multi solutions + scores analysis",
+  "code_file": "fast-ensemble-of-multi-solutions-scores-analysis.ipynb",
+  "language": "python",
+  "kernel_type": "notebook",
+  "is_private": false,
+  "enable_gpu": true,
+  "enable_tpu": false,
+  "enable_internet": true,
+  "keywords": [
+    "gpu"
+  ],
+  "dataset_sources": [
+    "nbroad/hf-libraries"
+  ],
+  "kernel_sources": [
+    "bishopfunc/beamsearch",
+    "gagandeep44489/santaembeddingbert",
+    "richolson/santa-claude-s-approach-simulated-annealing",
+    "hoon0303/santa-2024-perplexityoptimizer",
+    "cdeotte/brute-force-first-sample-perplexity-470",
+    "mturk24/mturk-v1-simulated-annealing",
+    "khushbukakdiya/santa2024",
+    "aatiffraz/basic-genetic-search-algorithm",
+    "titericz/sorting-sample-6",
+    "asalhi/sorting-sample-6-stopwords-first",
+    "neibyr/batch-metric-with-cache",
+    "martinapreusse/santa-s-children",
+    "abdullah0a/santa-2024-rearranging-text",
+    "utm529fg/eng-tutorial-6-genetic-algorithm",
+    "utm529fg/eng-tutorial-5-simulated-annealing",
+    "utm529fg/eng-tutorial-7-consideration-of-improvement",
+    "c0ldzy/brute-force-improvement",
+    "mbmmurad/santa-ensemble-of-public-notebooks",
+    "jazivxt/diminutive-effort-tpu",
+    "richolson/santa-claude-2-electric-word-erloo",
+    "utm529fg/eng-tutorial-2-greedy",
+    "sulaniishara/santa-2024-optimize-perplexity-with-sa",
+    "egortrushin/santa24-improving-sample-2",
+    "utm529fg/eng-tutorial-3-beam-search",
+    "rubycc/i-want-to-achieve-the-same-score-as-the-lb",
+    "olaflundstrom/santa-2024-bed-rftigen",
+    "c0ldzy/improvement-with-small-annealing",
+    "jazivxt/regression-test",
+    "bakuer30/fine-tuning-sa",
+    "mohamedbassat/evolutionary-computation-ec",
+    "rockandy/notebookbbc807dbd1",
+    "",
+    "fernandosr85/christmas-story-optimizer",
+    "veniaminnelin/simple-permutation",
+    "deleted/74281764",
+    "jazivxt/to-winning-sort-off",
+    "sunnyvarnawal/simulated-annealing-stopwords",
+    "veniaminnelin/fine-tuning-word4-simple-permutation"
+  ],
+  "competition_sources": [
+    "santa-2024"
+  ],
+  "model_sources": [
+    "google/gemma-2/Transformers/gemma-2-9b/2"
+  ],
+  "docker_image": "gcr.io/kaggle-private-byod/python@sha256:1003a82bef5df3c098b2041d936cb5f1836e52d7b610e8f0f4dedc194fb3b773",
+  "machine_shape": "NvidiaTeslaT4"
+}

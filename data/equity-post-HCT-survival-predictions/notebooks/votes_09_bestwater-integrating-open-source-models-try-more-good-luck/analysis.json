@@ -1,0 +1,70 @@
+{
+  "summary": "This notebook demonstrates multiple training recipes for the equity post-HCT survival prediction competition, combining a refactored pairwise ranking neural network with survival-analysis-derived targets and gradient boosting models. It shows how to handle censored time-to-event data by generating surrogate targets using Cox, Kaplan-Meier, and Nelson-Aalen estimators, and how to apply margin-based pairwise ranking losses. The author also illustrates rank-based ensembling techniques to stabilize predictions across different model families and submission files. Readers should learn how to adapt survival metrics for tabular modeling, manage HLA matching features, and implement robust CV and ensembling pipelines.",
+  "purpose": "training",
+  "competition_flow": "Loads CSV survival data, generates surrogate targets via survival models or logit transforms, trains gradient boosting and custom PyTorch models with pairwise ranking loss, and combines predictions via rank-based weighting to produce a final submission.",
+  "data_reading": [
+    "pd.read_csv() and pl.read_csv() with batch processing",
+    "Handles string/object and numeric columns",
+    "Fills nulls with defaults or mean indicators"
+  ],
+  "data_processing": [
+    "Logit transform on efs_time",
+    "Race-based weight scaling",
+    "HLA match sum recalculation",
+    "Casting datatypes",
+    "One-hot encoding and label encoding",
+    "Standard scaling",
+    "Indicator columns for missingness",
+    "Cross-feature interactions and binary category combinations"
+  ],
+  "features_engineering": [
+    "HLA match sums (low/high resolution)",
+    "Race group weights",
+    "Age bins",
+    "Donor-recipient age difference",
+    "Comorbidity/karnofsky score interactions",
+    "Binary NA flags",
+    "Combined binary categorical features"
+  ],
+  "models": [
+    "Custom PyTorch NN (CatEmbeddings + ODST/MLP)",
+    "LightGBM",
+    "CatBoost",
+    "XGBoost"
+  ],
+  "frameworks_used": [
+    "pytorch_lightning",
+    "torch",
+    "pytorch_tabular",
+    "lightgbm",
+    "catboost",
+    "xgboost",
+    "lifelines",
+    "polars",
+    "pandas",
+    "scikit-learn"
+  ],
+  "loss_functions": [
+    "Margin-based pairwise ranking hinge loss",
+    "MSE (auxiliary task)",
+    "Cox proportional hazards loss",
+    "RMSE/MAE"
+  ],
+  "cv_strategy": "StratifiedKFold(n_splits=5) stratified by race_group and age_at_hct==0.044; KFold(n_splits=5) for survival-target models",
+  "ensembling": "Weighted average of LightGBM, CatBoost, and XGBoost predictions; rank-based ensemble of 8 models using custom weights; final rank averaging of two separate submission files.",
+  "insights": [
+    "Survival analysis estimators effectively generate surrogate targets for censored time-to-event data.",
+    "Pairwise ranking loss with proper censoring masks handles survival data better than direct regression.",
+    "Rank-based ensembling stabilizes predictions and reduces variance across different model families.",
+    "Stratifying CV by race and age prevents data leakage and ensures representative validation folds.",
+    "HLA matching sums and race weights are critical domain-specific features for transplant survival prediction."
+  ],
+  "critical_findings": [
+    "CoxPHFitter fails to converge if constant columns are present in a CV fold, requiring dynamic column dropping.",
+    "Censored observations must be explicitly masked in pairwise ranking to avoid invalid comparisons.",
+    "Race-based target scaling and weight adjustments are necessary to account for demographic disparities in survival outcomes."
+  ],
+  "what_did_not_work": [],
+  "source_url": "https://www.kaggle.com/code/bestwater/integrating-open-source-models-try-more-good-luck",
+  "votes": 401
+}

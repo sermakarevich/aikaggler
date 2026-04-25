@@ -1,0 +1,42 @@
+{
+  "summary": "The author secured 2nd place by adapting Iterated Local Search with restricted k-opt and custom kick operations to solve a sequence optimization problem. Key innovations included forbidding edge flips, limiting moving subsequence lengths, and designing problem-specific kicks that shuffle or transfer words between structural blocks to escape local optima. A multi-start strategy leveraging a carefully crafted initial solution structure (interleaved stop and non-stop words) was critical to breaking through score barriers.",
+  "extensive_summary": "## Restricted K-opt\nThe core optimizer uses **restricted k-opt** to drastically reduce the search space. Unlike standard TSP where edges are undirected, reversing word order here severely penalizes the score, so the author explicitly forbids moves involving flips. Additionally, the length of moving subsequences is capped (e.g., `max_moving_size=5` for k=3, and `max_moving_size=1` for k=4), while stationary subsequences can be large, allowing distant word swaps without exponential blowup. This pruning strategy made it feasible to test all moves within ~18 minutes on a 4090 GPU.\n\n## Custom Kicks & Initial Structure\nTo escape local optima, standard TSP kicks like Double Bridge or random 2-opt were replaced with a **custom kick** that randomly selects and shuffles subsequences. For Problem 5, a highly specialized kick was developed to transfer or swap words between structural blocks. The author discovered that a simple initial solution of sorted stop words followed by sorted non-stop words stagnates around 32.xx. By splitting this into interleaved blocks `(some stop words)(some optimized non-words)(other stop words)(nearly sorted other non-stop words)` and using Problem 4's solution as a seed, the search could explore more promising regions. A **multi-start** approach was essential, as the global structure heavily depends on initialization.\n\n## Rejected Approaches\nSeveral alternative methods were explicitly abandoned. **Beam search** was dropped because crafting a non-short-sighted evaluation function proved too difficult. **Simulated Annealing** was deemed unsuitable due to the complexity of temperature control for long-term, intermittent computation. **Genetic Algorithms** were skipped because adapting efficient crossover operators like Edge Assembly Crossover to this problem's constraints was not feasible.",
+  "rank": 2,
+  "competition_flow": "Raw word sequences are initialized via strategic sorting of stop and non-stop words, then optimized through a multi-start Iterated Local Search pipeline combining restricted k-opt moves and custom subsequence-shuffling kicks to maximize the scoring function.",
+  "data_reading": [],
+  "data_processing": [],
+  "features_engineering": [],
+  "models": [],
+  "frameworks_used": [],
+  "loss_functions": [],
+  "cv_strategy": "",
+  "ensembling": "",
+  "insights": [
+    "Multi-start initialization is critical because the global structure of the solution is heavily dependent on the starting configuration.",
+    "Restricting k-opt moves by forbidding flips and capping moving subsequence lengths effectively prunes the search space without sacrificing solution quality.",
+    "Custom kicks that randomly separate adjacent word groups or transfer words between structural blocks outperform standard TSP escape mechanisms for this problem."
+  ],
+  "critical_findings": [
+    "Reversing word order drastically worsens the score, contradicting the undirected edge assumption in standard TSP.",
+    "A naive initial structure of sorted stop words followed by sorted non-stop words gets stuck around 32.xx, but interleaving stop and non-stop blocks breaks this barrier.",
+    "Standard TSP kicks like Double Bridge are less effective than shuffling randomly sized subsequences to escape local optima in this domain."
+  ],
+  "what_did_not_work": [
+    "Beam search was abandoned because designing a robust, non-short-sighted evaluation function was too challenging.",
+    "Simulated Annealing was rejected because temperature control is impractical for long-term, intermittent computation in this setting.",
+    "Genetic Algorithms were not used because adapting efficient crossover methods like Edge Assembly Crossover to the problem's constraints proved difficult."
+  ],
+  "github_repos": [],
+  "papers": [],
+  "other_solution_refs": [
+    {
+      "description": "@danielphalen's write-up",
+      "url": "https://www.kaggle.com/competitions/santa-2024/discussion/560540"
+    },
+    {
+      "description": "@solverworld's write-up",
+      "url": "https://www.kaggle.com/competitions/santa-2024/discussion/560565"
+    }
+  ],
+  "source_url": "https://www.kaggle.com/competitions/santa-2024/discussion/560533"
+}

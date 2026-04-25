@@ -1,0 +1,21 @@
+{
+  "id": "arshmankhalid/big-bowl-eda-crushing-player-stats",
+  "id_no": 69944029,
+  "title": "Big Bowl EDA: Crushing Player Stats! \ud83d\udcc8\ud83d\udca5",
+  "code_file": "big-bowl-eda-crushing-player-stats.ipynb",
+  "language": "python",
+  "kernel_type": "notebook",
+  "is_private": false,
+  "enable_gpu": false,
+  "enable_tpu": false,
+  "enable_internet": false,
+  "keywords": [],
+  "dataset_sources": [],
+  "kernel_sources": [],
+  "competition_sources": [
+    "nfl-big-data-bowl-2025"
+  ],
+  "model_sources": [],
+  "docker_image": "gcr.io/kaggle-images/python@sha256:a16cda2c5d52fa988d413876f3ffad7a46cca58678514601feb175990dc187c0",
+  "machine_shape": "None"
+}

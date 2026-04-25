@@ -1,0 +1,43 @@
+{
+  "summary": "This notebook provides an end-to-end baseline for a 3D cryo-electron tomography object identification competition. It demonstrates how to load pre-computed volumetric data, patch large 3D volumes into manageable blocks, and train a 3D U-Net using MONAI and PyTorch Lightning. The author emphasizes practical pipeline considerations like avoiding random augmentations during validation to maintain metric stability and using connected components to convert segmentation masks into coordinate-based predictions. Readers should learn how to structure a memory-efficient 3D segmentation workflow and format outputs for a competition requiring particle centroid coordinates.",
+  "purpose": "baseline",
+  "competition_flow": "Loads pre-computed 3D volumetric numpy arrays, patches them into 96x96x96 blocks, trains a 3D U-Net with Tversky loss using PyTorch Lightning, and generates a coordinate-based submission by converting inference masks into connected component centroids.",
+  "data_reading": [
+    "Pre-computed 3D volumetric data is loaded directly from local numpy files using np.load, organized into dictionaries with 'image' and 'label' keys for MONAI datasets."
+  ],
+  "data_processing": [
+    "Training uses CacheDataset with channel orientation, intensity normalization, and random augmentations (label-based cropping, 90-degree rotation, flipping).",
+    "Validation and inference split volumes into non-overlapping 96x96x96 patches to manage GPU memory, apply deterministic transforms, and reconstruct masks post-inference.",
+    "Inference applies a certainty threshold (0.5) and blob size filter (500 voxels) before extracting centroids via connected components."
+  ],
+  "features_engineering": [
+    ""
+  ],
+  "models": [
+    "UNet"
+  ],
+  "frameworks_used": [
+    "pytorch",
+    "monai",
+    "lightning.pytorch",
+    "copick",
+    "cc3d",
+    "pandas",
+    "numpy"
+  ],
+  "loss_functions": [
+    "TverskyLoss"
+  ],
+  "cv_strategy": "Fixed holdout split using 6 training experiments and 1 validation experiment (TS_6_4), processed via deterministic patching for consistent validation metrics.",
+  "ensembling": "",
+  "insights": [
+    "Pre-computing raw volumetric data to numpy arrays significantly reduces notebook execution overhead.",
+    "Avoiding stochastic augmentations during validation prevents metric noise and ensures reliable model monitoring.",
+    "Patching large 3D volumes into fixed-size blocks is necessary for GPU memory constraints and enables consistent validation coverage.",
+    "Converting dense segmentation masks to sparse coordinates requires connected component analysis and centroid filtering to match competition submission formats."
+  ],
+  "critical_findings": [],
+  "what_did_not_work": [],
+  "source_url": "https://www.kaggle.com/code/fnands/baseline-unet-train-submit",
+  "votes": 621
+}

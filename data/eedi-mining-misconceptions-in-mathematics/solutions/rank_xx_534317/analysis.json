@@ -1,0 +1,52 @@
+{
+  "summary": "The author presents two baseline approaches for a retrieval-based competition: a two-stage pipeline using a TF-IDF retriever followed by a DeBERTa reranker, and a direct fine-tuning approach for the BGE-large-en-v1.5 embedding model. For the BGE baseline, they construct training triplets by combining question metadata as anchors, correct misconceptions as positives, and wrong misconceptions as negatives, generating 25 retrieval samples per instance. The writeup highlights that swapping in an LLM for the reranker or using the fine-tuned BGE as a retriever are promising directions for further improvement.",
+  "extensive_summary": "## Retriever-Reranker Baseline\nThe author implements a two-stage retrieval pipeline. First, a TF-IDF retriever is trained to generate candidate matches, achieving a CV score of 0.1378 and a leaderboard score of 0.128. These candidates are then passed to a DeBERTa reranker, which refines the predictions to a CV score of 0.1740 and a final leaderboard score of 0.189.\n\n## Fine-Tuning BGE Baseline\nAlternatively, the author fine-tunes `bge-large-en-v1.5` directly for retrieval. Training data is constructed by creating 25 retrieval samples per instance. The anchor text is formed by concatenating `ConstructName`, `SubjectName`, `QuestionText`, and `Answer[A-D]Text`. The positive samples are the correct `MisconceptionName`, while the negative samples are the wrong `MisconceptionName`. This approach yields a leaderboard score of 0.246.\n\n## Future Directions\nThe author suggests that replacing the reranker with an LLM could significantly boost performance. Additionally, leveraging the fine-tuned BGE model as a standalone retriever is recommended as a strong next step for improving the baseline.",
+  "rank": null,
+  "competition_flow": "The pipeline generates candidate matches via a TF-IDF retriever or fine-tuned BGE embeddings, refines them with a DeBERTa reranker or direct retrieval, and submits the top predictions.",
+  "data_reading": [],
+  "data_processing": [
+    "Constructs retrieval triplets for BGE fine-tuning by concatenating `ConstructName`, `SubjectName`, `QuestionText`, and `Answer[A-D]Text` as anchors, with correct/incorrect `MisconceptionName` as positives/negatives.",
+    "Generates 25 retrieval samples per instance."
+  ],
+  "features_engineering": [],
+  "models": [
+    "TF-IDF",
+    "DeBERTa",
+    "bge-large-en-v1.5"
+  ],
+  "frameworks_used": [],
+  "loss_functions": [],
+  "cv_strategy": "",
+  "ensembling": "",
+  "insights": [
+    "Using an LLM as a reranker may be highly effective for this competition.",
+    "Fine-tuning BGE as a retriever is a strong direction for score improvement."
+  ],
+  "critical_findings": [],
+  "what_did_not_work": [],
+  "github_repos": [],
+  "papers": [],
+  "other_solution_refs": [
+    {
+      "description": "Train Tfidf Retriever",
+      "url": "https://www.kaggle.com/code/sinchir0/retriever-tfidf-reranker-deberta-1-trn-ret"
+    },
+    {
+      "description": "Train DeBERTa Reranker",
+      "url": "https://www.kaggle.com/code/sinchir0/retriever-tfidf-reranker-deberta-2-trn-rerank"
+    },
+    {
+      "description": "Infer by Tfidf Retriver And DeBERTa Reranker",
+      "url": "https://www.kaggle.com/code/sinchir0/retriever-tfidf-reranker-deberta-3-infer"
+    },
+    {
+      "description": "Fine-Tuning BGE Train",
+      "url": "https://www.kaggle.com/code/sinchir0/fine-tuning-bge-train"
+    },
+    {
+      "description": "Fine-Tuning BGE Infer",
+      "url": "https://www.kaggle.com/code/sinchir0/fine-tuning-bge-infer"
+    }
+  ],
+  "source_url": "https://www.kaggle.com/competitions/eedi-mining-misconceptions-in-mathematics/discussion/534317"
+}

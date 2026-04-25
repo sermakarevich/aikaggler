@@ -1,0 +1,75 @@
+{
+  "summary": "The author compiled a comparative summary of top Kaggle solutions (ranks 1\u201343) for a 3D medical imaging competition, organizing them by architecture, loss function, resolution, pretraining, and post-processing strategies. The writeup highlights that top performers relied heavily on 3D UNet variants, custom Tversky/CE losses, and diverse ensembling techniques like model soup and logit averaging. Key technical takeaways emphasize the importance of architectural diversity, normalization layer swaps, radius tuning, and 2D classification post-processing.",
+  "extensive_summary": "## Overview\nThis writeup aggregates and compares the methodologies of the top 43 Kaggle solutions for a 3D volumetric segmentation/detection competition. Rather than detailing a single pipeline, the author provides a structured cross-section of strategies, losses, resolutions, and post-processing techniques used by high-ranking participants.\n\n## Architectures & Tasks\nThe dominant architecture across the leaderboard is the 3D UNet, often paired with various backbones such as ResNet101, ResNet50D, EfficientNetV2-M, ConvNeXt-like, R3D50/R3D34/R3D18, and ResNeXt101. Several participants explored hybrid or modified designs, including 2.5D Encoder-3D Decoder, 2D-3D UNet, DeepFinder-like networks, and 3D YOLO variants. The 1st place solution uniquely combined a 3D MONAI FlexibleUNet for segmentation with a 3D YOLO detector.\n\n## Loss Functions & Training Details\nLoss functions were highly customized to handle class imbalance and segmentation boundaries. Common choices included weighted Cross-Entropy, Dice Loss, Tversky Loss, FocalTversky++, and weighted BCE. Some participants combined losses (e.g., DiceCELoss, weighted combination of CE and Tversky with alpha=0.5, beta=8) or introduced distance losses. Training resolutions varied significantly, with patch sizes ranging from 32x128x128 to 128x256x256, and inference resolutions often scaled up (e.g., 160x384x384 or 192x128x128). Pretraining was inconsistently used, with some leveraging external weights and others training from scratch.\n\n## Ensembling & Post-Processing\nEnsembling was nearly universal among top solutions. Strategies included model soup, seed ensembles, and logit averaging. TTA was extensively applied, with participants using multi-directional flips (x,y,z), rotations (90\u00b0, 180\u00b0, 270\u00b0), and multi-scale inference. Post-processing played a critical role: smoothing before peak detection, WBF-based refinement, 2D classification heads applied to 3D outputs, and radius adjustments (e.g., radius * 0.5 or 1/3 particle radius) were highlighted as score-moving techniques. Normalization layer swaps (InstanceNorm to BatchNorm) and regularization via drop path, dropblock, and stochastic depth were also noted.\n\n## Key Insights\nThe author emphasizes that diversity in model architecture, loss function, and TTA combinations is a recurring theme among winners. Model soup consistently outperformed traditional weighted ensembling for similar architectures, and post-processing with auxiliary 2D classification significantly boosted detection metrics. Radius tuning and normalization choices were identified as subtle but highly impactful levers.",
+  "rank": null,
+  "competition_flow": "Raw 3D volumetric data is cropped into fixed patch resolutions, fed into 3D or 2.5D UNet/YOLO architectures trained with custom segmentation/heatmap losses, and post-processed via TTA, model soup, or 2D classification before final submission.",
+  "data_reading": [],
+  "data_processing": [
+    "Patch-based training with resolutions ranging from 32x128x128 to 128x256x256",
+    "Radius adjustments (e.g., radius * 0.5, 1/3 particle radius)",
+    "Smoothing predictions before peak detection",
+    "Drop path, dropblock, and stochastic depth regularization",
+    "Normalization layer swaps (InstanceNorm to BatchNorm)",
+    "Multi-directional TTA (flips x,y,z; rotations 90/180/270)"
+  ],
+  "features_engineering": [],
+  "models": [
+    "3D MONAI's FlexibleUnet",
+    "3D YOLO",
+    "3D UNet",
+    "ResNet101",
+    "ResNet50D",
+    "EfficientNetV2-M",
+    "ConvNeXt-like",
+    "2.5D Enc-3D Dec",
+    "DeepFinder-like network",
+    "2D-3D UNet",
+    "ResNeXt101",
+    "EfficientNetB4",
+    "EfficientNetB5",
+    "3D UNet + 2D YOLO",
+    "WMCSFB",
+    "Pixel shuffle decoder",
+    "R3D50",
+    "R3D34",
+    "R3D18"
+  ],
+  "frameworks_used": [
+    "monai"
+  ],
+  "loss_functions": [
+    "Weighted CrossEntropy",
+    "PP-Yolo loss",
+    "Dice Loss",
+    "Tversky Loss",
+    "Cross-Entropy Loss",
+    "FocalTversky++",
+    "Weighted BCE",
+    "Label smoothing cross-entropy",
+    "DiceCELoss",
+    "Weighted MSE",
+    "BCE",
+    "Distance Loss",
+    "Tverski loss with class weights"
+  ],
+  "cv_strategy": "7-fold CV",
+  "ensembling": "Top performers combined diverse architectures and seeds using model soup and logit averaging, frequently applying multi-directional TTA (flips, rotations) and post-processing steps like WBF or 2D classification to refine final predictions.",
+  "insights": [
+    "Architectural and strategy diversity is a common trait among top solutions.",
+    "Model soup is widely adopted and effective for combining similar models.",
+    "Swapping InstanceNorm for BatchNorm can improve performance.",
+    "Smoothing predictions before peak detection yields better results.",
+    "Using a fraction of the particle radius (e.g., 0.5x or 1/3) significantly impacts detection accuracy."
+  ],
+  "critical_findings": [
+    "Replacing InstanceNorm with BatchNorm unexpectedly improved results for some participants.",
+    "Post-processing with a 2D classification head on 3D outputs boosted detection performance.",
+    "Using a smaller radius (radius * 0.5 or 1/3 particle radius) was a critical, non-obvious tuning step.",
+    "Model soup often outperformed traditional weighted ensembling for similar architectures."
+  ],
+  "what_did_not_work": [],
+  "github_repos": [],
+  "papers": [],
+  "other_solution_refs": [],
+  "source_url": "https://www.kaggle.com/competitions/czii-cryo-et-object-identification/discussion/563862"
+}

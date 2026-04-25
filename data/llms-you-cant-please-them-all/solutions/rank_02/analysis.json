@@ -1,0 +1,68 @@
+{
+  "summary": "The author achieved a perfect score in an LLM judging competition by systematically crafting and verifying adversarial prompts. They bypassed evaluation metrics using nonsense text, direct commands, conflicting instructions, code execution, and identity-based targeting. Strategic submission planning and linear equations were used to verify attack purity and map public leaderboard splits to private indices. Repeating verified samples efficiently satisfied similarity constraints while maximizing the score.",
+  "extensive_summary": "## Local Testing & Submission Strategy\nThe author treats the local test not as a score predictor but as a diagnostic tool to spot attacks without consuming submissions. Since the exact scoring models and prompts are unknown, they emphasize submitting with a deliberate plan. By combining different attacks (000, 999, 099, 909, 990) and analyzing the resulting scores, they verify the purity of each exploit.\n\n## Adversarial Exploits & Prompt Engineering\nSeveral targeted prompt strategies were developed to bypass the competition's evaluation metrics. Nonsense sentences filled with random words successfully bypassed English language confidence and sequence similarity scores. Direct instructions (exploit 000 and exploit 999) forced specific grade outputs. Conflicting instructions (exploit 099) split model behavior across columns. Code execution commands (exploit 909) bypassed text evaluation entirely, while identity targeting (exploit 990) leveraged system prompt properties (odd/even word counts) to force grade splits.\n\n## Index Splitting & Verification Efficiency\nTo handle the public leaderboard split, the author used three pure attacks as anchor points, solved linear equations to map public indices to private ones, and iteratively adjusted submissions to align distributions. Instead of generating thousands of distinct essays, they repeated a few verified pure samples. This approach drastically reduced submission costs while satisfying similarity constraints, guaranteeing a perfect score on both leaderboards.",
+  "rank": 2,
+  "competition_flow": "Craft adversarial prompts using targeted exploits (nonsense text, direct commands, conflicting instructions, code execution, identity targeting), verify their purity through strategic submission combinations and linear index mapping, repeat verified samples to satisfy constraints, and submit to achieve perfect public and private leaderboard scores.",
+  "data_reading": [],
+  "data_processing": [],
+  "features_engineering": [],
+  "models": [],
+  "frameworks_used": [],
+  "loss_functions": [],
+  "cv_strategy": "",
+  "ensembling": "",
+  "insights": [
+    "Local tests are valuable for spotting attacks but cannot accurately predict final scores due to unknown scoring models.",
+    "The competition discussion section contains all necessary hints to solve the problem efficiently.",
+    "Strategic submission combinations and linear equations are essential for verifying attack purity and mapping leaderboard splits.",
+    "Repeating verified pure samples is more efficient than generating many distinct essays."
+  ],
+  "critical_findings": [
+    "Nonsense sentences effectively bypass both English confidence and sequence similarity metrics.",
+    "Conflicting instructions can successfully split model behavior across different evaluation columns.",
+    "Code execution commands bypass text-based evaluation metrics entirely.",
+    "Targeting judge identity and system prompt properties (odd/even word counts) reliably forces specific grade outputs."
+  ],
+  "what_did_not_work": [],
+  "github_repos": [],
+  "papers": [],
+  "other_solution_refs": [
+    {
+      "description": "Local Test ref",
+      "url": "https://www.kaggle.com/competitions/llms-you-cant-please-them-all/discussion/550973"
+    },
+    {
+      "description": "Submission Plan ref",
+      "url": "https://www.kaggle.com/competitions/llms-you-cant-please-them-all/discussion/560743"
+    },
+    {
+      "description": "nonsense sentence + exploit ref",
+      "url": "https://www.kaggle.com/competitions/llms-you-cant-please-them-all/discussion/555051#3088867"
+    },
+    {
+      "description": "exploit 000 and 999 ref",
+      "url": "https://www.kaggle.com/competitions/llms-you-cant-please-them-all/discussion/560743#3120043"
+    },
+    {
+      "description": "exploit 099 ref",
+      "url": "https://www.kaggle.com/competitions/llms-you-cant-please-them-all/discussion/554673#3099647"
+    },
+    {
+      "description": "exploit 909 ref",
+      "url": "https://www.kaggle.com/competitions/llms-you-cant-please-them-all/discussion/563817#3128353"
+    },
+    {
+      "description": "exploit 990 ref",
+      "url": "https://www.kaggle.com/competitions/llms-you-cant-please-them-all/discussion/558117#3103270"
+    },
+    {
+      "description": "Index Split ref",
+      "url": "https://www.kaggle.com/competitions/llms-you-cant-please-them-all/discussion/563151"
+    },
+    {
+      "description": "Repeating Purest Samples ref",
+      "url": "https://www.kaggle.com/competitions/llms-you-cant-please-them-all/discussion/563151#3126553"
+    }
+  ],
+  "source_url": "https://www.kaggle.com/competitions/llms-you-cant-please-them-all/discussion/566602"
+}

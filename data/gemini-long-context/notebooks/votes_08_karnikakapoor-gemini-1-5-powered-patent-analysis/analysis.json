@@ -1,0 +1,42 @@
+{
+  "summary": "This notebook demonstrates a complete workflow for analyzing patent documents using Google's Gemini 1.5 Flash model, emphasizing its long-context window and context caching capabilities. It covers data ingestion, text cleaning, TF-IDF-based similarity calculation, and structured prompt engineering to evaluate patent overlaps and novelty. The author shows how to manage API token limits, track usage, and perform iterative follow-up questions on cached contexts. Readers should learn how to efficiently process large legal/technical texts with LLMs, optimize token consumption, and apply AI to intellectual property workflows.",
+  "purpose": "tutorial",
+  "competition_flow": "Loads patent CSV data, cleans text, computes TF-IDF cosine similarity to identify overlapping patents, constructs structured prompts with metadata, and submits them to the Gemini 1.5 Flash API with context caching to generate novelty and overlap analysis reports.",
+  "data_reading": [
+    "Loaded via pandas.read_csv() from a local Kaggle input path (/kaggle/input/ml-in-healthcare-patent-data/patent_analysis_data.csv).",
+    "Contains columns: Patent ID, Title, Assignee, Priority Date, Publication Date, Abstract, Claims, Description."
+  ],
+  "data_processing": [
+    "Applied a custom regex-based cleaning function to remove special characters, collapse multiple spaces, and convert text to lowercase.",
+    "Filtered out rows with null Abstract/Claims, 'abstract not found' strings, or 'error' substrings.",
+    "Dropped the 'Result Link' column to reduce noise."
+  ],
+  "features_engineering": [],
+  "models": [
+    "Gemini 1.5 Flash"
+  ],
+  "frameworks_used": [
+    "pandas",
+    "numpy",
+    "scikit-learn",
+    "scipy",
+    "google-generativeai",
+    "tqdm",
+    "matplotlib",
+    "seaborn",
+    "networkx"
+  ],
+  "loss_functions": [],
+  "cv_strategy": "",
+  "ensembling": "",
+  "insights": [
+    "Long-context LLMs can process entire patent documents in a single pass without chunking or external vector databases.",
+    "Context caching drastically reduces token costs and latency for iterative follow-up questions on the same patent data.",
+    "TF-IDF cosine similarity with a strict threshold (\u22650.9) reliably surfaces near-duplicate patents for manual review.",
+    "Structured prompt templates with explicit analytical tasks yield consistent, actionable outputs from generative models."
+  ],
+  "critical_findings": [],
+  "what_did_not_work": [],
+  "source_url": "https://www.kaggle.com/code/karnikakapoor/gemini-1-5-powered-patent-analysis",
+  "votes": 62
+}

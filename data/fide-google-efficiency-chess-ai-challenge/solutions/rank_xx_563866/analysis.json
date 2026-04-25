@@ -1,0 +1,43 @@
+{
+  "summary": "The author developed a chess engine evaluation function for a Kaggle competition, focusing on a binary-size-efficient NNUE architecture. They replaced the standard feature transformer with a hybrid approach combining a CNN for per-square features and a weight-shared dense network to drastically reduce input dimensionality. Despite the architectural size savings, they discovered the hybrid design incurred a heavy computational cost due to a large equivalent L1 size, which negated its accuracy benefits. The network was trained on a mix of Leela and Stockfish-generated data, and the surrounding engine was optimized with specific memory allocations and compiler flags.",
+  "extensive_summary": "## NNUE Architecture\nThe core of the solution revolves around designing a binary-size-efficient NNUE evaluation function. The authors disabled HCE and relied entirely on NNUE to prioritize evaluation accuracy. To minimize network size, they replaced the standard feature transformer with a hybrid approach that concatenates outputs from two sub-networks. The first is a CNN with 12 input channels (representing the pieces), 13 output channels, a 15x15 kernel, and 7 padding, designed to generate features for each square. The second is a dense network with 64 outputs that shares weights across neighbor positions, reducing the input from 768 to just 96.\n\n## Training Data & Computational Trade-offs\nThe network was trained on a mixture of Leela-generated and Stockfish-generated data, though the authors noted that swapping the dataset source had minimal impact on performance. A critical realization was that the hybrid architecture incurred a heavy computational cost. The equivalent L1 size reached 896, which was too large to justify the accuracy loss introduced by the weight-sharing in the CNN.\n\n## Engine Configuration & Compilation\nBeyond the network, the authors optimized the surrounding chess engine environment. They configured the transposition table to 512 KiB and used a 128 KiB hash table for continuation history. Compilation was split for performance: `nnue.c` was compiled with `-O3` optimization, while all other files used `-Os`. They also pruned unused features that did not significantly impact performance.",
+  "rank": null,
+  "competition_flow": "The pipeline involved designing a custom hybrid CNN-dense NNUE architecture for chess position evaluation, training it on a mix of Leela and Stockfish game data, integrating it into a modified chess engine with optimized memory and compilation flags, and submitting the resulting engine configuration.",
+  "data_reading": [],
+  "data_processing": [],
+  "features_engineering": [],
+  "models": [
+    "NNUE",
+    "CNN",
+    "dense network",
+    "Stockfish 4",
+    "Stockfish 16",
+    "Cfish"
+  ],
+  "frameworks_used": [],
+  "loss_functions": [],
+  "cv_strategy": "",
+  "ensembling": "",
+  "insights": [
+    "Relying entirely on NNUE while disabling HCE was a deliberate choice to prioritize evaluation accuracy.",
+    "Replacing the standard feature transformer with a hybrid CNN and weight-shared dense network successfully reduced the input dimensionality from 768 to 96.",
+    "The computational cost of the hybrid architecture (equivalent L1 size of 896) ultimately outweighed the accuracy benefits of the shared weights.",
+    "The choice of training data source (Leela vs. Stockfish) had minimal impact on the final network performance."
+  ],
+  "critical_findings": [
+    "The hybrid CNN-dense architecture, while effective at shrinking input size, introduced a heavy computational bottleneck due to its large equivalent L1 size.",
+    "Swapping between Leela-generated and Stockfish-generated training datasets produced negligible performance differences."
+  ],
+  "what_did_not_work": [
+    "The hybrid CNN-dense feature transformer approach was abandoned because its equivalent L1 size (896) was too large to compensate for the accuracy loss from shared weights."
+  ],
+  "github_repos": [
+    {
+      "url": "https://github.com/chettub/Niboshi",
+      "role": "solution"
+    }
+  ],
+  "papers": [],
+  "other_solution_refs": [],
+  "source_url": "https://www.kaggle.com/competitions/fide-google-efficiency-chess-ai-challenge/discussion/563866"
+}

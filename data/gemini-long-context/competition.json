@@ -1,0 +1,93 @@
+{
+  "id": 83735,
+  "competitionName": "gemini-long-context",
+  "title": "Google - Gemini Long Context",
+  "briefDescription": "Demonstrate interesting use cases for Gemini's long context window",
+  "dateEnabled": "2024-10-17T22:33:32.217Z",
+  "deadline": "2024-12-01T23:59:00Z",
+  "leaderboardPercentage": 30,
+  "maxDailySubmissions": 100,
+  "numScoredSubmissions": 1,
+  "numPrizes": 4,
+  "forumId": 5702112,
+  "disableSubmissions": true,
+  "dateCreated": "2024-08-09T20:39:22.698848100Z",
+  "disableLeaderboardPrizeIndicator": true,
+  "competitionHostSegmentId": 11,
+  "maxTeamSize": 5,
+  "organizationId": 855,
+  "hasCoverImageUrl": true,
+  "showPrivateLeaderboard": true,
+  "hasScripts": true,
+  "rulesRequired": true,
+  "categories": [
+    {
+      "id": 16696,
+      "name": "text generation",
+      "fullPath": "task > text-generation",
+      "description": "",
+      "datasetCount": 536,
+      "competitionCount": 24,
+      "scriptCount": 613,
+      "slug": "text-generation",
+      "displayName": "Text Generation"
+    },
+    {
+      "id": 13204,
+      "name": "nlp",
+      "fullPath": "analysis > nlp",
+      "description": "Natural Language Processing gives a computer program the ability to extract meaning human language. Applications include sentiment analysis, translation, and speech recognition.",
+      "datasetCount": 6746,
+      "competitionCount": 130,
+      "scriptCount": 9654,
+      "slug": "nlp",
+      "displayName": "NLP"
+    },
+    {
+      "id": 16729,
+      "name": "video text",
+      "fullPath": "task > video-text",
+      "description": "",
+      "datasetCount": 33,
+      "competitionCount": 1,
+      "scriptCount": 11,
+      "slug": "video-text",
+      "displayName": "Video Text"
+    },
+    {
+      "id": 16697,
+      "name": "video generation",
+      "fullPath": "task > video-generation",
+      "description": "",
+      "datasetCount": 41,
+      "competitionCount": 1,
+      "scriptCount": 40,
+      "slug": "video-generation",
+      "displayName": "Video Generation"
+    }
+  ],
+  "organization": {
+    "slug": "google",
+    "name": "Google",
+    "thumbnailImageUrl": "https://storage.googleapis.com/kaggle-organizations/855/thumbnail.png",
+    "profileUrl": "/organizations/google"
+  },
+  "launched": true,
+  "createdByUserId": 1314380,
+  "license": {
+    "id": 13,
+    "name": "Attribution 4.0 International (CC BY 4.0)",
+    "url": "https://creativecommons.org/licenses/by/4.0/",
+    "agreementRequired": false
+  },
+  "hostName": "Google",
+  "scoreTruncationNumDecimals": 3,
+  "locked": true,
+  "totalJoinedUsers": 5682,
+  "requiresIdentityVerification": true,
+  "submissionSizeLimitMb": 20480,
+  "reward": {
+    "id": "USD",
+    "quantity": 100000
+  }
+}

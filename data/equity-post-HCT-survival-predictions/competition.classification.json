@@ -1,0 +1,16 @@
+{
+  "description": "Participants predict post-transplant survival outcomes for allogeneic hematopoietic cell transplant (HCT) patients using clinical and demographic registry data. The competition emphasizes developing models that maintain high predictive accuracy while ensuring equitable performance across diverse patient subgroups. Success is evaluated using a custom concordance index metric on a held-out private test set.",
+  "data_modality": "tabular",
+  "task_type": "regression",
+  "label_structure": "unknown",
+  "metric": "eefs_concordance_index",
+  "test_split": "unknown",
+  "format": "two_stage",
+  "dataset_scale": "unknown",
+  "domain": "healthcare",
+  "data_challenges": [
+    "fairness_constraints",
+    "class_imbalance"
+  ],
+  "constraints": []
+}

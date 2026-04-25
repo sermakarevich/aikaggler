@@ -1,0 +1,93 @@
+{
+  "id": 67357,
+  "competitionName": "arc-prize-2024",
+  "title": "ARC Prize 2024",
+  "briefDescription": "Create an AI capable of solving reasoning tasks it has never seen before",
+  "dateEnabled": "2024-06-11T17:01:34.980Z",
+  "deadline": "2024-11-10T23:59:00Z",
+  "hasLeaderboard": true,
+  "leaderboardPercentage": 100,
+  "maxDailySubmissions": 3,
+  "numScoredSubmissions": 2,
+  "hasSolution": true,
+  "numPrizes": 5,
+  "forumId": 4374556,
+  "finalLeaderboardHasBeenVerified": true,
+  "disableSubmissions": true,
+  "userRankMultiplier": 1,
+  "dateCreated": "2024-01-11T20:28:39.576198800Z",
+  "competitionHostSegmentId": 1,
+  "maxTeamSize": 5,
+  "medalsAllowed": true,
+  "enableTeamFiles": true,
+  "teamFileDeadline": "2024-12-31T00:00:00Z",
+  "teamMergerExplicitDeadline": "2024-11-03T23:59:00Z",
+  "prohibitNewEntrantsExplicitDeadline": "2024-11-03T23:59:00Z",
+  "kernelsPublishingDisabledDeadline": "2024-11-03T23:59:00Z",
+  "organizationId": 3733,
+  "hasCoverImageUrl": true,
+  "showPrivateLeaderboard": true,
+  "hasScripts": true,
+  "onlyAllowKernelSubmissions": true,
+  "totalTeams": 1427,
+  "totalCompetitors": 1637,
+  "totalSubmissions": 16956,
+  "rulesRequired": true,
+  "usesSynchronousReruns": true,
+  "maxCpuRuntimeMinutes": 720,
+  "maxGpuRuntimeMinutes": 720,
+  "clonedFromCompetitionId": 18329,
+  "rowIdColumnName": "output_id",
+  "requiredSubmissionFilename": "submission.json",
+  "evaluationAlgorithm": {
+    "id": 1939,
+    "name": "Abstraction and Reasoning Challenge",
+    "isMax": true,
+    "environmentRenderType": "ENVIRONMENT_RENDER_TYPE_JSON",
+    "kernelId": 58528658,
+    "latestCompetitionMetricVersionId": 50154,
+    "state": "AVAILABLE"
+  },
+  "categories": [
+    {
+      "id": 12101,
+      "name": "artificial intelligence",
+      "fullPath": "subject > science and technology > computer science > artificial intelligence",
+      "description": "This tag has datasets and kernels where people come together and use cutting-edge research to train models on pictures of cats.",
+      "datasetCount": 4381,
+      "competitionCount": 86,
+      "scriptCount": 3821,
+      "slug": "artificial-intelligence",
+      "displayName": "Artificial Intelligence"
+    },
+    {
+      "name": "custom metric",
+      "description": "This competition's metric is defined under the 'Evaluation' tab",
+      "displayName": "Custom Metric"
+    }
+  ],
+  "organization": {
+    "slug": "arc",
+    "name": "Abstraction and Reasoning Corpus",
+    "thumbnailImageUrl": "https://storage.googleapis.com/kaggle-organizations/3733/thumbnail.png",
+    "profileUrl": "/organizations/arc"
+  },
+  "launched": true,
+  "createdByUserId": 1095143,
+  "license": {
+    "id": 30,
+    "name": "Apache 2.0",
+    "url": "https://www.apache.org/licenses/LICENSE-2.0",
+    "agreementRequired": false
+  },
+  "hostName": "Abstraction and Reasoning Corpus",
+  "scoreTruncationNumDecimals": 2,
+  "locked": true,
+  "totalJoinedUsers": 16349,
+  "requiresIdentityVerification": true,
+  "submissionSizeLimitMb": 20480,
+  "reward": {
+    "id": "USD",
+    "quantity": 1100000
+  }
+}

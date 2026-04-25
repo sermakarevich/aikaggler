@@ -1,0 +1,42 @@
+{
+  "summary": "This notebook demonstrates how to fine-tune a large language model for classical Chinese to modern Chinese translation using Kaggle TPUs. It walks through loading a JSONL dataset, sharding a 9B parameter Gemma-2 model across eight TPUs via Keras 3's distribution API, and applying LoRA to reduce trainable parameters to ~14 million. The author formats raw text into instruction-response prompts, compiles the model with a cross-entropy loss, and trains it for one epoch before running inference. Readers should learn that parameter-efficient fine-tuning and model sharding make large models accessible on Kaggle, while careful prompt engineering and data pipeline stability are crucial for success.",
+  "purpose": "tutorial",
+  "competition_flow": "Loads a classical-to-modern Chinese text dataset, formats it into instruction-response pairs, fine-tunes a Gemma-2 9B model with LoRA on 8 TPUs using Keras 3, and generates translation outputs.",
+  "data_reading": [
+    "Reads JSONL files using pandas read_json with lines=True and json.loads, then renames columns to classical_chinese, modern, and path."
+  ],
+  "data_processing": [
+    "Formats raw text into instruction-response templates, truncates the dataset to 2000 samples, and sets the preprocessor sequence length to 512."
+  ],
+  "features_engineering": [],
+  "models": [
+    "Gemma-2 9B"
+  ],
+  "frameworks_used": [
+    "keras",
+    "keras_nlp",
+    "jax",
+    "tensorflow-cpu",
+    "pandas",
+    "numpy"
+  ],
+  "loss_functions": [
+    "SparseCategoricalCrossentropy(from_logits=True)"
+  ],
+  "cv_strategy": "",
+  "ensembling": "",
+  "insights": [
+    "Sharding a 9B parameter model across 8 TPUs using Keras 3's distribution API effectively manages memory fragmentation and allocation overhead.",
+    "LoRA drastically reduces trainable parameters from 9 billion to approximately 14 million, enabling large model fine-tuning on limited hardware.",
+    "Clear instruction-response formatting is essential for LLM performance, as unstructured prompts yield incoherent or repetitive outputs."
+  ],
+  "critical_findings": [
+    "The TPU sharding configuration only works with the Gemma-2 9B model and fails with the 2B variant, likely due to memory layout constraints.",
+    "Data pipeline failures (empty data) can prevent LoRA from enabling, highlighting the need for robust data loading checks before model compilation."
+  ],
+  "what_did_not_work": [
+    "The author notes that the setup did not work with the Gemma-2 2B model, and a previous attempt failed because empty data prevented LoRA from being enabled."
+  ],
+  "source_url": "https://www.kaggle.com/code/mpwolke/chinese-culture-gemma2keras",
+  "votes": 55
+}

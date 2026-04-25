@@ -1,0 +1,21 @@
+{
+  "id": "marianadeem755/nfl-big-data-bowl-games-comprehensive-analysis",
+  "id_no": 69414289,
+  "title": "\ud83d\udccaNFL Big Data Bowl:Games Comprehensive Analysis\ud83c\udfc8",
+  "code_file": "nfl-big-data-bowl-games-comprehensive-analysis.ipynb",
+  "language": "python",
+  "kernel_type": "notebook",
+  "is_private": false,
+  "enable_gpu": false,
+  "enable_tpu": false,
+  "enable_internet": true,
+  "keywords": [],
+  "dataset_sources": [],
+  "kernel_sources": [],
+  "competition_sources": [
+    "nfl-big-data-bowl-2025"
+  ],
+  "model_sources": [],
+  "docker_image": "gcr.io/kaggle-images/python@sha256:a16cda2c5d52fa988d413876f3ffad7a46cca58678514601feb175990dc187c0",
+  "machine_shape": "None"
+}

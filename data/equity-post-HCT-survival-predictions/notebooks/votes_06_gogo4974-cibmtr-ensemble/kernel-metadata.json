@@ -1,0 +1,28 @@
+{
+  "id": "gogo4974/cibmtr-ensemble",
+  "id_no": 77162150,
+  "title": "CIBMTR Ensemble",
+  "code_file": "cibmtr-ensemble.ipynb",
+  "language": "python",
+  "kernel_type": "notebook",
+  "is_private": false,
+  "enable_gpu": true,
+  "enable_tpu": false,
+  "enable_internet": false,
+  "keywords": [
+    "gpu"
+  ],
+  "dataset_sources": [],
+  "kernel_sources": [
+    "cdeotte/pip-install-lifelines",
+    "albansteff/metric",
+    "dreamingtree/download-lightning-and-pytorch-tabular",
+    "yunsuxiaozi/yunbase"
+  ],
+  "competition_sources": [
+    "equity-post-HCT-survival-predictions"
+  ],
+  "model_sources": [],
+  "docker_image": "gcr.io/kaggle-private-byod/python@sha256:d8674e13fab653bf7fb8d9a102f2ae94036771ccb5c73f51888d881421e1f937",
+  "machine_shape": "Gpu"
+}

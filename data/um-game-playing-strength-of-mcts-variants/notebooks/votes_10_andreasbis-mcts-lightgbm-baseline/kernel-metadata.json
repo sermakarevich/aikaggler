@@ -1,0 +1,21 @@
+{
+  "id": "andreasbis/mcts-lightgbm-baseline",
+  "id_no": 65312603,
+  "title": "MCTS | LightGBM Baseline",
+  "code_file": "mcts-lightgbm-baseline.ipynb",
+  "language": "python",
+  "kernel_type": "notebook",
+  "is_private": false,
+  "enable_gpu": false,
+  "enable_tpu": false,
+  "enable_internet": false,
+  "keywords": [],
+  "dataset_sources": [],
+  "kernel_sources": [],
+  "competition_sources": [
+    "um-game-playing-strength-of-mcts-variants"
+  ],
+  "model_sources": [],
+  "docker_image": "gcr.io/kaggle-images/python@sha256:52997f329b43bdd3702614a60ccefaa28c4bcfaffd2a264745ba5295bace806e",
+  "machine_shape": "None"
+}

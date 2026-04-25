@@ -1,0 +1,29 @@
+{
+  "summary": "This notebook provides a minimal template for participating in a Kaggle competition that requires a custom Monte Carlo Tree Search (MCTS) inference server. It demonstrates how to structure the required `predict` function to receive test batches as Polars DataFrames and return predictions within strict time limits. The code also shows how to initialize the evaluation server and conditionally run local testing versus hidden test execution using environment variables. Readers should take away the exact boilerplate needed for custom inference competitions and the critical timing constraints for model loading and batch processing.",
+  "purpose": "utility",
+  "competition_flow": "Initializes a custom MCTS inference server, defines a dummy `predict` function to handle batched test inputs, and serves predictions locally or on the hidden test set.",
+  "data_reading": [
+    "Test data is passed directly to the `predict` function as a Polars DataFrame by the evaluation gateway; local testing uses hardcoded Kaggle input paths."
+  ],
+  "data_processing": [
+    "None; the example `predict` function simply returns the sample submission with a constant offset added to one column."
+  ],
+  "features_engineering": [],
+  "models": [],
+  "frameworks_used": [
+    "polars",
+    "kaggle_evaluation.mcts_inference_server"
+  ],
+  "loss_functions": [],
+  "cv_strategy": "",
+  "ensembling": "",
+  "insights": [
+    "Demonstrates the required boilerplate structure for custom inference competitions using Kaggle's evaluation API.",
+    "Highlights the strict 10-minute per-batch and 15-minute total startup time constraints for model loading and inference.",
+    "Shows how to conditionally run local testing versus hidden test execution using environment variables."
+  ],
+  "critical_findings": [],
+  "what_did_not_work": [],
+  "source_url": "https://www.kaggle.com/code/sohier/mcts-demo-submission",
+  "votes": 435
+}

@@ -18,6 +18,12 @@ from aikaggler.plugins.competition_analysis.config import (
 from aikaggler.plugins.competition_analysis.structure import (
     COMPETITION_CLASSIFICATION_SCHEMA,
 )
+from aikaggler.plugins.github_analysis.cli import cmd_repos
+from aikaggler.plugins.github_analysis.config import (
+    CHUNK_SIZE,
+    DEFAULT_ROLES,
+    MAX_FILES_PER_REPO,
+)
 from aikaggler.plugins.solution_analysis.cli import cmd_solutions, competition_dir
 
 
@@ -70,12 +76,14 @@ def classify_competition_with_ollama(
 
 def cmd_competition(args: argparse.Namespace) -> int:
     out = competition_dir(args.slug, args.data_root)
+    force = getattr(args, "force", False)
 
-    print(f"\n[1/3] Analyzing solutions for {args.slug}")
+    print(f"\n[1/4] Analyzing solutions for {args.slug}")
     sol_args = argparse.Namespace(
         slug=args.slug,
         limit=args.limit,
         pages=args.pages,
+        force=force,
         model=args.model,
     )
     try:
@@ -83,10 +91,11 @@ def cmd_competition(args: argparse.Namespace) -> int:
     except Exception as e:
         print(f"Solutions analysis failed: {type(e).__name__}: {e}")
 
-    print(f"\n[2/3] Analyzing notebooks for {args.slug}")
+    print(f"\n[2/4] Analyzing notebooks for {args.slug}")
     nb_args = argparse.Namespace(
         slug=args.slug,
         top=args.top,
+        force=force,
         model=args.model,
     )
     try:
@@ -94,11 +103,41 @@ def cmd_competition(args: argparse.Namespace) -> int:
     except Exception as e:
         print(f"Notebooks analysis failed: {type(e).__name__}: {e}")
 
-    print(f"\n[3/3] Classifying {args.slug}")
+    if not getattr(args, "skip_repos", False):
+        print(f"\n[3/4] Analyzing GitHub repos for {args.slug}")
+        repo_args = argparse.Namespace(
+            slug=args.slug,
+            chunk_size=getattr(args, "chunk_size", CHUNK_SIZE),
+            max_files=getattr(args, "max_files", MAX_FILES_PER_REPO),
+            force=force,
+            roles=getattr(args, "roles", list(DEFAULT_ROLES)),
+            model=args.model,
+            data_root=args.data_root,
+        )
+        try:
+            cmd_repos(repo_args)
+        except Exception as e:
+            print(f"Repo analysis failed: {type(e).__name__}: {e}")
+    else:
+        print(f"\n[3/4] Skipping GitHub repo analysis (--skip-repos)")
+
+    print(f"\n[4/4] Classifying {args.slug}")
     comp_path = out / "competition.json"
     if not comp_path.exists():
         print(f"Skipping classification: {comp_path} not found")
         return 1
+    classification_path = out / "competition.classification.json"
+    if not force and classification_path.exists():
+        try:
+            existing = json.loads(classification_path.read_text())
+        except (OSError, json.JSONDecodeError):
+            existing = None
+        if existing is not None and "error" not in existing:
+            print(
+                f"  classification already exists at {classification_path.name}; "
+                f"skipping (use --force to rerun)"
+            )
+            return 0
     comp = json.loads(comp_path.read_text())
     titles = _collect_solution_titles(out)
     try:
@@ -107,9 +146,7 @@ def cmd_competition(args: argparse.Namespace) -> int:
         )
     except Exception as e:
         classification = {"error": f"{type(e).__name__}: {e}"}
-    (out / "competition.classification.json").write_text(
-        json.dumps(classification, indent=2)
-    )
+    classification_path.write_text(json.dumps(classification, indent=2))
     if "error" not in classification:
         print(
             f"Classified: {classification.get('data_modality')}/"
@@ -136,6 +173,22 @@ def main(argv: list[str] | None = None) -> int:
                         help="Forum pages to scan per competition")
     p_comp.add_argument("--top", type=int, default=TOP_NOTEBOOKS,
                         help="Top-N notebooks to pull")
+    p_comp.add_argument("--chunk-size", type=int, default=CHUNK_SIZE,
+                        help="Files merged per ollama call at each repo aggregation level")
+    p_comp.add_argument("--max-files", type=int, default=MAX_FILES_PER_REPO,
+                        help=("Cap on files deep-analyzed per repo (selection step "
+                              "kicks in for repos with more files than this)."))
+    p_comp.add_argument(
+        "--roles", nargs="*", default=list(DEFAULT_ROLES),
+        help=(
+            "GitHub repo roles to analyze (solution|library|reference). "
+            "Pass --roles with no values to disable filtering."
+        ),
+    )
+    p_comp.add_argument("--skip-repos", action="store_true",
+                        help="Skip GitHub repo analysis step")
+    p_comp.add_argument("--force", action="store_true",
+                        help="Re-run every stage even if cached artefacts exist")
     p_comp.add_argument("--model", default=OLLAMA_MODEL)
     p_comp.add_argument("--data-root", type=Path, default=DEFAULT_OUTPUT_ROOT)
     p_comp.set_defaults(func=cmd_competition)
@@ -152,6 +205,28 @@ def main(argv: list[str] | None = None) -> int:
     p_nb.add_argument("--top", type=int, default=TOP_NOTEBOOKS)
     p_nb.add_argument("--model", default=OLLAMA_MODEL)
     p_nb.set_defaults(func=cmd_notebooks)
+
+    p_repos = sub.add_parser(
+        "repos",
+        help="GitHub repo analysis only (requires existing github_links.json)",
+    )
+    p_repos.add_argument("slug")
+    p_repos.add_argument("--chunk-size", type=int, default=CHUNK_SIZE)
+    p_repos.add_argument("--max-files", type=int, default=MAX_FILES_PER_REPO,
+                         help=("Cap on files deep-analyzed per repo (selection step "
+                               "kicks in for repos with more files than this)."))
+    p_repos.add_argument("--force", action="store_true",
+                         help="Re-run every stage even if cached artefacts exist")
+    p_repos.add_argument(
+        "--roles", nargs="*", default=list(DEFAULT_ROLES),
+        help=(
+            "Repo roles to keep (solution|library|reference). "
+            "Pass --roles with no values to disable filtering."
+        ),
+    )
+    p_repos.add_argument("--model", default=OLLAMA_MODEL)
+    p_repos.add_argument("--data-root", type=Path, default=DEFAULT_OUTPUT_ROOT)
+    p_repos.set_defaults(func=cmd_repos)
 
     args = parser.parse_args(argv)
     return args.func(args)

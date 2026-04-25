@@ -1,0 +1,49 @@
+{
+  "summary": "The notebook implements a two-stage retrieval-augmented inference pipeline for the EEDI competition. First, it uses a fine-tuned SFR-Embedding-2_R model to compute cosine similarities between student answers and a database of known misconceptions, retrieving the top 25 candidates per question. Second, it feeds these candidates into a quantized Qwen2.5-32B-Instruct model via vLLM, constrained by the MultipleChoiceLogitsProcessor to force a single-digit output. The pipeline outputs a formatted submission file mapping each answer to a ranked list of misconception IDs. Readers should learn how to combine dense retrieval with constrained LLM decoding for structured prediction tasks.",
+  "purpose": "inference",
+  "competition_flow": "Loads test answers and a misconception database, retrieves top candidates via dense vector similarity, refines the selection using a quantized Qwen2.5-32B model with constrained decoding, and exports a ranked misconception ID list as a CSV submission.",
+  "data_reading": [
+    "pd.read_csv for test.csv and misconception_mapping.csv",
+    "pd.read_parquet for intermediate data"
+  ],
+  "data_processing": [
+    "L2 normalization of embeddings",
+    "Cosine similarity retrieval via sklearn.neighbors.NearestNeighbors",
+    "Regex-based text cleaning in prompts",
+    "Iterative candidate list construction and prompt formatting"
+  ],
+  "features_engineering": [
+    "Dense vector embeddings for answers and misconceptions",
+    "Top-25 cosine similarity retrieval",
+    "Iterative candidate refinement loop combining initial retrieval with model-based ranking"
+  ],
+  "models": [
+    "SFR-Embedding-2_R",
+    "Qwen2.5-32B-Instruct-AWQ"
+  ],
+  "frameworks_used": [
+    "vllm",
+    "transformers",
+    "peft",
+    "bitsandbytes",
+    "optimum",
+    "auto_gptq",
+    "sentence-transformers",
+    "logits-processor-zoo",
+    "scikit-learn",
+    "numpy",
+    "pandas"
+  ],
+  "loss_functions": [],
+  "cv_strategy": "",
+  "ensembling": "",
+  "insights": [
+    "Dense retrieval effectively narrows a large misconception database to a manageable candidate set for downstream reasoning.",
+    "Constraining LLM outputs to specific tokens via logits processors ensures valid multiple-choice formatting without post-processing.",
+    "Iterative candidate refinement improves selection accuracy by combining initial retrieval with model-based ranking."
+  ],
+  "critical_findings": [],
+  "what_did_not_work": [],
+  "source_url": "https://www.kaggle.com/code/aerdem4/eedi-qwen32b-vllm-with-logits-processor-zoo",
+  "votes": 593
+}

@@ -1,0 +1,45 @@
+{
+  "summary": "This notebook demonstrates an iterative baseline development process for a tabular regression competition focused on predicting MCTS board game strength. It begins with a single DeepTables neural network, progressively refining it by adding FM and CIN layers, implementing proper train-only feature scaling, and applying a warmup cosine learning rate schedule. The author then introduces a CatBoost regressor and combines both models via weighted averaging to improve generalization. Key takeaways include the critical importance of correct scaling for neural network stability, the performance gains from hybrid tabular ensembling, and necessary workarounds for DeepTables model persistence on Kaggle GPUs.",
+  "purpose": "baseline",
+  "competition_flow": "Loads tabular game data, preprocesses and scales features, trains a DeepTables neural network and a CatBoost regressor using GroupKFold cross-validation, and combines their predictions via weighted averaging to generate a competition submission.",
+  "data_reading": [
+    "Reads CSV files using Polars (pl.read_csv) and Pandas (pd.read_csv), then converts to Pandas DataFrames."
+  ],
+  "data_processing": [
+    "Drops constant, ID, and rule columns; splits agent identifiers into categorical components; casts categorical and numerical columns appropriately; scales numerical features using MinMaxScaler (fit on training data, transform on validation/test); applies inverse scaling for CatBoost; uses GroupKFold for splitting."
+  ],
+  "features_engineering": [
+    "Enables apply_gbm_features=True in DeepTables to generate tree-based features automatically; splits agent string features into categorical sub-components."
+  ],
+  "models": [
+    "DeepTables (DNN + FM + CIN)",
+    "CatBoostRegressor"
+  ],
+  "frameworks_used": [
+    "tensorflow",
+    "deeptables",
+    "catboost",
+    "scikit-learn",
+    "polars",
+    "pandas"
+  ],
+  "loss_functions": [
+    "RMSE"
+  ],
+  "cv_strategy": "GroupKFold(n_splits=6) grouped by GameRulesetName",
+  "ensembling": "Weighted average of DeepTables and CatBoost predictions with final weights of 0.40 for NN and 0.60 for CatBoost.",
+  "insights": [
+    "Proper train-only scaling is critical for neural network stability and prevents validation divergence.",
+    "A warmup cosine learning rate schedule improves training stability for tabular neural networks.",
+    "Hybrid ensembling of deep learning and gradient boosting models yields better generalization than either alone.",
+    "DeepTables model saving and loading on Kaggle GPUs requires specific workarounds due to non-deterministic behavior."
+  ],
+  "critical_findings": [
+    "Scaling numerical features by fitting on combined train and test data temporarily fixes divergence but violates standard ML practices and should be avoided.",
+    "GPU training introduces non-deterministic behavior that causes slight score variance across runs.",
+    "DeepTables has known model persistence issues on Kaggle that require manual file copying to /tmp/workdir to resolve."
+  ],
+  "what_did_not_work": [],
+  "source_url": "https://www.kaggle.com/code/yekenot/mcts-deeptables-nn",
+  "votes": 356
+}

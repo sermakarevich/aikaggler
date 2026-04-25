@@ -1,0 +1,13 @@
+{
+  "description": "Participants analyze pre-snap player and team positioning data to predict future play outcomes and tendencies in American football. The competition focuses on structured tracking and play-by-play records to model how defensive and offensive alignments influence subsequent actions. Success is evaluated based on the accuracy of these predictive models against a held-out test set of game scenarios.",
+  "data_modality": "tabular",
+  "task_type": "classification",
+  "label_structure": "unknown",
+  "metric": "unknown",
+  "test_split": "unknown",
+  "format": "standard",
+  "dataset_scale": "unknown",
+  "domain": "sports_analytics",
+  "data_challenges": [],
+  "constraints": []
+}

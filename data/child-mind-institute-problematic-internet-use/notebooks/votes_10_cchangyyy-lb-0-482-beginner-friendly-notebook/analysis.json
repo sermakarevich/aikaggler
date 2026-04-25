@@ -1,0 +1,48 @@
+{
+  "summary": "This notebook provides a complete, beginner-friendly pipeline for the Child Mind Institute Problematic Internet Use competition, focusing on ordinal regression. It combines raw tabular features with time-series embeddings extracted via autoencoders, trains multiple tree-based regressors using stratified cross-validation, and optimizes prediction thresholds to maximize the quadratic weighted kappa metric. The author demonstrates how to safely handle categorical variables, compress sequential data into fixed-length vectors, and stabilize predictions through multi-model ensembling. Readers should learn how to integrate learned embeddings into tabular workflows, tune thresholds for ordinal metrics, and combine diverse model outputs to improve leaderboard performance.",
+  "purpose": "training",
+  "competition_flow": "Loads tabular and time-series data, extracts autoencoder embeddings for sequential features, merges them with raw tabular inputs, trains an ensemble of tree-based regressors via 5-fold stratified CV, optimizes prediction thresholds for quadratic weighted kappa, and combines multiple model outputs via voting and majority voting to generate a final submission.",
+  "data_reading": [
+    "Reads main tabular data from CSV files using pd.read_csv, and loads time-series data from Parquet files via a custom parallelized function that reads part-0.parquet per directory and computes descriptive statistics (df.describe().values) using ThreadPoolExecutor."
+  ],
+  "data_processing": [
+    "Applies StandardScaler before autoencoder input, manually maps categorical 'Season' features to integers using unique value dictionaries, fills missing values with a 'Missing' placeholder before casting to category, drops the 'id' column, and removes rows with missing target values (dropna on 'sii')."
+  ],
+  "features_engineering": [
+    "Autoencoder embeddings (96 dimensions) extracted from time-series descriptive statistics (dimensionality reduction), manual integer encoding for categorical features, and direct inclusion of raw demographic, physical, fitness, BIA, and survey features."
+  ],
+  "models": [
+    "LightGBM",
+    "XGBoost",
+    "CatBoost",
+    "RandomForestRegressor",
+    "GradientBoostingRegressor"
+  ],
+  "frameworks_used": [
+    "pandas",
+    "numpy",
+    "scikit-learn",
+    "lightgbm",
+    "xgboost",
+    "catboost",
+    "keras",
+    "torch",
+    "scipy",
+    "tqdm"
+  ],
+  "loss_functions": [
+    "MSE (used for autoencoder training)"
+  ],
+  "cv_strategy": "StratifiedKFold(n_splits=5, shuffle=True, random_state=42)",
+  "ensembling": "Combines LightGBM, XGBoost, and CatBoost via VotingRegressor, averages predictions across 5 CV folds, optimizes thresholds using scipy.optimize.minimize, and merges three separate submissions via weighted averaging (0.85/0.10/0.05) followed by majority voting across all prediction sets.",
+  "insights": [
+    "Autoencoder embeddings effectively compress time-series statistics into a fixed-length feature vector that improves tabular model performance.",
+    "Optimizing prediction thresholds via scipy.optimize.minimize significantly boosts the ordinal regression metric (QWK) compared to simple rounding.",
+    "Manual categorical mapping using train-set unique values prevents data leakage between training and test splits.",
+    "Combining multiple model outputs via weighted averaging and majority voting stabilizes predictions and yields higher leaderboard scores than individual models."
+  ],
+  "critical_findings": [],
+  "what_did_not_work": [],
+  "source_url": "https://www.kaggle.com/code/cchangyyy/lb-0-482-beginner-friendly-notebook",
+  "votes": 338
+}

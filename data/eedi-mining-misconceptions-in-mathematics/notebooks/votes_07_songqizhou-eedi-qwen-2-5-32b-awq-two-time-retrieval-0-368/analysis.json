@@ -1,0 +1,42 @@
+{
+  "summary": "This notebook demonstrates a two-stage retrieval-augmented generation pipeline for the EEDI competition, combining a quantized Qwen-2.5 32B model with a fine-tuned BGE sentence transformer. It first retrieves relevant mathematical misconceptions using metadata, feeds them to the LLM to generate a reasoned misconception, and then performs a second semantic search combining the LLM output with the original question to produce final predictions. The author shows that iterative context refinement and simple post-processing (handling serial number outputs) directly improved the leaderboard score from 0.362 to 0.368. Readers should understand how retrieval-augmented prompting can stabilize LLM reasoning on structured prediction tasks without fine-tuning, and how quantization plus vLLM enables efficient large-model inference on limited GPU resources.",
+  "purpose": "inference",
+  "competition_flow": "Loads competition CSVs and a misconception mapping, performs two sequential semantic retrievals using a sentence transformer, generates LLM reasoning via vLLM, post-processes the output to map serial numbers back to IDs, and saves the final predictions as a CSV submission.",
+  "data_reading": [
+    "pd.read_csv for train.csv, test.csv, and misconception_mapping.csv",
+    "pd.read_parquet for intermediate dataframes and labels"
+  ],
+  "data_processing": [
+    "Text normalization (lowercasing, URL removal, punctuation/whitespace standardization)",
+    "Prompt templating via AutoTokenizer.apply_chat_template",
+    "Regex-based extraction and cleaning of LLM responses"
+  ],
+  "features_engineering": [],
+  "models": [
+    "Qwen-2.5 32B (AWQ)",
+    "BGE (SentenceTransformer)"
+  ],
+  "frameworks_used": [
+    "vllm",
+    "sentence-transformers",
+    "transformers",
+    "pandas",
+    "numpy",
+    "torch"
+  ],
+  "loss_functions": [],
+  "cv_strategy": "",
+  "ensembling": "",
+  "insights": [
+    "Two-stage retrieval significantly improves LLM reasoning by first providing metadata-based context and then refining it with the model's own output.",
+    "Post-processing is critical when using LLMs for structured outputs, as they often default to referencing prompt indices instead of full text.",
+    "Quantized models combined with vLLM enable efficient large-model inference on limited GPU resources, though inference time remains substantial."
+  ],
+  "critical_findings": [
+    "The LLM frequently outputs only the serial number of a retrieved misconception rather than the full text, requiring a fallback dictionary lookup during post-processing.",
+    "A simple parameter tweak (increasing max_tokens from 512 to 1024) directly improved the leaderboard score from 0.362 to 0.368."
+  ],
+  "what_did_not_work": [],
+  "source_url": "https://www.kaggle.com/code/songqizhou/eedi-qwen-2-5-32b-awq-two-time-retrieval-0-368",
+  "votes": 346
+}

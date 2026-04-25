@@ -1,0 +1,50 @@
+{
+  "summary": "This notebook provides a comprehensive exploratory data analysis of the players.csv dataset from the NFL Big Data Bowl 2025. It systematically investigates player demographics, physical attributes, and college affiliations through statistical summaries and interactive visualizations. The author demonstrates practical techniques for handling missing birth dates, parsing non-numeric height formats, and deriving new features like BMI and college name frequency. Readers should take away actionable methods for cleaning tabular sports data, engineering demographic features, and creating publication-ready Plotly visualizations to uncover trends in player age, size, and background.",
+  "purpose": "eda",
+  "competition_flow": "Loads the players.csv dataset, performs demographic and physical feature engineering, and generates interactive visualizations to summarize player characteristics without training any predictive models.",
+  "data_reading": [
+    "pd.read_csv(\"/kaggle/input/nfl-big-data-bowl-2025/players.csv\")"
+  ],
+  "data_processing": [
+    "Imputes missing birthDate values using median and mode",
+    "Converts height from 'ft-in' string format to numeric inches",
+    "Converts weight to float",
+    "Calculates BMI using metric conversions",
+    "Handles missing values in derived features via backfill and mean imputation"
+  ],
+  "features_engineering": [
+    "age (derived from birthDate)",
+    "year, month, day (extracted from birthDate)",
+    "height_in_inches",
+    "bmi (weight in kg / height in meters squared)",
+    "college_name_length",
+    "college_name_count (frequency of collegeName)"
+  ],
+  "models": [],
+  "frameworks_used": [
+    "pandas",
+    "numpy",
+    "seaborn",
+    "matplotlib",
+    "plotly.express",
+    "plotly.graph_objects",
+    "plotly.subplots",
+    "datetime"
+  ],
+  "loss_functions": [],
+  "cv_strategy": "",
+  "ensembling": "",
+  "insights": [
+    "Player ages range from 25 to 47, with a mean of approximately 29.44 years, indicating a relatively young active roster.",
+    "The majority of players were born between 1985 and 1997, with March being the most frequent birth month.",
+    "Height and weight distributions show clear demographic clustering, with maximum height at 80 inches and weight ranging from 175 to 328 lbs.",
+    "College name length and frequency distributions provide a proxy for college prominence that can be correlated with player demographics."
+  ],
+  "critical_findings": [
+    "The birthDate column contains 487 missing entries (28.7% of the dataset), requiring median and mode imputation to avoid analysis gaps.",
+    "Height is stored as a non-numeric 'ft-in' string format, necessitating custom parsing to convert to inches for quantitative analysis."
+  ],
+  "what_did_not_work": [],
+  "source_url": "https://www.kaggle.com/code/marianadeem755/nfl-players-stats-comprehensive-exploration",
+  "votes": 90
+}

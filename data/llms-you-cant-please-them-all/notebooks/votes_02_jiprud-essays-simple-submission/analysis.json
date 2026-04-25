@@ -1,0 +1,22 @@
+{
+  "summary": "This notebook implements a minimal submission strategy for a text generation competition by generating essays entirely from randomly sampled words rather than training a model. The author splits the test set into three equal parts and applies distinct generation rules: two parts use a prompt template that includes the topic, while the middle part appends a specific \"grade 9\" exploit prompt to a random word sequence. The approach demonstrates how simple heuristic prompting and strategic test-set splitting can serve as a quick baseline when model training is impractical. Readers should note that competition submissions can sometimes be competitive through clever prompt formatting and targeted exploitation rather than complex architectures.",
+  "purpose": "inference",
+  "competition_flow": "Reads test topics and a word list, generates three different types of random-word-based essays for different thirds of the test set, and saves them as a CSV submission.",
+  "data_reading": [
+    "Loads test data and sample submission via pd.read_csv, and reads a word list from a local text file using standard Python file I/O."
+  ],
+  "data_processing": [],
+  "features_engineering": [],
+  "models": [],
+  "frameworks_used": [],
+  "loss_functions": [],
+  "cv_strategy": "",
+  "ensembling": "",
+  "insights": [
+    "Simple prompt engineering and strategic test-set splitting can serve as an effective baseline for text generation competitions without requiring model training."
+  ],
+  "critical_findings": [],
+  "what_did_not_work": [],
+  "source_url": "https://www.kaggle.com/code/jiprud/essays-simple-submission",
+  "votes": 484
+}

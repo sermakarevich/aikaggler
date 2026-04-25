@@ -1,0 +1,23 @@
+{
+  "id": "arshmankhalid/games-insightful-analysis-players-in-action",
+  "id_no": 68040215,
+  "title": "\ud83c\udfc8 Games Insightful Analysis: Players in Action \ud83d\udcca",
+  "code_file": "games-insightful-analysis-players-in-action.ipynb",
+  "language": "python",
+  "kernel_type": "notebook",
+  "is_private": false,
+  "enable_gpu": false,
+  "enable_tpu": false,
+  "enable_internet": true,
+  "keywords": [
+    "scheduled"
+  ],
+  "dataset_sources": [],
+  "kernel_sources": [],
+  "competition_sources": [
+    "nfl-big-data-bowl-2025"
+  ],
+  "model_sources": [],
+  "docker_image": "gcr.io/kaggle-images/python@sha256:a16cda2c5d52fa988d413876f3ffad7a46cca58678514601feb175990dc187c0",
+  "machine_shape": "None"
+}

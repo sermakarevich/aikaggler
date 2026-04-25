@@ -1,0 +1,33 @@
+{
+  "summary": "This notebook demonstrates a post-processing ensemble technique that combines multiple submission files by selecting the best prediction per row based on a language model's perplexity score. It loads a frozen Gemma-2-9b model to calculate token-level perplexity for each candidate text across all provided submissions. The author then constructs a new submission by greedily picking the lowest-perplexity text for each instance. Readers should understand how self-referential metrics like perplexity can be leveraged to merge diverse model outputs without retraining, and how to implement efficient row-wise scoring in Python.",
+  "purpose": "ensemble",
+  "competition_flow": "Loads multiple submission CSVs, scores each row's text using a frozen Gemma-2-9b model's perplexity, selects the lowest-scored text per row, and saves a combined submission file.",
+  "data_reading": [
+    "Recursively walks the /kaggle/input directory to find CSV files containing 'submission' in the name, then reads them with pd.read_csv, filtering for files with 'id' and 'text' columns."
+  ],
+  "data_processing": [],
+  "features_engineering": [],
+  "models": [
+    "Gemma-2-9b"
+  ],
+  "frameworks_used": [
+    "torch",
+    "transformers",
+    "pandas",
+    "numpy"
+  ],
+  "loss_functions": [
+    "CrossEntropyLoss"
+  ],
+  "cv_strategy": "",
+  "ensembling": "Row-wise greedy selection where the submission providing the lowest perplexity score for each row is chosen to form the final ensemble submission.",
+  "insights": [
+    "Perplexity can serve as a reliable, model-agnostic proxy for text quality or alignment in competition submissions.",
+    "Loading and scoring multiple submissions row-by-row is computationally feasible with a frozen LLM.",
+    "Greedy per-row selection often outperforms simple averaging or majority voting for text-based tasks."
+  ],
+  "critical_findings": [],
+  "what_did_not_work": [],
+  "source_url": "https://www.kaggle.com/code/kirderf/fast-ensemble-of-multi-solutions-scores-analysis",
+  "votes": 302
+}

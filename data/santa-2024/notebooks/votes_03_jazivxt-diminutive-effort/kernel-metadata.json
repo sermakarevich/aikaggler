@@ -1,0 +1,25 @@
+{
+  "id": "jazivxt/diminutive-effort",
+  "id_no": 71502763,
+  "title": "Diminutive Effort",
+  "code_file": "diminutive-effort.ipynb",
+  "language": "python",
+  "kernel_type": "notebook",
+  "is_private": false,
+  "enable_gpu": false,
+  "enable_tpu": false,
+  "enable_internet": false,
+  "keywords": [
+    "gpu"
+  ],
+  "dataset_sources": [],
+  "kernel_sources": [],
+  "competition_sources": [
+    "santa-2024"
+  ],
+  "model_sources": [
+    "google/gemma-2/Transformers/gemma-2-9b/2"
+  ],
+  "docker_image": "gcr.io/kaggle-images/python@sha256:a16cda2c5d52fa988d413876f3ffad7a46cca58678514601feb175990dc187c0",
+  "machine_shape": "None"
+}

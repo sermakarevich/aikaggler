@@ -1,0 +1,44 @@
+[
+  {
+    "topic_id": 549801,
+    "title": "1st Place Solution",
+    "owner": "yandex-research",
+    "repo": "tabm",
+    "url": "https://github.com/yandex-research/tabm"
+  },
+  {
+    "topic_id": 549801,
+    "title": "1st Place Solution",
+    "owner": "scikit-learn",
+    "repo": "scikit-learn",
+    "url": "https://github.com/scikit-learn/scikit-learn"
+  },
+  {
+    "topic_id": 549801,
+    "title": "1st Place Solution",
+    "owner": "jday96314",
+    "repo": "MCTS",
+    "url": "https://github.com/jday96314/MCTS"
+  },
+  {
+    "topic_id": 549582,
+    "title": "The 6th place solution (CV 0.39)",
+    "owner": "IIIS-Li-Group",
+    "repo": "OpenFE",
+    "url": "https://github.com/IIIS-Li-Group/OpenFE"
+  },
+  {
+    "topic_id": 549582,
+    "title": "The 6th place solution (CV 0.39)",
+    "owner": "vadimtimakin",
+    "repo": "Kaggle-MCTS-6th-place-solution",
+    "url": "https://github.com/vadimtimakin/Kaggle-MCTS-6th-place-solution"
+  },
+  {
+    "topic_id": 549616,
+    "title": "8th place solution: a 10-day challenge",
+    "owner": "smly",
+    "repo": "vscode-fast-kaggle",
+    "url": "https://github.com/smly/vscode-fast-kaggle"
+  }
+]

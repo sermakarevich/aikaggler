@@ -1,0 +1,50 @@
+{
+  "summary": "This notebook provides a baseline regression pipeline for predicting agent utility in the MCTS game-playing strength competition. It demonstrates a comprehensive feature engineering strategy that parses MCTS agent strings, applies TF-IDF to rule descriptions, computes readability indices, and creates targeted cross-features. The author uses GroupKFold stratified by game ruleset to prevent data leakage, trains LightGBM and CatBoost models with GPU acceleration, and averages their predictions for inference. Readers should learn how to handle complex string-based agent configurations, manage memory efficiently, and structure a robust cross-validation pipeline for tabular data with categorical leakage risks.",
+  "purpose": "baseline",
+  "competition_flow": "Loads CSV data with Polars, parses MCTS agent strings and game rules into numerical and TF-IDF features, trains LightGBM and CatBoost regressors using GroupKFold by game ruleset, and averages their predictions for submission.",
+  "data_reading": [
+    "polars.read_csv() converted to pandas DataFrames"
+  ],
+  "data_processing": [
+    "String cleaning (lowercase, punctuation removal)",
+    "Memory type casting (int8/16/32/64, float16/32/64)",
+    "Dropping low-variance/object columns",
+    "GPU acceleration flags"
+  ],
+  "features_engineering": [
+    "Parsed MCTS agent strings into selection, exploration constant, playout, and score bounds columns",
+    "One-hot encoded categorical columns with known unique values",
+    "TF-IDF (max_features=600) on agent strings and rule descriptions",
+    "Readability metrics (ARI, CLRI, McAlpine_EFLAW) on EnglishRules and LudRules",
+    "Ratio feature (PlayoutsPerSecond/MovesPerSecond)",
+    "Cross-features (sum, diff, product, division) on 5 selected features",
+    "Dropped game names from LudRules to prevent leakage"
+  ],
+  "models": [
+    "LightGBM",
+    "CatBoost"
+  ],
+  "frameworks_used": [
+    "lightgbm",
+    "catboost",
+    "xgboost",
+    "scikit-learn",
+    "polars",
+    "pandas"
+  ],
+  "loss_functions": [
+    "RMSE"
+  ],
+  "cv_strategy": "GroupKFold(n_splits=10) by GameRulesetName",
+  "ensembling": "Averages predictions from LightGBM and CatBoost models.",
+  "insights": [
+    "GroupKFold by GameRulesetName prevents data leakage when test games differ from training games.",
+    "Dropping game names from LudRules avoids CV/LB mismatch across different game types.",
+    "Target values of -1, 0, and 1 are down-weighted (1.0) relative to others (2.5) to handle label distribution.",
+    "Feature importance thresholding can identify noisy features during LightGBM training."
+  ],
+  "critical_findings": [],
+  "what_did_not_work": [],
+  "source_url": "https://www.kaggle.com/code/hideyukizushi/mcts-starter-train-inf-hpupd-lb-431",
+  "votes": 303
+}

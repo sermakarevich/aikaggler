@@ -1,0 +1,26 @@
+{
+  "id": "albansteff/refactoring-nn-pairwise-ranking-loss",
+  "id_no": 75502875,
+  "title": "Refactoring NN Pairwise Ranking Loss",
+  "code_file": "refactoring-nn-pairwise-ranking-loss.ipynb",
+  "language": "python",
+  "kernel_type": "notebook",
+  "is_private": false,
+  "enable_gpu": true,
+  "enable_tpu": false,
+  "enable_internet": false,
+  "keywords": [
+    "gpu"
+  ],
+  "dataset_sources": [],
+  "kernel_sources": [
+    "cdeotte/pip-install-lifelines",
+    "dreamingtree/download-lightning-and-pytorch-tabular"
+  ],
+  "competition_sources": [
+    "equity-post-HCT-survival-predictions"
+  ],
+  "model_sources": [],
+  "docker_image": "gcr.io/kaggle-private-byod/python@sha256:57cb636a65386fd6c74fc9969211623034c487f7d483f9cd2c8456ebe2619345",
+  "machine_shape": "NvidiaTeslaT4"
+}

@@ -1,0 +1,41 @@
+{
+  "summary": "This notebook demonstrates an inference pipeline for a multilingual chatbot arena competition using a 4-bit quantized Gemma-2 9B model fine-tuned with LoRA. It focuses on efficient batch processing, dynamic padding, and parallel inference across two GPUs to generate pairwise model predictions. The author highlights practical deployment optimizations, such as keeping the LoRA adapter unmerged to preserve quantization accuracy and optionally applying test-time augmentation by swapping response order. Readers should learn how to deploy quantized LLMs efficiently for comparison tasks and handle multilingual inputs without translation.",
+  "purpose": "inference",
+  "competition_flow": "Loads test data from a parquet file, tokenizes multilingual prompts and responses, runs parallel inference on a 4-bit quantized Gemma-2 9B model with a LoRA adapter, and outputs a CSV submission predicting the winning model.",
+  "data_reading": [
+    "pd.read_parquet('/kaggle/input/wsdm-cup-multilingual-chatbot-arena/test.parquet')"
+  ],
+  "data_processing": [
+    "Replaces 'null' strings and strips whitespace",
+    "Adds custom prompt/response tags during tokenization",
+    "Implements dynamic padding by sorting inputs by length and splitting them across two GPU streams",
+    "Optionally applies test-time augmentation by swapping response order and averaging probabilities"
+  ],
+  "features_engineering": [],
+  "models": [
+    "Gemma-2 9B Instruct (4-bit quantized)",
+    "LoRA adapter"
+  ],
+  "frameworks_used": [
+    "transformers",
+    "peft",
+    "accelerate",
+    "bitsandbytes",
+    "torch",
+    "pandas",
+    "numpy",
+    "sklearn"
+  ],
+  "loss_functions": [],
+  "cv_strategy": "",
+  "ensembling": "",
+  "insights": [
+    "Keeping a LoRA adapter unmerged during inference prevents non-negligible quantization errors that occur when naively merging it into a 4-bit base model.",
+    "Sorting inputs by length and splitting them across two GPU streams enables dynamic padding and parallel inference, significantly reducing latency.",
+    "Test-time augmentation by swapping response order and averaging probabilities can improve prediction robustness, though it is optional."
+  ],
+  "critical_findings": [],
+  "what_did_not_work": [],
+  "source_url": "https://www.kaggle.com/code/mbmmurad/gemma-2-9b-4-bit-qlora-lb-0-63",
+  "votes": 452
+}

@@ -1,0 +1,13 @@
+{
+  "description": "Participants predict the relative game-playing strength of different Monte-Carlo Tree Search (MCTS) algorithm variants across a wide range of board games. The task involves modeling continuous performance metrics based on features derived from game simulations and MCTS configurations. Success is measured using Mean Squared Error on a held-out test set, with separate public and private leaderboards.",
+  "data_modality": "tabular",
+  "task_type": "regression",
+  "label_structure": "unknown",
+  "metric": "Mean Squared Error",
+  "test_split": "unknown",
+  "format": "two_stage",
+  "dataset_scale": "unknown",
+  "domain": "board_games",
+  "data_challenges": [],
+  "constraints": []
+}

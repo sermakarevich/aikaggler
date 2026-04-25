@@ -1,0 +1,30 @@
+{
+  "summary": "This notebook demonstrates an inference pipeline for a 4-bit quantized Gemma-2-9B model fine-tuned with LoRA on a multilingual chatbot preference prediction task. It handles data loading, custom prompt/response formatting, and tokenization with dynamic length constraints. The code efficiently splits the dataset by sequence length and runs parallel inference across two GPUs using ThreadPoolExecutor to maximize throughput. Finally, it converts model probabilities into class labels and generates a competition submission CSV. Readers should learn how to deploy quantized LLMs for binary classification while managing memory and batching constraints during inference.",
+  "purpose": "inference",
+  "competition_flow": "Loads test data, formats prompts and responses, tokenizes them with custom truncation logic, runs parallel inference on a 4-bit quantized Gemma-2-9B LoRA model across two GPUs, and exports a CSV submission with predicted winners.",
+  "data_reading": [
+    "pd.read_parquet from Kaggle datasets (train.parquet or test.parquet), with NaN values filled with empty strings."
+  ],
+  "data_processing": [
+    "Custom string formatting for prompts and responses, tokenization with GemmaTokenizerFast, truncation of prompts to max_prompt_length, dynamic response length calculation to fit max_length, sorting by sequence length, and splitting the dataset into two halves for parallel processing."
+  ],
+  "features_engineering": [],
+  "models": [
+    "Gemma2ForSequenceClassification with LoRA"
+  ],
+  "frameworks_used": [
+    "transformers",
+    "peft",
+    "torch"
+  ],
+  "loss_functions": [],
+  "cv_strategy": "",
+  "ensembling": "",
+  "insights": [
+    "Splitting a dataset by sequence length and processing halves in parallel maximizes GPU throughput while preventing OOM errors during dynamic batching."
+  ],
+  "critical_findings": [],
+  "what_did_not_work": [],
+  "source_url": "https://www.kaggle.com/code/hengck23/sft-gemma-2-9b-it-bnb-4bit",
+  "votes": 393
+}

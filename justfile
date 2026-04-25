@@ -13,6 +13,9 @@ solutions slug="human-protein-atlas-image-classification":
 notebooks slug="human-protein-atlas-image-classification":
     uv run akc notebooks {{slug}}
 
+repos slug="human-protein-atlas-image-classification":
+    uv run akc repos {{slug}}
+
 run-competitions *args="":
     uv run python run_competitions.py {{args}}
 

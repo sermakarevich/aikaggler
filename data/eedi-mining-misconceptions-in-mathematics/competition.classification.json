@@ -1,0 +1,13 @@
+{
+  "description": "Participants analyze multiple-choice mathematics questions to determine which incorrect answer options (distractors) are caused by specific student misconceptions. The task requires scoring the relevance between each misconception and a pool of candidate distractors, effectively ranking them by affinity. Model performance is evaluated using Mean Average Precision at K (MAP@K) on a private test set.",
+  "data_modality": "text",
+  "task_type": "classification",
+  "label_structure": "multi_label",
+  "metric": "MAP@{K}",
+  "test_split": "unknown",
+  "format": "two_stage",
+  "dataset_scale": "unknown",
+  "domain": "education",
+  "data_challenges": [],
+  "constraints": []
+}

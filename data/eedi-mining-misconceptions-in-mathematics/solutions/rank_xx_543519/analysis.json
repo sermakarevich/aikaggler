@@ -1,0 +1,41 @@
+{
+  "summary": "The author shares techniques for training an LLM-based recall model, emphasizing hard negative mining, larger batch sizes, and tailored training parameters. They split the validation set by question ID, which yielded stable CV scores and a significant LB improvement. The writeup references prior work on iterative hard negative mining and provides links to training and inference scripts for a 7B Mistral model using QLoRA and DeepSpeed.",
+  "extensive_summary": "The author discusses their approach to an LLM recall and ranking task, noting that despite relatively small data, large models produce stable cross-validation and leaderboard scores. A key methodological choice was splitting the validation set by question ID, which notably improved the LB score. The core training strategy revolves around three pillars: hard negative mining, larger batch sizes, and adjusting training hyperparameters specifically for LLMs.\n\nDrawing from their championship experience in the KDD Cup 2024 AQA track, they highlight iterative hard negative mining as highly effective. They provide references to their training code, which utilizes a 7B Mistral model fine-tuned with QLoRA and DeepSpeed, along with an inference script that completes in under 30 minutes. The writeup also points to the MTEB leaderboard as a resource for pre-trained LLM vector models and technical reports.",
+  "rank": null,
+  "competition_flow": "The pipeline involves splitting data by question ID for validation, training an LLM-based vector model using hard negative mining and QLoRA, and generating embeddings for recall with a fast inference script.",
+  "data_reading": [],
+  "data_processing": [],
+  "features_engineering": [],
+  "models": [
+    "LLM 7b model",
+    "Mistral",
+    "SimCSE"
+  ],
+  "frameworks_used": [
+    "DeepSpeed"
+  ],
+  "loss_functions": [],
+  "cv_strategy": "Split by question ID",
+  "ensembling": "",
+  "insights": [
+    "Hard negative mining, larger batch sizes, and adjusting training parameters for LLMs are critical for training effective LLM vector models."
+  ],
+  "critical_findings": [
+    "Splitting the CV by question ID led to a particularly significant increase in the LB score, and large models maintain stable CV/LB scores even with relatively small datasets."
+  ],
+  "what_did_not_work": [],
+  "github_repos": [
+    {
+      "url": "https://github.com/BlackPearl-Lab/KddCup-2024-OAG-Challenge-1st-Solutions",
+      "role": "solution"
+    }
+  ],
+  "papers": [],
+  "other_solution_refs": [
+    {
+      "description": "Inference script for LLM embedding recall",
+      "url": "https://www.kaggle.com/code/sayoulala/use-llm-embedding-recall-infer"
+    }
+  ],
+  "source_url": "https://www.kaggle.com/competitions/eedi-mining-misconceptions-in-mathematics/discussion/543519"
+}

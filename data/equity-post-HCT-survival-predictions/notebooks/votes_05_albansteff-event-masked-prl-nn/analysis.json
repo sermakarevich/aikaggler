@@ -1,0 +1,49 @@
+{
+  "summary": "This notebook demonstrates a survival prediction pipeline for post-HCT patient outcomes, combining a binary XGBoost classifier with a custom PyTorch Lightning neural network trained via pairwise ranking loss. It introduces an event-predicted mask to shift risk predictions and carefully handles censored data by masking invalid subject pairs during training. The author also incorporates race-group fairness constraints and an auxiliary classification task to stabilize learning. Readers should understand how to adapt ranking losses for survival data, manage categorical embeddings with ODST layers, and use post-processing offsets to align model outputs with clinical event probabilities.",
+  "purpose": "training",
+  "competition_flow": "Loads tabular survival data, preprocesses features, trains a 5-fold XGBoost classifier to generate an event mask, trains a 5-fold PyTorch Lightning neural network with pairwise ranking loss and event masking, applies a constant offset to predictions where the XGBoost mask indicates an event, and exports a submission CSV.",
+  "data_reading": [
+    "pd.read_csv from /kaggle/input/equity-post-HCT-survival-predictions/ for train.csv and test.csv."
+  ],
+  "data_processing": [
+    "Fills categorical NAs with 'Unknown', numerical NAs with median, converts categoricals to pandas categorical dtype, applies LabelEncoder to categoricals, SimpleImputer (mean) + StandardScaler to numericals, log-transforms efs_time, removes constant columns, and handles unseen categories by setting to NaN."
+  ],
+  "features_engineering": [
+    "year_hct - 2000",
+    "is_cyto_score_same (binary flag for cyto_score match)",
+    "log-transform of efs_time",
+    "race_group + newborn indicator for stratification"
+  ],
+  "models": [
+    "XGBClassifier",
+    "LitNN (custom PyTorch model with CatEmbeddings, ODST layers, MLP, and auxiliary classifier head)"
+  ],
+  "frameworks_used": [
+    "xgboost",
+    "pytorch_lightning",
+    "torch",
+    "scikit-learn",
+    "lifelines",
+    "pytorch_tabular",
+    "pandas",
+    "numpy"
+  ],
+  "loss_functions": [
+    "Pairwise hinge loss with margin (event-masked)",
+    "Race-group variance loss",
+    "Auxiliary MSE loss",
+    "Binary cross-entropy (XGBoost)"
+  ],
+  "cv_strategy": "StratifiedKFold(n_splits=5, shuffle=True, random_state=42) on efs for XGBoost; StratifiedKFold(n_splits=5, shuffle=True) on race_group + newborn indicator for NN.",
+  "ensembling": "Adds a fixed offset of 0.2 to the neural network's predictions only in samples where the XGBoost classifier predicts an event (efs=1), effectively shifting risk for masked subjects before submission.",
+  "insights": [
+    "Pairwise ranking losses require careful masking to exclude invalid comparisons between censored and event subjects.",
+    "Using ODST layers with categorical embeddings improves tabular neural network performance.",
+    "Stochastic Weight Averaging (SWA) and cosine annealing help stabilize training for complex survival objectives.",
+    "Adding race-group loss variance encourages equitable performance across demographic subgroups."
+  ],
+  "critical_findings": [],
+  "what_did_not_work": [],
+  "source_url": "https://www.kaggle.com/code/albansteff/event-masked-prl-nn",
+  "votes": 535
+}

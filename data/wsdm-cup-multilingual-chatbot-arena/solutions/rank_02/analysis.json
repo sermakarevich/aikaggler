@@ -1,0 +1,90 @@
+{
+  "summary": "The author secured 2nd place by fine-tuning Gemma-2 and Llama-3 models initialized from a previous competition's efficient framework. A core strategy involved iterative pseudo-labeling using external datasets and large open-source models, progressively expanding non-English data to boost multilingual performance. The pipeline combined careful data truncation, soft-label averaging, and a two-stage training schedule (English-first, then multilingual) to mitigate noise. Final inference leveraged Test-Time Augmentation with a weighted ensemble of swapped prediction heads, achieving a private score of 0.716.",
+  "extensive_summary": "## Code Framework & Base Models\nThe solution builds on @tascj0's efficient full-parameter fine-tuning and inference framework. Base models `gemma2-9b` and `ArmoRM-Llama3-8B-v0.1` are initialized from @tascj0's checkpoints rather than training from scratch. The original 3-class classification head is replaced with a 2-class head, yielding `lmsys-gemma-pretrain` and `lmsys-llama-pretrain`.\n\n## Data Processing & Truncation\nInput sequences (`prompt`, `response_a`, `response_b`) are proportionally truncated in the middle based on length ratios to preserve context while managing context windows.\n\n## Iterative Pseudo-Labeling & Data Expansion\nThe author implements a multi-stage pseudo-labeling pipeline. Initially, soft labels are averaged from three models to create `hf-21k` using @nbroad's v1 and v2 datasets (v3 is excluded due to minimal model capability gaps causing noise). To improve multilingual robustness, the pipeline expands to `vllm-74k` derived from `lmsys-chat-1m` (deduplicated and filtered). Response pairs are generated via vLLM inference using a diverse set of open models (e.g., `Qwen/Qwen2.5-72B-Instruct`, `Llama-3.3-70B-Instruct`, `DeepSeek-R1-Distill-Qwen-32B`). The dataset is split by language and sampled into v1/v2/v3 subsets with progressively higher non-English ratios. Pseudo-labels are filtered by confidence (`abs(winner_model_a - winner_model_b) <= 0.03`).\n\n## Training Strategy\nModels undergo expanded pretraining on 95k combined pseudo-labels to reduce noise, followed by full fine-tuning on the WSDM dataset. A crucial scheduling choice splits training into two epochs: the first on a 90% English subset, and the second on a 10% English + multilingual subset.\n\n## Inference & Ensembling\nFinal inference uses Test-Time Augmentation (TTA) with a weighted ensemble. `gemma-final` predicts PAB, while `llama-final` predicts PBA (swapped) only for high-confidence samples (`abs(winner_model_a - winner_model_b) < 0.8`). The predictions are weighted 2.5:1, improving the private score to 0.716.",
+  "rank": 2,
+  "competition_flow": "Raw text data is truncated proportionally in the middle, then used to fine-tune Gemma-2 and Llama-3 models initialized from previous checkpoints; iterative pseudo-labeling with external datasets and large open models expands the training pool, followed by a two-epoch training schedule (English-first, then multilingual) and weighted TTA inference to produce the final submission.",
+  "data_reading": [
+    "Text sequences (`prompt`, `response_a`, `response_b`) are loaded and proportionally truncated in the middle based on length ratios."
+  ],
+  "data_processing": [
+    "Proportional middle truncation of `prompt`, `response_a`, and `response_b` based on length ratios",
+    "Deduplication of prompts from `lmsys-chat-1m` and removal of prompts overlapping with external datasets",
+    "Filtering pseudo-labels by confidence margin (`abs(winner_model_a - winner_model_b) <= 0.03`)",
+    "Sampling datasets with increasing non-English ratios to improve multilingual performance",
+    "Removal of 'think' sections from DeepSeek-R1 model outputs"
+  ],
+  "features_engineering": [],
+  "models": [
+    "gemma2-9b",
+    "ArmoRM-Llama3-8B-v0.1",
+    "gemma2-27b",
+    "Qwen/Qwen2.5-72B-Instruct",
+    "Llama-3.3-70B-Instruct",
+    "gemma-2-27b-it",
+    "phi-4",
+    "DeepSeek-R1-Distill-Qwen-32B",
+    "Mistral-7B-Instruct-v0.3",
+    "internlm2_5-20b-chat",
+    "llama-3.2-3b-instruct",
+    "Hermes-3-Llama-3.1-8B",
+    "internlm3-8b-instruct",
+    "gemma-2-9b-it",
+    "DeepSeek-R1-Distill-Qwen-14B",
+    "Llama-3.2-1B-Instruct",
+    "Skywork-Reward-Gemma-2-27B-v0.2",
+    "Skywork-Reward-Llama-3.1-8B-v0.2",
+    "Skywork-Reward-Preference-80K-v0.2"
+  ],
+  "frameworks_used": [
+    "vllm"
+  ],
+  "loss_functions": [],
+  "cv_strategy": "80/20 train/validation split for initial fine-tuning, later expanded to 100% training data for final stages.",
+  "ensembling": "Weighted ensemble of TTA predictions from `gemma-final` (PAB) and `llama-final` (PBA swapped) at a 2.5:1 ratio, with `llama-final` only applied to high-confidence samples (`abs(winner_model_a - winner_model_b) < 0.8`).",
+  "insights": [
+    "Increasing the non-English data ratio in pseudo-labeling datasets significantly improves multilingual performance.",
+    "A two-epoch training schedule (English-first, then multilingual) effectively balances language capabilities without degrading English performance.",
+    "Filtering pseudo-labels by a confidence margin reduces noise during iterative training."
+  ],
+  "critical_findings": [
+    "Excluding @nbroad's v3 pseudo-label dataset prevented noise because the model capability gaps were too minimal.",
+    "Using `llama-final` only for high-confidence predictions (`< 0.8` margin) during TTA improved the private score without hurting the LB score."
+  ],
+  "what_did_not_work": [
+    "Qwen2.5-72B distillation (limited by time/GPU, lacked pretraining cycle)",
+    "Pseudo-labeling with Skywork-Reward-Gemma-2-27B-v0.2",
+    "Replacing `lmsys-llama-pretrain` with Skywork-Reward-Llama-3.1-8B-v0.2",
+    "Using Skywork-Reward-Preference-80K-v0.2 dataset",
+    "BT loss, multi-loss weighting"
+  ],
+  "github_repos": [
+    {
+      "url": "https://github.com/tascj/kaggle-lmsys-chatbot-arena",
+      "role": "reference"
+    },
+    {
+      "url": "https://github.com/zhudongwork/wsdm-cub-2nd-place-solution",
+      "role": "solution"
+    }
+  ],
+  "papers": [],
+  "other_solution_refs": [
+    {
+      "description": "Pseudo-label dataset v1",
+      "url": "https://www.kaggle.com/competitions/wsdm-cup-multilingual-chatbot-arena/discussion/552166"
+    },
+    {
+      "description": "Pseudo-label dataset v2",
+      "url": "https://www.kaggle.com/competitions/wsdm-cup-multilingual-chatbot-arena/discussion/556059"
+    },
+    {
+      "description": "Pseudo-label dataset v3 (excluded)",
+      "url": "https://www.kaggle.com/competitions/wsdm-cup-multilingual-chatbot-arena/discussion/557746"
+    },
+    {
+      "description": "Reference inference notebook",
+      "url": "https://www.kaggle.com/code/tascj0/lmsys-0805/notebook?scriptVersionId=191245382"
+    }
+  ],
+  "source_url": "https://www.kaggle.com/competitions/wsdm-cup-multilingual-chatbot-arena/discussion/567948"
+}

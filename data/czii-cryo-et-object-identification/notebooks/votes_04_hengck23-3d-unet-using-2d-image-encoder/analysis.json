@@ -1,0 +1,35 @@
+{
+  "summary": "This notebook implements an inference and local evaluation pipeline for a 3D cryo-electron tomography object detection task. It loads a pre-trained model checkpoint, processes large 3D volumes using a memory-efficient sliding-window approach with overlapping slices, and averages the output probability maps to ensure spatial consistency. Post-processing applies class-specific thresholds and connected-component analysis to extract precise 3D coordinates, which are formatted into a competition submission CSV. The notebook also includes a custom evaluation script that matches predictions to ground truth using the Hungarian algorithm and computes a weighted F-beta4 score to simulate the official leaderboard. Readers should learn how to handle large-scale 3D inference, implement robust centroid extraction from probability maps, and replicate competition metrics locally.",
+  "purpose": "inference",
+  "competition_flow": "Loads pre-trained weights, processes 3D cryo-ET volumes via a sliding-window inference pipeline, extracts 3D particle coordinates using connected components, and generates a CSV submission alongside a custom local evaluation script.",
+  "data_reading": [
+    "Uses custom helper functions (read_one_data, read_one_truth) to load 3D volume tensors and ground truth coordinates from Kaggle input directories."
+  ],
+  "data_processing": [
+    "Pads volumes to 640x640, splits 3D volumes into overlapping depth slices (size 64, stride 32), runs inference per slice, averages overlapping probability maps, applies class-specific thresholds (0.05), and extracts centroids from connected components scaled by voxel size (10.012444)."
+  ],
+  "features_engineering": [],
+  "models": [
+    "resnet34d (3D UNet with 2D ResNet-34 encoder)"
+  ],
+  "frameworks_used": [
+    "pytorch",
+    "numpy",
+    "scipy",
+    "connected-components-3d",
+    "pandas",
+    "matplotlib"
+  ],
+  "loss_functions": [],
+  "cv_strategy": "",
+  "ensembling": "",
+  "insights": [
+    "Sliding-window inference with overlapping slices and probability averaging effectively handles large 3D volumes while maintaining spatial consistency.",
+    "Connected-component analysis on thresholded probability maps is a robust and efficient way to extract discrete 3D object locations.",
+    "Custom evaluation metrics using the Hungarian algorithm for matching and class-weighted F-beta scores can accurately simulate competition leaderboards locally."
+  ],
+  "critical_findings": [],
+  "what_did_not_work": [],
+  "source_url": "https://www.kaggle.com/code/hengck23/3d-unet-using-2d-image-encoder",
+  "votes": 340
+}

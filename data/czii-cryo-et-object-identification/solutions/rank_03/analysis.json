@@ -1,0 +1,55 @@
+{
+  "summary": "The author developed a 3D UNet segmentation model using a ResNet101 backbone for a particle segmentation task. They leveraged the `accelerate` library for training, applied specific 3D augmentations and TTA, and used post-processing with `cc3d`. The final submission was a 4-fold, 7-kfold average ensemble that achieved a consistent score of 0.783 on both public and private leaderboards.",
+  "extensive_summary": "## Overview\nThe author initially approached the competition expecting an object detection task but quickly pivoted to 3D segmentation after reviewing a baseline notebook. Their solution centers on a 3D UNet architecture paired with a ResNet101 backbone, implemented via the `segmentation_models_pytorch_3d` library and trained using the `accelerate` framework. Cross-entropy loss was applied across all 7 particle classes.\n\n## Training & Inference Strategy\nTraining was conducted with an input size of `(64, 128, 128)`, while inference utilized a larger size of `(64, 256, 256)`, yielding a consistent marginal improvement. The author also halved the original radius during training to better align with the evaluation metric. To stabilize training, they opted for Exponential Moving Average (EMA) over Stochastic Weight Averaging (SWA) for simplicity, despite acknowledging SWA's theoretical benefits.\n\n## Augmentation & Post-Processing\nData augmentation was critical due to limited data, incorporating 3D axis flips, axis swapping, multiple denoising/correction algorithms (`\"denoised\"`, `\"wbp\"`, `\"ctfdeconvolved\"`, `\"isonetcorrected\"`), copy-paste, and mixup. Test-time augmentation (TTA) averaged predictions with flipped and rotated versions of the input. Final predictions were post-processed using `cc3d` and submitted as a 4-fold, 7-kfold average ensemble.",
+  "rank": 3,
+  "competition_flow": "Raw 3D particle data was processed using a host-provided baseline, fed into a 3D UNet with ResNet101 backbone trained via EMA and extensive 3D augmentations, post-processed with cc3d, and submitted as a 4-fold, 7-kfold average ensemble.",
+  "data_reading": [],
+  "data_processing": [
+    "Host-provided baseline processing",
+    "Training input size (64, 128, 128) vs inference size (64, 256, 256)",
+    "Halved original radius during training",
+    "Train-time augmentations: axis flips (x, y, z), axis swapping, denoising/correction algorithms ('denoised', 'wbp', 'ctfdeconvolved', 'isonetcorrected'), copy-paste, mixup",
+    "TTA: averaging predictions with flipped and rotated inputs",
+    "Post-processing with cc3d"
+  ],
+  "features_engineering": [],
+  "models": [
+    "Unet + resnet101"
+  ],
+  "frameworks_used": [
+    "pytorch",
+    "accelerate",
+    "segmentation_models_pytorch_3d"
+  ],
+  "loss_functions": [
+    "Cross Entropy loss"
+  ],
+  "cv_strategy": "4-fold cross-validation with 7-kfold averaging",
+  "ensembling": "Final submission was a 4-fold, 7-kfold average ensemble of UNet+ResNet101 models, with TTA predictions averaged alongside original outputs and post-processed using cc3d.",
+  "insights": [
+    "Using a larger inference input size (64, 256, 256) than training size (64, 128, 128) provided a consistent score improvement.",
+    "Halving the original radius during training aligned better with the evaluation metric.",
+    "EMA was chosen over SWA for easier implementation despite SWA's theoretical advantages."
+  ],
+  "critical_findings": [
+    "The final model achieved an identical score of 0.783 on both the public and private leaderboards, indicating no data leakage or overfitting to the LB."
+  ],
+  "what_did_not_work": [
+    "Pretraining on the external data provided by the host.",
+    "Ensembling UNet with different backbones like ResNet34 and ResNet10."
+  ],
+  "github_repos": [
+    {
+      "url": "https://github.com/ZFTurbo/segmentation_models_pytorch_3d",
+      "role": "library"
+    }
+  ],
+  "papers": [],
+  "other_solution_refs": [
+    {
+      "description": "Notebook referenced for initial task clarification",
+      "url": "https://www.kaggle.com/code/hengck23/3d-unet-using-2d-image-encoder"
+    }
+  ],
+  "source_url": "https://www.kaggle.com/competitions/czii-cryo-et-object-identification/discussion/561417"
+}

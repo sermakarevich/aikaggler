@@ -1,0 +1,23 @@
+{
+  "id": "garried/lb-over-2-000-with-c-stockfish-4-0",
+  "id_no": 72929840,
+  "title": "LB over 2,000 with C++ Stockfish 4.0",
+  "code_file": "lb-over-2-000-with-c-stockfish-4-0.ipynb",
+  "language": "python",
+  "kernel_type": "notebook",
+  "is_private": false,
+  "enable_gpu": false,
+  "enable_tpu": false,
+  "enable_internet": true,
+  "keywords": [],
+  "dataset_sources": [
+    ""
+  ],
+  "kernel_sources": [],
+  "competition_sources": [
+    "fide-google-efficiency-chess-ai-challenge"
+  ],
+  "model_sources": [],
+  "docker_image": "gcr.io/kaggle-images/python@sha256:d6c239c710c9732d8a999bd7f81f4f5ff3a4e6c9ddfb331cba95ea5c2968fc1a",
+  "machine_shape": "None"
+}

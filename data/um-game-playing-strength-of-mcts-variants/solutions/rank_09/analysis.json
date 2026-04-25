@@ -1,0 +1,61 @@
+{
+  "summary": "The team achieved 9th place by ensembling a modified AdvantageP1 feature, a CatBoost model, and two LightGBM Dart models trained on different feature sets. They extensively experimented with data augmentations (flip, self-play, transitivity) but ultimately dropped them from training due to instability, relying only on flip augmentation during TTA. Key modeling tricks included subtracting AdvantageP1 from the target to stabilize predictions, modifying AdvantageP1 to match the target's win/loss difference structure, using CatBoost's MultiRMSE objective, and optimizing ensemble weights and clipping values to translate CV gains to LB improvements.",
+  "extensive_summary": "## Validation Strategy\nThe authors validated their models using 8-folds GroupKFold, which surprisingly provided more stable CV correlation than the more common 5 or 10 folds.\n\n## Data Augmentation Experiments\nThe team explored three augmentation strategies: flip (swapping agents and flipping AdvantageP1/utility_agent1), self-play (agent vs itself), and transitivity (linking matches to synthesize new samples with derived skill differences). While these generated new data and improved CV, they caused training instability and overfitting to the public leaderboard. The team ultimately dropped all augmentations from training and only applied flip augmentation during TTA.\n\n## Modeling Tricks & Feature Engineering\nOne subgroup used raw features without selection, while another used correlation, variance, and permutation importance to select the top 300 features. Key tricks included predicting `utility_agent1 - AdvantageP1` and reversing it post-prediction, modifying `AdvantageP1` to represent win/loss difference instead of winning probability, and using CatBoost's `MultiRMSE` objective on concatenated `y` and `-y`. They also tried per-agent models, full fits, classifiers, and pseudo-labeling.\n\n## Ensembling & Final Tuning\nThe final submission combined the CatBoost and two Dart models. They optimized linear ensemble weights (`a*pred + b`) and applied clipping (`np.clip(pred, a, b)`) to both CV and LB, ultimately selecting the 2nd best public sub which performed well privately.",
+  "rank": 9,
+  "competition_flow": "Raw tabular match data was processed with targeted augmentations and feature selection, fed into CatBoost and LightGBM Dart models trained with 8-fold GroupKFold, then combined via optimized linear weights and clipping for the final submission.",
+  "data_reading": [],
+  "data_processing": [
+    "Flip augmentation (swapping agents and flipping AdvantageP1/utility_agent1)",
+    "Self-play augmentation (agent vs itself)",
+    "Transitivity augmentation (synthesizing new samples via skill difference derivation)",
+    "Feature selection based on correlation, variance, and permutation importance for the top 300 features",
+    "Prediction clipping via np.clip"
+  ],
+  "features_engineering": [
+    "Modified AdvantageP1 to represent win/loss difference instead of winning probability",
+    "Predicted utility_agent1 - AdvantageP1 as a stabilized target and reversed it post-prediction",
+    "Synthesized transitivity features by calculating skill differences from intermediate agent wins/losses and draws"
+  ],
+  "models": [
+    "CatBoost",
+    "LightGBM Dart"
+  ],
+  "frameworks_used": [
+    "catboost",
+    "lightgbm",
+    "pandas",
+    "numpy"
+  ],
+  "loss_functions": [
+    "MultiRMSE"
+  ],
+  "cv_strategy": "8-folds GroupKFold",
+  "ensembling": "The final submission combined predictions from a CatBoost model and two LightGBM Dart models, optimized via linear weight tuning and prediction clipping, with flip augmentation applied during inference.",
+  "insights": [
+    "Using 8-folds GroupKFold provided more stable CV correlation than 5 or 10 folds.",
+    "Predicting a stabilized target (utility_agent1 - AdvantageP1) and reversing it post-prediction significantly improved CV.",
+    "Modifying AdvantageP1 to match the target's win/loss difference structure aligned feature distribution with the target.",
+    "Training on synthetic augmentations improved CV but often hurt LB due to overfitting, making original data + TTA more robust.",
+    "Optimizing ensemble weights and clipping values is crucial for translating CV gains to LB improvements."
+  ],
+  "critical_findings": [
+    "Augmentations that boosted CV by ~0.01 actually degraded LB performance, highlighting a CV/LB leakage or overfitting risk.",
+    "Predicting wins/n and losses/n separately improved CV but worsened LB, likely because the model over-relied on AdvantageP1's distribution matching the target.",
+    "Using 8 folds instead of the more common 5 or 10 folds unexpectedly stabilized the validation process and improved correlation."
+  ],
+  "what_did_not_work": [
+    "Self-play and transitivity augmentations improved CV but did not translate to LB gains and caused training instability.",
+    "Training per-agent models improved CV but yielded worse private scores.",
+    "Reducing target unique values and using a classifier with expectation mapping did not help CV or LB.",
+    "Pseudo-labeling on test predictions provided no improvement in CV or LB."
+  ],
+  "github_repos": [],
+  "papers": [],
+  "other_solution_refs": [
+    {
+      "description": "Author's inference notebook for the 9th place solution",
+      "url": "https://www.kaggle.com/code/mohammad2012191/um-inference-nb-9th-place-solution"
+    }
+  ],
+  "source_url": "https://www.kaggle.com/competitions/um-game-playing-strength-of-mcts-variants/discussion/549624"
+}

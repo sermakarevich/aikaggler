@@ -1,0 +1,37 @@
+{
+  "summary": "This notebook demonstrates an inference pipeline for predicting chatbot preference rankings by adapting a previous LMSYS competition solution to the WSDM Multilingual Chatbot Arena competition. It loads a 4-bit quantized Gemma-2-9B model, merges two LoRA adapters using weighted averaging, and processes test prompts with custom tokenization that truncates inputs and balances response lengths. The pipeline optimizes inference speed through dynamic padding, length-based sorting, and parallel execution across two GPUs. Test-time augmentation is applied by swapping response roles and combining predictions with weighted averaging. Readers should learn how to efficiently deploy and ensemble LoRA-finetuned LLMs for sequence classification tasks under strict latency constraints.",
+  "purpose": "inference",
+  "competition_flow": "Loads test data via PyArrow, tokenizes prompts and responses with custom truncation, merges two LoRA adapters into a Gemma-2-9B base model, runs parallel dual-GPU inference with test-time augmentation, and outputs a CSV submission with predicted winner probabilities.",
+  "data_reading": [
+    "Reads test.parquet using PyArrow, converts to pandas DataFrame, and fills missing values with empty strings."
+  ],
+  "data_processing": [
+    "Custom tokenization that prefixes prompts and responses with special tokens, truncates prompts to 512 tokens, splits remaining context equally between two responses, and adds BOS/EOS tokens. Applies test-time augmentation by swapping response_a and response_b."
+  ],
+  "features_engineering": [],
+  "models": [
+    "Gemma-2-9B-IT (4-bit quantized)",
+    "LoRA adapters"
+  ],
+  "frameworks_used": [
+    "pytorch",
+    "transformers",
+    "peft",
+    "bitsandbytes",
+    "pandas",
+    "pyarrow"
+  ],
+  "loss_functions": [],
+  "cv_strategy": "",
+  "ensembling": "Merges two LoRA adapter weight files using a weighted average (0.7 and 0.3), then applies test-time augmentation by swapping response roles and averaging the original and augmented predictions with weights 0.45 and 0.55.",
+  "insights": [
+    "Dynamic padding combined with length-based sorting significantly reduces inference latency.",
+    "Parallelizing inference across two GPUs using ThreadPoolExecutor maximizes hardware utilization.",
+    "Swapping response roles during test-time augmentation provides a simple but effective way to improve prediction robustness.",
+    "Weighted averaging of multiple LoRA adapters can effectively combine specialized fine-tuning directions."
+  ],
+  "critical_findings": [],
+  "what_did_not_work": [],
+  "source_url": "https://www.kaggle.com/code/takamichitoda/wsdm-apply-previous-lmsys-solution",
+  "votes": 329
+}

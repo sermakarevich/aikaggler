@@ -1,0 +1,30 @@
+{
+  "id": "itsuki9180/czii-yolo11-training-baseline",
+  "id_no": 72346950,
+  "title": "CZII YOLO11 Training Baseline",
+  "code_file": "czii-yolo11-training-baseline.ipynb",
+  "language": "python",
+  "kernel_type": "notebook",
+  "is_private": false,
+  "enable_gpu": true,
+  "enable_tpu": false,
+  "enable_internet": true,
+  "keywords": [
+    "gpu"
+  ],
+  "dataset_sources": [
+    "itsuki9180/czii-yolo-datasets"
+  ],
+  "kernel_sources": [
+    "itsuki9180/ultralytics-for-offline-install",
+    ""
+  ],
+  "competition_sources": [
+    "czii-cryo-et-object-identification"
+  ],
+  "model_sources": [
+    "ultralytics/yolo11/PyTorch/default/1"
+  ],
+  "docker_image": "gcr.io/kaggle-private-byod/python@sha256:f9647cc12ad6b5bff2567807c9baa993ae44f17e770a4e099dbde5f4e3a2f1ae",
+  "machine_shape": "NvidiaTeslaT4"
+}

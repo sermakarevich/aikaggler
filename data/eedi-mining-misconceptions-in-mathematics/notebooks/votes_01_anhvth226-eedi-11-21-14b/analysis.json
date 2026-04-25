@@ -1,0 +1,32 @@
+{
+  "summary": "This notebook implements a retrieval-based inference pipeline for identifying student misconceptions in mathematics. It formats math problems and wrong answers into structured prompts, then uses a quantized LLM (Qwen2.5-14B with LoRA) to generate dense embeddings for both queries and a catalog of misconception descriptions. By computing cosine similarity, it retrieves the top 25 most relevant misconceptions per question and formats them into a competition submission. The author demonstrates how to efficiently run LLM-based retrieval on Kaggle GPUs using AWQ quantization and last-token pooling, while also providing commented code for a potential LLM-based reranking stage.",
+  "purpose": "inference",
+  "competition_flow": "Loads math problem data and a misconception catalog, formats them into prompts, generates dense embeddings using a quantized LLM, retrieves the top 25 matching misconceptions per question via similarity search, and exports the results as a CSV submission.",
+  "data_reading": [
+    "Reads train.csv, test.csv, and misconception_mapping.csv from Kaggle input paths using pd.read_csv(), filling missing values with -1."
+  ],
+  "data_processing": [
+    "Constructs structured prompts combining question text, subject, construct, correct answer, and wrong answer; tokenizes inputs with AutoTokenizer (truncation/padding to 320/48 tokens); extracts last hidden states, applies last-token pooling, and L2-normalizes embeddings for similarity computation."
+  ],
+  "features_engineering": [],
+  "models": [
+    "Qwen2.5-14B (AWQ quantized) with LoRA adapter"
+  ],
+  "frameworks_used": [
+    "torch",
+    "transformers",
+    "peft"
+  ],
+  "loss_functions": [],
+  "cv_strategy": "",
+  "ensembling": "",
+  "insights": [
+    "Using a quantized LLM as a dense retriever effectively matches student errors to predefined misconception descriptions without direct generation.",
+    "Last-token pooling combined with L2 normalization provides a simple and effective way to extract sentence embeddings from generative LLMs.",
+    "Retrieval-based ranking avoids hallucination risks common in direct LLM classification for structured competition tasks."
+  ],
+  "critical_findings": [],
+  "what_did_not_work": [],
+  "source_url": "https://www.kaggle.com/code/anhvth226/eedi-11-21-14b",
+  "votes": 686
+}

@@ -1,0 +1,39 @@
+{
+  "summary": "This notebook demonstrates a fast inference pipeline for the CZII cryo-ET object identification competition using a pre-trained YOLO model. It addresses the computational bottleneck of processing large 3D volumes by converting them to 8-bit 2D slices and running efficient 2D object detection. The core innovation is a KDTree-based spatial aggregation step that clusters overlapping 2D detections across slices using a Union-Find algorithm, applying distance thresholds and confidence weighting to produce final 3D particle coordinates. The author shows how combining KDTree spatial queries with multiprocessing reduces inference time significantly, providing a practical baseline for 3D object detection in volumetric microscopy data.",
+  "purpose": "baseline",
+  "competition_flow": "Loads test volumetric data from zarr files, runs 2D YOLO inference on resized slices, aggregates detections across slices using KDTree and Union-Find, and outputs a CSV submission with 3D particle coordinates and types.",
+  "data_reading": [
+    "Loads 3D volumetric data from zarr files located in the test directory, extracting the first channel as a numpy array."
+  ],
+  "data_processing": [
+    "Clips volume intensities to the 0.5th and 99.5th percentiles, scales to 8-bit, resizes each 2D slice to 640x640, and applies coordinate scaling factors to map detections back to original voxel space."
+  ],
+  "features_engineering": [],
+  "models": [
+    "YOLO11"
+  ],
+  "frameworks_used": [
+    "ultralytics",
+    "torch",
+    "zarr",
+    "scipy",
+    "numpy",
+    "pandas",
+    "opencv-python",
+    "concurrent.futures"
+  ],
+  "loss_functions": [],
+  "cv_strategy": "Validation on TS_5_4, TS_69_2, TS_6_4, TS_6_6 with OPTUNA-optimized confidence and distance thresholds.",
+  "ensembling": "Single YOLO model inference followed by KDTree-based spatial clustering across 2D slices using a Union-Find algorithm, confidence weighting, and per-class minimum cluster size filtering to generate final 3D coordinates.",
+  "insights": [
+    "Converting volumetric zarr data to 8-bit 2D slices enables efficient 2D YOLO inference without excessive memory overhead.",
+    "KDTree spatial queries combined with Union-Find provide a fast and robust way to cluster overlapping 2D detections into coherent 3D particle instances.",
+    "Multiprocessing across multiple GPUs and data splits significantly reduces total inference time for large-scale competition submissions."
+  ],
+  "critical_findings": [],
+  "what_did_not_work": [
+    "The author initially attempted to train a 2D U-Net but abandoned it due to time constraints and inferior performance compared to the YOLO baseline."
+  ],
+  "source_url": "https://www.kaggle.com/code/sersasj/czii-yolo11-submission-baseline-with-kdtree-update",
+  "votes": 268
+}

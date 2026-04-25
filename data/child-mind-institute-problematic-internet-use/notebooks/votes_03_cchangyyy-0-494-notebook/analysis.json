@@ -1,0 +1,54 @@
+{
+  "summary": "This notebook demonstrates a regression-to-classification pipeline for the Child Mind Institute competition, focusing on handling mixed tabular and time-series data. It extracts statistical features from time-series parquets via a custom PyTorch autoencoder and creates domain-specific interaction features. The author trains multiple gradient boosting and neural network models using 5-fold stratified cross-validation, optimizes prediction thresholds on out-of-fold scores to maximize quadratic weighted kappa, and combines results through multiple voting regressors and final majority voting. Readers should learn how to bridge time-series feature extraction with tabular modeling, apply threshold tuning for ordinal regression metrics, and structure robust ensembling strategies.",
+  "purpose": "ensemble",
+  "competition_flow": "Loads tabular and time-series data, extracts autoencoder-derived and hand-crafted features, trains LightGBM, XGBoost, CatBoost, and TabNet via 5-fold stratified CV, optimizes prediction thresholds for QWK, and generates a final submission via majority voting across three ensemble configurations.",
+  "data_reading": [
+    "CSV files for main data and sample submission",
+    "Parquet files for time-series data loaded via pd.read_parquet within a ThreadPoolExecutor"
+  ],
+  "data_processing": [
+    "KNN imputation for numeric columns",
+    "Manual label encoding for categorical Season columns",
+    "Dropping columns with excessive missing values",
+    "Replacing infinite values with NaN",
+    "Rounding the target variable"
+  ],
+  "features_engineering": [
+    "Autoencoder-derived time-series embeddings (60 dimensions)",
+    "Hand-crafted physiological and behavioral interaction features (e.g., BMI_Age, Hydration_Status, Muscle_to_Fat)",
+    "Manual label encoding for categorical season indicators"
+  ],
+  "models": [
+    "LightGBM",
+    "XGBoost",
+    "CatBoost",
+    "TabNet",
+    "RandomForest",
+    "GradientBoosting"
+  ],
+  "frameworks_used": [
+    "scikit-learn",
+    "pytorch",
+    "keras",
+    "lightgbm",
+    "xgboost",
+    "catboost",
+    "pandas",
+    "numpy",
+    "scipy"
+  ],
+  "loss_functions": [
+    "MSE"
+  ],
+  "cv_strategy": "StratifiedKFold(n_splits=5, shuffle=True, random_state=42)",
+  "ensembling": "Combines predictions from three distinct VotingRegressor configurations (weighted and unweighted) and applies a final majority vote across submissions; optimizes prediction thresholds on out-of-fold scores using Nelder-Mead to maximize QWK before rounding.",
+  "insights": [
+    "Autoencoder-derived features effectively capture time-series patterns for tabular models.",
+    "Threshold optimization on out-of-fold predictions significantly improves ordinal regression metrics compared to naive rounding.",
+    "Majority voting across diverse ensemble configurations stabilizes predictions and mitigates individual model bias."
+  ],
+  "critical_findings": [],
+  "what_did_not_work": [],
+  "source_url": "https://www.kaggle.com/code/cchangyyy/0-494-notebook",
+  "votes": 934
+}

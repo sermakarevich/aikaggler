@@ -1,0 +1,34 @@
+{
+  "summary": "This notebook serves as a starter template for a Kaggle Code competition that uses a custom backend to stream test data in batches. It demonstrates how to structure a submission by implementing a predict function that handles both model initialization and inference within a strict 15-minute timeout constraint. The author shows how to integrate Polars for data manipulation, scikit-learn for encoding and modeling, and the official Kaggle evaluation server to interface with the competition's gateway. Readers should learn how to adapt their workflow to chunked inference APIs and manage initialization latency to avoid server timeouts.",
+  "purpose": "tutorial",
+  "competition_flow": "Loads training data with Polars, trains a RandomForestRegressor with ordinal encoding, and serves predictions via a custom Kaggle gateway server that streams test chunks to a predict function.",
+  "data_reading": [
+    "Loaded via polars.read_csv from the Kaggle input path."
+  ],
+  "data_processing": [
+    "Drops draw/loss/win counts and target column.",
+    "Encodes string/object columns using sklearn.preprocessing.OrdinalEncoder with handle_unknown='use_encoded_value' and unknown/missing values mapped to -999/-9999.",
+    "Converts encoded numpy arrays back to Polars Series to maintain DataFrame structure."
+  ],
+  "features_engineering": [],
+  "models": [
+    "RandomForestRegressor"
+  ],
+  "frameworks_used": [
+    "polars",
+    "scikit-learn",
+    "kaggle_evaluation"
+  ],
+  "loss_functions": [],
+  "cv_strategy": "",
+  "ensembling": "",
+  "insights": [
+    "Chunked inference APIs require handling initialization latency within the first predict call to avoid gateway timeouts.",
+    "A counter pattern enables expensive setup operations to run during the first inference call without blocking the server.",
+    "Polars DataFrames can be efficiently combined with scikit-learn by converting encoded numpy arrays back into Polars Series."
+  ],
+  "critical_findings": [],
+  "what_did_not_work": [],
+  "source_url": "https://www.kaggle.com/code/inversion/mcts-variants-getting-started",
+  "votes": 581
+}

@@ -1,0 +1,13 @@
+{
+  "description": "Participants predict the severity of problematic internet use in children using physical activity data. The dataset contains time-series or aggregated health metrics collected from wearable devices or surveys. Competitors must build a model to classify each subject into one of several predefined usage categories. Submissions are evaluated using the Cohen Kappa Score on a held-out test set.",
+  "data_modality": "time_series",
+  "task_type": "classification",
+  "label_structure": "single_label",
+  "metric": "Cohen Kappa Score",
+  "test_split": "unknown",
+  "format": "code_comp",
+  "dataset_scale": "unknown",
+  "domain": "mental_health",
+  "data_challenges": [],
+  "constraints": []
+}

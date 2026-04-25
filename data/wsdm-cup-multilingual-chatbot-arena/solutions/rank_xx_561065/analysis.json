@@ -1,0 +1,40 @@
+{
+  "summary": "The author reflects on their experimental approach to the WSDM competition, focusing on LLM training optimizations and inference speed improvements. They implemented multi-GPU parallelization scripts, applied left truncation and knowledge distillation, and extensively tested custom classification heads and language-aware training strategies. While most techniques failed to boost the score, the author gained valuable insights into model merging methods (Lerp, Slerp, TIES, DARE) and cloud data streaming via the Kaggle API.",
+  "extensive_summary": "The writeup serves as a reflective post-mortem on the author's approach to the WSDM competition, emphasizing experimental LLM training and inference optimizations. A primary focus was improving inference speed by writing custom scripts to parallelize model calls across multiple GPUs simultaneously. Drawing from a prior competition (LMSYS), the author implemented left truncation, knowledge distillation, and strategies to maximize sequence length and test-time augmentation (TTA), though they note these did not fully resolve their performance issues.\n\nThe author extensively experimented with custom classification heads, trying numerous variations without significant gains. They also hypothesized that language would be a critical factor, attempting to train on translated datasets, translate test inputs, and inject language identifiers during training. While these language-based tricks yielded no score improvements, they deepened their understanding of transformer architecture sensitivity to training data variations.\n\nOn the infrastructure side, the author leveraged the Kaggle API to stream data directly from cloud storage, bypassing local download bottlenecks. A major portion of their experimentation revolved around model merging techniques, exploring Lerp, Slerp, weighted exchanges, TIES, DARE, and LoRA weight balancing. Despite learning these methods thoroughly, they admit to not finding the optimal merging formula. Ultimately, the author hit a performance wall and remains uncertain how competitors achieved higher scores, framing the writeup as a knowledge-sharing exercise rather than a step-by-step recipe.",
+  "rank": null,
+  "competition_flow": "",
+  "data_reading": [],
+  "data_processing": [
+    "Left truncation",
+    "Translating training and test data",
+    "Injecting language identifiers during training",
+    "Adding a second set of labels",
+    "Test-time augmentation (TTA)"
+  ],
+  "features_engineering": [],
+  "models": [],
+  "frameworks_used": [],
+  "loss_functions": [],
+  "cv_strategy": "",
+  "ensembling": "Explored model merging techniques including Lerp, Slerp, weighted exchanges, TIES, DARE, and LoRA weight balancing, but did not finalize a successful merging formula.",
+  "insights": [
+    "Parallelizing inference across multiple GPUs via custom scripts significantly improves speed.",
+    "Left truncation, knowledge distillation, and maximizing TTA are critical for LLM competitions.",
+    "Language handling strategies (translation, identifiers) did not improve scores but revealed transformer sensitivity to data variations.",
+    "The Kaggle API is highly effective for streaming cloud data and avoiding local I/O bottlenecks.",
+    "Model merging can theoretically impact performance without retraining, though finding the right formula is non-trivial."
+  ],
+  "critical_findings": [
+    "Custom classification heads and language-aware training strategies failed to improve scores despite extensive experimentation.",
+    "The author hit a hard performance wall and could not replicate scores of 0.710 achieved by others, suggesting hidden optimization or data leakage factors."
+  ],
+  "what_did_not_work": [
+    "Custom classification heads yielded no significant score improvements.",
+    "Language handling strategies (translated data, test translation, language identifiers) failed to help.",
+    "Model merging techniques were explored but the author did not find the correct formula to make them work."
+  ],
+  "github_repos": [],
+  "papers": [],
+  "other_solution_refs": [],
+  "source_url": "https://www.kaggle.com/competitions/wsdm-cup-multilingual-chatbot-arena/discussion/561065"
+}

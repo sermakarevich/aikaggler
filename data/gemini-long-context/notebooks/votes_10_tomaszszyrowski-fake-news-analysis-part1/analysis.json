@@ -1,0 +1,40 @@
+{
+  "summary": "This notebook demonstrates a prompt engineering experiment to quantify 'fake news' in web articles using Google's Gemini model, with a Hugging Face zero-shot classifier as a fallback. It crafts six distinct prompts that frame fake news differently (e.g., factual errors vs. bias vs. exaggeration), runs them on sample Wikipedia articles, parses the model outputs for percentage estimates, and logs the results across multiple runs. The analysis visualizes how prompt framing influences AI-generated integrity scores. The key takeaway is that LLM-based content assessments are highly sensitive to prompt design and remain inherently subjective without strict, objective definitions.",
+  "purpose": "tutorial",
+  "competition_flow": "Scrapes a Wikipedia article URL \u2192 extracts paragraph text \u2192 evaluates it through six distinct LLM prompts \u2192 parses percentage outputs \u2192 logs and visualizes results across multiple runs.",
+  "data_reading": [
+    "Fetches a URL via `requests`, parses HTML with `BeautifulSoup`, and extracts all `<p>` tags into a single string."
+  ],
+  "data_processing": [
+    "HTML parsing and string joining; output parsing uses regex to extract percentage values from model responses."
+  ],
+  "features_engineering": [],
+  "models": [
+    "gemini-1.5-flash-latest",
+    "facebook/bart-large-mnli"
+  ],
+  "frameworks_used": [
+    "google-generativeai",
+    "transformers",
+    "pandas",
+    "matplotlib",
+    "seaborn",
+    "requests",
+    "beautifulsoup4"
+  ],
+  "loss_functions": [],
+  "cv_strategy": "",
+  "ensembling": "",
+  "insights": [
+    "Prompt framing significantly alters LLM-generated fake news percentages, revealing high sensitivity to how concepts like bias and exaggeration are defined.",
+    "LLM-based content integrity assessments remain highly subjective and unstable without strict, objective definitions in prompts.",
+    "Batched LLM inference requires explicit rate-limiting delays to avoid API throttling."
+  ],
+  "critical_findings": [
+    "Prompts targeting subjective elements like bias or exaggeration consistently yield higher fake news percentages than those strictly asking for verifiable factual errors.",
+    "The fallback free model does not match Gemini's capabilities, leading to variable accuracy and performance in the analysis."
+  ],
+  "what_did_not_work": [],
+  "source_url": "https://www.kaggle.com/code/tomaszszyrowski/fake-news-analysis-part1",
+  "votes": 55
+}

@@ -1,0 +1,39 @@
+{
+  "summary": "The author developed a GPU-accelerated local search optimization method to permute word sequences for a text-based competition. By running multiple simulated annealing processes in parallel and applying specialized sequence modification moves (k-opt, remove-insert, and double root/stem), they efficiently explored the solution space while maintaining diversity. A key technical contribution was addressing the competition metric's strong positional bias through a \"discounted perplexity\" normalization technique, which equalized the impact of modifications across all sequence positions. The writeup also details several alternative approaches that failed, including permutation matrix optimization with Sinkhorn normalization and MCTS-based sequence prediction.",
+  "extensive_summary": "## Core Optimization Strategy\nThe solution centers on a variant of simulated annealing (SA) adapted for GPU parallelization. Instead of traditional exponential acceptance criteria, the author uses a dynamic global upper bound to decide whether to keep a modified solution. To maximize GPU utilization, they run N parallel SA processes (where N matches the competition metric's batch size) and evaluate all modified texts in a single GPU batch. The algorithm maintains a global best score and uses crossover with the best solution to preserve diversity, deliberately avoiding full genetic algorithm mechanics to prevent premature convergence.\n\n## Sequence Modification Moves\nThree primary moves modify the word sequences, all inspired by ATSP heuristics:\n- **k-opt**: Splits the sequence into k segments, shuffles them, and concatenates them, with variants that fix some segments while permuting others.\n- **remove-insert**: Removes a subset of words and reinserts them, testing every possible location to pick the best fit. Random insertion and subsequence removal are also explored.\n- **double root and stem**: Utilizes a complex graph structure (two cycles with a path, or three paths with shared endpoints) modified via specific moves, then translated back into a word sequence.\n\n## Addressing Positional Bias\nThe author discovered that the competition metric heavily weights modifications near the start of the sequence, causing standard local search to neglect the beginning. To fix this, they implemented a \"discounted perplexity\" score. By dividing each token's logits by the average logit value at that position across the corpus and then taking the mean and exponent, they normalized the amplitude of score modifications across all positions. This ensures that early-sequence changes are as likely to be accepted as late-sequence changes.\n\n## Failed Approaches\nSeveral alternative methods were explicitly tested and discarded. These included optimizing a permutation matrix via Sinkhorn normalization and backpropagating KL divergence, iteratively solving ATSP using logit matrices as costs, applying exponential moving averages to logits before Sinkhorn, and training a sequence prediction model using Monte Carlo tree search with reinforcement learning. None matched the performance of the local search approach.",
+  "rank": 5,
+  "competition_flow": "The pipeline begins with random shuffles of original text words, runs parallel simulated annealing with GPU-batched metric evaluation, applies specialized sequence modification moves, normalizes positional bias via discounted perplexity, and outputs the globally best text permutation.",
+  "data_reading": [],
+  "data_processing": [],
+  "features_engineering": [],
+  "models": [],
+  "frameworks_used": [],
+  "loss_functions": [],
+  "cv_strategy": "",
+  "ensembling": "",
+  "insights": [
+    "Modifying words near the start of a sequence has a much higher influence on the score than modifications near the end, causing local search to get stuck.",
+    "Restricting moves to a prefix or using a discounted perplexity score normalizes modification amplitude across all positions, preventing early-sequence neglect.",
+    "Running multiple optimization paths in parallel on GPU is highly effective for maintaining diversity and avoiding premature convergence."
+  ],
+  "critical_findings": [
+    "The competition metric exhibits strong positional bias, heavily penalizing or rewarding changes at the beginning of the sequence compared to the end.",
+    "Using a global cache of text scores as a Python dictionary drastically reduced the GPU bottleneck without needing to optimize the move implementation itself."
+  ],
+  "what_did_not_work": [
+    "Using a permutation matrix with Sinkhorn normalization and backpropagating KL divergence to update the matrix.",
+    "Computing an ATSP solution from the logit matrix and iteratively using it as input.",
+    "Applying exponential moving average to logits before Sinkhorn to converge to optimal ATSP.",
+    "Training a model to predict good sequences using Monte Carlo tree search with reinforcement learning."
+  ],
+  "github_repos": [],
+  "papers": [
+    {
+      "title": "Doubly Rooted Ejection Chain ATSP",
+      "url": "https://leeds-faculty.colorado.edu/glover/469%20-Traveling%20Salesman%20-%20Doubly%20Rooted%20Ejection%20Chain%20ATSP_Final.pdf",
+      "arxiv_id": null
+    }
+  ],
+  "other_solution_refs": [],
+  "source_url": "https://www.kaggle.com/competitions/santa-2024/discussion/560597"
+}

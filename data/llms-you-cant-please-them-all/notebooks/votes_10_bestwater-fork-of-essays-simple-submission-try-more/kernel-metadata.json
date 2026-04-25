@@ -1,0 +1,23 @@
+{
+  "id": "bestwater/fork-of-essays-simple-submission-try-more",
+  "id_no": 76832187,
+  "title": "Fork of Essays - simple submission | Try More ",
+  "code_file": "fork-of-essays-simple-submission-try-more.ipynb",
+  "language": "python",
+  "kernel_type": "notebook",
+  "is_private": false,
+  "enable_gpu": false,
+  "enable_tpu": false,
+  "enable_internet": false,
+  "keywords": [],
+  "dataset_sources": [
+    "jiprud/words-en"
+  ],
+  "kernel_sources": [],
+  "competition_sources": [
+    "llms-you-cant-please-them-all"
+  ],
+  "model_sources": [],
+  "docker_image": "gcr.io/kaggle-images/python@sha256:820f58c1c0aae98e031ad41630a374db9ae9875c6f1dea078c4e3bee7c444803",
+  "machine_shape": "None"
+}

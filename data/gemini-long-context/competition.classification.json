@@ -1,0 +1,13 @@
+{
+  "description": "Participants are asked to demonstrate practical applications of Google Gemini's long context window by generating text or video content that leverages extended input sequences. Submissions are evaluated on creativity, coherence, and effective use of long-context capabilities, with rankings determined by community voting or judge scoring.",
+  "data_modality": "multimodal",
+  "task_type": "generation",
+  "label_structure": "none",
+  "metric": "unknown",
+  "test_split": "unknown",
+  "format": "standard",
+  "dataset_scale": "unknown",
+  "domain": "long_context_generation",
+  "data_challenges": [],
+  "constraints": []
+}

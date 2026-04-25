@@ -1,0 +1,53 @@
+{
+  "path": "README.md",
+  "analysis": {
+    "summary": "This README documents the winning solution for the Lux AI Season 3 competition, detailing a multi-agent reinforcement learning pipeline built around the IMPALA algorithm. It explains the custom network architecture combining ResNet, ConvLSTM, and Transformer layers, alongside specialized heads for enemy prediction, value estimation, and dual-action selection. The document highlights key training innovations like dynamic reward scaling, adaptive entropy scheduling, and a teacher-student framework to stabilize learning. It also outlines a strategic public testing approach using mixed-model submissions to evaluate performance while mitigating imitation learning risks. Readers should take away how advanced exploration, reward shaping, and careful leaderboard testing converge to solve complex, partially observable multi-agent environments.",
+    "purpose": "documentation",
+    "competition_flow": "",
+    "data_reading": [
+      "Observations consist of ~1000+ features per tile on a 24x24 map, including continuous values and one-hot encoded discrete features, plus 3 enemy future prediction features from the previous timestep."
+    ],
+    "data_processing": [
+      "Continuous features are normalized and discretized via binning into one-hot vectors; x/y coordinates are flipped during inference for data augmentation (disabled if overtime exceeds 30 seconds to prevent timeouts)."
+    ],
+    "features_engineering": [
+      "Hand-crafted features track temporal gaps (steps since last observation or enemy sighting), aggregate internal state parameters (e.g., estimated vision reduction), and include per-unit attributes like energy and tile ID, all combined with spatial patches centered on each unit."
+    ],
+    "models": [
+      "IMPALA",
+      "ResNet",
+      "ConvLSTM",
+      "Transformer",
+      "MLP",
+      "Enemy Future Prediction Head",
+      "Value Function Head",
+      "Movement Head",
+      "Sap-Target Head"
+    ],
+    "frameworks_used": [
+      "pytorch"
+    ],
+    "loss_functions": [
+      "Weighted binary cross-entropy",
+      "KL divergence loss",
+      "Teacher baseline loss",
+      "TD losses",
+      "Entropy regularization"
+    ],
+    "cv_strategy": "",
+    "ensembling": "A two-model submission strategy is used where a weaker model plays 85% of matches and a stronger model plays 15%, with additional logit noise injection for larger models to mask capabilities and evaluate true win rates.",
+    "insights": [
+      "Large-scale self-play combined with ResNet, ConvLSTM, and Transformer architectures effectively learns complex multi-agent policies.",
+      "Adaptive reward scaling and dynamic entropy scheduling stabilize training in sparse, non-stationary environments.",
+      "Teacher-student frameworks and frozen opponent pools prevent catastrophic forgetting and overfitting to self-play dynamics.",
+      "Strategic mixed-model submissions allow accurate leaderboard evaluation while protecting against imitation learning."
+    ],
+    "critical_findings": [
+      "Imitation learning opponents can copy strong strategies, making it necessary to obscure model capabilities during public testing.",
+      "Pure self-play eventually plateaus, requiring teacher KL alignment and diverse opponent pools to maintain progress."
+    ],
+    "what_did_not_work": [
+      "Behavior cloning from external replays was implemented but ultimately abandoned because the RL pipeline already achieved significant improvements without it."
+    ]
+  }
+}

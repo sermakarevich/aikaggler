@@ -1,0 +1,111 @@
+# eedi-mining-misconceptions-in-mathematics: top public notebooks
+
+The community's top-voted notebooks focus on retrieval-augmented inference pipelines for the EEDI competition, leveraging quantized LLMs (Qwen, Mistral, Llama) and fine-tuned embedding models (BGE, SFR) to match student answers to mathematical misconceptions via dense vector similarity. Authors heavily emphasize efficient GPU inference techniques (AWQ quantization, vLLM), constrained decoding/logits processing, and iterative two-stage retrieval to stabilize LLM reasoning and prevent hallucination in structured multiple-choice prediction. A single training-focused notebook demonstrates automated triplet generation and fine-tuning of embedding models using Triplet Loss to improve semantic matching.
+
+## Common purposes
+- inference
+- training
+
+## Competition flows
+- Loads math problem data and a misconception catalog, formats them into prompts, generates dense embeddings using a quantized LLM, retrieves the top 25 matching misconceptions per question via similarity search, and exports the results as a CSV submission.
+- Loads test questions and a misconception mapping CSV, generates dense embeddings with a quantized LLM to retrieve top-25 candidates via cosine similarity, then uses a quantized LLM with vLLM and a logits processor to iteratively select the best misconception from an expanding shortlist, finally outputting a formatted submission CSV.
+- Loads question and misconception data, performs an initial semantic retrieval to build an LLM prompt, generates reasoning via LLM, post-processes the output, and executes a second semantic retrieval to output final misconception IDs for submission.
+- Loads test answers and a misconception database, retrieves top candidates via dense vector similarity, refines the selection using a quantized LLM with constrained decoding, and exports a ranked misconception ID list as a CSV submission.
+- Loads raw CSVs, constructs anchor/positive/negative triplets via top-k cosine retrieval, and fine-tunes an embedding model using Triplet Loss.
+- Loads test data and a misconception mapping, constructs instruction-tuned prompts for each question-answer pair, generates dense embeddings using a quantized model, retrieves the top-25 most similar misconceptions via cosine similarity, and exports the results as a CSV submission.
+- Loads competition CSVs and a misconception mapping, performs two sequential semantic retrievals using a sentence transformer, generates LLM reasoning via vLLM, post-processes the output to map serial numbers back to IDs, and saves the final predictions as a CSV submission.
+- Loads test CSV data, formats it into prompts for a quantized LLM, generates misconception responses via vLLM, embeds the text with a pre-trained model, matches against a misconception mapping via cosine similarity, and outputs a formatted submission CSV.
+- Loads test questions and answer options, formats them into semantic text strings, encodes them alongside a misconception vocabulary using a fine-tuned model, computes cosine similarity to rank the top 25 misconceptions per query, filters out correct answers, and exports the ranked IDs as a CSV submission.
+- Loads test data and misconception mappings, encodes concatenated question-answer text and misconception names using a fine-tuned model, computes cosine similarity to rank misconceptions, filters out correct answers, and outputs a CSV submission with the top 25 predicted misconceptions per question-answer pair.
+
+## Data reading
+- Reads train.csv, test.csv, and misconception_mapping.csv from Kaggle input paths using pd.read_csv(), filling missing values with -1.
+- Reads test.csv and misconception_mapping.csv from Kaggle datasets using pandas.read_csv, then saves intermediate processed data as parquet files.
+- train.csv, test.csv, misconception_mapping.csv
+- pd.read_csv for test.csv and misconception_mapping.csv, pd.read_parquet for intermediate data
+- Reads train.csv and misconception_mapping.csv using Polars.
+- Reads test data from /kaggle/input/eedi-mining-misconceptions-in-mathematics/test.csv (or a local validation parquet file if VALID=True). Loads misconception definitions from misconception_mapping.csv.
+- pd.read_csv for train.csv, test.csv, and misconception_mapping.csv, pd.read_parquet for intermediate dataframes and labels
+- pd.read_csv for test data and misconception mapping, pd.read_parquet for intermediate and output files
+- Reads test.csv and misconception_mapping.csv from the local Kaggle input directory using polars.read_csv.
+- polars.read_csv is used to load test.csv and misconception_mapping.csv from a local Kaggle input directory.
+
+## Data processing
+- Constructs structured prompts combining question text, subject, construct, correct answer, and wrong answer; tokenizes inputs with AutoTokenizer (truncation/padding to 320/48 tokens); extracts last hidden states, applies last-token pooling, and L2-normalizes embeddings for similarity computation.
+- Constructs structured prompts with subject, construct, question, and answer fields, applies regex cleaning to remove URLs and extra punctuation, extracts embeddings via last-token pooling and L2 normalization, and performs cosine similarity retrieval using sklearn.neighbors.NearestNeighbors.
+- Text normalization (lowercasing, URL/special character removal, punctuation/whitespace standardization), Prompt templating combining question text, answer options, and retrieved misconceptions, Post-processing LLM outputs by mapping generated serial numbers back to known misconception IDs using a precomputed dictionary
+- L2 normalization of embeddings, Cosine similarity retrieval via sklearn.neighbors.NearestNeighbors, Regex-based text cleaning in prompts, Iterative candidate list construction and prompt formatting
+- Unpivots wide answer and misconception columns to long format., Concatenates metadata and answer text into anchor strings., Computes top-25 cosine similarity retrievals using the base BGE model., Filters identical positive/negative pairs and converts to HuggingFace Dataset format.
+- Constructs structured query strings by concatenating subject, construct, question text, correct answer, and a specific incorrect answer option., Applies instruction formatting (Instruct: {task}\nQuery: {query})., Tokenizes inputs with max_length=512, padding, and truncation., Normalizes embeddings using L2 normalization., Uses length-sorted batching to minimize padding overhead during inference.
+- Text normalization (lowercasing, URL removal, punctuation/whitespace standardization), Prompt templating via AutoTokenizer.apply_chat_template, Regex-based extraction and cleaning of LLM responses
+- Melts wide answer columns to long format, Filters out correct answers, Constructs prompts with chain-of-thought tags, Extracts responses via regex, Normalizes embeddings, Computes cosine similarity, Formats submission strings
+- Unpivots answer columns (A-D) into long format, concatenates metadata and answer text into a single string with semantic tags, normalizes embeddings during encoding, computes cosine similarity to rank misconceptions, and filters out rows matching the correct answer.
+- Unpivots wide answer columns to long format, concatenates ConstructName, SubjectName, QuestionText, and AnswerText into a single query string, normalizes embeddings during encoding, computes cosine similarity, and filters out rows where the predicted misconception matches the correct answer.
+
+## Features engineering
+- Dense vector embeddings for answers and misconceptions
+- Top-25 cosine similarity retrieval
+- Iterative candidate refinement loop combining initial retrieval with model-based ranking
+
+## Models
+- Qwen2.5-14B (AWQ quantized) with LoRA adapter
+- Qwen2.5-32B-Instruct-AWQ
+- BAAI/bge-large-en-v1.5
+- SFR-Embedding-2_R (Mistral-based)
+- Meta-Llama-3.1-8B-Instruct-AWQ-INT4
+
+## Frameworks used
+- torch
+- transformers
+- peft
+- bitsandbytes
+- vllm
+- logits_processor_zoo
+- scikit-learn
+- pandas
+- numpy
+- sentence-transformers
+- optimum
+- auto_gptq
+- polars
+- datasets
+- wandb
+- accelerate
+
+## Loss functions
+- TripletLoss
+
+## CV strategies
+- Holdout sample of 100 rows from training data for validation.
+
+## Insights
+- Using a quantized LLM as a dense retriever effectively matches student errors to predefined misconception descriptions without direct generation.
+- Constraining LLM outputs to specific choices via logits processors improves reliability and reduces hallucination in multiple-choice settings.
+- Iterative retrieval improves LLM reasoning by providing targeted context before and after generation.
+- Top-k cosine similarity retrieval with a base embedding model can effectively generate negative samples for triplet training.
+- Length-sorted batching significantly improves inference throughput by minimizing padding overhead.
+- A simple parameter tweak (increasing max_tokens from 512 to 1024) directly improved the leaderboard score from 0.362 to 0.368.
+
+## Critical findings
+- The LLM frequently outputs only the serial number of a retrieved misconception rather than the full text, requiring a fallback dictionary lookup during post-processing.
+- A simple parameter tweak (increasing max_tokens from 512 to 1024) directly improved the leaderboard score from 0.362 to 0.368.
+
+## Notable individual insights
+- votes 686 (EEDI_11_21_14B): Using a quantized LLM as a dense retriever effectively matches student errors to predefined misconception descriptions without direct generation.
+- votes 672 (Qwen14B_Retrieval_Qwen32B_logits-processor-zoo): Constraining LLM outputs to specific choices via logits processors improves reliability and reduces hallucination in multiple-choice settings.
+- votes 650 (Eedi Qwen-2.5 32B AWQ two-time retrieval): Iterative retrieval improves LLM reasoning by providing targeted context before and after generation.
+- votes 433 (Fine-tuning bge [Train] ): Top-k cosine similarity retrieval with a base embedding model can effectively generate negative samples for triplet training.
+- votes 419 (Use LLM Embedding Recall Infer ): Length-sorted batching significantly improves inference throughput by minimizing padding overhead.
+- votes 346 (Eedi Qwen-2.5 32B AWQ two-time retrieval -0.368): A simple parameter tweak (increasing max_tokens from 512 to 1024) directly improved the leaderboard score from 0.362 to 0.368.
+
+## Notebooks indexed
+- #686 votes [[notebooks/votes_01_anhvth226-eedi-11-21-14b/notebook|EEDI_11_21_14B]] ([kaggle](https://www.kaggle.com/code/anhvth226/eedi-11-21-14b))
+- #672 votes [[notebooks/votes_02_jagatkiran-qwen14b-retrieval-qwen32b-logits-processor-zoo/notebook|Qwen14B_Retrieval_Qwen32B_logits-processor-zoo]] ([kaggle](https://www.kaggle.com/code/jagatkiran/qwen14b-retrieval-qwen32b-logits-processor-zoo))
+- #650 votes [[notebooks/votes_03_takanashihumbert-eedi-qwen-2-5-32b-awq-two-time-retrieval/notebook|Eedi Qwen-2.5 32B AWQ two-time retrieval]] ([kaggle](https://www.kaggle.com/code/takanashihumbert/eedi-qwen-2-5-32b-awq-two-time-retrieval))
+- #593 votes [[notebooks/votes_04_aerdem4-eedi-qwen32b-vllm-with-logits-processor-zoo/notebook|Eedi Qwen32B vllm with logits-processor-zoo]] ([kaggle](https://www.kaggle.com/code/aerdem4/eedi-qwen32b-vllm-with-logits-processor-zoo))
+- #433 votes [[notebooks/votes_05_sinchir0-fine-tuning-bge-train/notebook|Fine-tuning bge [Train] ]] ([kaggle](https://www.kaggle.com/code/sinchir0/fine-tuning-bge-train))
+- #419 votes [[notebooks/votes_06_sayoulala-use-llm-embedding-recall-infer/notebook|Use LLM Embedding Recall Infer ]] ([kaggle](https://www.kaggle.com/code/sayoulala/use-llm-embedding-recall-infer))
+- #346 votes [[notebooks/votes_07_songqizhou-eedi-qwen-2-5-32b-awq-two-time-retrieval-0-368/notebook|Eedi Qwen-2.5 32B AWQ two-time retrieval -0.368]] ([kaggle](https://www.kaggle.com/code/songqizhou/eedi-qwen-2-5-32b-awq-two-time-retrieval-0-368))
+- #320 votes [[notebooks/votes_08_minhnguyendichnhat-infer-bge-synthetic-data/notebook|Infer BGE Synthetic Data ]] ([kaggle](https://www.kaggle.com/code/minhnguyendichnhat/infer-bge-synthetic-data))
+- #303 votes [[notebooks/votes_09_takaito-eedi-copy-fine-tuning-bge-infer-single-model/notebook|[Eedi] Copy Fine-tuning bge Infer (Single Model)]] ([kaggle](https://www.kaggle.com/code/takaito/eedi-copy-fine-tuning-bge-infer-single-model))
+- #298 votes [[notebooks/votes_10_sinchir0-fine-tuning-bge-infer/notebook|Fine-tuning bge [Infer]]] ([kaggle](https://www.kaggle.com/code/sinchir0/fine-tuning-bge-infer))

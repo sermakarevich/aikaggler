@@ -1,0 +1,46 @@
+{
+  "summary": "The author decomposed the competition task into two subproblems: efs classification and efs_time regression, leveraging knowledge that the dataset is synthetic. They trained multiple tree-based models for both tasks, using a trick of fixing efs=1 during regression inference to estimate time given event occurrence. Predictions were combined into risk scores and further refined by a custom neural network trained with a metric-approximating loss. The final submission was a weighted ensemble of these pipelines, with additional experiments on AutoGluon and post-inference calibration.",
+  "extensive_summary": "## Problem Decomposition\nLeveraging prior knowledge that the data is synthetic (referencing the SurvivalGAN paper), the authors split the task into two distinct components: efs classification and efs_time regression. For the regression component, XGBoost and HistGBM were trained with efs as an extra feature. During inference on validation and test sets, they fixed efs=1 to estimate the time until efs occurs. For classification, RealMLP, HistGBM, and CatBoost were trained without any feature engineering.\n\n## Prediction Combination & Risk Scores\nThe two outputs were combined using the formula R = p(efs=1) * p(efs_time | efs=1), where the conditional time probability was derived via a sigmoid transformation of the regression predictions. This approach effectively converts the regression output into a risk score that accounts for both event occurrence and timing.\n\n## Custom Neural Network & Loss\nTo further improve performance, a custom neural network was trained to approximate the competition metric directly and predict risk scores. This network took regression predictions from the tree models as input and was optimized using a custom loss function that combined a ranking-based metric approximation with an auxiliary binary classification loss. The implementation filters predictions based on a threshold and applies a tanh transformation to the risk differences.\n\n## Ensembling & Post-Processing\nThe final submission was constructed by rank-ensembling the main pipeline with the neural network pipeline, with ensemble weights tuned on cross-validation out-of-fold (OOF) predictions. The authors also explored automated machine learning via AutoGluon, demonstrating that splitting the problem allowed even medium-quality AutoGluon settings to achieve gold-medal-level scores. Additionally, they experimented with post-processing calibration using a custom sigmoid function, which improved OOF scores but yielded mixed results on the public leaderboard.",
+  "rank": 2,
+  "competition_flow": "Raw data is split into efs classification and efs_time regression tasks; tree models and a custom NN are trained on these tasks; predictions are combined into risk scores using a derived formula; outputs are rank-ensembled with CV-tuned weights and optionally calibrated before submission.",
+  "data_reading": [],
+  "data_processing": [],
+  "features_engineering": [],
+  "models": [
+    "XGBoost",
+    "HistGBM",
+    "CatBoost",
+    "RealMLP",
+    "AutoGluon",
+    "custom neural network"
+  ],
+  "frameworks_used": [
+    "pytorch",
+    "autogluon"
+  ],
+  "loss_functions": [
+    "custom ranking loss approximating competition metric",
+    "auxiliary binary classification loss"
+  ],
+  "cv_strategy": "Cross-validation with out-of-fold (OOF) predictions used for tuning ensemble weights and calibration parameters.",
+  "ensembling": "Weighted ensemble of tree models tuned on CV, rank-ensembled with a custom neural network pipeline, followed by optional sigmoid calibration on OOF predictions.",
+  "insights": [
+    "Decomposing a complex metric into classification and regression subtasks can simplify modeling and improve performance.",
+    "Fixing a binary feature to 1 during regression inference effectively estimates conditional time given event occurrence.",
+    "Training a neural network to directly approximate the competition metric can yield better risk score calibration than standard losses."
+  ],
+  "critical_findings": [
+    "Post-processing calibration improved OOF scores but slightly decreased the public leaderboard score, highlighting the risk of overfitting to validation metrics.",
+    "Splitting the problem into two tasks made it possible to achieve gold-medal-level scores using AutoGluon's medium quality setting."
+  ],
+  "what_did_not_work": [],
+  "github_repos": [],
+  "papers": [],
+  "other_solution_refs": [
+    {
+      "description": "Inference notebook for the 2nd place solution",
+      "url": "https://www.kaggle.com/code/karakasatarik/2nd-place-solution-inference"
+    }
+  ],
+  "source_url": "https://www.kaggle.com/competitions/equity-post-HCT-survival-predictions/discussion/566522"
+}

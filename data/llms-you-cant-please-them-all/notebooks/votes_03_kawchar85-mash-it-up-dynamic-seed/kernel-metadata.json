@@ -1,0 +1,28 @@
+{
+  "id": "kawchar85/mash-it-up-dynamic-seed",
+  "id_no": 74498146,
+  "title": "Mash It Up Dynamic Seed",
+  "code_file": "mash-it-up-dynamic-seed.ipynb",
+  "language": "python",
+  "kernel_type": "notebook",
+  "is_private": false,
+  "enable_gpu": true,
+  "enable_tpu": false,
+  "enable_internet": false,
+  "keywords": [
+    "gpu"
+  ],
+  "dataset_sources": [
+    "nbroad/hf-libraries"
+  ],
+  "kernel_sources": [],
+  "competition_sources": [
+    "llms-you-cant-please-them-all"
+  ],
+  "model_sources": [
+    "richolson/phi-3.5-mini-instruct/PyTorch/default/1",
+    "qwen-lm/qwen2/Transformers/1.5b-instruct/1"
+  ],
+  "docker_image": "gcr.io/kaggle-private-byod/python@sha256:1003a82bef5df3c098b2041d936cb5f1836e52d7b610e8f0f4dedc194fb3b773",
+  "machine_shape": "NvidiaTeslaT4"
+}

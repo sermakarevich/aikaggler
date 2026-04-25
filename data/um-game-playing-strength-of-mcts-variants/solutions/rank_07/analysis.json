@@ -1,0 +1,56 @@
+{
+  "summary": "The author achieved 7th place by blending tree-based models (LightGBM, CatBoost) with a custom PyTorch neural network. Key technical choices included extensive manual cross-feature engineering on top numerical features, target encoding, and using LightGBM leaf indices as features for the NN. The NN incorporated a CIN + FM pooling layer and label augmentation. Despite exploring various CV strategies and hyperparameters, the author found tree models more stable on the public leaderboard and ultimately relied on a simple weighted blend optimized via OOF linear scaling.",
+  "extensive_summary": "The solution centers on an ensemble of tree models and a neural network, with the author noting that tree models consistently outperformed the NN in stability on the public leaderboard. For feature engineering, the author focused heavily on manual cross features (multiplication and division) of the top 20 numerical features, which significantly boosted both CV and LB scores. Target encoding was also applied to improve LB performance.\n\nThe tree models consisted of LightGBM (10 folds, max depth 16, reg_lambda=10) and CatBoost (5 folds, max depth 10, random_strength=10). The author experimented with CatBoost's Dart mode, which improved CV but hurt LB, and ultimately stuck to standard settings. For the neural network, the author implemented a custom model in PyTorch, inspired by another Kaggle notebook. Numerical features were binned, and LightGBM leaf indices (from a depth-5, 200-tree model) were added as features. The pooling layer utilized a combination of CIN and FM. Label augmentation via multinomial sampling was applied during training.\n\nValidation strategy relied on GroupKFold grouped by 'Game' or 'GamerulesetName', stratified by label, though the author noted this CV strategy did not align well with the public leaderboard. Data augmentation included flipping (swapping agent1/agent2, advantageP1, and label) and test-time augmentation (TTA) with flipped data. Post-processing involved optimizing a linear combination (a*x + b) of out-of-fold predictions to minimize overall RMSE. The final submission was a simple weighted blend of the 10-fold LightGBM and 5-fold NN models with weights of 1.0 and 0.75, respectively.",
+  "rank": 7,
+  "competition_flow": "Raw data is processed with manual cross features and target encoding, fed into 10-fold LightGBM and 5-fold CatBoost models, while a custom PyTorch NN uses binned features and tree leaf indices with CIN+FM pooling; predictions are linearly scaled via OOF optimization and blended with fixed weights for submission.",
+  "data_reading": [],
+  "data_processing": [
+    "flip aug (swich agent1 agent2, advantageP1,label)",
+    "test time TTA by combining flipped data",
+    "top numeric feats turn to bins",
+    "label aug(mutinonal)"
+  ],
+  "features_engineering": [
+    "manual cross feats of numerical feats like * / of top 20 numerical feats",
+    "Target encode",
+    "lgb tree leafs feats(depth 5, 200 trees)"
+  ],
+  "models": [
+    "LightGBM",
+    "CatBoost",
+    "Custom PyTorch Neural Network (with CIN + FM pooling)"
+  ],
+  "frameworks_used": [
+    "lightgbm",
+    "catboost",
+    "torch"
+  ],
+  "loss_functions": [],
+  "cv_strategy": "GroupKFold grouped by 'Game' or 'GamerulesetName', stratified by label.",
+  "ensembling": "Simple weighted blend of 10-fold LightGBM and 5-fold NN (weights 1.0 and 0.75), with OOF predictions linearly scaled (a*x + b) optimized for RMSE.",
+  "insights": [
+    "Tree models are more stable on the public leaderboard than neural networks.",
+    "Manual cross features of top numerical features significantly improve both CV and LB scores.",
+    "Target encoding provides a modest but consistent LB boost.",
+    "CV strategies grouped by 'Game' or 'GamerulesetName' may not align with the public leaderboard, so trusting LB is crucial."
+  ],
+  "critical_findings": [
+    "CatBoost's Dart mode improves CV but hurts LB performance.",
+    "The NN model is highly unstable on LB due to randomness, requiring careful selection of the best LB run.",
+    "The CV strategy using GKF + Game + stratification with label did not align with PB, leading to suboptimal ensemble weights."
+  ],
+  "what_did_not_work": [
+    "CatBoost single model did not contribute to the final PB score.",
+    "LightGBM's Dart mode improved CV but hurt LB.",
+    "The GKF + Game + stratified label CV strategy did not align with the public leaderboard."
+  ],
+  "github_repos": [],
+  "papers": [],
+  "other_solution_refs": [
+    {
+      "description": "Kaggle notebook referenced for NN architecture inspiration",
+      "url": "https://www.kaggle.com/code/yekenot/mcts-deeptables-nn"
+    }
+  ],
+  "source_url": "https://www.kaggle.com/competitions/um-game-playing-strength-of-mcts-variants/discussion/549617"
+}

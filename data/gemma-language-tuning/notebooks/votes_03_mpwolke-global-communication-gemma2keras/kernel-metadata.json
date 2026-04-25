@@ -1,0 +1,28 @@
+{
+  "id": "mpwolke/global-communication-gemma2keras",
+  "id_no": 66851209,
+  "title": "Global Communication Gemma2Keras",
+  "code_file": "global-communication-gemma2keras.ipynb",
+  "language": "python",
+  "kernel_type": "notebook",
+  "is_private": false,
+  "enable_gpu": true,
+  "enable_tpu": false,
+  "enable_internet": true,
+  "keywords": [
+    "gpu"
+  ],
+  "dataset_sources": [
+    "ihelon/hello-world-in-programming-languages"
+  ],
+  "kernel_sources": [],
+  "competition_sources": [
+    "gemma-language-tuning"
+  ],
+  "model_sources": [
+    "keras/gemma/Keras/gemma_2b_en/2",
+    "keras/gemma2/Keras/gemma2_2b_en/1"
+  ],
+  "docker_image": "gcr.io/kaggle-private-byod/python@sha256:940180dcea42e703acbeae669a52d68e6fa3130ef60805b36005534a5152a5f3",
+  "machine_shape": "Gpu"
+}

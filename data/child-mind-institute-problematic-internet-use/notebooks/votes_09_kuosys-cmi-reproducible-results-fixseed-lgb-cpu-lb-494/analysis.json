@@ -1,0 +1,56 @@
+{
+  "summary": "This notebook provides a reproducible baseline pipeline for the Child Mind Institute competition, combining clinical/physical tabular data with wearable actigraphy time-series data. It demonstrates a complete workflow from data loading and imputation to custom feature engineering, threshold optimization for Quadratic Weighted Kappa, and multi-model ensembling. The author emphasizes fixing random seeds across libraries to ensure stable leaderboard scores. Readers should learn how to handle mixed data types, compress time-series inputs, and optimize discrete thresholds for ordinal regression tasks.",
+  "purpose": "baseline",
+  "competition_flow": "Loads tabular and actigraphy time-series data, imputes missing values, engineers interaction and autoencoder-derived features, trains gradient boosting and TabNet models via 5-fold stratified CV, optimizes prediction thresholds for QWK, and combines outputs via voting regressors and majority vote to generate a final submission.",
+  "data_reading": [
+    "Reads CSV files using Polars and Pandas.",
+    "Loads time-series parquet files via os.listdir and pd.read_parquet with parallel processing."
+  ],
+  "data_processing": [
+    "Filters out rows with missing target values before supervised learning.",
+    "Replaces infinities with NaN and imputes missing numeric data using KNNImputer and SimpleImputer.",
+    "Casts categorical season columns to Enum/category, fills missing categories with 'Missing', and converts them to integers via custom label mappings."
+  ],
+  "features_engineering": [
+    "Computes statistical summaries of actigraphy time-series data.",
+    "Compresses time-series into latent features using a custom PyTorch AutoEncoder.",
+    "Creates domain-derived interaction and ratio features (e.g., BMI_Age, Internet_Hours_Age, BFP_BMI, Muscle_to_Fat)."
+  ],
+  "models": [
+    "LightGBM",
+    "XGBoost",
+    "CatBoost",
+    "TabNet",
+    "RandomForestRegressor",
+    "GradientBoostingRegressor"
+  ],
+  "frameworks_used": [
+    "pytorch",
+    "lightgbm",
+    "xgboost",
+    "catboost",
+    "scikit-learn",
+    "polars",
+    "pandas",
+    "scipy"
+  ],
+  "loss_functions": [
+    "Mean Squared Error (MSE) used as the default loss and explicit eval_metric for TabNet.",
+    "Quadratic Weighted Kappa used as the optimization objective for threshold tuning via scipy.optimize.minimize."
+  ],
+  "cv_strategy": "StratifiedKFold(n_splits=5, shuffle=True, random_state=SEED)",
+  "ensembling": "Combines predictions from multiple regressors using sklearn's VotingRegressor with weighted averages, and applies majority voting across three separate submission pipelines to produce the final output.",
+  "insights": [
+    "Explicitly fixing random seeds across PyTorch, LightGBM, and OS environments is critical for reproducible leaderboard scores.",
+    "Threshold optimization on out-of-fold predictions can significantly boost ordinal regression metrics like QWK.",
+    "Compressing high-dimensional time-series data via autoencoders or simple statistics effectively augments tabular models."
+  ],
+  "critical_findings": [
+    "The target variable distribution is highly imbalanced, with approximately half the samples in class 0 and very few in class 3.",
+    "Some features present in the training set are missing in the test set, requiring careful column alignment.",
+    "Supervised learning requires filtering out samples with missing target values before processing."
+  ],
+  "what_did_not_work": [],
+  "source_url": "https://www.kaggle.com/code/kuosys/cmi-reproducible-results-fixseed-lgb-cpu-lb-494",
+  "votes": 344
+}

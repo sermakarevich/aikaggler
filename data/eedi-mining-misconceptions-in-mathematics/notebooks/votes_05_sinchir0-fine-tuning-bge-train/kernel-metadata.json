@@ -1,0 +1,23 @@
+{
+  "id": "sinchir0/fine-tuning-bge-train",
+  "id_no": 66004677,
+  "title": "Fine-tuning bge [Train] ",
+  "code_file": "fine-tuning-bge-train.ipynb",
+  "language": "python",
+  "kernel_type": "notebook",
+  "is_private": false,
+  "enable_gpu": true,
+  "enable_tpu": false,
+  "enable_internet": true,
+  "keywords": [
+    "gpu"
+  ],
+  "dataset_sources": [],
+  "kernel_sources": [],
+  "competition_sources": [
+    "eedi-mining-misconceptions-in-mathematics"
+  ],
+  "model_sources": [],
+  "docker_image": "gcr.io/kaggle-private-byod/python@sha256:d5f66652dfa098a9521987ed589d1c7791b33008c97533fe0ddfc3182d7daad0",
+  "machine_shape": "Gpu"
+}

@@ -1,0 +1,29 @@
+{
+  "id": "pvabish/modeling-with-transformers-by-sumersports",
+  "id_no": 68751531,
+  "title": "Modeling with Transformers, by SumerSports",
+  "code_file": "modeling-with-transformers-by-sumersports.ipynb",
+  "language": "python",
+  "kernel_type": "notebook",
+  "is_private": false,
+  "enable_gpu": true,
+  "enable_tpu": false,
+  "enable_internet": true,
+  "keywords": [
+    "deep learning",
+    "transformers",
+    "sports",
+    "neural networks",
+    "gpu"
+  ],
+  "dataset_sources": [
+    "pvabish/sportstransformer-utils"
+  ],
+  "kernel_sources": [],
+  "competition_sources": [
+    "nfl-big-data-bowl-2025"
+  ],
+  "model_sources": [],
+  "docker_image": "gcr.io/kaggle-private-byod/python@sha256:141219e230dab548ccc19aa4e62bcf805ed9de0b4d5112227e28f5f1a25991f8",
+  "machine_shape": "Gpu"
+}

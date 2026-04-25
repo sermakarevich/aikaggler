@@ -1,0 +1,19 @@
+{
+  "description": "Participants evaluate the robustness of large language models and automated judges when exposed to adversarial prompts. The competition provides text datasets containing carefully crafted adversarial examples, and competitors must develop methods to either defend against these inputs or accurately assess model outputs. Success is measured using a custom evaluation metric named \"LLMYCPTA metric 20241120\" on a private test set.",
+  "data_modality": "text",
+  "task_type": "generation",
+  "label_structure": "unknown",
+  "metric": "LLMYCPTA metric 20241120",
+  "test_split": "unknown",
+  "format": "code_comp",
+  "dataset_scale": "unknown",
+  "domain": "llm_evaluation",
+  "data_challenges": [
+    "adversarial_inputs",
+    "robustness_testing"
+  ],
+  "constraints": [
+    "custom_metric",
+    "limited_daily_submissions"
+  ]
+}

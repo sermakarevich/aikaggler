@@ -1,0 +1,86 @@
+{
+  "overall_summary": "This competition centered on a survival analysis task with two targets (efs and efs_time) and censored data, requiring participants to balance classification and regression objectives under a non-differentiable ranking metric. Winning approaches consistently decomposed the complex objective into separate classification and regression subproblems, leveraging factorized modeling, target transformations, and custom mathematical combination formulas. The top solutions heavily relied on gradient boosting frameworks, neural networks, and automated modeling tools, with ensemble optimization and robust validation strategies being critical to aligning cross-validation scores with leaderboard performance.",
+  "competition_flows": [
+    "Processing raw data with one-hot encoding and continuous-to-categorical copying, feeding into separate classifier/regressor models, merging scaled predictions via a parameterized function, and optimizing with Optuna",
+    "Splitting raw data into efs classification and efs_time regression tasks, training tree models and a custom NN, combining predictions into risk scores via a derived formula, and rank-ensembling with CV-tuned weights",
+    "Splitting raw tabular data into event probability and conditional ranking targets (using Kaplan-Meier weighting and inverse normal CDF transformation), training on TabM/CatBoost/XGBoost, merging via weighted sums, and combining into a final risk score formula",
+    "Splitting raw tabular data into folds, engineering targets into uniform ranges per race group, training separate regression/classification models, reducing noise via seed averaging and outlier removal, and optimizing the ensemble via Bayesian optimization",
+    "Creating a binary 'unsafe' label via an `efs_time` cutoff, training two separate ensembles (classification and ranking) on raw logits with RMSE, combining outputs with a custom weighted formula, applying logit scaling/shifting, and submitting ranked predictions"
+  ],
+  "data_reading": [],
+  "data_processing": [
+    "One-hot encoding for categorical features (retaining originals)",
+    "Copying continuous features as categorical features",
+    "Grouping and normalizing rank by `efs` for the regressor target",
+    "Scaling model predictions to 0-1",
+    "Adding noise to race groups",
+    "Kaplan-Meier estimator weights for censored data points scaled to (0,1)",
+    "Inverse normal CDF transformation on rank% targets for regression task",
+    "Target engineering mapping uncensored observations to [0, 1] and censored observations to [1.345, 1.355] per race group/fold",
+    "Noise reduction via averaging models over random initialization seeds and removing extreme regression errors",
+    "Target scaling to [0, 1] to enable binary cross-entropy loss",
+    "Creating a binary 'unsafe' label using an `efs_time` cutoff",
+    "Rounding continuous age features to prevent overfitting to synthetic noise"
+  ],
+  "features_engineering": [
+    "One-hot encoding for all categorical features (retaining originals)",
+    "Copying continuous features as categorical features",
+    "Grouping and normalizing rank by `efs` for the regressor target",
+    "Adding `efs` as a feature during regressor training",
+    "Preserving `hla_nlmp6` column across all models",
+    "Replacing other HLA sums for GBDT/AutoGluon using the recalc HLA trick",
+    "Dropping `_6` and `_8` HLA sum columns for neural networks",
+    "Applying target encoding to 150 models"
+  ],
+  "models": [
+    "XGBoost",
+    "LightGBM",
+    "CatBoost",
+    "Neural Networks (NN, RealMLP, MLP with ODST, custom NN)",
+    "TabM",
+    "GNN",
+    "GraphSAGE",
+    "TabNet",
+    "HistGBM",
+    "AutoGluon",
+    "GBDT",
+    "Hand-tuned models"
+  ],
+  "frameworks_used": [
+    "PyTorch",
+    "AutoGluon"
+  ],
+  "loss_functions": [
+    "LogLoss",
+    "Pairwise-rank-loss",
+    "Sample weights (0.6:0.4 for efs==1 and efs==0)",
+    "Custom ranking loss approximating competition metric",
+    "Auxiliary binary classification loss",
+    "Binary cross-entropy",
+    "RMSE"
+  ],
+  "cv_strategies": [
+    "10-fold StratifiedKFold with fixed seed (888) and combined target string (efs + race_group) for stability (no early stopping)",
+    "Cross-validation with out-of-fold (OOF) predictions used for tuning ensemble weights and calibration parameters",
+    "4-fold CV evaluated across 20\u2013100 random split seeds per fold to emulate public/private LB correlation"
+  ],
+  "ensembling": [
+    "Evaluating 27 classifier-regressor combinations with Optuna-tuned merge parameters and constrained weights [0.1, 1], followed by rank transform",
+    "Weighted ensemble of tree models rank-ensembled with a custom neural network pipeline, plus optional sigmoid calibration on OOF predictions",
+    "Merging TabM, CatBoost, and XGBoost predictions via weighted sums for event probability and ranking components, combined into a final risk score formula",
+    "Blending regressors via convex combination and stacking classifiers with logistic regression, with weights optimized via Bayesian optimization to maximize concordance index",
+    "Combining two ensembles (unsafe prediction and ranking) using a custom weighted formula, integrating ~900 zero-shot AutoGluon models, and applying logit scaling/shifting post-processing"
+  ],
+  "insights": [],
+  "critical_findings": [],
+  "what_did_not_work": [],
+  "notable_individual_insights": [
+    "Rank 1 (1st Place Solution-2 Targets and Ensemble): Shallow tree depths (max_depth=2) for LGB/XGB indicate little feature interaction and an easy-to-fit task.",
+    "Rank 1 (1st Place Solution-2 Targets and Ensemble): Including censored efs==0 samples in regressor training improves performance on efs==1 due to shared underlying patterns.",
+    "Rank 3 (3rd Place Solution): Collapsing censored (efs=0) observations to a constant value (1.35) significantly improved regression performance.",
+    "Rank 4 (4th place: Factorized modelling approach): Directly optimizing non-differentiable ranking tasks often leads to instability or poor alignment with the original objective when smoothed.",
+    "Rank 5 (Mathing it to 5th place!): Multiplying raw logit scores by 1.5 before converting to probabilities unexpectedly improved CV by emphasizing extremes.",
+    "Rank 5 (Mathing it to 5th place!): The safe ratio (S_RATIO) in the combination formula converges to ~0.425 after centering and normalizing win/loss distributions, outperforming the intuitive -0.5.",
+    "Rank 2 (2nd Place Solution): Post-processing calibration improved OOF scores but slightly decreased the public leaderboard score, highlighting the risk of overfitting to validation metrics."
+  ]
+}

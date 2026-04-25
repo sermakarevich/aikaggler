@@ -1,0 +1,36 @@
+{
+  "summary": "This notebook demonstrates a complete training pipeline for 3D cryo-electron tomography (CryoET) object segmentation using the DeepFindET library. It walks through configuring a CoPick project to define protein targets and background classes, generating volumetric segmentation masks, and initializing a Residual U-Net for multi-class segmentation. The author highlights how to handle severe class imbalance by manually assigning class weights during training. Readers learn the end-to-end workflow for preparing 3D tomographic data and training a custom 3D CNN without writing low-level training loops.",
+  "purpose": "training",
+  "competition_flow": "Configures a CoPick project to load 3D CryoET tomograms and segmentation masks, generates training targets, and trains a 3D Residual U-Net with class-weighted loss to segment multiple protein classes and membranes.",
+  "data_reading": [
+    "Loads 3D tomographic volumes and segmentation masks via the copick library from a JSON configuration file.",
+    "Extracts specific Run-IDs and applies a fixed voxel size (10 \u00c5) to retrieve aligned volumetric data."
+  ],
+  "data_processing": [
+    "Copies and renames overlay files to match CoPick conventions.",
+    "Generates multi-class segmentation masks via step1.create_train_targets.",
+    "Extracts fixed 72x72x72 voxel input cubes for the network."
+  ],
+  "features_engineering": [],
+  "models": [
+    "Residual U-Net (res_unet)"
+  ],
+  "frameworks_used": [
+    "copick",
+    "deepfindET",
+    "matplotlib",
+    "h5py"
+  ],
+  "loss_functions": [],
+  "cv_strategy": "",
+  "ensembling": "",
+  "insights": [
+    "CoPick provides a standardized way to manage 3D CryoET projects and segmentation targets without manual file path management.",
+    "DeepFindET abstracts the 3D CNN training loop, allowing focus on data configuration and hyperparameters.",
+    "Explicit class weighting is necessary to handle the extreme imbalance between rare protein targets and background/membrane classes."
+  ],
+  "critical_findings": [],
+  "what_did_not_work": [],
+  "source_url": "https://www.kaggle.com/code/kharrington/deepfindet-train",
+  "votes": 396
+}

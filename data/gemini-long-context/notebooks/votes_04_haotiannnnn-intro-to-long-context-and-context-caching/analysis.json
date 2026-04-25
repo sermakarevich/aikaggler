@@ -1,0 +1,34 @@
+{
+  "summary": "This notebook demonstrates how to leverage Google Gemini 1.5's long-context window and context caching capabilities to answer complex biological questions using the BioNumbers dataset. It walks through uploading a large CSV (380k+ tokens), setting system instructions for accurate reasoning and citation, and comparing baseline responses against long-context responses. The tutorial also covers multimodal prompting by integrating PDFs, images, videos, and genomic sequences alongside the tabular data. Finally, it shows how to implement context caching to reduce API costs when querying the same dataset repeatedly. Readers should understand how long context enables robust end-to-end reasoning without retrieval pipelines and how caching optimizes operational costs.",
+  "purpose": "tutorial",
+  "competition_flow": "Loads the BioNumbers CSV and other media files, configures the Gemini 1.5 API with system instructions, and generates answers to biological questions using long-context prompts and context caching.",
+  "data_reading": [
+    "pd.read_csv() for the BioNumbers dataset",
+    "genai.upload_file() for CSV, PDF, image, and video inputs",
+    "Standard Python open() for FASTA genomic files"
+  ],
+  "data_processing": [],
+  "features_engineering": [],
+  "models": [
+    "gemini-1.5-flash-002"
+  ],
+  "frameworks_used": [
+    "google.generativeai"
+  ],
+  "loss_functions": [],
+  "cv_strategy": "",
+  "ensembling": "",
+  "insights": [
+    "Long context eliminates the cascading errors inherent in multi-stage RAG systems by processing entire datasets at once.",
+    "System instructions fundamentally shift model behavior by guiding reasoning, citation formats, and assumption transparency.",
+    "Context caching significantly reduces operational costs for repeated queries on static contexts.",
+    "Multimodal inputs can be seamlessly combined with tabular data in a single prompt for cross-modal reasoning."
+  ],
+  "critical_findings": [
+    "The model's tendency to not always force context usage is noted as a positive reflection of its discernment rather than a failure.",
+    "The BioNumbers dataset exceeds 380,000 tokens, making it impossible to process with traditional models limited to 128,000-token windows."
+  ],
+  "what_did_not_work": [],
+  "source_url": "https://www.kaggle.com/code/haotiannnnn/intro-to-long-context-and-context-caching",
+  "votes": 96
+}

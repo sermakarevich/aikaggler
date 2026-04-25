@@ -1,0 +1,69 @@
+{
+  "summary": "This notebook benchmarks multiple regressors for the Child Mind Institute competition, focusing on optimizing the Quadratic Weighted Kappa (QWK) metric through careful threshold tuning and feature engineering. It demonstrates a complete pipeline that extracts statistical and autoencoded time-series features, constructs hand-crafted physiological interactions, and trains gradient boosting and deep learning models with 5-fold stratified cross-validation. The author critically analyzes QWK's mathematical quirks, showing how threshold optimization can trap in local maxima and how separate autoencoder fitting may distort feature distributions. Ultimately, the notebook combines three distinct model configurations via majority voting to produce a final submission, highlighting both effective techniques and metric-related pitfalls.",
+  "purpose": "ensemble",
+  "competition_flow": "Loads tabular and time-series data, extracts statistical and autoencoded features, trains multiple regressors with 5-fold stratified CV, optimizes prediction thresholds on OOF outputs, and combines three model variants via majority voting to generate a final submission.",
+  "data_reading": [
+    "pd.read_csv for train, test, and sample_submission files.",
+    "pd.read_parquet with ThreadPoolExecutor for time-series data, extracting df.describe().values as statistical features."
+  ],
+  "data_processing": [
+    "Categorical features filled with 'Missing' and mapped to integers.",
+    "Numeric features imputed with KNNImputer(n_neighbors=5) or SimpleImputer(strategy='median').",
+    "Autoencoder applied to time-series stats for dimensionality reduction.",
+    "Continuous predictions rounded and mapped to discrete classes [0, 3] using optimized thresholds."
+  ],
+  "features_engineering": [
+    "Time-series statistics merged as raw features.",
+    "Autoencoder compression (60 dimensions) of time-series data.",
+    "Hand-crafted ratios and interactions: BMI_Age, Internet_Hours_Age, BMI_Internet_Hours, BFP_BMI, FFMI_BFP, FMI_BFP, LST_TBW, BFP_BMR, BFP_DEE, BMR_Weight, DEE_Weight, SMM_Height, Muscle_to_Fat, Hydration_Status, ICW_TBW, BMI_PHR.",
+    "Custom integer mappings for categorical season columns."
+  ],
+  "models": [
+    "LightGBM (LGBMRegressor)",
+    "XGBoost (XGBRegressor)",
+    "CatBoost (CatBoostRegressor)",
+    "TabNet (TabNetRegressor)",
+    "Random Forest (RandomForestRegressor)",
+    "Gradient Boosting (GradientBoostingRegressor)",
+    "VotingRegressor"
+  ],
+  "frameworks_used": [
+    "pandas",
+    "numpy",
+    "scikit-learn",
+    "lightgbm",
+    "xgboost",
+    "catboost",
+    "pytorch",
+    "pytorch_tabnet",
+    "keras",
+    "scipy",
+    "polars",
+    "matplotlib",
+    "seaborn",
+    "plotly",
+    "tqdm"
+  ],
+  "loss_functions": [
+    "MSE (default for regressors)",
+    "nn.MSELoss (autoencoder)"
+  ],
+  "cv_strategy": "StratifiedKFold(n_splits=5, shuffle=True, random_state=42)",
+  "ensembling": "Three VotingRegressor configurations are trained with different feature sets and weights; final predictions are combined via majority voting across the three submission DataFrames.",
+  "insights": [
+    "QWK can be counterintuitive, as predicting an incorrect class may sometimes yield a higher metric score than the true class for individual samples.",
+    "Threshold optimization using Nelder-Mead on OOF predictions often converges to local maxima rather than global optima.",
+    "Fitting autoencoders independently on train and test sets can cause distribution shifts that degrade feature consistency.",
+    "Discretizing continuous predictions for QWK discards valuable ranking information within predicted classes."
+  ],
+  "critical_findings": [
+    "When adding a single observation with true class 2, predicting class 3 can mathematically increase the QWK score more than predicting the correct class 2.",
+    "The QWK metric treats all errors within the same predicted bin equally, masking performance differences between edge and center predictions.",
+    "Separate autoencoder fitting on train/test splits creates incompatible latent spaces for identical data points."
+  ],
+  "what_did_not_work": [
+    "The author notes that fitting autoencoders separately on train and test datasets causes distribution shifts, and that the Nelder-Mead threshold optimizer frequently gets stuck in local extrema, making both techniques unreliable despite yielding decent public leaderboard scores."
+  ],
+  "source_url": "https://www.kaggle.com/code/batprem/cmi-tuning-ensemble-of-solutions",
+  "votes": 975
+}

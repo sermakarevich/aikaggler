@@ -1,0 +1,29 @@
+{
+  "id": "karnikakapoor/gemini-1-5-powered-patent-analysis",
+  "id_no": 72020709,
+  "title": "\u2728Gemini 1.5 Powered Patent Analysis \ud83d\udcda",
+  "code_file": "gemini-1-5-powered-patent-analysis.ipynb",
+  "language": "python",
+  "kernel_type": "notebook",
+  "is_private": false,
+  "enable_gpu": false,
+  "enable_tpu": false,
+  "enable_internet": false,
+  "keywords": [
+    "healthcare",
+    "beginner",
+    "nlp",
+    "text-to-text generation",
+    "artificial intelligence"
+  ],
+  "dataset_sources": [
+    "karnikakapoor/ml-in-healthcare-patent-data"
+  ],
+  "kernel_sources": [],
+  "competition_sources": [
+    "gemini-long-context"
+  ],
+  "model_sources": [],
+  "docker_image": "gcr.io/kaggle-images/python@sha256:a16cda2c5d52fa988d413876f3ffad7a46cca58678514601feb175990dc187c0",
+  "machine_shape": "None"
+}

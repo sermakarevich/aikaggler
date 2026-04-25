@@ -1,0 +1,26 @@
+{
+  "id": "hengck23/3d-unet-using-2d-image-encoder",
+  "id_no": 70111756,
+  "title": "3d-unet using 2d image encoder",
+  "code_file": "3d-unet-using-2d-image-encoder.ipynb",
+  "language": "python",
+  "kernel_type": "notebook",
+  "is_private": false,
+  "enable_gpu": true,
+  "enable_tpu": false,
+  "enable_internet": false,
+  "keywords": [
+    "gpu"
+  ],
+  "dataset_sources": [
+    "",
+    "hengck23/hengck-czii-cryo-et-01"
+  ],
+  "kernel_sources": [],
+  "competition_sources": [
+    "czii-cryo-et-object-identification"
+  ],
+  "model_sources": [],
+  "docker_image": "gcr.io/kaggle-private-byod/python@sha256:141219e230dab548ccc19aa4e62bcf805ed9de0b4d5112227e28f5f1a25991f8",
+  "machine_shape": "Gpu"
+}

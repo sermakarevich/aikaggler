@@ -1,0 +1,32 @@
+{
+  "summary": "The author achieved 10th place by building an LLM-based retrieval and reranking pipeline augmented with synthetic data. They generated 7,000 additional training examples using GPT-4o and used them to train LoRA adapters on Qwen2.5-14B-Instruct and Qwen2.5-Coder-14B-Instruct across five folds. A multiple-choice reranking stage was implemented using Qwen32B AWQ, optimizing cross-entropy loss over the top 25 candidates. The final submission relied on LoRA weight fusion across folds, which the author highlights as a consistently effective technique.",
+  "extensive_summary": "## External Data Generation\nThe author augmented the original training set by generating 7,000 additional data points using GPT-4o. This synthetic data was combined with the official training data to improve model generalization before any model training began.\n\n## Retrieval Models\nThree recall models were integrated: Qwen/Qwen2.5-14B-Instruct, Qwen/Qwen2.5-Coder-14B-Instruct, and a full Qwen2.5-14B variant. Each was trained across 5 folds. The training pipeline first applied LoRA fine-tuning on the combined dataset, loaded the resulting LoRA weights, and then performed additional fine-tuning. The author noted that minor modifications were required to the model classes from their previously open-sourced KDD codebase.\n\n## Reranking Strategy\nThe reranker utilized Qwen32b AWQ, also trained with LoRA. Instead of traditional ranking losses, the author employed a multiple-choice approach. The input format combined the question, the ground truth answer, and the top 25 retrieved candidates. The model was tasked with outputting probabilities for each of the 25 options. Training exclusively optimized the cross-entropy loss over these 25 candidate probabilities.\n\n## Final Submission & Insights\nThe leaderboard score was derived by fusing LoRA weights across the 5 folds. The author emphasizes that LoRA fusion remains highly effective regardless of the scenario. While they attempted to distill knowledge from a 72B model, offline validation showed no improvement, so it was not submitted. The author acknowledges room for optimization but expresses satisfaction with the 10th place result.",
+  "rank": 10,
+  "competition_flow": "Raw data was augmented with 7k GPT-4o-generated examples, used to train LoRA adapters on Qwen2.5-14B and Qwen2.5-Coder-14B across 5 folds, followed by a multiple-choice reranking stage with Qwen32B AWQ, with final predictions generated via LoRA weight fusion across folds.",
+  "data_reading": [],
+  "data_processing": [],
+  "features_engineering": [],
+  "models": [
+    "Qwen/Qwen2.5-14B-Instruct",
+    "Qwen/Qwen2.5-Coder-14B-Instruct",
+    "Qwen32b AWQ"
+  ],
+  "frameworks_used": [],
+  "loss_functions": [
+    "cross-entropy loss function"
+  ],
+  "cv_strategy": "5-fold cross-validation with LoRA weight merging",
+  "ensembling": "The final leaderboard score was achieved by fusing LoRA weights across 5 folds, which the author notes remains effective in any scenario.",
+  "insights": [
+    "LoRA fusion remains highly effective regardless of the scenario.",
+    "Offline validation data can be limited, so distillation results may not always translate to leaderboard improvements."
+  ],
+  "critical_findings": [],
+  "what_did_not_work": [
+    "Distillation of a 72B model was attempted but not submitted because it showed no improvement on offline validation."
+  ],
+  "github_repos": [],
+  "papers": [],
+  "other_solution_refs": [],
+  "source_url": "https://www.kaggle.com/competitions/eedi-mining-misconceptions-in-mathematics/discussion/551722"
+}

@@ -1,0 +1,35 @@
+{
+  "summary": "This notebook demonstrates how to achieve a competitive leaderboard score (~0.684) on the WSDM Cup Multilingual Chatbot Arena using only the provided test data and a quantized Gemma-2 9B model. It walks through a complete inference pipeline that handles multilingual text preprocessing, custom prompt formatting, and dynamic batching across two GPUs. The author highlights how Test-Time Augmentation (TTA) via response swapping stabilizes predictions and shows how to efficiently run inference with PEFT/LoRA adapters without additional fine-tuning. Readers should learn how to adapt large language models for pairwise preference tasks using minimal resources and standard Hugging Face/PEFT tooling.",
+  "purpose": "inference",
+  "competition_flow": "Reads the test parquet file, preprocesses and tokenizes prompts and responses with custom formatting, runs inference using a 4-bit quantized Gemma-2 9B model with LoRA adapters across two GPUs, applies TTA by averaging predictions from swapped responses, and outputs a CSV submission file.",
+  "data_reading": [
+    "pl.read_parquet('/kaggle/input/wsdm-cup-multilingual-chatbot-arena/test.parquet').to_pandas()"
+  ],
+  "data_processing": [
+    "Fills NaN values with empty strings, truncates long texts using token offsets while inserting a '(snip)' marker, formats inputs with custom tags (<prompt>, <response_a>, <response_b>), tokenizes with GemmaTokenizerFast using dynamic padding and a max length of 1900, and implements TTA by swapping response_a and response_b."
+  ],
+  "features_engineering": [],
+  "models": [
+    "Gemma-2-9B-IT (4-bit)",
+    "LoRA adapter (PEFT)"
+  ],
+  "frameworks_used": [
+    "transformers",
+    "peft",
+    "accelerate",
+    "bitsandbytes",
+    "torch"
+  ],
+  "loss_functions": [],
+  "cv_strategy": "",
+  "ensembling": "Averages the prediction probabilities from the original and swapped response pairs (TTA) to produce a final score, then applies a 0.5 threshold to assign 'model_a' or 'model_b'.",
+  "insights": [
+    "Swapping response positions during inference acts as effective TTA and improves prediction stability without retraining.",
+    "Sorting inputs by length and using dynamic padding with multiple batch sizes maximizes GPU memory utilization and speeds up inference.",
+    "Loading the base model on two separate GPUs and processing batches in parallel with ThreadPoolExecutor significantly reduces total inference time."
+  ],
+  "critical_findings": [],
+  "what_did_not_work": [],
+  "source_url": "https://www.kaggle.com/code/takaito/wsdm-cup-lb-0-684-only-gemma-2-9b-4-bit",
+  "votes": 426
+}

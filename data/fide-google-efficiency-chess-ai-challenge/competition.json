@@ -1,0 +1,106 @@
+{
+  "id": 86524,
+  "competitionName": "fide-google-efficiency-chess-ai-challenge",
+  "title": "FIDE & Google Efficient Chess AI Challenge",
+  "briefDescription": "Create agents to play chess with resource constraints",
+  "dateEnabled": "2024-11-18T23:11:52.113Z",
+  "deadline": "2025-03-06T23:59:00Z",
+  "hasLeaderboard": true,
+  "leaderboardPercentage": 30,
+  "maxDailySubmissions": 5,
+  "numScoredSubmissions": 2,
+  "numPrizes": 5,
+  "forumId": 6063821,
+  "finalLeaderboardHasBeenVerified": true,
+  "disableSubmissions": true,
+  "userRankMultiplier": 1,
+  "publicLeaderboardDisclaimerMessage": " ",
+  "dateCreated": "2024-10-09T20:18:41.074691200Z",
+  "competitionHostSegmentId": 1,
+  "maxTeamSize": 5,
+  "medalsAllowed": true,
+  "enableTeamFiles": true,
+  "teamFileDeadline": "2025-04-26T00:00:00Z",
+  "teamMergerExplicitDeadline": "2025-02-04T23:59:00Z",
+  "prohibitNewEntrantsExplicitDeadline": "2025-02-04T23:59:00Z",
+  "organizationId": 4926,
+  "hasCoverImageUrl": true,
+  "showPrivateLeaderboard": true,
+  "hasScripts": true,
+  "totalTeams": 1120,
+  "totalCompetitors": 1275,
+  "totalSubmissions": 1902,
+  "rulesRequired": true,
+  "clonedFromCompetitionId": 61247,
+  "evaluationAlgorithm": {
+    "id": 2402,
+    "name": "Chess",
+    "isMax": true,
+    "isEnvironment": true,
+    "environmentRenderType": "ENVIRONMENT_RENDER_TYPE_JSON",
+    "state": "ENVIRONMENT"
+  },
+  "categories": [
+    {
+      "id": 2501,
+      "name": "board games",
+      "fullPath": "subject > culture and humanities > games > board games",
+      "description": "A board game is a tabletop game that involves counters or pieces moved or placed on a pre-marked surface or \"board\", according to a set of rules.",
+      "datasetCount": 413,
+      "competitionCount": 7,
+      "scriptCount": 166,
+      "slug": "board-games",
+      "displayName": "Board Games"
+    },
+    {
+      "id": 16151,
+      "name": "simulations",
+      "fullPath": "subject > culture and humanities > games > video games > simulations",
+      "datasetCount": 818,
+      "competitionCount": 67,
+      "scriptCount": 279,
+      "slug": "simulation-games",
+      "displayName": "Simulations"
+    },
+    {
+      "id": 13313,
+      "name": "reinforcement learning",
+      "fullPath": "task > reinforcement-learning",
+      "datasetCount": 163,
+      "competitionCount": 15,
+      "scriptCount": 592,
+      "slug": "reinforcement-learning",
+      "displayName": "Reinforcement Learning"
+    },
+    {
+      "name": "custom metric",
+      "description": "This competition's metric is defined under the 'Evaluation' tab",
+      "displayName": "Custom Metric"
+    }
+  ],
+  "organization": {
+    "slug": "the-international-chess-federation-fide",
+    "name": "F\u00e9d\u00e9ration Internationale des Echecs (FIDE)",
+    "thumbnailImageUrl": "https://storage.googleapis.com/kaggle-media/competitions/FIDE-Chess/Untitled%20design-6.png",
+    "profileUrl": "/organizations/the-international-chess-federation-fide"
+  },
+  "launched": true,
+  "createdByUserId": 1095143,
+  "license": {
+    "id": 31,
+    "name": "MIT",
+    "url": "https://www.mit.edu/~amini/LICENSE.md",
+    "agreementRequired": false
+  },
+  "hostName": "F\u00e9d\u00e9ration Internationale des Echecs (FIDE)",
+  "scoreTruncationNumDecimals": 1,
+  "locked": true,
+  "totalJoinedUsers": 5203,
+  "requiresIdentityVerification": true,
+  "submissionSizeLimitMb": 1,
+  "reward": {
+    "id": "USD",
+    "quantity": 50000
+  },
+  "simulation": true
+}

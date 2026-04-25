@@ -1,0 +1,48 @@
+{
+  "path": "final_versions/07_03_tune_against_mask/lux_ai/nns/models.py",
+  "analysis": {
+    "summary": "This file defines a suite of PyTorch neural network modules tailored for a multi-agent reinforcement learning environment. It implements a hybrid architecture that combines a custom 2D sinusoidal positional embedding, a spatial transformer block for grid-based attention, and a ConvLSTM for temporal sequence modeling. The core actor network processes per-unit masks and spatial features, extracts local patches via a coordinate-aware `Sliser` module, and outputs discrete action logits for worker and sapper units. The design emphasizes handling multi-discrete action spaces with available action masking and integrating local/global features through linear merging and residual blocks.",
+    "purpose": "model_definition",
+    "competition_flow": "Processes pre-tensorized spatial-temporal states and unit masks through a hybrid CNN-Transformer-LSTM architecture to output masked action logits for multi-agent policy execution.",
+    "data_reading": [],
+    "data_processing": [
+      "Normalizes unit coordinates to [-1, 1] for grid sampling.",
+      "Extracts nearest-neighbor patches around unit locations using `F.grid_sample`.",
+      "Concatenates one-hot and continuous unit features, then merges them with spatial patches via a linear feature merger."
+    ],
+    "features_engineering": [
+      "One-hot encoding of discrete features (103 classes).",
+      "Continuous feature vectors (5 dims) concatenated with one-hot encodings.",
+      "Coordinate normalization for grid sampling to align with `grid_sample` conventions."
+    ],
+    "models": [
+      "SpatialTransformer",
+      "ConvLSTMCell",
+      "ConvLSTM",
+      "Sliser",
+      "Predictor",
+      "DictSeparateActorResnBinary",
+      "DictSeparateActorResn",
+      "ResidualBlockNoMask",
+      "CrossAttentionTransformer",
+      "TransformerWithPosEmbed",
+      "DictInputLayer"
+    ],
+    "frameworks_used": [
+      "pytorch",
+      "gym",
+      "numpy"
+    ],
+    "loss_functions": [],
+    "cv_strategy": "",
+    "ensembling": "",
+    "insights": [
+      "Combining local patch extraction with global spatial features allows the model to capture both fine-grained unit details and broader map context.",
+      "Using fixed 2D sinusoidal positional embeddings instead of learnable ones ensures spatial consistency and generalization across different grid resolutions.",
+      "Applying available action masks directly to logits before sampling enables efficient handling of multi-discrete action spaces with dynamic constraints.",
+      "Integrating a ConvLSTM with explicit termination mask handling preserves temporal state across episodes while correctly resetting hidden/cell states upon episode end."
+    ],
+    "critical_findings": [],
+    "what_did_not_work": []
+  }
+}

@@ -1,0 +1,37 @@
+{
+  "summary": "This notebook serves as a practical tutorial on fine-tuning the Gemma2-2B instruction model for Korean customer service email responses using LoRA and KerasNLP. It demonstrates the complete workflow from installing dependencies and configuring the JAX backend to loading a small dataset, applying strict prompt templates with turn markers, and filtering samples by token length. The training setup details LoRA rank configuration, AdamW optimization with weight decay, and a custom callback to save adapter weights after each epoch. Readers gain actionable insights into parameter-efficient fine-tuning, prompt engineering for instruction models, and how decoding strategies influence generation quality.",
+  "purpose": "tutorial",
+  "competition_flow": "Loads a Korean cake-ordering dataset, formats inputs with instruction templates, fine-tunes Gemma2-2B using LoRA and KerasNLP, and demonstrates inference with varying prompts and decoding strategies.",
+  "data_reading": [
+    "Uses datasets.load_dataset to fetch the \"bebechien/korean_cake_boss\" training split, converts it to numpy format, and iterates through rows manually."
+  ],
+  "data_processing": [
+    "Applies a fixed prompt template with <start_of_turn> and <end_of_turn> markers, tokenizes inputs using the Gemma tokenizer, filters out samples exceeding 256 tokens, and caps the training set at 100 examples."
+  ],
+  "features_engineering": [],
+  "models": [
+    "Gemma2-2B"
+  ],
+  "frameworks_used": [
+    "keras",
+    "keras-nlp",
+    "datasets",
+    "jax",
+    "matplotlib"
+  ],
+  "loss_functions": [
+    "SparseCategoricalCrossentropy(from_logits=True)"
+  ],
+  "cv_strategy": "",
+  "ensembling": "",
+  "insights": [
+    "LoRA enables efficient fine-tuning of large models by isolating trainable parameters to a low-rank adapter.",
+    "Instruction-tuned models require strict prompt formatting with turn markers to function correctly.",
+    "Token length filtering is essential for controlling memory usage and preventing training crashes.",
+    "Swapping decoding samplers post-training allows quick experimentation with output randomness without retraining."
+  ],
+  "critical_findings": [],
+  "what_did_not_work": [],
+  "source_url": "https://www.kaggle.com/code/bebechien/how-to-finetuning-gemma2-for-spoken-language-tasks",
+  "votes": 458
+}

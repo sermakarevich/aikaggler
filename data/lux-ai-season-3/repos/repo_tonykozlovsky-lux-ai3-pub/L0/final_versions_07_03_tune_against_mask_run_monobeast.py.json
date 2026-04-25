@@ -1,0 +1,34 @@
+{
+  "path": "final_versions/07_03_tune_against_mask/run_monobeast.py",
+  "analysis": {
+    "summary": "This file serves as the primary entry point for training a reinforcement learning agent in the LUX AI Season 3 competition using the `torchbeast` library. It orchestrates configuration merging via Hydra, applies environment-specific hyperparameter overrides, and compiles a custom C++ extension to interface with the game simulation. The script sets up distributed training parameters, enables aggressive compilation caching for PyTorch and JAX, and launches either a benchmarking or full training routine. Readers should note the heavy reliance on config-driven workflows and low-level environment compilation for performance.",
+    "purpose": "entrypoint",
+    "competition_flow": "Merges configuration, compiles a custom C++ environment extension, and launches the `torchbeast` training or benchmarking loop for the LUX AI Season 3 game.",
+    "data_reading": [],
+    "data_processing": [],
+    "features_engineering": [],
+    "models": [
+      "monobeast"
+    ],
+    "frameworks_used": [
+      "pytorch",
+      "jax",
+      "hydra",
+      "omegaconf",
+      "wandb"
+    ],
+    "loss_functions": [],
+    "cv_strategy": "",
+    "ensembling": "",
+    "insights": [
+      "Uses Hydra and OmegaConf for hierarchical configuration management with CLI overrides.",
+      "Aggressively caches PyTorch Inductor and JAX compilations to minimize training overhead.",
+      "Compiles a custom C++ shared library to efficiently interface with the game environment.",
+      "Supports environment-specific scaling via environment variables like SMALL, MAC, and BENCHMARK."
+    ],
+    "critical_findings": [],
+    "what_did_not_work": [
+      "behavior_cloning_actors is explicitly disabled with a comment noting it is NOT WORKING YET."
+    ]
+  }
+}

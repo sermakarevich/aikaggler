@@ -1,0 +1,76 @@
+{
+  "summary": "The authors achieved 2nd place by training an ensemble of lightweight 3D segmentation models (873K to 14.2M parameters) and post-processing the outputs to extract particle centroids. They discovered that MONAI's default InstanceNorm3d and PReLU combination caused convergence instability in several architectures, necessitating manual swaps to BatchNorm3d/GroupNorm and ReLU for stability. Custom per-particle-type ground truth mask radii and targeted spatial augmentations were critical for segmentation quality. The final submission averaged predictions from multiple models with a certainty threshold, followed by connected component analysis and cluster size filtering.",
+  "extensive_summary": "## Approach Overview\nThe solution centers on an ensemble of lightweight 3D segmentation models, deliberately avoiding heavy transformer-based architectures due to overfitting risks. The pipeline processes raw cryo-ET volumes through model inference, followed by centroid extraction via connected components (CC3D) and cluster size filtering to isolate valid particles.\n\n## Model Architecture & Normalization Insights\nStarting from the MONAI UNet baseline, the team experimented with UNet3D, VoxResNet, VoxHRNet, SegResNet, DynUNet, and DenseVNet. A critical finding was that MONAI's default `InstanceNorm3d` and `PReLU` combination caused stability issues and convergence difficulties for several architectures. By swapping to `BatchNorm3d`/`GroupNorm` and `ReLU` for certain models, they achieved more reliable training. The final ensemble selected models based on public leaderboard scores, mixing architectures with different normalization and activation configurations.\n\n## Training Strategy & Data Handling\nTraining relied heavily on customized ground truth mask radii tailored to specific particle types (e.g., apo-ferritin, ribosome) to improve segmentation accuracy. Patch sizes ranged from `[128, 200, 200]` to `[128, 384, 384]`, with training durations between 100 and 300 epochs. Optimizers primarily used AdamW with a fixed learning rate of `0.001`, and batch sizes were kept small (1 or 2) due to memory constraints. Loss functions included Tversky Loss, Dice Loss, and weighted Cross-Entropy Loss. Augmentations focused on spatial transformations (RandRotate90d, RandFlipd, RandAffined) and intensity shifts, with label-balanced cropping to handle class imbalance.\n\n## Post-processing & Ensembling\nInference outputs were converted into particle clusters using CC3D. A threshold-based clustering approach (threshold = 0.15) improved recall, followed by cluster size filtering to remove noise. The final submission used an average ensemble of 7-11 models with a certainty threshold of 0.15, carefully selecting model combinations that maximized the public leaderboard score while maintaining strong private performance.",
+  "rank": 2,
+  "competition_flow": "Raw cryo-ET volumes are segmented using an ensemble of lightweight 3D UNet-based models, followed by connected component analysis (CC3D) to extract particle centroids and filter clusters by size and certainty threshold before final submission.",
+  "data_reading": [],
+  "data_processing": [
+    "Custom per-particle-type ground truth mask radii (e.g., 60x0.5, 90x0.5, 150x0.5)",
+    "Patch sizes: [128, 200, 200], [128, 256, 256], or [128, 384, 384]",
+    "RandCropByLabelClassesd with balanced sampling ratios [1, 1, 1, 1, 2, 1, 2]",
+    "RandRotate90d, RandFlipd, RandAffined, RandGaussianNoised, RandShiftIntensityd"
+  ],
+  "features_engineering": [],
+  "models": [
+    "UNet3D",
+    "VoxResNet",
+    "VoxHRNet",
+    "SegResNet",
+    "DynUNet",
+    "DenseVNet",
+    "UNet2E3D",
+    "MONAI UNet"
+  ],
+  "frameworks_used": [
+    "MONAI"
+  ],
+  "loss_functions": [
+    "Tversky Loss",
+    "Cross-Entropy Loss",
+    "Dice Loss"
+  ],
+  "cv_strategy": "",
+  "ensembling": "The final submission averages predictions from 7 to 11 selected models with a certainty threshold of 0.15, followed by CC3D-based cluster extraction and size filtering to isolate valid particle centroids.",
+  "insights": [
+    "Lightweight models with fewer parameters consistently outperform heavy transformer-based architectures, which are prone to overfitting.",
+    "Swapping MONAI's default InstanceNorm3d and PReLU for BatchNorm3d/GroupNorm and ReLU dramatically improves training stability and convergence for several architectures.",
+    "Applying customized ground truth mask radii tailored to specific particle types is essential for achieving high segmentation recall."
+  ],
+  "critical_findings": [
+    "MONAI's default InstanceNorm3d and PReLU combination causes convergence instability and performance fluctuations in several 3D segmentation architectures, necessitating manual normalization/activation swaps.",
+    "Adjusting the ground truth mask radius multiplier per particle type (e.g., 0.5 vs 0.4) directly impacts segmentation quality and requires careful tuning per class."
+  ],
+  "what_did_not_work": [
+    "Synthetic data",
+    "Second-stage classification",
+    "Heavy-weight models (transformer-based models)"
+  ],
+  "github_repos": [
+    {
+      "url": "https://github.com/luoziqianX/CZII-CryoET-Object-Identification-2nd-luoziqian",
+      "role": "solution"
+    },
+    {
+      "url": "https://github.com/GWwangshuo/Kaggle-2024-CZII-Pub",
+      "role": "solution"
+    }
+  ],
+  "papers": [
+    {
+      "title": "SHREC 2020: Classification in cryo-electron tomograms",
+      "url": "",
+      "arxiv_id": null
+    }
+  ],
+  "other_solution_refs": [
+    {
+      "description": "fnands's baseline notebook",
+      "url": "https://www.kaggle.com/code/fnands/baseline-unet-train-submit/notebook"
+    },
+    {
+      "description": "hengck23's discussion thread",
+      "url": "https://www.kaggle.com/competitions/czii-cryo-et-object-identification/discussion/547350#3056648"
+    }
+  ],
+  "source_url": "https://www.kaggle.com/competitions/czii-cryo-et-object-identification/discussion/561568"
+}

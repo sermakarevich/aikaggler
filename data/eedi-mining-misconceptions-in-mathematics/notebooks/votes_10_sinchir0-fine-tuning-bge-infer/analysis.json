@@ -1,0 +1,37 @@
+{
+  "summary": "This notebook performs inference using a fine-tuned BGE-large-en-v1.5 model to retrieve the top 25 most likely misconceptions for each question-answer pair in a math competition dataset. It constructs query embeddings by concatenating question metadata and answer text, then computes cosine similarity against misconception name embeddings. The pipeline filters out correct answers and formats the top-25 results into a submission CSV. Readers should understand how to adapt a pre-trained sentence transformer for domain-specific retrieval tasks and efficiently generate ranked lists of related concepts using vector similarity.",
+  "purpose": "inference",
+  "competition_flow": "Loads test data and misconception mappings, encodes concatenated question-answer text and misconception names using a fine-tuned BGE model, computes cosine similarity to rank misconceptions, filters out correct answers, and outputs a CSV submission with the top 25 predicted misconceptions per question-answer pair.",
+  "data_reading": [
+    "polars.read_csv is used to load test.csv and misconception_mapping.csv from a local Kaggle input directory."
+  ],
+  "data_processing": [
+    "Unpivots wide answer columns to long format, concatenates ConstructName, SubjectName, QuestionText, and AnswerText into a single query string, normalizes embeddings during encoding, computes cosine similarity, and filters out rows where the predicted misconception matches the correct answer."
+  ],
+  "features_engineering": [
+    ""
+  ],
+  "models": [
+    "bge-large-en-v1.5"
+  ],
+  "frameworks_used": [
+    "polars",
+    "numpy",
+    "scikit-learn",
+    "sentence-transformers"
+  ],
+  "loss_functions": [
+    ""
+  ],
+  "cv_strategy": "",
+  "ensembling": "",
+  "insights": [
+    "Concatenating question metadata with answer text creates effective anchor queries for retrieving related misconceptions.",
+    "Normalizing embeddings before computing cosine similarity ensures consistent similarity scores across different query lengths and scales.",
+    "Filtering out the correct answer during retrieval prevents trivial matches and focuses the model on identifying actual misconceptions."
+  ],
+  "critical_findings": [],
+  "what_did_not_work": [],
+  "source_url": "https://www.kaggle.com/code/sinchir0/fine-tuning-bge-infer",
+  "votes": 298
+}

@@ -1,0 +1,18 @@
+You are merging several partial summaries of a SINGLE GitHub repository, each derived from a different chunk of files in that repo, into one consolidated repo-level summary. Output JSON following the schema (a single repo summary, NOT a cross-repo aggregate).
+
+Rules:
+- Do NOT invent items not present in the inputs.
+- 'summary': single coherent 4-7 sentence narrative that captures what the solution does end-to-end. Synthesize across the partial summaries; do NOT just concatenate them.
+- 'competition_flow': one sentence describing the end-to-end pipeline (data → preprocessing → model → training → inference → submission), reconciled across the partial summaries.
+- Each array field (models, loss_functions, data_processing, features_engineering, etc.) is the UNION (superset) of every unique value across the partial summaries. Preserve everything — deduplicate wording only, do NOT filter by frequency. Normalize synonyms ('resnet34' == 'ResNet-34' → one canonical form).
+- For per-summary string fields ('cv_strategy', 'ensembling') pick the most prominent / canonical approach across the partial summaries (one sentence each). Empty if unclear.
+- 'training_setup': UNION of training_setup entries across partial summaries (hardware, optimizers, schedules, hyperparameters).
+- 'insights': UNION of insights across partial summaries.
+- 'critical_findings' / 'what_did_not_work': UNION across partial summaries; keep entries explicit and grounded.
+- 'notable_files': UNION of notable_files entries across partial summaries; deduplicate by 'path'. Keep the most informative 3-7 entries; if more remain, prefer entry-points / READMEs / training / model definitions.
+
+Repo: {repo}
+URL: {url}
+
+Partial summaries:
+{payload_json}

@@ -1,0 +1,13 @@
+{
+  "description": "Participants predict human preference across multilingual text conversations using real voting data from the Chatbot Arena. The task involves analyzing chatbot responses to determine which output users prefer in a given language. Success is measured by classification accuracy on a held-out test set.",
+  "data_modality": "text",
+  "task_type": "classification",
+  "label_structure": "single_label",
+  "metric": "Accuracy Score",
+  "test_split": "unknown",
+  "format": "two_stage",
+  "dataset_scale": "unknown",
+  "domain": "nlp_chatbots",
+  "data_challenges": [],
+  "constraints": []
+}

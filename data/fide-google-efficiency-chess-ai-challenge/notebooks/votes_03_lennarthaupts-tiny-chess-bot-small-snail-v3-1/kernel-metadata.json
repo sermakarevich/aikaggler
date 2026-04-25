@@ -1,0 +1,34 @@
+{
+  "id": "lennarthaupts/tiny-chess-bot-small-snail-v3-1",
+  "id_no": 71324247,
+  "title": "Tiny Chess Bot | Small Snail v3.1\ud83d\udc0c",
+  "code_file": "tiny-chess-bot-small-snail-v3-1.ipynb",
+  "language": "python",
+  "kernel_type": "notebook",
+  "is_private": false,
+  "enable_gpu": false,
+  "enable_tpu": false,
+  "enable_internet": false,
+  "keywords": [],
+  "dataset_sources": [
+    "lennarthaupts/bitboard-chess-custom-functions"
+  ],
+  "kernel_sources": [
+    "",
+    "thomasyow/chess-bot-minimax-alpha-beta-time-constraint",
+    "",
+    "",
+    "wguesdon/littledeepblue",
+    "byfone/sunfish-chess-bot",
+    "bovard/your-first-chess-bot",
+    "lennarthaupts/tiny-chess-bot-small-snail-v3-1",
+    "",
+    ""
+  ],
+  "competition_sources": [
+    "fide-google-efficiency-chess-ai-challenge"
+  ],
+  "model_sources": [],
+  "docker_image": "gcr.io/kaggle-images/python@sha256:a16cda2c5d52fa988d413876f3ffad7a46cca58678514601feb175990dc187c0",
+  "machine_shape": "None"
+}

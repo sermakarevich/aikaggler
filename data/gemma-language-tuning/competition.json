@@ -1,0 +1,82 @@
+{
+  "id": 85416,
+  "competitionName": "gemma-language-tuning",
+  "title": "Google - Unlock Global Communication with Gemma",
+  "briefDescription": "Create Gemma model variants for a specific language or unique cultural aspect",
+  "dateEnabled": "2024-10-02T23:00:13.290Z",
+  "deadline": "2025-01-15T00:59:00Z",
+  "leaderboardPercentage": 30,
+  "maxDailySubmissions": 5,
+  "numScoredSubmissions": 2,
+  "numPrizes": 1,
+  "forumId": 5937095,
+  "disableSubmissions": true,
+  "dateCreated": "2024-09-19T19:21:55.363132600Z",
+  "disableLeaderboardPrizeIndicator": true,
+  "competitionHostSegmentId": 11,
+  "maxTeamSize": 5,
+  "organizationId": 855,
+  "hasCoverImageUrl": true,
+  "showPrivateLeaderboard": true,
+  "hasScripts": true,
+  "rulesRequired": true,
+  "categories": [
+    {
+      "id": 2107,
+      "name": "languages",
+      "fullPath": "subject > culture and humanities > languages",
+      "description": "Language is a method of communication that consists of using words arranged into meaningful patterns. This is a good place to find natural language processing datasets and kernels to study languages and train your chat bots.",
+      "datasetCount": 1025,
+      "competitionCount": 10,
+      "scriptCount": 378,
+      "slug": "languages",
+      "displayName": "Languages"
+    },
+    {
+      "id": 16696,
+      "name": "text generation",
+      "fullPath": "task > text-generation",
+      "description": "",
+      "datasetCount": 534,
+      "competitionCount": 24,
+      "scriptCount": 613,
+      "slug": "text-generation",
+      "displayName": "Text Generation"
+    },
+    {
+      "id": 12101,
+      "name": "artificial intelligence",
+      "fullPath": "subject > science and technology > computer science > artificial intelligence",
+      "description": "This tag has datasets and kernels where people come together and use cutting-edge research to train models on pictures of cats.",
+      "datasetCount": 4379,
+      "competitionCount": 86,
+      "scriptCount": 3822,
+      "slug": "artificial-intelligence",
+      "displayName": "Artificial Intelligence"
+    }
+  ],
+  "organization": {
+    "slug": "google",
+    "name": "Google",
+    "thumbnailImageUrl": "https://storage.googleapis.com/kaggle-organizations/855/thumbnail.png",
+    "profileUrl": "/organizations/google"
+  },
+  "launched": true,
+  "createdByUserId": 1095143,
+  "license": {
+    "id": 30,
+    "name": "Apache 2.0",
+    "url": "https://www.apache.org/licenses/LICENSE-2.0",
+    "agreementRequired": false
+  },
+  "hostName": "Google",
+  "scoreTruncationNumDecimals": 5,
+  "locked": true,
+  "totalJoinedUsers": 7019,
+  "requiresIdentityVerification": true,
+  "submissionSizeLimitMb": 20480,
+  "reward": {
+    "id": "USD",
+    "quantity": 150000
+  }
+}

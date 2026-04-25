@@ -1,0 +1,42 @@
+{
+  "summary": "This notebook demonstrates a practical workflow for converting a smartphone video of household items into a structured insurance inventory database using Google's Gemini API. It leverages Gemini's long context window and native video processing capabilities to eliminate the need for chaining multiple traditional ML models. The author outlines a recursive three-step prompting strategy (initial extraction, expansion, and finalization) combined with context caching and in-context examples to ensure accurate, structured CSV outputs. Key takeaways include the cost and token efficiency of context caching, the strategic use of CSV over JSON to manage output limits, and the importance of detailed few-shot prompting for reliable multimodal extraction.",
+  "purpose": "tutorial",
+  "competition_flow": "Loads a smartphone video file, uploads it to the Gemini API with context caching, and uses a recursive three-step prompting pipeline to extract and structure household items into a CSV database.",
+  "data_reading": [
+    "Loads a local .mov video file using OpenCV's cv2.VideoCapture for frame inspection, then uploads the video file to the Google Gemini API via genai.upload_file for multimodal processing."
+  ],
+  "data_processing": [
+    "Extracts random frames for visualization using OpenCV; implements context caching for the uploaded video to reduce repeated inference costs; applies a recursive three-step prompting pipeline with automated CSV validation and formatting fixes."
+  ],
+  "features_engineering": [],
+  "models": [
+    "gemini-1.5-flash-002"
+  ],
+  "frameworks_used": [
+    "google-generativeai",
+    "cv2",
+    "pandas",
+    "numpy",
+    "matplotlib",
+    "IPython"
+  ],
+  "loss_functions": [],
+  "cv_strategy": "",
+  "ensembling": "",
+  "insights": [
+    "Gemini's 1M-2M token context window and native video processing enable end-to-end multimodal extraction without chaining separate CV, ASR, and NLP models.",
+    "Context caching drastically reduces operational costs by processing the video input once and reusing it across multiple inference steps.",
+    "CSV formatting is more token-efficient than JSON for large outputs, helping to stay within the model's 8k output token limit.",
+    "Detailed in-context examples (few-shot prompting) significantly improve the model's ability to follow complex schema constraints and reasoning steps."
+  ],
+  "critical_findings": [
+    "Gemini currently processes video at 1 FPS, which can cause it to miss items; higher FPS sampling is noted as a future improvement.",
+    "The 8k output token limit can be a bottleneck for large inventories, making output format choice (CSV vs JSON) a critical design decision.",
+    "Bounding box coordinate outputs were tested but abandoned due to poor formatting results when appended to CSV; the author recommends passing individual frames directly instead."
+  ],
+  "what_did_not_work": [
+    "Bounding box extraction was attempted but yielded poor results when appended to the CSV output, leading to its removal from the schema."
+  ],
+  "source_url": "https://www.kaggle.com/code/mrdbourke/keeptrack-use-gemini-to-keep-track-of-anything",
+  "votes": 131
+}

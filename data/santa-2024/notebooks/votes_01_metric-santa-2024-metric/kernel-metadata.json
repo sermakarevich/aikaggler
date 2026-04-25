@@ -1,0 +1,28 @@
+{
+  "id": "metric/santa-2024-metric",
+  "id_no": 71069344,
+  "title": "Santa 2024 Metric",
+  "code_file": "santa-2024-metric.ipynb",
+  "language": "python",
+  "kernel_type": "notebook",
+  "is_private": false,
+  "enable_gpu": true,
+  "enable_tpu": false,
+  "enable_internet": true,
+  "keywords": [
+    "competition metric",
+    "other"
+  ],
+  "dataset_sources": [],
+  "kernel_sources": [
+    ""
+  ],
+  "competition_sources": [
+    "santa-2024"
+  ],
+  "model_sources": [
+    "google/gemma-2/Transformers/gemma-2-9b/2"
+  ],
+  "docker_image": "gcr.io/kaggle-private-byod/python@sha256:141219e230dab548ccc19aa4e62bcf805ed9de0b4d5112227e28f5f1a25991f8",
+  "machine_shape": "NvidiaTeslaT4"
+}

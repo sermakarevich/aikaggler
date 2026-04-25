@@ -1,0 +1,43 @@
+{
+  "summary": "This notebook implements an inference pipeline for the CZI Cryo-ET Object Identification competition, combining a 2D slice-based YOLO detector and a 3D volumetric UNet. It processes test zarr volumes by converting them to 8-bit, extracting patches, and running inference with test-time augmentation. Predictions from both models are spatially clustered using particle-specific radii to deduplicate and merge overlapping detections before generating the final submission. Readers should learn how to effectively blend 2D and 3D models for cryo-ET particle detection and handle spatial post-processing for accurate centroid estimation.",
+  "purpose": "inference",
+  "competition_flow": "Loads pre-trained YOLO and 3D UNet models, processes test cryo-ET volumes via 2D slice inference and 3D patch-based inference with TTA, aggregates detections using spatial clustering, and generates a combined submission CSV.",
+  "data_reading": [
+    "Reads test volumes from zarr files using zarr.open.",
+    "Accesses test runs and tomograms via the copick library."
+  ],
+  "data_processing": [
+    "Converts volumes to 8-bit via percentile clipping and resizes 2D slices to 640x640 for YOLO.",
+    "Applies MONAI transforms (channel first, normalization, orientation) and extracts 96\u00b3 overlapping patches for the UNet.",
+    "Reconstructs patch predictions into full volumes and filters detections using 3D connected components with a blob size threshold."
+  ],
+  "features_engineering": [],
+  "models": [
+    "YOLO11",
+    "3D UNet (MONAI)"
+  ],
+  "frameworks_used": [
+    "ultralytics",
+    "torch",
+    "lightning.pytorch",
+    "monai",
+    "numpy",
+    "pandas",
+    "scipy",
+    "opencv",
+    "cc3d",
+    "scikit-learn"
+  ],
+  "loss_functions": [],
+  "cv_strategy": "",
+  "ensembling": "Blends YOLO and 3D UNet predictions, then applies particle-specific DBSCAN clustering to merge nearby detections and average their coordinates before saving the final submission.",
+  "insights": [
+    "Blending 2D slice-based detection with 3D volumetric segmentation can improve robustness in cryo-ET particle identification.",
+    "Spatial deduplication using connected components and distance-based clustering is essential to avoid double-counting particles.",
+    "Test-time augmentation (flipping and rotating) effectively boosts 3D UNet inference performance without retraining."
+  ],
+  "critical_findings": [],
+  "what_did_not_work": [],
+  "source_url": "https://www.kaggle.com/code/hideyukizushi/czii-yolo11-unet3d-monai-lb-707",
+  "votes": 451
+}

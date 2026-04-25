@@ -1,0 +1,34 @@
+{
+  "summary": "The notebook demonstrates a permutation optimization strategy for the Santa 2024 competition, where the objective is to reorder words in a sentence to minimize its perplexity as measured by a large language model. It implements a custom perplexity scorer using a 4-bit quantized Gemma-2-9B model via the Hugging Face `transformers` library. The author applies heuristic search methods, including simulated annealing, brute-force permutation of suffixes, and greedy word-swapping, to iteratively improve word order without gradient-based fine-tuning. The approach highlights how LLM perplexity can serve as a reliable proxy for linguistic naturalness and how simple local search heuristics can effectively optimize text permutations. Readers should understand that model-based scoring combined with meta-heuristic search can yield strong baselines for permutation tasks.",
+  "purpose": "inference",
+  "competition_flow": "Loads sample submission text, calculates initial perplexity using a quantized Gemma-2-9B model, applies simulated annealing and greedy permutation heuristics to minimize perplexity, and exports the optimized text permutations as a CSV submission.",
+  "data_reading": [
+    "Reads `sample_submission.csv` from `/kaggle/input/santa-2024/` using `pandas.read_csv`, then manually overwrites specific rows with hardcoded text strings for iterative testing."
+  ],
+  "data_processing": [
+    "Splits text into words, normalizes whitespace by splitting and rejoining, validates permutation integrity using `collections.Counter`, adds BOS/EOS tokens, tokenizes inputs with padding, shifts logits and labels for causal language modeling, and processes batches of 64 sequences."
+  ],
+  "features_engineering": [],
+  "models": [
+    "Gemma-2-9B"
+  ],
+  "frameworks_used": [
+    "transformers",
+    "torch"
+  ],
+  "loss_functions": [
+    "torch.nn.CrossEntropyLoss(reduction='none')"
+  ],
+  "cv_strategy": "",
+  "ensembling": "",
+  "insights": [
+    "LLM perplexity effectively measures linguistic naturalness for word permutation tasks.",
+    "Simulated annealing with temperature cooling and neighbor swapping significantly improves permutation scores over random shuffling.",
+    "Brute-forcing permutations of the last few words combined with greedy insertion yields strong local optima.",
+    "Quantizing the LLM to 4-bit (fp4) enables running large models on Kaggle GPUs without out-of-memory errors."
+  ],
+  "critical_findings": [],
+  "what_did_not_work": [],
+  "source_url": "https://www.kaggle.com/code/veniaminnelin/fine-tuning-word4-simple-permutation",
+  "votes": 308
+}

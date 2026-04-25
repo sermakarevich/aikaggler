@@ -1,0 +1,27 @@
+{
+  "id": "richolson/add-it-up",
+  "id_no": 73282789,
+  "title": "Add It Up!",
+  "code_file": "add-it-up.ipynb",
+  "language": "python",
+  "kernel_type": "notebook",
+  "is_private": false,
+  "enable_gpu": true,
+  "enable_tpu": false,
+  "enable_internet": false,
+  "keywords": [
+    "gpu"
+  ],
+  "dataset_sources": [
+    "nbroad/hf-libraries"
+  ],
+  "kernel_sources": [],
+  "competition_sources": [
+    "llms-you-cant-please-them-all"
+  ],
+  "model_sources": [
+    "richolson/phi-3.5-mini-instruct/PyTorch/default/1"
+  ],
+  "docker_image": "gcr.io/kaggle-private-byod/python@sha256:1003a82bef5df3c098b2041d936cb5f1836e52d7b610e8f0f4dedc194fb3b773",
+  "machine_shape": "Gpu"
+}

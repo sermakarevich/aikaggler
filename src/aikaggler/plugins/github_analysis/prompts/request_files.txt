@@ -1,0 +1,13 @@
+You are preparing to deeply analyze a Kaggle competition GitHub repository. The repository has too many files to inspect each one; you must first identify the top {max_files} files that best capture the solution. Before deciding, you may request a few orientation files to read — typically the README, top-level entrypoint scripts (e.g. main.py, run.sh, train.sh), or top-level configs (e.g. requirements.txt, conf/*.yaml, Dockerfile) that explain how the rest of the repo fits together.
+
+The downstream pipeline will read each of the top {max_files} files you eventually pick and extract these fields: data reading, data processing, feature engineering, models, frameworks used, loss functions, CV strategy, ensembling, training setup (hardware/optimizer/schedule/hyperparameters), insights, critical findings, what did not work, and notable files. Use that target schema to guide which orientation files to pull now — prefer ones likely to point you at where the data is loaded, which models are trained, and how training is launched.
+
+Output JSON:
+- 'reasoning': 1-2 sentences on what you intend to learn from these files and which target fields they help answer.
+- 'files_to_read': 1 to {max_requests} paths from the tree below. Use the path verbatim (no quoting, no leading './'). Prefer files that orient a reader (READMEs, launch scripts, top-level configs); avoid weights, fixtures, or generated artefacts.
+
+Repo: {repo}
+URL: {url}
+
+Repository file tree (path  size):
+{tree}

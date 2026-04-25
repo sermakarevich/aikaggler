@@ -1,0 +1,23 @@
+{
+  "id": "takuji/reproduce-essays-simple-submission",
+  "id_no": 77044961,
+  "title": "[Reproduce] Essays - simple submission",
+  "code_file": "reproduce-essays-simple-submission.ipynb",
+  "language": "python",
+  "kernel_type": "notebook",
+  "is_private": false,
+  "enable_gpu": false,
+  "enable_tpu": false,
+  "enable_internet": false,
+  "keywords": [],
+  "dataset_sources": [
+    "jiprud/words-en"
+  ],
+  "kernel_sources": [],
+  "competition_sources": [
+    "llms-you-cant-please-them-all"
+  ],
+  "model_sources": [],
+  "docker_image": "gcr.io/kaggle-images/python@sha256:df5bb865ba69fd6ef584de23ddc655e1ea6958c60ceb02eb5eed0459fa2819a2",
+  "machine_shape": "None"
+}

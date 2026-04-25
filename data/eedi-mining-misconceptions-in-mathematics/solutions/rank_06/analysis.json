@@ -1,0 +1,65 @@
+{
+  "summary": "The author achieved a 6th place solo gold by building a retrieval and reranking pipeline tailored to rank math misconceptions by relevance to distractors. A core insight was aligning the validation split with the private test distribution by explicitly balancing seen and unseen misconceptions, preventing overfitting to seen data that inflated CV scores. The pipeline combined synthetic data generation via few-shot prompting, iterative negative mining, and a multi-stage reranking process that leveraged KL divergence distillation, misconception rephrasing, and permutation-based logit averaging to improve generalization to unseen misconceptions.",
+  "extensive_summary": "## Validation Strategy\nThe author initially struggled with standard group splits on question ID, which correlated poorly with the public leaderboard due to unseen misconceptions in the hidden test set. To align validation with the private distribution, they designed a single-fold validation strategy that explicitly balanced seen and unseen misconceptions, preventing overfitting to seen data that inflated CV scores but failed on the LB.\n\n## Synthetic Data Generation\nTraining solely on provided training data yielded poor results, necessitating synthetic data generation for unseen misconceptions. After finding that LoRA pretraining caused catastrophic forgetting, the author switched to few-shot generation using Qwen 72B instruct. They generated 9 math tests per misconception (3 seeds \u00d7 3 tests) using 3 random few-shot examples, ensuring the synthetic data maintained the correct connection between distractors and misconceptions while matching the training data structure.\n\n## Retrieval Pipeline\nTo handle LaTeX formatting overhead, the author used `pylatexenc` to convert LaTeX to plain text, though two ensemble models retained raw LaTeX to preserve information. Retrieval was performed using multiple models (gte-Qwen2-7B-instruct, Salesforce-SFR-Embedding-2_R, bge-multilingual-gemma2, Qwen2.5-14B-Instruct) trained with LoRA (rank=64, alpha=128) and 4-bit quantization. The training pipeline included two negative mining iterations (initial mining followed by 1600 steps, then re-mining with the pretrained model for 400 steps) and used 5 negatives per sample.\n\n## Reranking and Distillation Tricks\nThe reranking stage addressed several generalization bottlenecks. First, the author excluded test misconceptions from training to improve unseen generalization. They introduced a distillation trick: training on one seed, inferring logits on a second seed's dataset, and retraining with KL divergence distillation combined with cross-entropy to mitigate overfitting to single correct misconceptions. A first-stage reranker classified relevance from randomly ordered negatives to prevent order bias. Misconceptions were rephrased into a unified format (missing knowledge + student belief) to act as regularization, with logits combined with original predictions. Finally, a second-stage reranker applied permutations to the top-2 window from the first stage, averaging logits across permutations to refine rankings, yielding a ~0.01 LB improvement.",
+  "rank": 6,
+  "competition_flow": "Raw math problems and misconceptions are cleaned via LaTeX-to-text conversion, retrieved using multiple LoRA-finetuned embedding models with iterative negative mining, and ranked through a multi-stage reranking pipeline incorporating synthetic data, KL distillation, rephrasing, and permutation-based logit averaging before final submission.",
+  "data_reading": [],
+  "data_processing": [
+    "LaTeX to plain text conversion using `pylatexenc` (with two ensemble models retaining raw LaTeX)",
+    "Misconception rephrasing into a unified format combining missing knowledge and student belief",
+    "Synthetic data generation via few-shot prompting (9 math tests per misconception across 3 seeds)",
+    "Iterative negative mining (initial mining followed by 1600 steps, then re-mining with pretrained model for 400 steps)",
+    "Permutation-based logit averaging for reranking"
+  ],
+  "features_engineering": [],
+  "models": [
+    "gte-Qwen2-7B-instruct",
+    "Salesforce-SFR-Embedding-2_R",
+    "bge-multilingual-gemma2",
+    "Qwen2.5-14B-Instruct",
+    "Qwen 72B instruct",
+    "Qwen 32B instruct"
+  ],
+  "frameworks_used": [
+    "pylatexenc"
+  ],
+  "loss_functions": [
+    "KL divergence distillation",
+    "cross-entropy loss"
+  ],
+  "cv_strategy": "Single-fold validation explicitly balancing seen and unseen misconceptions to align with the private test distribution, replacing the standard group split on question ID.",
+  "ensembling": "Ensembled multiple retriever models (some trained on `pylatexenc`-processed text, others on raw LaTeX) and combined inference logits from original and rephrased misconceptions, with final rankings refined by averaging logits across permutations of the top-2 reranked candidates.",
+  "insights": [
+    "Balancing seen and unseen misconceptions in validation is critical for aligning CV with the private leaderboard.",
+    "Few-shot generation is more effective than LoRA pretraining for creating synthetic data without causing catastrophic forgetting.",
+    "Excluding test misconceptions from training data significantly improves generalization to unseen misconceptions.",
+    "KL divergence distillation across different generation seeds mitigates overfitting to single correct misconceptions.",
+    "Rephrasing misconceptions into a unified format serves as effective regularization during inference.",
+    "Rerankers naturally preserve retriever order, making permutation-based logit averaging necessary for final ranking refinement."
+  ],
+  "critical_findings": [
+    "Despite higher MRR on unseen misconceptions due to synthetic oversampling, recall remained identical to seen misconceptions, indicating the model converges on simpler patterns but struggles with complex ones.",
+    "A permutation window size of exactly 2 proved optimal for refining reranker outputs, despite the expectation that larger windows might help.",
+    "Scaling the reranker from Qwen 32B to 72B yielded identical results, suggesting model size was not the bottleneck for this task."
+  ],
+  "what_did_not_work": [
+    "Training fp16 rerankers with all available LoRA adapters followed by quantization.",
+    "Training Qwen 72B as a reranker yielded identical results to Qwen 32B.",
+    "Using synthetic data during reranker training."
+  ],
+  "github_repos": [],
+  "papers": [
+    {
+      "title": "EEDI paper",
+      "url": "https://arxiv.org/pdf/2404.02124",
+      "arxiv_id": "2404.02124"
+    }
+  ],
+  "other_solution_refs": [
+    {
+      "description": "Kaggle kernel reference for Qwen2.5-14B-Instruct",
+      "url": "https://www.kaggle.com/code/anhvth226/eedi-11-21-14b"
+    }
+  ],
+  "source_url": "https://www.kaggle.com/competitions/eedi-mining-misconceptions-in-mathematics/discussion/551565"
+}

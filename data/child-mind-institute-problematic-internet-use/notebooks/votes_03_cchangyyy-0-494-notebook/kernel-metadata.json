@@ -1,0 +1,25 @@
+{
+  "id": "cchangyyy/0-494-notebook",
+  "id_no": 68048905,
+  "title": "0.494 notebook",
+  "code_file": "0-494-notebook.ipynb",
+  "language": "python",
+  "kernel_type": "notebook",
+  "is_private": false,
+  "enable_gpu": true,
+  "enable_tpu": false,
+  "enable_internet": false,
+  "keywords": [
+    "gpu"
+  ],
+  "dataset_sources": [
+    "ryati131457/pytorchtabnet"
+  ],
+  "kernel_sources": [],
+  "competition_sources": [
+    "child-mind-institute-problematic-internet-use"
+  ],
+  "model_sources": [],
+  "docker_image": "gcr.io/kaggle-private-byod/python@sha256:141219e230dab548ccc19aa4e62bcf805ed9de0b4d5112227e28f5f1a25991f8",
+  "machine_shape": "NvidiaTeslaT4"
+}

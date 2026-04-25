@@ -1,0 +1,86 @@
+[
+  {
+    "topic_id": 561440,
+    "title": "1st place solution [Object Detection Part] +Train Code +Inference +Models released",
+    "owner": "BloodAxe",
+    "repo": "Kaggle-2024-CryoET",
+    "url": "https://github.com/BloodAxe/Kaggle-2024-CryoET"
+  },
+  {
+    "topic_id": 561510,
+    "title": "1st place solution [segmentation with partly U-NET and ensembling part]",
+    "owner": "Project-MONAI",
+    "repo": "tutorials",
+    "url": "https://github.com/Project-MONAI/tutorials"
+  },
+  {
+    "topic_id": 561510,
+    "title": "1st place solution [segmentation with partly U-NET and ensembling part]",
+    "owner": "Project-MONAI",
+    "repo": "MONAI",
+    "url": "https://github.com/Project-MONAI/MONAI"
+  },
+  {
+    "topic_id": 561510,
+    "title": "1st place solution [segmentation with partly U-NET and ensembling part]",
+    "owner": "ChristofHenkel",
+    "repo": "kaggle-cryoet-1st-place-segmentation",
+    "url": "https://github.com/ChristofHenkel/kaggle-cryoet-1st-place-segmentation"
+  },
+  {
+    "topic_id": 561401,
+    "title": "4th Place Solution [Source Codes & Submission Notebook Released!]",
+    "owner": "tattaka",
+    "repo": "czii-cryo-et-object-identification-public",
+    "url": "https://github.com/tattaka/czii-cryo-et-object-identification-public"
+  },
+  {
+    "topic_id": 561401,
+    "title": "4th Place Solution [Source Codes & Submission Notebook Released!]",
+    "owner": "czimaginginstitute",
+    "repo": "2024_czii_mlchallenge_notebooks",
+    "url": "https://github.com/czimaginginstitute/2024_czii_mlchallenge_notebooks"
+  },
+  {
+    "topic_id": 561401,
+    "title": "4th Place Solution [Source Codes & Submission Notebook Released!]",
+    "owner": "yu4u",
+    "repo": "kaggle-czii-4th",
+    "url": "https://github.com/yu4u/kaggle-czii-4th"
+  },
+  {
+    "topic_id": 561417,
+    "title": "3rd Place Solution",
+    "owner": "ZFTurbo",
+    "repo": "segmentation_models_pytorch_3d",
+    "url": "https://github.com/ZFTurbo/segmentation_models_pytorch_3d"
+  },
+  {
+    "topic_id": 561568,
+    "title": "2nd Place Solution",
+    "owner": "luoziqianX",
+    "repo": "CZII-CryoET-Object-Identification-2nd-luoziqian",
+    "url": "https://github.com/luoziqianX/CZII-CryoET-Object-Identification-2nd-luoziqian"
+  },
+  {
+    "topic_id": 561568,
+    "title": "2nd Place Solution",
+    "owner": "GWwangshuo",
+    "repo": "Kaggle-2024-CZII-Pub",
+    "url": "https://github.com/GWwangshuo/Kaggle-2024-CZII-Pub"
+  },
+  {
+    "topic_id": 561515,
+    "title": "8th Place Solution for the CZII - CryoET Object Identification Competition + Code Released",
+    "owner": "czimaginginstitute",
+    "repo": "2024_czii_mlchallenge_notebooks",
+    "url": "https://github.com/czimaginginstitute/2024_czii_mlchallenge_notebooks"
+  },
+  {
+    "topic_id": 561515,
+    "title": "8th Place Solution for the CZII - CryoET Object Identification Competition + Code Released",
+    "owner": "IAmPara0x",
+    "repo": "czii-8th-solution",
+    "url": "https://github.com/IAmPara0x/czii-8th-solution"
+  }
+]

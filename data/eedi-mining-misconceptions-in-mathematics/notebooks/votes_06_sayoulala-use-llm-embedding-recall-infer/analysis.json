@@ -1,0 +1,40 @@
+{
+  "summary": "The notebook demonstrates a dense retrieval approach for the EEDI competition by using a fine-tuned Mistral-based embedding model to match math questions and incorrect answers with their corresponding misconceptions. It constructs instruction-tuned prompts that explicitly separate the question, correct answer, and a specific incorrect option, then generates query embeddings for batched inference. These are compared against pre-computed misconception embeddings via cosine similarity to retrieve the top-25 most relevant matches. The pipeline leverages 4-bit quantization and LoRA adapters to run efficiently on a single GPU, ultimately formatting the results into a competition submission. Readers should learn how to adapt instruction-tuned LLMs for domain-specific retrieval and implement optimized batched inference with length-sorted batching.",
+  "purpose": "inference",
+  "competition_flow": "Loads test data and a misconception mapping, constructs instruction-tuned prompts for each question-answer pair, generates dense embeddings using a quantized Mistral-LoRA model, retrieves the top-25 most similar misconceptions via cosine similarity, and exports the results as a CSV submission.",
+  "data_reading": [
+    "Reads test data from /kaggle/input/eedi-mining-misconceptions-in-mathematics/test.csv (or a local validation parquet file if VALID=True).",
+    "Loads misconception definitions from misconception_mapping.csv."
+  ],
+  "data_processing": [
+    "Constructs structured query strings by concatenating subject, construct, question text, correct answer, and a specific incorrect answer option.",
+    "Applies instruction formatting (Instruct: {task}\\nQuery: {query}).",
+    "Tokenizes inputs with max_length=512, padding, and truncation.",
+    "Normalizes embeddings using L2 normalization.",
+    "Uses length-sorted batching to minimize padding overhead during inference."
+  ],
+  "features_engineering": [
+    ""
+  ],
+  "models": [
+    "SFR-Embedding-2_R (Mistral-based) fine-tuned with LoRA (r=64, alpha=128, target_modules: q_proj, k_proj, v_proj, o_proj, gate_proj, up_proj, down_proj)"
+  ],
+  "frameworks_used": [
+    "transformers, peft, accelerate, bitsandbytes, torch, numpy, pandas, sklearn"
+  ],
+  "loss_functions": [
+    ""
+  ],
+  "cv_strategy": "",
+  "ensembling": "",
+  "insights": [
+    "Instruction-tuned LLMs can be effectively repurposed as dense retrievers for domain-specific matching tasks.",
+    "Length-sorted batching significantly improves inference throughput by minimizing padding overhead.",
+    "4-bit quantization combined with LoRA adapters enables running large embedding models on consumer GPUs without significant accuracy loss.",
+    "Constructing explicit query-document pairs with clear structural delimiters improves retrieval alignment."
+  ],
+  "critical_findings": [],
+  "what_did_not_work": [],
+  "source_url": "https://www.kaggle.com/code/sayoulala/use-llm-embedding-recall-infer",
+  "votes": 419
+}

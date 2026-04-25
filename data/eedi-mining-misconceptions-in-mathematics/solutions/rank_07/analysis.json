@@ -1,0 +1,51 @@
+{
+  "summary": "The solution achieves a private 7th place (public 2nd) by deploying a voting ensemble of three independent Retriever + Reranker pipelines, each engineered by a different team member. The pipelines leverage distinct LLMs for candidate generation and retrieval, including SFR-Embedding-2_R, Qwen35B, and synthesis models like GPT-4o-mini and Gemma 2 27B, while reranking is consistently handled by Qwen2.5 32B AWQ+LoRA with varying option sets. Final predictions are combined via a rank-sum voting strategy, optimized with vLLM inference and prefix caching, and refined through post-processing to boost missing misconceptions.",
+  "extensive_summary": "## Architecture & Strategy\nThe core approach revolves around a voting ensemble of three parallel Retriever + Reranker pipelines. Rather than relying on a single monolithic model, the team distributes retrieval and reranking across specialized configurations to maximize candidate diversity and ranking robustness. All reranking inference is executed via vLLM to handle large candidate pools efficiently.\n\n## Pipeline Configurations\nEach pipeline employs a distinct retrieval strategy. Pipeline 1 generates test answers with a pretrained Qwen35B and uses SFR-Embedding-2_R for retrieval with hard negative sampling (N=100), filtering out candidates not present in the training set. Its dataset is augmented by filling unknown misconceptions with GPT-4o-mini, yielding 60 candidates. Pipeline 2 combines SFR-Embedding-2_R with a public model by sayoulala, using weighted averaging and filtering by Pipeline 1's predictions to produce 70 candidates. Pipeline 3 simplifies the flow by skipping retrieval and directly ingesting the top 9 candidates from prior pipelines.\n\n## Reranking & Ensembling\nReranking across pipelines consistently uses Qwen2.5 32B AWQ+LoRA, but with tailored option sets (40 characters, binary yes/not, or 9 specific options). Pipeline 1 runs inference twice on overlapping candidate slices and retains the top 25 by logprobs. The final submission merges all pipeline outputs using a rank-sum voting mechanism: candidates are split, assigned inverse-rank weights, exploded, and summed. Results are sorted by question ID and cumulative rank, then grouped to produce the final misconception IDs.\n\n## Optimization & Lessons\nInference is heavily optimized through parallel CUDA execution, pre-calculated misconception vectors, dynamic padding, and vLLM's `enable_prefix_cache=True` with AWQ 4-bit quantization. The author highlights that concatenating or averaging retrieval vectors performed poorly, and training the reranker on full data or using the QwQ model yielded worse results than the chosen LoRA configuration.",
+  "rank": 7,
+  "competition_flow": "Raw question data is processed through three parallel LLM-based retrieval and reranking pipelines that generate candidate misconception IDs, which are then combined via a rank-sum voting ensemble, post-processed, and submitted.",
+  "data_reading": [],
+  "data_processing": [
+    "Dataset augmented with synthesis data from GPT-4o-mini, Gemma 2 27B, and Qwen2.5 32B to fill unknown misconceptions.",
+    "Hard negative sampling (N=100) applied during retrieval.",
+    "Dynamic padding with collate_fn used for batching.",
+    "Candidates filtered by unseen training data or previous pipeline predictions."
+  ],
+  "features_engineering": [],
+  "models": [
+    "Qwen35B",
+    "SFR-Embedding-2_R",
+    "Qwen2.5 32B AWQ+LoRA",
+    "Gemma 2 27B",
+    "QwQ"
+  ],
+  "frameworks_used": [
+    "vllm"
+  ],
+  "loss_functions": [],
+  "cv_strategy": "",
+  "ensembling": "A voting ensemble combines ranked lists from three pipelines using a rank-sum scoring system, followed by sorting, grouping, and post-processing to boost missing misconception ranks.",
+  "insights": [
+    "Using a voting ensemble of multiple independent retrieval and reranking pipelines significantly improves robustness and final ranking.",
+    "Accelerating inference with vLLM, AWQ 4-bit quantization, and prefix caching is critical for handling large candidate sets efficiently.",
+    "Filtering candidates across pipelines based on previous predictions helps reduce noise and streamline the reranking stage."
+  ],
+  "critical_findings": [
+    "Concatenating or averaging multiple retrieval vectors performed poorly compared to other combination methods.",
+    "Training the reranker on full data or using the QwQ model yielded worse results than the chosen AWQ+LoRA configuration."
+  ],
+  "what_did_not_work": [
+    "Retrieval: Concat vectors",
+    "Retrieval: Averaging many vectors",
+    "Reranker: Full-data trained model",
+    "Reranker: QwQ model"
+  ],
+  "github_repos": [],
+  "papers": [],
+  "other_solution_refs": [
+    {
+      "description": "Detailed writeup for Pipeline 1 by Masaya",
+      "url": "https://www.kaggle.com/competitions/eedi-mining-misconceptions-in-mathematics/discussion/551430"
+    }
+  ],
+  "source_url": "https://www.kaggle.com/competitions/eedi-mining-misconceptions-in-mathematics/discussion/551388"
+}

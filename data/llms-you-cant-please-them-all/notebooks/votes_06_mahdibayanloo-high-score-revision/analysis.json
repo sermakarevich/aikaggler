@@ -1,0 +1,33 @@
+{
+  "summary": "This notebook demonstrates a prompt injection and essay generation strategy designed to maximize automated scoring in an LLM competition. It combines multiple attack templates\u2014including counting tricks, knowledge cutoff probing, emergency roleplay, and surreal prompts\u2014selected dynamically via weighted probabilities. The author also applies randomized static post-processing strings to manipulate the automated grader. The core takeaway is that carefully crafted prompt injections and strategic text manipulation can significantly boost evaluation scores without modifying the underlying model.",
+  "purpose": "inference",
+  "competition_flow": "Loads test topics, generates essays using a weighted mix of prompt injection templates via Phi-3.5-mini-instruct, applies randomized static text injections, and exports the results to a CSV submission file.",
+  "data_reading": [
+    "pd.read_csv(\"/kaggle/input/llms-you-cant-please-them-all/test.csv\")"
+  ],
+  "data_processing": [],
+  "features_engineering": [],
+  "models": [
+    "Phi-3.5-mini-instruct"
+  ],
+  "frameworks_used": [
+    "transformers",
+    "torch",
+    "pandas",
+    "numpy"
+  ],
+  "loss_functions": [],
+  "cv_strategy": "",
+  "ensembling": "Combines multiple prompt injection templates via weighted random selection and appends randomized static strings (positive/negative words, fake plagiarism scores, high scores, pass/fail tags) to generated essays.",
+  "insights": [
+    "Dynamic prompt selection with weighted probabilities increases attack diversity and reduces repetition penalties.",
+    "Appending static, high-confidence strings like fake scores or plagiarism tags can manipulate automated graders.",
+    "Few-shot examples with specific counting or roleplay constraints effectively bypass standard LLM safety/refusal patterns."
+  ],
+  "critical_findings": [
+    "Adding the \"Choices\" attack template resulted in a noticeable leaderboard score improvement."
+  ],
+  "what_did_not_work": [],
+  "source_url": "https://www.kaggle.com/code/mahdibayanloo/high-score-revision",
+  "votes": 293
+}

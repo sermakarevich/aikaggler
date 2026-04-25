@@ -1,0 +1,35 @@
+{
+  "summary": "This notebook provides a reusable Python utility for animating NFL play tracking data using Plotly. It demonstrates how to merge game, play, and player datasets, implement a custom color-distance metric to prevent visual clashes between team colors, and render frame-by-frame player positions on a football field. Readers learn how to build interactive sports visualizations with play controls, sliders, and dynamic tooltips showing player speed. The core takeaway is a drop-in function that transforms raw Big Data Bowl tracking data into an engaging, replayable animation without requiring heavy ML pipelines.",
+  "purpose": "utility",
+  "competition_flow": "Loads NFL Big Data Bowl CSV datasets, merges them by game/play/player identifiers, and passes them to a Plotly-based function that generates an interactive, frame-by-frame animated visualization of a specific play.",
+  "data_reading": [
+    "Reads CSV files (games.csv, plays.csv, players.csv, tracking_week_1.csv) using pandas.read_csv."
+  ],
+  "data_processing": [
+    "Merges tracking and player datasets on nflId and displayName.",
+    "Computes a weighted Euclidean distance between team hex colors to dynamically swap primary/secondary colors when hues are too similar.",
+    "Splits long play descriptions into two lines for layout constraints.",
+    "Applies a fixed scaling factor (2.23693629205) to convert tracking speed units to MPH."
+  ],
+  "features_engineering": [],
+  "models": [],
+  "frameworks_used": [
+    "plotly",
+    "pandas",
+    "numpy",
+    "matplotlib",
+    "seaborn"
+  ],
+  "loss_functions": [],
+  "cv_strategy": "",
+  "ensembling": "",
+  "insights": [
+    "Dynamic color swapping based on perceptual distance prevents visual ambiguity when team colors are too similar.",
+    "Plotly's frame-based animation and slider mechanisms can be efficiently constructed programmatically for sports tracking data.",
+    "Converting player speed from tracking units to MPH requires a fixed scaling factor (2.23693629205)."
+  ],
+  "critical_findings": [],
+  "what_did_not_work": [],
+  "source_url": "https://www.kaggle.com/code/nickwan/animate-plays-with-plotly-real-no-lies-here",
+  "votes": 206
+}

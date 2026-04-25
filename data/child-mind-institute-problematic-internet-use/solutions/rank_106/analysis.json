@@ -1,0 +1,54 @@
+{
+  "summary": "The author achieved a top-106 finish by prioritizing CV-LB stability over complex modeling in a highly churned competition. They built a minimalist pipeline using simple LightGBM regressors trained on 3-5 descriptive feature sets, deliberately avoiding hyperparameter tuning and early stopping to prevent overfitting to the public leaderboard. Key technical choices included tuning prediction thresholds directly on the training data rather than out-of-fold predictions, and averaging models across 100+ random states to stabilize outputs. This straightforward approach yielded a consistent public/private leaderboard score of 0.471/0.454.",
+  "extensive_summary": "## Approach Overview\nThe author focused on preventing downward movement in a highly churned competition by adopting a minimalist pipeline. Instead of complex architectures like neural networks or TabNet, they relied exclusively on simple boosted tree models. The core philosophy was prioritizing CV-LB stability over chasing marginal score improvements.\n\n## Feature Engineering & Target Design\nThe author experimented extensively with actigraphy-derived features but found them to have only marginal impact, ultimately restricting themselves to public features and descriptive statistics. They cleaned noisy domain values (e.g., blood pressure, BMI) based on domain knowledge and excluded unknown `sii` target values from training. Two target strategies were employed: direct prediction of the `sii` target, and predicting `sii` via `PCIAT-PCIAT1-20` scores followed by rule-based allocation (mapping predicted totals to 0-3 ranges). Using both targets improved ensemble stability between CV and public LB scores.\n\n## Model Training & Stability Techniques\nThe pipeline used a 5-fold stratified cross-validation scheme. A standard LightGBM regressor was trained without hyperparameter tuning or early stopping, as tuning consistently degraded the CV-LB relationship. A critical technique was threshold tuning: instead of using out-of-fold (OOF) predictions, the author tuned thresholds directly on the full fold-level training data using `scipy.optimize.minimize`. This approach improved CV-LB stability and reduced sensitivity to random seed changes. For the final submission, models were refitted on the full training data (excluding null targets) and averaged across 100+ random states using multistarts to further stabilize predictions. The author submitted simple averages of constituent models from 3-5 feature sets, ultimately achieving a public/private LB score of 0.471/0.454.",
+  "rank": 106,
+  "competition_flow": "Raw data was cleaned and split into 3-5 descriptive feature sets, trained on stratified 5-fold LightGBM regressors with training-data threshold tuning, averaged across 100+ random states, and submitted as a simple ensemble blend.",
+  "data_reading": [],
+  "data_processing": [
+    "Cleaned noisy domain values (e.g., blood pressure, BMI) based on domain knowledge",
+    "Excluded unknown `sii` target values from training without imputation",
+    "Applied descriptive statistics to public features",
+    "Discarded actigraphy-derived features due to marginal impact"
+  ],
+  "features_engineering": [
+    "Descriptive statistics on public features (141-163 features per set)",
+    "Rule-based allocation mapping predicted PCIAT totals to 0-3 ranges",
+    "PCIAT-PCIAT1-20 derived targets"
+  ],
+  "models": [
+    "LightGBM"
+  ],
+  "frameworks_used": [
+    "lightgbm",
+    "scipy"
+  ],
+  "loss_functions": [],
+  "cv_strategy": "5-fold stratified cross-validation by `sii` values; threshold tuning performed on fold-level training data rather than OOF predictions.",
+  "ensembling": "Models were averaged across 100+ random states using multistarts for stability, then combined into a simple average blend of 3-5 feature set submissions.",
+  "insights": [
+    "Tuning prediction thresholds directly on the training data instead of OOF predictions significantly improved CV-LB stability.",
+    "Prioritizing model stability over complexity prevented downward movement in a highly churned competition.",
+    "Averaging models across 100+ random states effectively reduced sensitivity to random seed variations."
+  ],
+  "critical_findings": [
+    "Hyperparameter tuning consistently degraded the CV-LB relationship and caused models to tank on the private leaderboard.",
+    "Using two different target strategies (direct `sii` prediction vs. `PCIAT`-based rule allocation) improved ensemble stability between CV and public LB scores."
+  ],
+  "what_did_not_work": [
+    "Extensive feature engineering using actigraphy data yielded no impact or only marginal impact.",
+    "Hyperparameter tuning consistently led to an undesirable CV-LB relationship and poor private leaderboard performance."
+  ],
+  "github_repos": [],
+  "papers": [],
+  "other_solution_refs": [
+    {
+      "description": "CMI2024|Final|Candidate1",
+      "url": "https://www.kaggle.com/code/ravi20076/cmi2024-final-candidate1"
+    },
+    {
+      "description": "CMI2024|Final|Candidate2",
+      "url": "https://www.kaggle.com/code/ravi20076/cmi2024-final-candidate2"
+    }
+  ],
+  "source_url": "https://www.kaggle.com/competitions/child-mind-institute-problematic-internet-use/discussion/552492"
+}

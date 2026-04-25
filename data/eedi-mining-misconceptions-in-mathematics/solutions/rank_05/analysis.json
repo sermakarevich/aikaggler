@@ -1,0 +1,61 @@
+{
+  "summary": "The author presents a 5th place solution for a math misconception prediction competition that relies on a multi-stage LLM pipeline. The approach generates synthetic data for unseen misconceptions using few-shot prompting, distills reasoning text via knowledge distillation, and uses a fine-tuned biencoder for candidate retrieval. The core innovation is a listwise reranker that sorts misconception options by single-token logits from a quantized 32B LLM, with careful attention to cross-validation grouping and inference batching.",
+  "extensive_summary": "## Cross-Validation Strategy\nThe team initially used GroupKFold(k=5) grouped by QuestionId, but observed a significant gap between local CV and the leaderboard. They diagnosed that many MisconceptionIds only appeared in the test set, causing poor generalization. Switching the grouping key to SubjectId increased the proportion of unseen MisconceptionIds in validation, aligning CV more closely with LB.\n\n## Synthetic Data & Knowledge Distillation\nTo handle missing MisconceptionIds, they generated synthetic problems using Gemini-1.5-pro with 4-shot prompting. Instead of random few-shot examples, they embedded all MisconceptionNames with dunzhang/stella_en_1.5B_v5 and selected semantically similar ones, yielding a +0.01 CV gain. They also performed knowledge distillation by feeding QuestionText, correct/incorrect answers into Qwen 2.5 32B Instruct to generate reasoning for the incorrect answer. This distilled text improved the biencoder CV by +0.04 and the reranker by +0.01.\n\n## Candidate Generation & Biencoder Training\nA biencoder based on dunzhang/stella_en_1.5B_v5 was fine-tuned using SentenceTransformer with LoRA (r=32, alpha=64) and CachedMultipleNegativesRankingLoss. Hard negatives proved ineffective, so they used relaxed negative mining (range_min=512, num_negatives=2). The model achieved a CV of 0.41 and LB of 0.39.\n\n## Listwise Reranker\nThe reranker is the solution's standout component. It fine-tunes Qwen 2.5 32B Instruct via Unsloth to output single-token choices (A-Z, a-z) representing misconception options. The prompt includes the problem, subject/construct overview, answers, KD text, and a ranked list of 52 options. Training used standard cross-entropy loss over the full vocabulary (simpler than limiting to candidates), LoRA (r=24, alpha=48), lr=5e-5, cosine scheduler, and 1 epoch. During inference, the top 104 biencoder candidates are split into two batches of 52, passed through the model to extract single-token probabilities, combined, and sorted. The model was quantized to 4-bit via GPTQ and served with vLLM, taking ~120 minutes per inference pass.\n\n## Ensembling & Inference\nResults were ensembled across three folds. The best submission could not include all fold 3 results due to Kaggle's random inference delays, but the pipeline remained efficient enough to allow multi-fold aggregation.",
+  "rank": 5,
+  "competition_flow": "Raw data is augmented with synthetic problems for missing misconceptions, distilled reasoning text is generated via LLM, a fine-tuned biencoder retrieves top candidates, a quantized 32B LLM reranks options using single-token logits, and predictions are ensembled across folds for submission.",
+  "data_reading": [],
+  "data_processing": [
+    "Generated synthetic problems for missing MisconceptionIds using few-shot prompting and semantic similarity embedding.",
+    "Distilled reasoning text for incorrect answers using an LLM prompt.",
+    "Applied relaxed negative mining during biencoder training instead of hard negatives."
+  ],
+  "features_engineering": [],
+  "models": [
+    "Qwen 2.5 32B Instruct",
+    "dunzhang/stella_en_1.5B_v5",
+    "Gemini-1.5-pro",
+    "QwQ-32B-preview",
+    "Qwen 2.5 7B"
+  ],
+  "frameworks_used": [
+    "SentenceTransformer",
+    "Unsloth",
+    "vLLM"
+  ],
+  "loss_functions": [
+    "CachedMultipleNegativesRankingLoss",
+    "standard cross-entropy loss"
+  ],
+  "cv_strategy": "GroupKFold(k=5) using SubjectId (switched from QuestionId to mitigate CV-LB gap caused by unseen test misconceptions).",
+  "ensembling": "Combined reranker probabilities across three folds; best submission was truncated due to inference delays.",
+  "insights": [
+    "Switching GroupKFold grouping key from QuestionId to SubjectId significantly reduced the CV-LB gap.",
+    "Using semantic similarity for few-shot examples in synthetic data generation outperformed random sampling.",
+    "Hard negatives were ineffective for biencoder training; relaxed negatives worked better.",
+    "Calculating cross-entropy over the entire vocabulary yielded similar results to limiting it to candidate choices, simplifying implementation."
+  ],
+  "critical_findings": [
+    "The CV-LB mismatch was driven by MisconceptionIds appearing only in test data, making synthetic data generation essential.",
+    "Single-token output choices (52 alphabets) were crucial for reliable logit-based sorting, while other character sets performed worse.",
+    "Adding more inference batches (top 156 candidates) improved local CV but did not translate to leaderboard gains."
+  ],
+  "what_did_not_work": [
+    "Using combinations of two alphabets, alphanumeric combinations, or Japanese hiragana as single-token choices performed worse than standard alphabets.",
+    "Utilizing QwQ-32B-preview yielded no benefit.",
+    "Multi-step reranking (Qwen 2.5 7B \u2192 Qwen 2.5 32B) was ineffective.",
+    "Adding problem/misconception examples directly in the reranking prompts degraded performance."
+  ],
+  "github_repos": [
+    {
+      "url": "https://github.com/unslothai/unsloth",
+      "role": "library"
+    },
+    {
+      "url": "https://github.com/ebinan92/Eedi-5th-solution",
+      "role": "solution"
+    }
+  ],
+  "papers": [],
+  "other_solution_refs": [],
+  "source_url": "https://www.kaggle.com/competitions/eedi-mining-misconceptions-in-mathematics/discussion/551391"
+}

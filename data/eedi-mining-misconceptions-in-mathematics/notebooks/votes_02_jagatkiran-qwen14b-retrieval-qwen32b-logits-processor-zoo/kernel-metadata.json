@@ -1,0 +1,37 @@
+{
+  "id": "jagatkiran/qwen14b-retrieval-qwen32b-logits-processor-zoo",
+  "id_no": 71450533,
+  "title": "Qwen14B_Retrieval_Qwen32B_logits-processor-zoo",
+  "code_file": "qwen14b-retrieval-qwen32b-logits-processor-zoo.ipynb",
+  "language": "python",
+  "kernel_type": "notebook",
+  "is_private": false,
+  "enable_gpu": false,
+  "enable_tpu": false,
+  "enable_internet": false,
+  "keywords": [
+    "gpu"
+  ],
+  "dataset_sources": [
+    "",
+    "",
+    "nbroad/hf-libraries",
+    "emiz6413/lmsys-wheel-files",
+    "aerdem4/logits-processor-zoo",
+    "zuoyouzuo/qwen14b-it-lora",
+    "sayoulala/v7-recall",
+    "abdurrafae/vllm-t4-fix"
+  ],
+  "kernel_sources": [
+    "ironbar/making-wheels-of-necessary-packages-for-vllm"
+  ],
+  "competition_sources": [
+    "eedi-mining-misconceptions-in-mathematics"
+  ],
+  "model_sources": [
+    "takanashihumbert/qwen2.5/Transformers/32b-instruct-awq/1",
+    "trainld/qwen2.5-14/PyTorch/default/1"
+  ],
+  "docker_image": "gcr.io/kaggle-images/python@sha256:a16cda2c5d52fa988d413876f3ffad7a46cca58678514601feb175990dc187c0",
+  "machine_shape": "None"
+}

@@ -1,0 +1,19 @@
+{
+  "description": "Participants design chess-playing agents that must balance playing strength with strict computational and memory constraints. Competitors train and evaluate their models within a JSON-rendered chess environment, predicting moves based on board states. Success is measured by the agent's performance in a tournament-style evaluation against a held-out set of opponents.",
+  "data_modality": "image",
+  "task_type": "classification",
+  "label_structure": "none",
+  "metric": "Chess",
+  "test_split": "unknown",
+  "format": "simulation",
+  "dataset_scale": "unknown",
+  "domain": "board_games",
+  "data_challenges": [
+    "resource_constraints",
+    "efficiency_constraints"
+  ],
+  "constraints": [
+    "compute_budget",
+    "inference_latency_limit"
+  ]
+}

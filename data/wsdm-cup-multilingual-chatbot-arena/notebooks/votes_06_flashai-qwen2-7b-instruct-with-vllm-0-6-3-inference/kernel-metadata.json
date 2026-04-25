@@ -1,0 +1,28 @@
+{
+  "id": "flashai/qwen2-7b-instruct-with-vllm-0-6-3-inference",
+  "id_no": 72538357,
+  "title": "Qwen2-7B-Instruct with VLLM==0.6.3 inference",
+  "code_file": "qwen2-7b-instruct-with-vllm-0-6-3-inference.ipynb",
+  "language": "python",
+  "kernel_type": "notebook",
+  "is_private": false,
+  "enable_gpu": true,
+  "enable_tpu": false,
+  "enable_internet": false,
+  "keywords": [
+    "gpu"
+  ],
+  "dataset_sources": [
+    "flashai/vllm063"
+  ],
+  "kernel_sources": [],
+  "competition_sources": [
+    "wsdm-cup-multilingual-chatbot-arena"
+  ],
+  "model_sources": [
+    "",
+    "shelterw/qwen2.5/Transformers/qwen2.5-14b-instruct-awq/1"
+  ],
+  "docker_image": "",
+  "machine_shape": "NvidiaTeslaT4"
+}

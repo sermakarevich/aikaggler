@@ -1,0 +1,63 @@
+{
+  "summary": "The author solves a two-target competition by training independent classifiers and regressors, then combining them via a parameterized merge function. Key ideas include focusing the regressor on ranking `efs_time` only for uncensored samples, intentionally including censored `efs==0` samples in regressor training to leverage shared patterns, and using extremely shallow trees for gradient boosting models. The pipeline culminates in Optuna-tuned parameter and weight optimization across 27 model combinations to maximize the stratified concordance index.",
+  "extensive_summary": "The solution addresses a competition with two targets: a binary classification target `efs` and a regression/ranking target `efs_time`. The author trains separate classifier and regressor models, then merges their predictions using a custom function with tunable parameters `(a, b, c)`. The core insight is that when a patient has a high probability of `efs == 0`, they should receive a high score, whereas for `efs == 1`, the regressor should focus on ranking `efs_time`.\n\n## Feature Engineering & Processing\nThe author applies one-hot encoding to all categorical features while retaining the original columns, and copies continuous features as categorical features. For the regressor target, `efs_time` is grouped and normalized by rank within each `efs` group. Predictions from both models are scaled to `[0, 1]` before merging.\n\n## Classifier & Regressor Training\nThe classifier targets `P(efs=0)` using XGBoost, LightGBM, CatBoost, NN, TabM, and GNN (GraphSAGE with KNN edges). The regressor targets the normalized rank of `efs_time` using XGBoost, LightGBM, and CatBoost. A key trick for the regressor is adding `efs` as a feature and setting `efs=1` during inference, along with applying sample weights (0.6:0.4) to balance `efs==1` and `efs==0` samples. Surprisingly, including `efs==0` samples in regressor training significantly improved performance on `efs==1` due to underlying data patterns, despite `efs_time` being censored for `efs==0`.\n\n## CV Strategy & Tuning\nCross-validation uses 10-fold StratifiedKFold with a fixed seed (888) and a combined target string (`efs` + `race_group`) to ensure stability. Early stopping is explicitly avoided to reduce overfitting risk. The merge function parameters and ensemble weights are tuned via Optuna on 5-folds. To prevent overfitting across the 27 classifier-regressor combinations, ensemble weights are constrained between 0.1 and 1.\n\n## Key Findings\nGradient boosting models achieve optimal performance with `max_depth=2` (LGB/XGB) or `6` (CatBoost), indicating minimal feature interaction and an easy-to-fit task. Rank loss predictions exhibit fold-dependent shifts, requiring mean/mid prediction alignment across folds. Adding noise to race groups improved CV but failed to transfer to the leaderboard.",
+  "rank": 1,
+  "competition_flow": "Raw data is processed with one-hot encoding and continuous-to-categorical copying, then fed into separate classifier and regressor models, whose scaled predictions are merged via a parameterized function and optimized with Optuna before final submission.",
+  "data_reading": [],
+  "data_processing": [
+    "One-hot encoding for categorical features (keeping originals)",
+    "Copying continuous features as categorical features",
+    "Grouping and normalizing rank by `efs` for the regressor target",
+    "Scaling model predictions to 0-1",
+    "Adding noise to race groups"
+  ],
+  "features_engineering": [
+    "One-hot encoding for all categorical features (retaining originals)",
+    "Copying continuous features as categorical features",
+    "Grouped and normalized rank by `efs` for the regressor target",
+    "Adding `efs` as a feature during regressor training"
+  ],
+  "models": [
+    "XGBoost",
+    "LightGBM",
+    "CatBoost",
+    "NN",
+    "TabM",
+    "GNN",
+    "GraphSAGE",
+    "NN with pairwise-rank-loss",
+    "TabNet with pairwise-rank-loss",
+    "GNN with pairwise-rank-loss"
+  ],
+  "frameworks_used": [],
+  "loss_functions": [
+    "logloss",
+    "pairwise-rank-loss",
+    "sample weights (0.6:0.4 for efs==1 and efs==0)"
+  ],
+  "cv_strategy": "10-fold StratifiedKFold with fixed seed (888) and combined target string (efs + race_group) for stability, with no early stopping.",
+  "ensembling": "Evaluated 27 classifier-regressor combinations, tuned merge function parameters and ensemble weights via Optuna on 5-folds, constrained weights to [0.1, 1] to prevent overfitting, and applied a final rank transform to merged predictions.",
+  "insights": [
+    "Shallow tree depths (max_depth=2 for LGB/XGB) indicate little feature interaction and an easy-to-fit task.",
+    "Including censored efs==0 samples in regressor training improves performance on efs==1 due to shared underlying patterns.",
+    "Rank loss predictions shift across folds, requiring mean/mid prediction alignment to maintain consistent CV scores."
+  ],
+  "critical_findings": [
+    "The optimal max_depth for LGB and XGB is 2, which is nearly unheard of and suggests the task is trivially easy to fit.",
+    "Training the regressor only on efs==1 initially showed correlation on efs==0 inference, likely due to SurvalGAN algorithm patterns, prompting the counterintuitive inclusion of efs==0 samples.",
+    "Adding noise to race groups significantly improved CV but failed to transfer to public/private LB."
+  ],
+  "what_did_not_work": [
+    "NN-like models performed poorly for the regressor target.",
+    "Adding noise to race groups improved CV but did not work on the public or private leaderboard."
+  ],
+  "github_repos": [
+    {
+      "url": "https://www.kaggle.com/code/minerppdy/1st-place-simplified-private-lb-0-700",
+      "role": "solution"
+    }
+  ],
+  "papers": [],
+  "other_solution_refs": [],
+  "source_url": "https://www.kaggle.com/competitions/equity-post-HCT-survival-predictions/discussion/566550"
+}

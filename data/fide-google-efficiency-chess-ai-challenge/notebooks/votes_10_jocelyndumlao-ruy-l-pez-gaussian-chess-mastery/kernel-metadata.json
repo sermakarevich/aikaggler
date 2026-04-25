@@ -1,0 +1,23 @@
+{
+  "id": "jocelyndumlao/ruy-l-pez-gaussian-chess-mastery",
+  "id_no": 71123820,
+  "title": "\ud83c\udfc6 Ruy L\u00f3pez: Gaussian Chess Mastery ",
+  "code_file": "ruy-l-pez-gaussian-chess-mastery.ipynb",
+  "language": "python",
+  "kernel_type": "notebook",
+  "is_private": false,
+  "enable_gpu": false,
+  "enable_tpu": false,
+  "enable_internet": true,
+  "keywords": [
+    "data visualization"
+  ],
+  "dataset_sources": [],
+  "kernel_sources": [],
+  "competition_sources": [
+    "fide-google-efficiency-chess-ai-challenge"
+  ],
+  "model_sources": [],
+  "docker_image": "gcr.io/kaggle-images/python@sha256:a16cda2c5d52fa988d413876f3ffad7a46cca58678514601feb175990dc187c0",
+  "machine_shape": "None"
+}

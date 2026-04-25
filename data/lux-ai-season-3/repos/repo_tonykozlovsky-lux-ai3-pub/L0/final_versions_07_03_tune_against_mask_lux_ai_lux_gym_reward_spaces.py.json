@@ -1,0 +1,29 @@
+{
+  "path": "final_versions/07_03_tune_against_mask/lux_ai/lux_gym/reward_spaces.py",
+  "analysis": {
+    "summary": "This file implements a modular reward calculation system for the LUX-AI Season 3 environment. It decomposes the training signal into numerous granular components, including point differentials, relic discovery, energy efficiency, enemy kills, and movement penalties. The architecture uses abstract base classes and a central computation function to allow easy switching between reward configurations via multiplier tuning. It serves as the core reward engineering module for the agent's training pipeline.",
+    "purpose": "utility",
+    "competition_flow": "",
+    "data_reading": [],
+    "data_processing": [],
+    "features_engineering": [],
+    "models": [],
+    "frameworks_used": [
+      "numpy"
+    ],
+    "loss_functions": [],
+    "cv_strategy": "",
+    "ensembling": "",
+    "insights": [
+      "Reward shaping is implemented as a weighted sum of discrete, interpretable components rather than a single dense signal.",
+      "Multipliers are used to isolate specific behaviors during different training phases without rewriting core logic.",
+      "Many granular rewards are explicitly disabled via zero multipliers to prevent reward hacking or simplify the optimization landscape."
+    ],
+    "critical_findings": [],
+    "what_did_not_work": [
+      "The explore_reward component is explicitly marked as broken in the code comments.",
+      "The my_stuck_reward is noted as difficult to implement correctly without pathfinding.",
+      "Several other granular rewards (unit stacking, energy waste, sensor mask, near units) are disabled via zero multipliers, indicating they were abandoned during tuning."
+    ]
+  }
+}
