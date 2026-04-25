@@ -1,0 +1,52 @@
+{
+  "summary": "This notebook provides a complete inference pipeline for the Image Matching Challenge 2025, generating a valid submission file by reconstructing scenes from unstructured image pairs. It chains DINOv2 global descriptors for efficient shortlisting, ALIKED for keypoint detection and descriptor extraction, and LightGlue for robust feature matching. The matched features are imported into COLMAP to perform RANSAC and incremental structure-from-motion, ultimately extracting camera poses for each image. Readers should understand how to combine modern, pre-trained feature extractors with a geometric solver to produce a competition-ready submission without any training or fine-tuning.",
+  "purpose": "inference",
+  "competition_flow": "Reads image paths from a CSV template, uses DINOv2 to shortlist candidate pairs, detects and matches features with ALIKED and LightGlue, runs COLMAP's RANSAC and incremental mapping to recover poses, and writes the final rotation/translation matrices to a submission CSV.",
+  "data_reading": [
+    "Loads image paths and metadata from sample_submission.csv or train_labels.csv using pandas.",
+    "Reads images via Kornia (K.io.load_image) and LightGlue's load_image utility.",
+    "Stores intermediate keypoints and descriptors in HDF5 files using h5py."
+  ],
+  "data_processing": [
+    "DINOv2 processor normalizes and rescales images for global descriptor extraction.",
+    "ALIKED auto-resizes inputs to 1024px during feature extraction.",
+    "Shortlisting filters candidate pairs using a Euclidean distance threshold (0.3) on normalized DINO descriptors.",
+    "Images are loaded as RGB32 tensors and moved to GPU for inference."
+  ],
+  "features_engineering": [
+    ""
+  ],
+  "models": [
+    "ALIKED",
+    "LightGlue",
+    "DINOv2",
+    "COLMAP"
+  ],
+  "frameworks_used": [
+    "pytorch",
+    "kornia",
+    "lightglue",
+    "transformers",
+    "pycolmap",
+    "pandas",
+    "numpy",
+    "h5py",
+    "cv2",
+    "PIL"
+  ],
+  "loss_functions": [
+    ""
+  ],
+  "cv_strategy": "",
+  "ensembling": "",
+  "insights": [
+    "Shortlisting image pairs with global descriptors significantly reduces computational overhead compared to exhaustive matching.",
+    "ALIKED paired with LightGlue provides a highly effective, pre-trained feature matching pipeline that requires no fine-tuning.",
+    "Lowering COLMAP's min_model_size parameter allows reconstruction on scenes with fewer registered images.",
+    "DINOv2's max-pooled sequence tokens serve as effective global descriptors for similarity-based shortlisting."
+  ],
+  "critical_findings": [],
+  "what_did_not_work": [],
+  "source_url": "https://www.kaggle.com/code/eduardtrulls/imc25-submission",
+  "votes": 165
+}

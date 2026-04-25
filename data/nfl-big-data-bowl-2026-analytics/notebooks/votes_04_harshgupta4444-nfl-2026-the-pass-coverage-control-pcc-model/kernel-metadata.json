@@ -1,0 +1,26 @@
+{
+  "id": "harshgupta4444/nfl-2026-the-pass-coverage-control-pcc-model",
+  "id_no": 104438715,
+  "title": "NFL 2026: The Pass Coverage Control (PCC) Model",
+  "code_file": "nfl-2026-the-pass-coverage-control-pcc-model.ipynb",
+  "language": "python",
+  "kernel_type": "notebook",
+  "is_private": false,
+  "enable_gpu": false,
+  "enable_tpu": false,
+  "enable_internet": true,
+  "keywords": [
+    "beginner",
+    "data visualization",
+    "matplotlib",
+    "english"
+  ],
+  "dataset_sources": [],
+  "kernel_sources": [],
+  "competition_sources": [
+    "nfl-big-data-bowl-2026-analytics"
+  ],
+  "model_sources": [],
+  "docker_image": "gcr.io/kaggle-images/python@sha256:bf0b407a5ed73626191ae2259063a0090ae36666c8f00ffdfae3fb543eae750d",
+  "machine_shape": "None"
+}

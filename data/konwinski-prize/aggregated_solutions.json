@@ -1,0 +1,51 @@
+{
+  "overall_summary": "Top solutions for this code repair competition leveraged LLM-based pipelines, heavily utilizing the Agentless framework and Qwen2.5-Coder-32B models to automate issue resolution and patch generation. Winning approaches emphasized robust context retrieval, structured SEARCH/REPLACE diff formats, and rigorous multi-stage verification to ensure patch validity while managing strict runtime constraints. Success also depended on strategic scoring optimization, including dynamic skip mechanisms and hypergeometric analysis to navigate high-penalty distributions.",
+  "competition_flows": [
+    "Load GitHub issue and repository context -> generate reproduction tests (F2P) with enhanced context -> localize relevant code locations -> generate SEARCH/REPLACE patch candidates -> validate patches via dry-run and execute against F2P and pre-existing unit tests (P2P) in parallel -> apply time constraints and submit the best valid patch.",
+    "Seven-stage Agentless-based pipeline: evaluation -> localization -> selection -> test generation -> patch generation -> verification -> timeout management.",
+    "Three-stage LLM pipeline with temperature scheduling and edit-distance candidate selection, followed by hypergeometric-simulated skip mechanism and strict time limits."
+  ],
+  "data_reading": [],
+  "data_processing": [
+    "Filtered problem statements by character length (1802-3400 chars)",
+    "Skipped instances with >388 file contents",
+    "Filtered generated patches >1000 chars",
+    "Applied Edit Distance Selection to choose representative candidates",
+    "Implemented dynamic skip mechanisms based on turn limits and time constraints"
+  ],
+  "features_engineering": [],
+  "models": [
+    "Qwen2.5-Coder-32B",
+    "Agentless 1.5",
+    "Qwen2.5-72B",
+    "QwQ-32B",
+    "Deepseek-R1",
+    "ChatGPT",
+    "Grok",
+    "Gemini",
+    "Claude",
+    "deepseek-r1-distill-qwen-32b-awq"
+  ],
+  "frameworks_used": [
+    "vLLM"
+  ],
+  "loss_functions": [],
+  "cv_strategies": [
+    "Ignored cross-validation; relied entirely on public leaderboard and external instances for tuning and methodology validation."
+  ],
+  "ensembling": [
+    "Deterministic selection ensemble via dry-run validation and parallel F2P/P2P test execution of multiple candidates."
+  ],
+  "insights": [],
+  "critical_findings": [],
+  "what_did_not_work": [],
+  "notable_individual_insights": [
+    "Rank 1 (1st Place Solution Write Up): Using SEARCH/REPLACE diff format drastically improves patch validity over raw git diffs.",
+    "Rank 1 (1st Place Solution Write Up): Explicit context (imports, skeletons) is vital for 32B models to prevent instantiation errors.",
+    "Rank 2 (Public 2nd Place Solution): Tracking granular pipeline metrics (e.g., good_test_rate) is more effective than optimizing isolated metrics.",
+    "Rank 2 (Public 2nd Place Solution): Generating reproduction tests that first fail and then pass is crucial for reliable verification.",
+    "Rank 4 (Public 4th Place / Private 15th Place Solution - Konwinski Prize): High penalty scoring makes an effective skip mechanism more valuable than raw accuracy.",
+    "Rank 4 (Public 4th Place / Private 15th Place Solution - Konwinski Prize): Odd-numbered challenge counts statistically outperform even counts due to hypergeometric distribution properties.",
+    "Rank 4 (Public 4th Place / Private 15th Place Solution - Konwinski Prize): Problem length and file count are strong predictors of solvability."
+  ]
+}

@@ -1,0 +1,49 @@
+{
+  "summary": "This notebook demonstrates a rapid baseline for the Open Polymer Challenge using AutoGluon to predict five polymer properties (Tg, Tc, Density, FFV, Rg). It integrates external datasets to augment training samples, computes molecular descriptors and graph-based features from SMILES strings, and handles missing values and constant columns. The author loads pre-trained AutoGluon predictors for each target, generates test predictions, and copies known training labels to the test set where SMILES overlap. Readers should learn how to efficiently merge external chemical data, extract graph features from molecular structures, and leverage automated tabular modeling for multi-target regression.",
+  "purpose": "baseline",
+  "competition_flow": "Loads competition and external tabular data, canonicalizes SMILES, computes molecular descriptors and graph features, merges external target values, loads pre-trained AutoGluon models for each polymer property, generates test predictions, copies known labels for overlapping SMILES, and exports a submission CSV.",
+  "data_reading": [
+    "pd.read_csv for train/test and external CSVs",
+    "pd.read_excel for external XLSX files",
+    "TabularPredictor.load for pre-trained AutoGluon models"
+  ],
+  "data_processing": [
+    "Canonicalizes SMILES via RDKit",
+    "Drops constant, NaN-heavy, and highly correlated columns",
+    "Replaces infinities with NaNs and imputes with column means",
+    "Applies log10 transformation to Ipc",
+    "Merges external datasets to augment training samples and impute missing targets"
+  ],
+  "features_engineering": [
+    "RDKit molecular descriptors (excluding useless/constant columns)",
+    "NetworkX graph features (diameter, average shortest path length, cycle count) derived from molecular adjacency matrices",
+    "Log-transformed Ipc",
+    "External target values merged as additional samples/features"
+  ],
+  "models": [
+    "AutoGluon TabularPredictor (separate models per target: Tg, Rg, FFV, Density, Tc)"
+  ],
+  "frameworks_used": [
+    "autogluon",
+    "rdkit",
+    "networkx",
+    "pandas",
+    "numpy",
+    "polars",
+    "lightgbm",
+    "scikit-learn"
+  ],
+  "loss_functions": [],
+  "cv_strategy": "",
+  "ensembling": "",
+  "insights": [
+    "External datasets can effectively augment training data for polymer properties when aligned via canonical SMILES.",
+    "Molecular graph topology features complement standard chemical descriptors for regression tasks.",
+    "AutoGluon enables rapid multi-target baselines without manual model selection or tuning.",
+    "Copying known training labels to the test set for overlapping SMILES safely improves predictions when data leakage is acceptable or unavoidable."
+  ],
+  "critical_findings": [],
+  "what_did_not_work": [],
+  "source_url": "https://www.kaggle.com/code/mtinti/neurips-autogluon-predict2",
+  "votes": 276
+}

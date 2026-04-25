@@ -1,0 +1,29 @@
+{
+  "summary": "This notebook implements a memory-aware, parallelized inference pipeline for the ARC-AGI competition, designed to maximize hardware utilization within a strict 12-hour budget. It dynamically profiles per-puzzle memory and time requirements to greedily schedule tasks across available GPUs and CPUs, preventing out-of-memory errors and idle resources. The author demonstrates that parallel execution drastically outperforms sequential solving, which previously underutilized hardware and exceeded time limits. Readers should learn how to implement dynamic resource allocation and multiprocessing in PyTorch for large-scale puzzle solving. Additionally, the notebook highlights how minor code optimizations, such as modifying `layers.direction_share()`, can yield measurable speedups without architectural changes.",
+  "purpose": "inference",
+  "competition_flow": "Reads test puzzles from JSON, dynamically profiles memory and time per task, parallelizes inference across GPUs/CPU within a 12-hour budget, and outputs a submission.json file.",
+  "data_reading": [
+    "Loads test challenges from ../input/arc-prize-2025/arc-agi_{split}_challenges.json using Python's json module."
+  ],
+  "data_processing": [],
+  "features_engineering": [],
+  "models": [],
+  "frameworks_used": [
+    "torch",
+    "numpy"
+  ],
+  "loss_functions": [],
+  "cv_strategy": "",
+  "ensembling": "",
+  "insights": [
+    "Parallelizing puzzle solving across multiple GPUs and CPUs drastically improves throughput compared to sequential execution.",
+    "Dynamic memory and time profiling per puzzle enables optimal resource allocation and prevents OOM errors or idle hardware.",
+    "A simple modification to layers.direction_share() can yield a 5-10% inference speedup without architectural changes."
+  ],
+  "critical_findings": [],
+  "what_did_not_work": [
+    "Solving puzzles sequentially in series vastly underutilized the GPU and exceeded the time budget, prompting a shift to parallel execution."
+  ],
+  "source_url": "https://www.kaggle.com/code/iliao2345/arc-agi-without-pretraining",
+  "votes": 830
+}

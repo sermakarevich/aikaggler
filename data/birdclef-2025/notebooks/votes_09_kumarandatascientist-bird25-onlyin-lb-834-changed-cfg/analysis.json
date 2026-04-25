@@ -1,0 +1,42 @@
+{
+  "summary": "This notebook implements an inference pipeline for BirdCLEF 2025, demonstrating how to load pre-trained EfficientNetV2-S models, convert raw audio recordings into normalized mel spectrograms, and generate a competition submission. It highlights a practical workflow for audio classification, including test-time augmentations and a lightweight temporal smoothing step to stabilize predictions across consecutive 5-second windows. Readers should take away the effectiveness of combining standard mel spectrogram extraction with EfficientNet backbones, along with the utility of simple post-processing for temporal consistency in audio tasks.",
+  "purpose": "inference",
+  "competition_flow": "Loads pre-trained EfficientNetV2-S models and taxonomy data, processes test audio files into mel spectrograms, runs inference with optional TTA, applies temporal smoothing to the predictions, and exports a formatted submission CSV.",
+  "data_reading": [
+    "Reads taxonomy CSV for class labels and sample submission template.",
+    "Glob iterates over .ogg files in the test soundscapes directory.",
+    "Loads audio waveforms using librosa.load at 32kHz sampling rate."
+  ],
+  "data_processing": [
+    "Converts audio to mel spectrograms using librosa with N_FFT=1034, hop=64, n_mels=136, fmin=20, fmax=16000.",
+    "Handles NaN values, pads short segments to 5 seconds, normalizes to [0,1], and resizes to 256x256 via OpenCV.",
+    "Applies TTA during inference (horizontal flip for time shift, vertical flip for frequency shift)."
+  ],
+  "features_engineering": [],
+  "models": [
+    "tf_efficientnetv2_s.in21k_ft_in1k"
+  ],
+  "frameworks_used": [
+    "pytorch",
+    "timm",
+    "librosa",
+    "numpy",
+    "pandas",
+    "opencv",
+    "torchvision"
+  ],
+  "loss_functions": [
+    "FocalLossBCE"
+  ],
+  "cv_strategy": "",
+  "ensembling": "Averages predictions across multiple loaded model checkpoints and optionally applies TTA, followed by a weighted temporal smoothing filter (0.2-0.6-0.2) to reduce frame-to-frame noise in the final submission.",
+  "insights": [
+    "Using FocalLossBCE from BirdCLEF 2024 produces strong OOF scores (~0.962) and transfers well to BirdCLEF 2025.",
+    "Converting audio to mel spectrograms and resizing to 256x256 provides a robust input format for EfficientNet backbones.",
+    "Simple temporal smoothing significantly stabilizes predictions across consecutive 5-second audio windows without complex modeling."
+  ],
+  "critical_findings": [],
+  "what_did_not_work": [],
+  "source_url": "https://www.kaggle.com/code/kumarandatascientist/bird25-onlyin-lb-834-changed-cfg",
+  "votes": 361
+}

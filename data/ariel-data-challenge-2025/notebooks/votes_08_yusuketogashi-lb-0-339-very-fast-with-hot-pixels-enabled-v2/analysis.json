@@ -1,0 +1,49 @@
+{
+  "summary": "This notebook implements a fast, end-to-end inference pipeline for the Ariel Data Challenge 2025, focusing on exoplanet transit depth estimation from simulated telescope sensor data. It demonstrates a custom calibration and preprocessing workflow that explicitly retains hot pixels rather than masking them, applies correlated double sampling, flat-fielding, and variance-based weighting, and estimates channel-specific uncertainties using out-of-transit and in-transit variance ratios. The pipeline combines a polynomial-fitting baseline model with two pre-trained residual MLPs that take stellar parameters and initial transit depth as inputs to predict refined depths for FGS1 and AIRS channels. Readers should take away how strategic data retention, careful uncertainty scaling, and lightweight tabular feature engineering can yield competitive results with minimal compute.",
+  "purpose": "inference",
+  "competition_flow": "Loads raw sensor parquet files, applies ADC correction, dark subtraction, flat-fielding, and CDS binning, estimates an initial transit depth via polynomial optimization, refines channel-specific depths using two pre-trained residual MLPs fed with stellar parameters, estimates channel uncertainties from light curve variance, and outputs a formatted submission CSV.",
+  "data_reading": [
+    "Reads per-planet sensor signals, dark, dead, flat, and linear correction calibration arrays from parquet files.",
+    "Loads ADC gain/offset and star metadata from CSVs."
+  ],
+  "data_processing": [
+    "Applies ADC gain/offset scaling, sensor-specific cropping, non-negative clamping, polynomial linear correction, and alternating dark current subtraction.",
+    "Performs flat-field division excluding dead pixels but retaining hot pixels, followed by correlated double sampling (CDS) and temporal binning.",
+    "Applies per-bin percentile clipping, inverse-variance weighting, Savitzky-Golay smoothing, and phase detection via gradient extrema on the white-light curve.",
+    "Estimates channel uncertainties using OOT/IN variance ratios with a soft median-based scaling multiplier."
+  ],
+  "features_engineering": [
+    "Extracts transit_depth (from baseline polynomial fit), Rs (stellar radius), and i (orbital inclination) from star metadata.",
+    "Scales transit depth by 10,000 for MLP input."
+  ],
+  "models": [
+    "TransitModel (custom polynomial optimization via Nelder-Mead)",
+    "ResNetMLP (32-dim residual MLP with 80 blocks)",
+    "ResNetMLP2 (128-dim residual MLP with 120 blocks)"
+  ],
+  "frameworks_used": [
+    "pytorch",
+    "scipy",
+    "numpy",
+    "pandas",
+    "scikit-learn",
+    "pqdm",
+    "astropy"
+  ],
+  "loss_functions": [
+    "None (models are loaded pre-trained; optimization objective uses mean absolute error between polynomial fit and signal)"
+  ],
+  "cv_strategy": "",
+  "ensembling": "Combines a baseline polynomial transit depth with channel-specific predictions from two pre-trained residual MLPs, then constructs a submission with tiled mean predictions and variance-scaled uncertainties for each sensor channel.",
+  "insights": [
+    "Retaining hot pixels instead of masking them preserves signal information and speeds up processing.",
+    "Uncertainty estimation benefits from a soft median-based multiplier on OOT/IN variance ratios rather than raw noise estimates.",
+    "Simple tabular features (transit depth, stellar radius, inclination) are sufficient to drive deep residual networks for channel-specific refinement."
+  ],
+  "critical_findings": [
+    "Explicitly notes that hot pixels should not be masked during calibration, as doing so discards useful signal and slows computation."
+  ],
+  "what_did_not_work": [],
+  "source_url": "https://www.kaggle.com/code/yusuketogashi/lb-0-339-very-fast-with-hot-pixels-enabled-v2",
+  "votes": 160
+}

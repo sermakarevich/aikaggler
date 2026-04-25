@@ -1,0 +1,56 @@
+{
+  "summary": "The author developed an evolutionary program-synthesis agent leveraging LLMs (primarily Gemini) to solve and golf ARC-AGI tasks. The system integrated an Evolutionary DB for solution retrieval and diversification, extensive context engineering for prompt construction, and a lean agent loop that proposed, validated, and minified code. After hitting a performance ceiling with LLMs, the author pivoted to manual code-golfing and shared reusable templates (like \"rotate-and-erode\") that were injected back into the agent, ultimately contributing to a 19th place finish.",
+  "extensive_summary": "## Agent Architecture & Loop\nThe core of the solution is a lean, LLM-driven program-synthesis agent designed specifically for ARC-AGI code golf. The agent loop operates in a tight cycle: the LLM proposes code, which is extracted, validated (enforcing single-entry-point functions, stdlib-only imports, and syntax correctness), and minified using `python-minifier`. The code is then executed against generator-defined tests. Passing solutions are compared to the incumbent by byte length, and the shortest correct version is persisted. Failing solutions return concise tracebacks and failing I/O pairs to guide the next iteration.\n\n## Context Engineering & Prompt Construction\nA major focus was assembling system prompts that balance task understanding with byte minimization without causing \"context rot.\" Early prompts included arc-dsl code, ARC-GEN generator snippets, raw input/output matrices, and cross-task exemplars. However, the authors discovered that arc-dsl assumptions often conflicted with ARC-GEN's generator drift, causing the model to hallucinate or rely on non-generalizing shortcuts. Pruning arc-dsl code and aggressively reducing context (from 10 to 5 I/O pairs, 8 to 3 exemplars, and 10 to 3 prior solutions) stabilized the model and prevented distraction.\n\n## Evolutionary DB & Retrieval Strategy\nThe Evolutionary DB acts as a lightweight index and teacher. It stores per-task metadata, the current best byte count, and a history of correctness-verified solutions. Sampling uses a softmax over the margin between public and current best bytes to balance exploration and exploitation. Prior solutions are retrieved with an inverse-length bias to favor concise patterns, while cross-task exemplars are selected via pattern-similarity tags (e.g., flood-fill, flip) rather than randomly. This allows breakthrough byte-saving motifs to transfer across tasks with similar underlying patterns.\n\n## Code Golfing Strategies & Template Injection\nBeyond the agent loop, the authors manually identified recurring task families and distilled them into reusable templates. A key example is the \"rotate-and-erode\" technique, which replaces verbose BFS/flood-fill logic with a terse grid rotation and left-neighbor update loop, saving 50\u2013100 bytes per program. These templates were injected back into the agent's prompt, enabling automated reuse of logic leaps that the LLM struggled to discover independently.\n\n## Limitations & Pivot to Manual Coding\nScaling models (qwen3-coder, kimi-k2, deepseek-R1, gemini-2.5-pro) and expanding the thinking budget (12k to 32,768 tokens) eventually hit a hard ceiling. The remaining tasks required fundamentally different logic rather than more computation or better prompting. At this point, the author merged with a team, pivoted to manual code-golfing, and leveraged complementary approaches like zlib compression and AST-aware normalization to reach the final score.",
+  "rank": 19,
+  "competition_flow": "The pipeline involves an LLM-driven agent that proposes Python code for ARC-AGI tasks, validates it against generator-defined tests, minifies it using python-minifier, and iteratively improves byte length via an Evolutionary DB and context-engineered prompts, eventually supplemented by manual code-golfing and template injection.",
+  "data_reading": [],
+  "data_processing": [
+    "Code normalization (newlines and encoding) before byte measurement",
+    "Minification via python-minifier for whitespace, imports, constant folding, and safe name shortening"
+  ],
+  "features_engineering": [],
+  "models": [
+    "Gemini (free tier, gemini-2.5-flash, gemini-2.5-pro, gemini-2.5-flash-lite)",
+    "qwen3-coder",
+    "kimi-k2",
+    "deepseek-R1",
+    "Claude Code"
+  ],
+  "frameworks_used": [],
+  "loss_functions": [],
+  "cv_strategy": "",
+  "ensembling": "",
+  "insights": [
+    "Context engineering and prompt construction are more critical than model size for ARC-AGI code golf.",
+    "Using an Evolutionary DB as a teacher allows breakthrough byte-saving motifs to transfer across similar tasks.",
+    "Human-injected templates for recurring task families can save 50\u2013100 bytes per program and automate future gains."
+  ],
+  "critical_findings": [
+    "Too many I/O pairs, exemplars, and prior solutions cause context rot; aggressive pruning to 5 I/O, 3 exemplars, and 3 priors was necessary.",
+    "arc-dsl solutions sometimes confused the model due to generator drift and DSL shortcuts that did not generalize to competition examples.",
+    "Scaling models and increasing the thinking budget eventually hit a ceiling where remaining tasks required fundamentally different logic rather than more computation."
+  ],
+  "what_did_not_work": [
+    "Regex synthesis rarely produced correct, byte-minimal solutions and required hand-writing.",
+    "Large logic pivots (like rotate-and-erode) confused the agent unless packaged as reusable templates.",
+    "Early arc-dsl code in prompts caused confusion due to mismatched assumptions and generator drift."
+  ],
+  "github_repos": [
+    {
+      "url": "https://github.com/michaelhodel/arc-dsl",
+      "role": "library"
+    },
+    {
+      "url": "https://github.com/google/ARC-GEN",
+      "role": "library"
+    }
+  ],
+  "papers": [],
+  "other_solution_refs": [
+    {
+      "description": "Kaggle competition discussion thread referenced for LLM struggle patterns",
+      "url": "https://www.kaggle.com/competitions/google-code-golf-2025/discussion/608310#3291405"
+    }
+  ],
+  "source_url": "https://www.kaggle.com/competitions/google-code-golf-2025/discussion/614729"
+}

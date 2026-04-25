@@ -1,0 +1,27 @@
+{
+  "id": "kurisew/fdr25-llm-baseline",
+  "id_no": 86344889,
+  "title": "FDR25 LLM baseline",
+  "code_file": "fdr25-llm-baseline.ipynb",
+  "language": "python",
+  "kernel_type": "notebook",
+  "is_private": false,
+  "enable_gpu": true,
+  "enable_tpu": false,
+  "enable_internet": false,
+  "keywords": [
+    "gpu"
+  ],
+  "dataset_sources": [],
+  "kernel_sources": [
+    "packagemanager/pm-86344889-at-07-03-2025-13-45-12"
+  ],
+  "competition_sources": [
+    "make-data-count-finding-data-references"
+  ],
+  "model_sources": [
+    "qwen-lm/qwen2.5/Transformers/32b-instruct-awq/1"
+  ],
+  "docker_image": "gcr.io/kaggle-private-byod/python@sha256:5de7f3337f4166df89b2d68f886fb08b30c4260df90e55e6587be5fd7648cf3f",
+  "machine_shape": "NvidiaTeslaT4"
+}

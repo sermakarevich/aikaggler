@@ -1,0 +1,97 @@
+{
+  "id": 39763,
+  "competitionName": "waveform-inversion",
+  "title": " Yale/UNC-CH - Geophysical Waveform Inversion",
+  "briefDescription": "Develop physics-guided machine learning models to solve full-waveform inversion problems",
+  "dateEnabled": "2025-04-08T20:52:28.490Z",
+  "deadline": "2025-06-30T23:59:00Z",
+  "hasLeaderboard": true,
+  "leaderboardPercentage": 25,
+  "maxDailySubmissions": 5,
+  "numScoredSubmissions": 2,
+  "hasSolution": true,
+  "numPrizes": 5,
+  "forumId": 2560207,
+  "finalLeaderboardHasBeenVerified": true,
+  "userRankMultiplier": 1,
+  "dateCreated": "2022-10-07T20:51:57.231057300Z",
+  "competitionHostSegmentId": 2,
+  "maxTeamSize": 5,
+  "medalsAllowed": true,
+  "enableTeamFiles": true,
+  "teamFileDeadline": "2025-07-26T00:00:00Z",
+  "totalSolutionRows": 4607260,
+  "teamMergerExplicitDeadline": "2025-06-23T23:59:00Z",
+  "prohibitNewEntrantsExplicitDeadline": "2025-06-23T23:59:00Z",
+  "kernelsPublishingDisabledDeadline": "2025-06-23T23:59:00Z",
+  "organizationId": 5078,
+  "hasCoverImageUrl": true,
+  "showPrivateLeaderboard": true,
+  "hasScripts": true,
+  "totalTeams": 1365,
+  "totalCompetitors": 1715,
+  "totalSubmissions": 22838,
+  "rulesRequired": true,
+  "rowIdColumnName": "oid_ypos",
+  "evaluationAlgorithm": {
+    "id": 476,
+    "name": "Mean Absolute Error",
+    "isPublic": true,
+    "environmentRenderType": "ENVIRONMENT_RENDER_TYPE_JSON",
+    "kernelId": 39243586,
+    "latestCompetitionMetricVersionId": 9177,
+    "state": "AVAILABLE"
+  },
+  "categories": [
+    {
+      "id": 7404,
+      "name": "physics",
+      "fullPath": "subject > earth and nature > physical science > physics",
+      "description": "Physics is the natural science that involves the study of matter and its motion and behavior through space and time, along with related concepts such as energy and force.",
+      "datasetCount": 1546,
+      "competitionCount": 18,
+      "scriptCount": 1134,
+      "slug": "physics",
+      "displayName": "Physics"
+    },
+    {
+      "id": 13203,
+      "name": "signal processing",
+      "fullPath": "analysis > signal processing",
+      "datasetCount": 376,
+      "competitionCount": 19,
+      "scriptCount": 293,
+      "slug": "signal-processing",
+      "displayName": "Signal Processing"
+    },
+    {
+      "name": "mean absolute error",
+      "description": "Mean absolute error regression loss. See https://scikit-learn.org/stable/modules/generated/sklearn.metrics.mean_absolute_error.html",
+      "displayName": "Mean Absolute Error"
+    }
+  ],
+  "organization": {
+    "slug": "yale-university",
+    "name": "Yale University",
+    "thumbnailImageUrl": "https://storage.googleapis.com/kaggle-organizations/5078/thumbnail.png?t=2025-02-24-20-39-09",
+    "profileUrl": "/organizations/yale-university"
+  },
+  "launched": true,
+  "createdByUserId": 1095143,
+  "license": {
+    "id": 13,
+    "name": "Attribution 4.0 International (CC BY 4.0)",
+    "url": "https://creativecommons.org/licenses/by/4.0/",
+    "agreementRequired": false
+  },
+  "hostName": "Yale University",
+  "scoreTruncationNumDecimals": 5,
+  "locked": true,
+  "totalJoinedUsers": 7381,
+  "requiresIdentityVerification": true,
+  "submissionSizeLimitMb": 20480,
+  "reward": {
+    "id": "USD",
+    "quantity": 50000
+  }
+}

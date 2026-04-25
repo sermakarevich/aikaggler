@@ -1,0 +1,41 @@
+{
+  "summary": "This notebook provides a complete training and inference pipeline for a multi-target biomass regression task using a Vision Transformer (ViT-Huge-Plus-DINOv3). It demonstrates handling large composite images by splitting them into left/right halves, cleaning artifacts like date stamps via HSV masking and inpainting, and fusing spatial features with a custom lightweight Mamba-style block. The pipeline includes multi-target regression with a weighted Huber loss, 5-fold StratifiedGroupKFold validation, EMA weight averaging, and TTA-based inference. Readers should learn how to adapt foundation ViTs for domain-specific regression, manage VRAM with gradient checkpointing and accumulation, and derive physically constrained targets post-inference.",
+  "purpose": "training",
+  "competition_flow": "Loads CSV and image data, splits large images into halves, cleans artifacts, trains a ViT-Huge-Plus-DINOv3 model with a custom Mamba fusion neck over 5 folds using weighted Huber loss, and generates a submission via multi-fold and multi-view TTA averaging with post-processing constraints.",
+  "data_reading": [
+    "Reads train.csv and test.csv with pandas, loads images via cv2.imread, converts BGR to RGB, and parses target columns into numpy arrays."
+  ],
+  "data_processing": [
+    "Resizes to 512x512, splits each image into left/right halves, applies HSV-based color masking and cv2.inpaint to remove orange date stamps, crops bottom 10% to remove artifacts, applies Albumentations transforms (flips, rotation, color jitter), and normalizes with ImageNet stats."
+  ],
+  "features_engineering": [],
+  "models": [
+    "vit_huge_plus_patch16_dinov3.lvd1689m",
+    "Custom LocalMambaBlock fusion neck",
+    "Multi-head regression architecture with Softplus activations"
+  ],
+  "frameworks_used": [
+    "pytorch",
+    "timm",
+    "albumentations",
+    "sklearn",
+    "numpy",
+    "pandas",
+    "cv2"
+  ],
+  "loss_functions": [
+    "SmoothL1Loss (Huber, beta=5.0) with custom per-target weighting"
+  ],
+  "cv_strategy": "StratifiedGroupKFold(n_splits=5, shuffle=True, random_state=82947501) stratified by 'State' and grouped by 'Sampling_Date'",
+  "ensembling": "Averages predictions across 5 folds and 4 TTA views (original, hflip, vflip, both flips), then applies non-negativity constraints and derives 'clover' and 'dead' targets from 'gdm' and 'total' predictions.",
+  "insights": [
+    "Splitting large composite images into left/right halves and fusing them via a lightweight Mamba-style block effectively captures spatial context without excessive VRAM usage.",
+    "Cleaning image artifacts (date stamps) via HSV masking and inpainting prevents the model from learning spurious patterns.",
+    "Deriving constrained targets (e.g., clover = max(0, gdm - green)) post-inference ensures physically plausible biomass predictions.",
+    "Using EMA weights and cosine annealing with warmup stabilizes training for foundation ViTs."
+  ],
+  "critical_findings": [],
+  "what_did_not_work": [],
+  "source_url": "https://www.kaggle.com/code/mattiaangeli/dinov3-baseline-lb-0-70",
+  "votes": 269
+}

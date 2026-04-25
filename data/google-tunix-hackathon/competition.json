@@ -1,0 +1,106 @@
+{
+  "id": 119261,
+  "competitionName": "google-tunix-hackathon",
+  "title": "Google Tunix Hack - Train a model to show its work",
+  "briefDescription": "Teach a LLM to reason using Tunix, Google\u2019s new JAX-native library for LLM post-training.",
+  "dateEnabled": "2025-11-11T16:32:10.177Z",
+  "deadline": "2026-01-12T23:59:00Z",
+  "leaderboardPercentage": 30,
+  "maxDailySubmissions": 1,
+  "numScoredSubmissions": 2,
+  "numPrizes": 1,
+  "forumId": 9190450,
+  "finalLeaderboardHasBeenVerified": true,
+  "dateCreated": "2025-10-29T18:41:00.444691700Z",
+  "competitionHostSegmentId": 1,
+  "maxTeamSize": 5,
+  "organizationId": 445,
+  "hasCoverImageUrl": true,
+  "showPrivateLeaderboard": true,
+  "hasScripts": true,
+  "totalTeams": 322,
+  "totalCompetitors": 448,
+  "totalSubmissions": 322,
+  "rulesRequired": true,
+  "categories": [
+    {
+      "id": 17194,
+      "name": "coding",
+      "fullPath": "task > evaluation > coding",
+      "description": "",
+      "datasetCount": 94,
+      "competitionCount": 4,
+      "scriptCount": 82,
+      "slug": "coding",
+      "displayName": "Coding"
+    },
+    {
+      "id": 13313,
+      "name": "reinforcement learning",
+      "fullPath": "task > reinforcement-learning",
+      "datasetCount": 161,
+      "competitionCount": 15,
+      "scriptCount": 592,
+      "slug": "reinforcement-learning",
+      "displayName": "Reinforcement Learning"
+    },
+    {
+      "id": 16643,
+      "name": "ml ethics",
+      "fullPath": "subject > people and society > social issues and advocacy > ml ethics",
+      "description": "A study of the ethical implications of machine learning algorithms, such as unintended biases and discriminatory outputs",
+      "datasetCount": 535,
+      "competitionCount": 10,
+      "scriptCount": 687,
+      "slug": "ml-ethics",
+      "displayName": "Machine Learning Ethics"
+    },
+    {
+      "id": 16574,
+      "name": "tpu",
+      "fullPath": "subject > science and technology > computer science > accelerators > tpu",
+      "description": "A powerful computer chip built specifically for accelerating machine learning workloads in a fast and scalable manner. It is designed to massively parallelize ML tasks that would not normally fit on GPU.",
+      "datasetCount": 85,
+      "competitionCount": 4,
+      "scriptCount": 74029,
+      "slug": "tpu",
+      "displayName": "TPU"
+    },
+    {
+      "id": 16696,
+      "name": "text generation",
+      "fullPath": "task > text-generation",
+      "description": "",
+      "datasetCount": 534,
+      "competitionCount": 24,
+      "scriptCount": 612,
+      "slug": "text-generation",
+      "displayName": "Text Generation"
+    }
+  ],
+  "organization": {
+    "slug": "google-cloud",
+    "name": "Google Cloud",
+    "thumbnailImageUrl": "https://storage.googleapis.com/kaggle-organizations/445/thumbnail.png",
+    "profileUrl": "/organizations/google-cloud"
+  },
+  "launched": true,
+  "createdByUserId": 19579895,
+  "license": {
+    "id": 8,
+    "name": "CC BY-SA 4.0",
+    "url": "https://creativecommons.org/licenses/by-sa/4.0/",
+    "agreementRequired": false
+  },
+  "hostName": "Google Cloud",
+  "scoreTruncationNumDecimals": 5,
+  "locked": true,
+  "totalJoinedUsers": 11173,
+  "requiresIdentityVerification": true,
+  "submissionSizeLimitMb": 20480,
+  "reward": {
+    "id": "USD",
+    "quantity": 100000
+  },
+  "hackathon": true
+}

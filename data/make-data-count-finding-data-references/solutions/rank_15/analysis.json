@@ -1,0 +1,43 @@
+{
+  "summary": "The author processed bibliographic and genomic metadata from DataCite, Europe PMC, BioSample, and GSE datasets to build a citation prediction pipeline. They used Grobid to extract structured paper titles and author lists, then applied an LLM in a multi-stage decision process to classify primary versus secondary authors. The approach initially showed strong cross-validation and leaderboard performance, but the author later suspected that misprioritizing registration numbers (SAMN vs. GSE) and over-relying on author names instead of DOI matching caused the final ranking drop.",
+  "extensive_summary": "## Data Acquisition & Preparation\nThe solution begins by downloading the DataCite corpus and Europe PMC data directly from the competition homepage, saving paper DOIs and their corresponding citations into two CSV files. To enrich the feature space, the author also pulled full metadata from DataCite, as well as all metadata for BioSample and GSE records. From these combined datasets, they extracted citation IDs, author names, and supplementary metadata.\n\n## Parsing & Author Classification\nA core technical step involved using Grobid to parse raw bibliographic text and extract structured author lists and titles for each paper. Following extraction, the author implemented a multi-stage decision process powered by an LLM to distinguish between primary and secondary authors. This pipeline initially yielded strong results on both cross-validation and the public leaderboard.\n\n## Reflections & Lessons\nThe author reflects that the final ranking likely suffered from a data prioritization error\u2014specifically, incorrectly marking all SAMN records as primary or excluding GSE entirely. They also note that relying on author names for matching, rather than DOI matching, may have introduced significant risk, highlighting the importance of precise identifier handling in bibliographic datasets.",
+  "rank": 15,
+  "competition_flow": "Raw bibliographic and genomic metadata from DataCite, Europe PMC, BioSample, and GSE was downloaded and stored in CSVs, parsed with Grobid for titles and authors, classified via an LLM pipeline for author priority, and submitted as a prediction model.",
+  "data_reading": [
+    "CSV files storing paper DOIs, citations, and metadata from DataCite, Europe PMC, BioSample, and GSE"
+  ],
+  "data_processing": [
+    "Downloaded external datasets (DataCite, Europe PMC, BioSample, GSE) and stored in CSVs",
+    "Extracted citation IDs, author names, and supplementary metadata",
+    "Used Grobid for structured text parsing of titles and author lists",
+    "Applied an LLM multi-stage decision process for primary vs. secondary author classification"
+  ],
+  "features_engineering": [
+    "Extraction of citation IDs, author names, and metadata from external bibliographic/genomic datasets",
+    "LLM-based classification of primary versus secondary authors"
+  ],
+  "models": [
+    "LLM"
+  ],
+  "frameworks_used": [
+    "Grobid"
+  ],
+  "loss_functions": [],
+  "cv_strategy": "",
+  "ensembling": "",
+  "insights": [
+    "Using author names for matching instead of DOI matching may introduce significant risk in bibliographic datasets.",
+    "Correctly prioritizing registration numbers (e.g., SAMN vs. GSE) is critical for accurate citation prediction."
+  ],
+  "critical_findings": [
+    "Misclassifying registration number priority (marking all SAMN as primary or excluding GSE) likely caused the drop from a top position to 15th place."
+  ],
+  "what_did_not_work": [
+    "Over-relying on author names for matching instead of DOI matching.",
+    "Incorrectly prioritizing registration numbers (SAMN vs. GSE) during the multi-stage author classification step."
+  ],
+  "github_repos": [],
+  "papers": [],
+  "other_solution_refs": [],
+  "source_url": "https://www.kaggle.com/competitions/make-data-count-finding-data-references/discussion/606751"
+}

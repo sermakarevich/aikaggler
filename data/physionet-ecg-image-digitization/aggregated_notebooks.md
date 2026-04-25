@@ -1,0 +1,199 @@
+# physionet-ecg-image-digitization: top public notebooks
+
+The community's top-voted notebooks predominantly focus on multi-stage inference pipelines that sequentially correct ECG image geometry, extract pixel coordinates, and convert them into 12-lead time-series waveforms. Several contributors also explore deterministic baselines using template matching and plane-sweep algorithms, alongside direct CNN regression approaches. Common technical themes include source-aware preprocessing, modular pipeline debugging, signal smoothing, and careful submission formatting to match competition specifications.
+
+## Common purposes
+- inference
+- baseline
+- utility
+
+## Competition flows
+- Loads test ECG images, predicts their source suffix to select optimal preprocessing, runs a three-stage neural network pipeline to extract and correct 12-lead ECG signals, and formats the results into a competition submission CSV.
+- Loads test ECG images, processes them through three sequential neural networks for geometric correction and coordinate prediction, converts the predicted coordinates into 12-lead time-series waveforms, and exports a formatted CSV submission.
+- Loads ECG PNG images and test metadata, processes them through a multi-stage segmentation and alignment pipeline to extract voltage values per lead, and writes the results to a CSV submission file.
+- Loads ECG scan images and metadata, runs them through a three-stage neural pipeline (rotation normalization, grid rectification, segmentation-to-signal conversion), applies source-aware preprocessing and Einthoven correction, and formats the 12-lead time series into a competition submission CSV.
+- Loads ECG images and CSV labels, extracts 17 line endpoints via template matching, digitizes signals using either a top-down plane sweep algorithm or a dense neural network on image stripes, applies Einthoven's law and signal alignment, and generates a submission CSV.
+- Loads ECG image metadata and PNGs, processes them through three sequential PyTorch models for rotation, rectification, and pixel regression, converts outputs to voltage series using calibration constants, and writes a padded CSV submission file.
+- Loads test metadata and images, processes them through three sequential PyTorch models for geometric correction and signal extraction, maps the extracted 4-lead signals to 12 leads, interpolates to match required lengths, and saves the final submission CSV.
+- Loads ECG images and metadata, processes them through a custom CNN regression model and an external multi-stage geometric correction pipeline, applies signal filtering, and generates a weighted submission CSV.
+- Loads ECG images and metadata from the PhysioNet dataset, processes them through a 3-stage PyTorch pipeline (normalization, rectification, signal extraction), applies TTA, extracts 12-lead signals, and outputs a CSV submission scored against ground truth using a custom SNR metric.
+- Loads test ECG images and metadata, processes them through three sequential neural networks for normalization, rectification, and coordinate regression, converts predicted coordinates to time-series values, and exports a formatted CSV submission.
+
+## Data reading
+- pd.read_csv for test metadata
+- pd.read_parquet for sample submission IDs
+- cv2.imread for loading test images
+- Images are loaded via cv2.imread as RGB arrays.
+- Metadata and test splits are read with pd.read_csv.
+- Intermediate model outputs are loaded via np.load.
+- Reads PNG images using torchvision.io.read_image, normalizes pixel values to [0, 1], and unsqueezes to (1, C, H, W) tensors.
+- Loads test metadata and lead specifications from a CSV file using pandas.
+- Images loaded via `cv2.imread` from Kaggle dataset paths
+- Metadata and ground truth signals loaded via `pd.read_csv` and `pd.read_parquet`
+- Test IDs grouped by `df_test.groupby('id')`
+- Reads train.csv and test.csv via pandas; loads PNG images with cv2.imread; parses per-ECG CSV labels into a dictionary for fast lookup.
+- Reads train.csv or test.csv for metadata (id, fs, number_of_rows, sig_len).
+- Loads PNG images via cv2.imread in RGB mode.
+- Constructs a fake dataframe for local testing by iterating over valid_df and extracting non-null counts per lead.
+- Loads test metadata CSV and groups by patient ID
+- Reads test images via OpenCV in RGB format
+- Reads test/train metadata via pandas.read_csv
+- Loads RGB images using cv2.imread
+- Loads per-image ground truth signals from individual CSV files in the training directory
+- Reads test images from `/kaggle/input/physionet-ecg-image-digitization/test` as PNGs using `cv2.imread`.
+- Loads test metadata from `test.csv` using `pd.read_csv`.
+
+## Data processing
+- Source-specific image preprocessing (CLAHE, grayworld white balance, bilateral/median denoising, LAB background correction)
+- Dynamic quality-based selection of preprocessed vs raw stage1 output
+- Resizing to 1696x4352 and normalization
+- Einthoven correction on short leads
+- Savitzky-Golay filtering (window=7, polyorder=2)
+- Signal padding/truncation to match required lengths
+- Homography-based normalization and gridpoint rectification for geometric correction
+- Crops the image to a fixed ROI, resizes to (1696, 4352) using bilinear interpolation, and normalizes pixel values by dividing by 255
+- Linear interpolation to match target row counts during submission assembly
+- Resizes images via bilinear interpolation to a maximum dimension of 3000 pixels to balance accuracy and VRAM usage
+- Adds synthetic Gaussian-like noise to input images to improve segmentation robustness on generated/fake ECGs
+- Replaces NaN signal values with the lead's mean voltage before saving
+- Stage 0/1/2 neural transformations
+- Source-specific preprocessing (HSV denoising, CLAHE, bilateral/median filtering, LAB background correction, illumination gating)
+- Signal smoothing via Savitzky-Golay filter
+- Einthoven correction
+- Lead length interpolation/padding
+- Cross-correlation alignment for evaluation
+- Converts images to grayscale or isolates the red channel; applies cv2.matchTemplate to locate 17 marker coordinates; crops and slices images into 600x11 vertical stripes along lead lines; scales pixel values to [-1, 1]; handles missing values by padding with white pixels; applies median filtering and outlier clipping to extracted signals; aligns predicted and ground truth signals using cross-correlation and vertical shift optimization
+- Homography-based image rotation and normalization using predicted keypoints
+- Grid-point mapping for image rectification
+- Fixed spatial cropping (y0:y1, x0:x1) before regression
+- Pixel-to-voltage conversion using calibration constants (zero_mv, mv_to_pixel) and temporal window slicing
+- Series filtering and padding/truncation to match target sampling lengths per lead
+- Applies homography-based rotation and keypoint alignment, followed by image rectification and fixed-coordinate cropping
+- Converts images to tensors and uses torch.amp.autocast with float32 for inference
+- Interpolates extracted signals to match required row counts and handles failed predictions with zero-padding or original image fallback
+- CLAHE contrast enhancement
+- Otsu thresholding
+- Morphological opening
+- Dark-pixel tracking for lead extraction
+- Normalization
+- Resampling to 5000 points
+- Albumentations augmentations (horizontal flip, shift/scale/rotate, grid distortion, Gaussian noise, brightness/contrast, motion blur)
+- Butterworth bandpass filtering
+- Savitzky-Golay filtering
+- Homography normalization
+- Grid-based image rectification
+- Crops to coordinate frame
+- Converts pixels to voltage using zero-line and scaling constants
+- Filters series by limits
+- Interpolates signals to match metadata row counts
+- Applies TTA with brightness/contrast adjustments
+- Applies HSV color space conversion, fastNlMeansDenoising, and adaptive CLAHE for contrast enhancement
+- Crops and resizes images to 1696x4352 based on metadata dimensions
+- Normalizes pixel values to [0,1] and applies Savitzky-Golay filtering and linear interpolation to align predicted series lengths with required lead lengths
+
+## Models
+- ResNet-34
+- EfficientNet-B2
+- Custom UNet-like decoder (MyCoordUnetDecoder)
+- Stage0Net
+- Stage1Net
+- Net3 (ResNet34 encoder with custom MyCoordUnetDecoder and Conv2d head)
+- UNet
+- Dense feed-forward neural network (4 hidden layers: 1024, 512, 256, 256 with SELU activations)
+- ECGNet (custom CNN)
+- Stage2Net (custom architecture for pixel regression)
+
+## Frameworks used
+- pytorch
+- timm
+- opencv
+- scipy
+- numpy
+- pandas
+- plotly
+- kagglehub
+- torchvision
+- tensorflow.keras
+- scikit-learn
+- albumentations
+- matplotlib
+- tqdm
+
+## Loss functions
+- MeanSquaredError
+- Custom SNR loss (-log(signal_power / noise_power)) combined with a smoothness regularizer (mean squared second derivative)
+
+## CV strategies
+- KFold(shuffle=True, random_state=1)
+- Holdout validation on a subset of training images with ground truth CSVs, scoring predictions against labels using the competition's exact SNR metric.
+
+## Ensembling
+- Averages predictions from the neural network and the plane sweep algorithm for color scanned images; uses only the neural network for grayscale scanned images; falls back to per-lead mean training labels for unprocessable mobile photos.
+- Combines two submissions using a weighted average where the second model's output is heavily favored (weight ~1.0) over the first model's output (weight ~0.0).
+- Averages logits across 4 brightness/contrast TTA variations during Stage 1 inference, and averages short and full Lead II signals to predict the first fourth of Lead II.
+
+## Insights
+- Multi-stage geometric correction (homography followed by gridpoint rectification) is required before coordinate prediction to handle ECG image distortions.
+- Coordinate outputs must be scaled and offset using competition-specific constants (zero_mv, mv_to_pixel) to reconstruct valid ECG series.
+- Submission formatting requires expanding 4-channel predictions to 12 leads and interpolating sequences to match the exact row counts specified in the test metadata.
+- Adding synthetic noise to input images improves segmentation performance on generated or synthetic ECG images compared to real ones.
+- Decoupling digitization into modular stages (segmentation, perspective correction, pixel scaling, lead identification) allows flexible handling of varying image qualities and layouts.
+- Pre-trained model weights can be directly applied to the competition dataset without retraining or hyperparameter tuning if the input distribution is reasonably aligned.
+- Modular pipeline design enables independent stage debugging and output reuse without re-running the entire process.
+- Source-aware preprocessing significantly impacts reconstruction quality and should be benchmarked quantitatively rather than applied uniformly.
+- Visual QA at each pipeline stage quickly reveals subtle failures like misalignment or segmentation drift.
+- A lightweight classifier can reliably predict image source types to trigger optimal preprocessing recipes during inference.
+- Template matching reliably locates ECG line endpoints in scanned images without requiring complex computer vision pipelines.
+- A simple top-down plane sweep efficiently extracts signals from clean color scans by tracking black-to-white transitions.
+- Slicing images into narrow vertical stripes along lead lines transforms digitization into a tractable 1D regression task.
+- Applying Einthoven's law significantly improves lead consistency and reduces cross-lead noise.
+- A per-lead mean baseline is surprisingly effective and robust for fallback predictions on unprocessable images.
+- Multi-stage vision pipelines can effectively extract continuous physiological signals from static medical images.
+- Calibration constants (zero_mv, mv_to_pixel) are critical for accurate voltage conversion from pixel coordinates.
+- Padding and truncation logic is necessary to align model outputs with variable-length ground truth sequences for submission.
+- Splitting a multi-model pipeline into separate scripts effectively prevents GPU OOM errors during inference.
+- Setting a fixed global seed and enabling deterministic operations ensures reproducible results across different runs.
+- Applying specific geometric constants and coordinate cropping is essential for accurate ECG signal extraction from images.
+- Mapping and interpolating 4-lead outputs to 12-lead formats requires careful index alignment and length matching.
+- Direct CNN regression can effectively extract signals when paired with a domain-aware loss function like SNR.
+- Multi-stage geometric correction (rotation and grid alignment) significantly improves ECG image readability before signal extraction.
+- Simple post-processing filters like Butterworth and Savitzky-Golay are highly effective for cleaning noisy regression outputs.
+- A modular 3-stage pipeline effectively decouples image correction from signal extraction for medical imaging tasks.
+- Logit-averaging TTA with simple brightness/contrast shifts provides robust inference improvements without complex data augmentation.
+- Implementing the exact competition scoring function locally is essential for reliable lead-level debugging and performance tracking.
+- Interpolating predicted signals to match metadata-specified row lengths is critical for correct submission formatting.
+- Chaining multiple specialized vision models improves robustness for complex document/ECG digitization tasks.
+- Dynamic cropping and resizing based on metadata ensures consistent model input dimensions.
+- Signal smoothing and length interpolation are critical for aligning model outputs with competition submission formats.
+
+## Critical findings
+- The segmentation UNet was trained on real images but performs better on generated images when synthetic noise is added.
+- No hyperparameters were tuned on the competition training set; the author only verified visual output on a single folder.
+- Applying CLAHE to stained or low-contrast images can amplify noise and grid artifacts, making illumination gating necessary before contrast enhancement.
+- Lead II requires full 10-second length handling while other leads are short ~2.5-second segments, requiring careful interpolation and padding to avoid submission format errors.
+- Flat predicted signals or high NaN rates in the ground truth region indicate fundamental pipeline failures rather than minor tuning issues.
+- The plane sweep algorithm breaks down on images with black gridlines or heavy noise, necessitating a neural network fallback.
+- Mobile photos and damaged scans lack consistent scale and grid structure, making deterministic extraction unreliable without statistical baselines.
+
+## What did not work
+- The author explicitly removed `filter_series_by_limits` because it did not improve the leaderboard score.
+
+## Notable individual insights
+- votes 422 (PhysioNet - ECG - streamlined inference): Dynamically selects image preprocessing techniques based on a predicted source suffix to handle varying scan qualities.
+- votes 313 (Open-ECG-Digitizer): Adding synthetic noise to input images significantly improves segmentation robustness on generated or synthetic ECGs compared to real ones.
+- votes 284 (❤️📈 Visual QA for all Stages of ECG Digitization): Applying CLAHE to stained or low-contrast images can amplify noise and grid artifacts, making illumination gating necessary before contrast enhancement.
+- votes 278 (ECG Original explained baseline ⭐⭐⭐⭐⭐): A per-lead mean baseline is surprisingly effective and robust for fallback predictions on unprocessable images.
+- votes 224 (physio-v2.2-public): Splitting a multi-model pipeline into separate scripts effectively prevents GPU OOM errors during inference.
+- votes 216 (ECG clear code FastMeanDenoising): Direct CNN regression can effectively extract signals when paired with a domain-aware loss function like SNR.
+
+## Notebooks indexed
+- #422 votes [[notebooks/votes_01_tonylica-physionet-ecg-streamlined-inference/notebook|PhysioNet - ECG - streamlined inference]] ([kaggle](https://www.kaggle.com/code/tonylica/physionet-ecg-streamlined-inference))
+- #321 votes [[notebooks/votes_02_wasupandceacar-physio-v2-3-public/notebook|physio-v2.3-public]] ([kaggle](https://www.kaggle.com/code/wasupandceacar/physio-v2-3-public))
+- #313 votes [[notebooks/votes_03_eliasstenhede-open-ecg-digitizer/notebook|Open-ECG-Digitizer]] ([kaggle](https://www.kaggle.com/code/eliasstenhede/open-ecg-digitizer))
+- #284 votes [[notebooks/votes_04_sanpier-visual-qa-for-all-stages-of-ecg-digitization/notebook|❤️📈 Visual QA for all Stages of ECG Digitization]] ([kaggle](https://www.kaggle.com/code/sanpier/visual-qa-for-all-stages-of-ecg-digitization))
+- #278 votes [[notebooks/votes_05_ambrosm-ecg-original-explained-baseline/notebook|ECG Original explained baseline ⭐️⭐️⭐️⭐️⭐️]] ([kaggle](https://www.kaggle.com/code/ambrosm/ecg-original-explained-baseline))
+- #243 votes [[notebooks/votes_06_hengck23-demo-submission/notebook|demo submission]] ([kaggle](https://www.kaggle.com/code/hengck23/demo-submission))
+- #224 votes [[notebooks/votes_07_wasupandceacar-physio-v2-2-public/notebook|physio-v2.2-public]] ([kaggle](https://www.kaggle.com/code/wasupandceacar/physio-v2-2-public))
+- #216 votes [[notebooks/votes_08_antonoof-ecg-clear-code-fastmeandenoising/notebook|ECG clear code FastMeanDenoising]] ([kaggle](https://www.kaggle.com/code/antonoof/ecg-clear-code-fastmeandenoising))
+- #189 votes [[notebooks/votes_09_davidlist-demo-submission-validation-framework/notebook|Demo Submission + Validation Framework]] ([kaggle](https://www.kaggle.com/code/davidlist/demo-submission-validation-framework))
+- #178 votes [[notebooks/votes_10_abhishekgodara-digitization-of-ecg-images/notebook|Digitization of ECG images🔥🔥]] ([kaggle](https://www.kaggle.com/code/abhishekgodara/digitization-of-ecg-images))

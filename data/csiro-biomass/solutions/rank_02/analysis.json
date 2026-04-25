@@ -1,0 +1,109 @@
+{
+  "summary": "The author tackled a biomass regression competition by reframing it as a weakly supervised semantic segmentation and density estimation problem using DINOv3 backbones. They augmented the small dataset with synthetic images generated via Qwen Image Edit and pseudo-labeling, then attached a DPT head to predict per-pixel heatmaps for three biomass targets. Post-processing involved state-based scaling and clipping, which significantly improved the private leaderboard score. The final submission combined separate target models trained at different convergence points with careful ensembling and post-processing.",
+  "extensive_summary": "## Validation Strategy\nThe author used a stratified 5-fold cross-validation grouped by State, selecting seeds to match label mean and standard deviation across folds. They acknowledged potential data leakage but mitigated it by monitoring CV-LB correlation.\n\n## Synthetic Data & Augmentations\nInitial synthetic data attempts dropped public scores due to ground truth mismatch, which was resolved by pseudo-labeling synthetic images with a model trained on original data. Two types of synthetic data were created: seasonal/weather variations with artifacts, and bare-soil images with zero biomass targets to help the model distinguish biomass regions. Training augmentations included RandomResizedCrop, flips, rotations, gamma, brightness/contrast, hue/saturation, CLAHE/Equalize, Sharpen/Emboss, RandAugment, RandomErasing, Mixup, and CutMix (\u03b1=0.4). Image sizes of 2048x1024, 1024x1024, and 1280x1280 were used.\n\n## Model Architecture & Training\nThe core approach treated the task as density estimation rather than standard regression. DINOv3 ViT-Large and ViT-Huge backbones extracted high-resolution dense features, which were fed into a SegDINO-inspired DPT head. A dual-path strategy split the image horizontally, processed each half independently through the backbone and head, then globally pooled and summed the outputs. The model predicted three targets (clover, dead, green) using Smooth L1 Loss. The schedule-free AdamW optimizer with layer-wise learning rates was applied. Separate target models were trained because the green target converged early (epoch 15) while clover and dead converged later (epoch 26).\n\n## Post-Processing & Submission\nState-based scaling factors were optimized per target per state, and predictions were clipped to training set maximums. Two final submissions were made: one with post-processing and one without. The ensemble combined multiple configurations (conv_relu vs DPT head, ViT-L vs ViT-H, varying tile sizes), with separate target models yielding the best results.",
+  "rank": 2,
+  "competition_flow": "Raw images were split via stratified 5-fold CV, augmented with pseudo-labeled synthetic data, passed through a DINOv3 backbone with a DPT head for density estimation, then refined with state-based scaling and clipping before ensembling separate target models for submission.",
+  "data_reading": [],
+  "data_processing": [
+    "Synthetic data generation using Qwen Image Edit (seasonal/weather changes, gravel/rock artifacts, bare-soil removal)",
+    "Pseudo-labeling synthetic images with a model trained on original training set",
+    "RandomResizedCrop, HorizontalFlip, VerticalFlip, RandomRotate90, Rotate, RandomGamma, RandomBrightnessContrast, HueSaturationValue, CLAHE/Equalize, Sharpen/Emboss, RandAugment, RandomErasing, Mixup, CutMix (\u03b1=0.4)",
+    "Image sizes: 2048x1024, 1024x1024, 1280x1280",
+    "Hflip TTA (negligible impact)"
+  ],
+  "features_engineering": [],
+  "models": [
+    "DINOv3 ViT-Large",
+    "DINOv3 ViT-Huge",
+    "ConvNeXt-Large",
+    "DINOv2",
+    "XCiT",
+    "SigLIP",
+    "PE spatial (Perception Encoder)",
+    "SegDINO DPT head",
+    "SAM 2",
+    "Depth Anything v3"
+  ],
+  "frameworks_used": [
+    "pytorch",
+    "timm",
+    "albumentations",
+    "schedule-free",
+    "numpy"
+  ],
+  "loss_functions": [
+    "Smooth L1 Loss"
+  ],
+  "cv_strategy": "Stratified by State across 5 folds, with seed selection to match label mean and standard deviation across folds; author accepted potential data leakage but monitored CV-LB correlation.",
+  "ensembling": "Ensemble of separate target models (green predicted at epoch 15, clover/dead at epoch 26) combined with state-based scaling factors and clipping to training set maximums; two final submissions were made (one with post-processing, one without).",
+  "insights": [
+    "DINOv3's high-resolution dense features are critical for density estimation tasks.",
+    "Small random crop ranges reflect real-world fluctuations in grass region sizes rather than distorting labels.",
+    "Training separate target models prevents the green target from overfitting early while clover and dead continue to converge.",
+    "ViT-Large backbones typically yield higher public leaderboard scores, while ViT-Huge backbones perform better on the private leaderboard."
+  ],
+  "critical_findings": [
+    "Synthetic data initially dropped public scores due to ground truth mismatch, which was resolved by pseudo-labeling the synthetic images with a model trained on original data.",
+    "RandomResizedCrop and RandomErasing improved scores despite initial fears that they would distort image labels.",
+    "Applying state-based scaling post-processing jumped the private leaderboard score significantly.",
+    "The ensemble model's private score was lower than a single model's private score, highlighting the risk of ensembling without knowing the exact private winner."
+  ],
+  "what_did_not_work": [
+    "MSE loss, binary cross-entropy loss, and log transforms on targets.",
+    "Using 5 targets (clover, dead, green, total, gdm) or 3 targets (clover, total, gdm).",
+    "ConvNeXt-Large backbone.",
+    "External dataset pretraining.",
+    "NDVI as a 4th channel.",
+    "Auxiliary losses (Height_Ave_cm, Pre_GSHH_NDVI, State, Species).",
+    "SAM 2 segmentation.",
+    "DiffuseMix synthetic data.",
+    "Test time training adaptation.",
+    "Hflip TTA."
+  ],
+  "github_repos": [
+    {
+      "url": "https://github.com/QwenLM/Qwen-Image",
+      "role": "solution"
+    },
+    {
+      "url": "https://github.com/facebookresearch/schedule_free",
+      "role": "library"
+    },
+    {
+      "url": "https://github.com/script-Yang/SegDINO",
+      "role": "reference"
+    },
+    {
+      "url": "https://github.com/facebookresearch/sam2",
+      "role": "reference"
+    },
+    {
+      "url": "https://github.com/khawar-islam/diffuseMix",
+      "role": "reference"
+    },
+    {
+      "url": "https://github.com/ByteDance-Seed/Depth-Anything-3",
+      "role": "reference"
+    },
+    {
+      "url": "https://github.com/quanvuhust/csiro",
+      "role": "solution"
+    }
+  ],
+  "papers": [],
+  "other_solution_refs": [
+    {
+      "description": "Comment on state-based scaling post-processing",
+      "url": "https://www.kaggle.com/competitions/csiro-biomass/discussion/668666#3393901"
+    },
+    {
+      "description": "Initial failed attempts at scaling prediction outputs",
+      "url": "https://www.kaggle.com/competitions/csiro-biomass/discussion/665538#3384888"
+    },
+    {
+      "description": "Decoding-based Regression approach",
+      "url": "https://www.kaggle.com/competitions/csiro-biomass/discussion/668735"
+    }
+  ],
+  "source_url": "https://www.kaggle.com/competitions/csiro-biomass/discussion/670895"
+}

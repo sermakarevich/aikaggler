@@ -1,0 +1,42 @@
+{
+  "summary": "The notebook implements a spatio-temporal trajectory prediction model for the NFL Big Data Bowl by combining a deterministic geometric baseline with a custom Transformer architecture. It computes physics-based endpoint predictions for receivers and defenders, then trains a model to predict the residual corrections needed for complex interactions like coverage and collisions. The pipeline includes extensive feature engineering (route clustering, GNN-lite neighbor embeddings, temporal lags/EMAs) and uses a GroupKFold cross-validation strategy with a time-decayed Huber loss. Readers should take away how geometric priors can simplify sequence modeling tasks and how residual learning combined with spatial embeddings improves trajectory forecasting.",
+  "purpose": "training",
+  "competition_flow": "Loads weekly CSV input/output data, computes geometric baselines and spatial-temporal features, trains a custom ST-Transformer with GroupKFold, and averages fold predictions to generate a submission.",
+  "data_reading": [
+    "Reads training input and output CSVs from /kaggle/input/nfl-big-data-bowl-2026-prediction/train/ using pd.read_csv, concatenating weekly files."
+  ],
+  "data_processing": [
+    "Handles missing values via mean imputation, pads short sequences to window size 10, clips coordinates to field bounds, applies StandardScaler per fold, and converts Polars DataFrames to Pandas for inference."
+  ],
+  "features_engineering": [
+    "Geometric endpoint features (vector, distance, required velocity/acceleration, alignment)",
+    "Route clustering (KMeans on trajectory straightness/turns/depth)",
+    "GNN-lite neighbor embeddings (weighted ally/opp distance/velocity aggregates)",
+    "Temporal lags (1-5), rolling means/stds (3,5), EMAs",
+    "Opponent proximity/closing speed, mirror WR offsets, and time-progress features"
+  ],
+  "models": [
+    "STTransformer (custom PyTorch module with Transformer encoder, attention pooling, and ResidualMLP head)"
+  ],
+  "frameworks_used": [
+    "pytorch",
+    "scikit-learn",
+    "pandas",
+    "numpy",
+    "polars"
+  ],
+  "loss_functions": [
+    "TemporalHuber (Huber loss with exponential time decay weighting)"
+  ],
+  "cv_strategy": "GroupKFold(n_splits=10)",
+  "ensembling": "Averages predictions across all trained fold models and clips final coordinates to field boundaries.",
+  "insights": [
+    "Geometric and physics-based rules capture the majority of player movement, allowing the model to focus on learning complex corrections.",
+    "Route clustering and GNN-lite embeddings effectively encode spatial context without heavy graph computation.",
+    "Time-decayed loss prioritizes accuracy at later prediction horizons."
+  ],
+  "critical_findings": [],
+  "what_did_not_work": [],
+  "source_url": "https://www.kaggle.com/code/pankajiitr/nfl-2026-3-models",
+  "votes": 184
+}

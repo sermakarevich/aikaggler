@@ -1,0 +1,39 @@
+{
+  "summary": "This notebook provides a beginner-friendly tutorial for the waveform inversion competition, demonstrating how to load, visualize, and train a deep learning model to predict subsurface velocity maps from seismic wavefield data. It walks through the complete pipeline: loading `.npy` datasets, visualizing seismic propagation and geological structures, training an InversionNet with L1 loss, and evaluating predictions. The tutorial also covers transfer learning by fine-tuning a model pre-trained on a different geological dataset (CurveVel-A) for the target FlatVel-A domain. Readers should learn how to apply convolutional neural networks to geophysical inverse problems, interpret seismic data formats, and leverage pre-trained weights for domain adaptation.",
+  "purpose": "tutorial",
+  "competition_flow": "Loads seismic data and velocity map labels from `.npy` files, trains an InversionNet model using L1 loss to predict velocity maps from seismic waveforms, and evaluates the model on validation data with visualization and transfer learning capabilities.",
+  "data_reading": [
+    "Data and labels are loaded as NumPy arrays from `.npy` files in the competition's `train_samples/FlatVel_A/data/` and `model/` directories.",
+    "Velocity maps have shape `(120, 1, 70, 70)` and seismic data has shape `(120, 5, 70, 1000)`."
+  ],
+  "data_processing": [
+    ""
+  ],
+  "features_engineering": [
+    ""
+  ],
+  "models": [
+    "InversionNet"
+  ],
+  "frameworks_used": [
+    "pytorch",
+    "torchvision",
+    "scikit-learn",
+    "numpy",
+    "matplotlib"
+  ],
+  "loss_functions": [
+    "L1 loss (MAE)"
+  ],
+  "cv_strategy": "",
+  "ensembling": "",
+  "insights": [
+    "InversionNet uses a U-Net-like architecture with 2D convolutions and transposed convolutions to map seismic wavefields to velocity maps.",
+    "Transfer learning from a curved velocity dataset to a flat velocity dataset is feasible and can be resumed with additional training epochs.",
+    "Visualizing seismic wave propagation and velocity structures helps clarify the physical inverse problem setup."
+  ],
+  "critical_findings": [],
+  "what_did_not_work": [],
+  "source_url": "https://www.kaggle.com/code/hanchenwang114/waveform-inversion-kaggle-competition-tutorial",
+  "votes": 716
+}

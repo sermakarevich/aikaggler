@@ -1,0 +1,29 @@
+{
+  "id": "brendanartley/convnext-full-resolution-baseline",
+  "id_no": 83325343,
+  "title": "ConvNeXt - Full Resolution Baseline",
+  "code_file": "convnext-full-resolution-baseline.ipynb",
+  "language": "python",
+  "kernel_type": "notebook",
+  "is_private": false,
+  "enable_gpu": true,
+  "enable_tpu": false,
+  "enable_internet": true,
+  "keywords": [
+    "gpu"
+  ],
+  "dataset_sources": [
+    "brendanartley/openfwi-preprocessed-72x72",
+    "egortrushin/open-wfi-1",
+    "egortrushin/open-wfi-2",
+    "egortrushin/open-wfi-test",
+    "harshitsheoran/simple-further-finetuned-bartley-open-models"
+  ],
+  "kernel_sources": [],
+  "competition_sources": [
+    "waveform-inversion"
+  ],
+  "model_sources": [],
+  "docker_image": "gcr.io/kaggle-private-byod/python@sha256:5de7f3337f4166df89b2d68f886fb08b30c4260df90e55e6587be5fd7648cf3f",
+  "machine_shape": "NvidiaTeslaT4"
+}

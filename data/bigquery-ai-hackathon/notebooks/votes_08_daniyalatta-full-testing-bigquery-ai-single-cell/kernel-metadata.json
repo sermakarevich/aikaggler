@@ -1,0 +1,27 @@
+{
+  "id": "daniyalatta/full-testing-bigquery-ai-single-cell",
+  "id_no": 90004492,
+  "title": "Full Testing(BigQuery AI) Single Cell",
+  "code_file": "full-testing-bigquery-ai-single-cell.ipynb",
+  "language": "python",
+  "kernel_type": "notebook",
+  "is_private": false,
+  "enable_gpu": true,
+  "enable_tpu": false,
+  "enable_internet": true,
+  "keywords": [
+    "graph",
+    "bigquery",
+    "data visualization",
+    "graph neural network",
+    "neural networks"
+  ],
+  "dataset_sources": [],
+  "kernel_sources": [],
+  "competition_sources": [
+    "bigquery-ai-hackathon"
+  ],
+  "model_sources": [],
+  "docker_image": "gcr.io/kaggle-private-byod/python@sha256:320043e14c68293f1c946585b9257123385205a58af4b94b17d31868cae4e868",
+  "machine_shape": "NvidiaTeslaT4"
+}

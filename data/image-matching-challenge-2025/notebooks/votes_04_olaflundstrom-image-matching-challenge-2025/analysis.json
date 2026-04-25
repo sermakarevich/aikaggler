@@ -1,0 +1,48 @@
+{
+  "summary": "This notebook implements a classical computer vision pipeline for the Image Matching Challenge 2025, which requires grouping unstructured images into coherent scenes and estimating their camera poses. It demonstrates a hybrid approach combining SIFT feature extraction, FLANN matching with Lowe's ratio test, geometric verification via Fundamental Matrix estimation with RANSAC, graph-based clustering for scene segmentation, and incremental Structure from Motion (SfM) using PnP for pose recovery. Readers should understand how to construct a view graph from pairwise geometric consistency, partition it into scenes, and recover camera poses without relying on deep learning or computationally heavy bundle adjustment. The notebook also covers practical considerations like default camera matrix approximation, runtime constraints, and outlier detection via graph topology.",
+  "purpose": "tutorial",
+  "competition_flow": "Loads training/test image collections and metadata, extracts SIFT features, builds a pairwise geometric consistency graph, clusters images into scenes using connected components, performs incremental SfM via PnP to estimate camera poses per cluster, and formats the results into a submission.csv with cluster labels and pose matrices.",
+  "data_reading": [
+    "Reads CSV metadata files (train_labels.csv, train_thresholds.csv, sample_submission.csv) using pandas.",
+    "Loads images from directory structures using cv2.imread, handling .png, .jpg, and .jpeg extensions, and accounts for potential outliers subdirectories."
+  ],
+  "data_processing": [
+    "Converts images to grayscale for feature extraction and RGB for visualization.",
+    "Applies Lowe's ratio test (threshold 0.8) to filter ambiguous feature matches.",
+    "Uses RANSAC with a 1.5-pixel reprojection threshold for Fundamental Matrix estimation.",
+    "Filters graph clusters by a minimum size of 3 images to discard noise/outliers.",
+    "Approximates camera intrinsics using a default matrix (focal length = 1.2 * max(width, height), principal point at image center) since real intrinsics are unavailable."
+  ],
+  "features_engineering": [],
+  "models": [],
+  "frameworks_used": [
+    "opencv-python",
+    "networkx",
+    "scikit-learn",
+    "numpy",
+    "pandas",
+    "matplotlib",
+    "seaborn",
+    "tqdm"
+  ],
+  "loss_functions": [],
+  "cv_strategy": "",
+  "ensembling": "",
+  "insights": [
+    "Geometric verification via RANSAC on the Fundamental Matrix is essential for robustly filtering false matches in unstructured image collections.",
+    "Graph-based clustering effectively segments scenes by treating geometrically consistent image pairs as edges in a view graph.",
+    "Incremental SfM using PnP with a default camera matrix approximation provides a practical, runtime-efficient alternative to full bundle adjustment in constrained environments.",
+    "Outlier detection can be handled naturally by graph topology (isolated nodes or sub-threshold clusters) without requiring explicit classification models."
+  ],
+  "critical_findings": [
+    "Real camera intrinsics are typically unknown in this challenge, forcing a simplified default matrix approximation that may limit pose accuracy.",
+    "Bundle adjustment is acknowledged as necessary for high accuracy but is explicitly skipped due to computational complexity and kernel runtime limits.",
+    "Pipeline success heavily depends on tuning minimum inlier thresholds for both graph edge creation and PnP registration to avoid fragmented scenes or registration failures."
+  ],
+  "what_did_not_work": [
+    "Full bundle adjustment was skipped due to computational intensity and kernel runtime constraints, with the author opting for robust PnP registration instead.",
+    "Spectral clustering requires heuristic cluster estimation and can be unstable, so Connected Components is preferred as a reliable fallback."
+  ],
+  "source_url": "https://www.kaggle.com/code/olaflundstrom/image-matching-challenge-2025",
+  "votes": 182
+}

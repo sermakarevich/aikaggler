@@ -1,0 +1,38 @@
+{
+  "summary": "The notebook demonstrates a training recipe for aligning a 2B-parameter language model (Gemma 2) on the GSM8K math dataset using Group Relative Policy Optimization (GRPO). It introduces a custom trajectory reward function that scores both intermediate reasoning quality (checking for reasoning tags, step enumeration, and mathematical operations) and final answer correctness (exact match, tolerance-based scoring, and penalties). The author implements this reward signal within the tunix library to fine-tune the model via LoRA adapters over a minimal 10-step run. Readers should take away how trajectory-level rewards can effectively guide reasoning capabilities without requiring external reward models or complex PPO pipelines.",
+  "purpose": "training",
+  "competition_flow": "Loads GSM8K math problems, initializes a Gemma 2-2B model with LoRA, trains it for 10 steps using GRPO with a custom trajectory reward function, and evaluates the final accuracy on a held-out test split.",
+  "data_reading": [
+    "tensorflow_datasets loads the gsm8k dataset, splits it into train/test, and extracts questions and answers by parsing the #### delimiter in the answer strings."
+  ],
+  "data_processing": [
+    "Applies a chat template to prompts, tokenizes with SentencePiece, and uses regex to extract numerical answers for reward computation."
+  ],
+  "features_engineering": [],
+  "models": [
+    "Gemma 2-2B-it"
+  ],
+  "frameworks_used": [
+    "jax",
+    "flax",
+    "tunix",
+    "qwix",
+    "tensorflow_datasets",
+    "kagglehub",
+    "wandb"
+  ],
+  "loss_functions": [
+    "GRPO loss with KL divergence penalty (KL_COEFF=0.05)"
+  ],
+  "cv_strategy": "Holdout split (train[:1024] for training, test[:256] for final evaluation)",
+  "ensembling": "",
+  "insights": [
+    "Trajectory-level rewards can effectively guide reasoning capabilities by explicitly scoring intermediate steps rather than just final answers.",
+    "Combining reasoning quality (60%) and answer correctness (40%) in the reward function balances exploration of the reasoning process with task completion.",
+    "GRPO is a viable, lightweight alternative to PPO for aligning small language models on math tasks."
+  ],
+  "critical_findings": [],
+  "what_did_not_work": [],
+  "source_url": "https://www.kaggle.com/code/hemanthreganti/tunix-hack-winner-trajectory-reward-training",
+  "votes": 103
+}

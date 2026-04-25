@@ -1,0 +1,31 @@
+{
+  "id": "hideyukizushi/js-nn-xgb-ridge-pub-mytrain-weightblend-lb-0-0079",
+  "id_no": 73604157,
+  "title": "JS|NN+XGB+Ridge(Pub+MyTrain)|WeightBlend|LB.0.0079",
+  "code_file": "js-nn-xgb-ridge-pub-mytrain-weightblend-lb-0-0079.ipynb",
+  "language": "python",
+  "kernel_type": "notebook",
+  "is_private": false,
+  "enable_gpu": true,
+  "enable_tpu": false,
+  "enable_internet": false,
+  "keywords": [
+    "gpu"
+  ],
+  "dataset_sources": [
+    "hideyukizushi/als-e-105-pp0-30-xgb-5fold",
+    "hideyukizushi/als-e-106-pp0-40-xgb-5fold",
+    "voix97/js-with-lags-trained-xgb",
+    "voix97/js-xs-nn-trained-model",
+    "hideyukizushi/jsridgev01011635"
+  ],
+  "kernel_sources": [
+    "motono0223/js24-preprocessing-create-lags"
+  ],
+  "competition_sources": [
+    "jane-street-real-time-market-data-forecasting"
+  ],
+  "model_sources": [],
+  "docker_image": "gcr.io/kaggle-private-byod/python@sha256:141219e230dab548ccc19aa4e62bcf805ed9de0b4d5112227e28f5f1a25991f8",
+  "machine_shape": "NvidiaTeslaT4"
+}

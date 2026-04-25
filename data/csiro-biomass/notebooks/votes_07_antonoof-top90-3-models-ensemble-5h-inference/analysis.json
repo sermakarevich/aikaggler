@@ -1,0 +1,37 @@
+{
+  "summary": "This notebook implements a production-ready inference pipeline that aggregates predictions from three distinct vision models to solve a multi-output biomass regression task. It demonstrates how to load pre-trained checkpoints, apply extensive test-time augmentation (TTA) across multiple geometric transforms, and combine outputs via weighted averaging. The code emphasizes robust post-processing, including clamping negative predictions and handling missing values, to ensure physically plausible biomass estimates. Readers should learn how to efficiently ensemble diverse backbones without retraining and how to structure inference code for scalability and reproducibility.",
+  "purpose": "ensemble",
+  "competition_flow": "Loads test images from CSV, runs inference through three pre-trained vision models with TTA, applies weighted averaging to their predictions, and exports a formatted CSV submission.",
+  "data_reading": [
+    "Reads test.csv to extract image paths, loads images with cv2.imread, converts BGR to RGB, splits each image into left and right halves, and wraps them in a PyTorch Dataset that yields normalized tensor pairs."
+  ],
+  "data_processing": [
+    "Resizes inputs to model-specific dimensions (e.g., 448 for EVA02, 518 for V4), applies TTA transforms (horizontal/vertical flips, 90/180/270 degree rotations), normalizes with ImageNet mean/std, converts to tensors, and enforces non-negative constraints via np.maximum(0, x) and np.nan_to_num."
+  ],
+  "features_engineering": [],
+  "models": [
+    "CrossPVT_T2T_MambaDINO",
+    "TiledFiLMDINO",
+    "EVA02Model"
+  ],
+  "frameworks_used": [
+    "torch",
+    "timm",
+    "albumentations",
+    "numpy",
+    "pandas",
+    "cv2"
+  ],
+  "loss_functions": [],
+  "cv_strategy": "",
+  "ensembling": "Combines predictions from three models (V4, MVP, EVA02) using weighted averaging (0.6, 0.35, 0.05), with the MVP model internally ensembling 10 checkpoints (0.925/0.075 weights), and applies post-processing to clamp values to non-negative ranges.",
+  "insights": [
+    "Extensive TTA across flips and rotations stabilizes predictions for diverse architectural backbones.",
+    "Weighted ensembling of structurally different models (DINOv2, FiLM-DINO, EVA02) leverages complementary feature representations.",
+    "Strict post-processing (clamping negatives, handling NaNs) is essential for valid multi-output regression submissions."
+  ],
+  "critical_findings": [],
+  "what_did_not_work": [],
+  "source_url": "https://www.kaggle.com/code/antonoof/top90-3-models-ensemble-5h-inference",
+  "votes": 296
+}

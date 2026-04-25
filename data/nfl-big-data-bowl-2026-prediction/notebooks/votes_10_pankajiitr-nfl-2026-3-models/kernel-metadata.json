@@ -1,0 +1,28 @@
+{
+  "id": "pankajiitr/nfl-2026-3-models",
+  "id_no": 96847291,
+  "title": "NFL 2026 3 Models",
+  "code_file": "nfl-2026-3-models.ipynb",
+  "language": "python",
+  "kernel_type": "notebook",
+  "is_private": false,
+  "enable_gpu": true,
+  "enable_tpu": false,
+  "enable_internet": false,
+  "keywords": [
+    "gpu"
+  ],
+  "dataset_sources": [
+    "chengzhijiang/hsiaosuan-sttn",
+    "pankajiitr/nfl-bdb-2026"
+  ],
+  "kernel_sources": [
+    "yusufsertkayaysk/nfl-big-data-bowl-2026-lb-0-604"
+  ],
+  "competition_sources": [
+    "nfl-big-data-bowl-2026-prediction"
+  ],
+  "model_sources": [],
+  "docker_image": "gcr.io/kaggle-private-byod/python@sha256:23c0e8309600afc19063b29d98f0f1e58dc32d03369b15ad204d43d90add6325",
+  "machine_shape": "NvidiaTeslaT4"
+}

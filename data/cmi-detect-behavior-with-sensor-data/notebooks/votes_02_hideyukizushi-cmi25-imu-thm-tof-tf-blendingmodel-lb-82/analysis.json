@@ -1,0 +1,40 @@
+{
+  "summary": "This notebook provides an inference pipeline for the CMI25 sensor data competition, centering on a two-branch deep learning architecture that fuses IMU and TOF/thermal sensor streams. It demonstrates physics-informed feature engineering, including gravity removal via quaternion rotation and angular velocity/distance calculations, alongside statistical aggregations for TOF pixels. The core contribution is a blending strategy that averages predictions from multiple pre-trained models to improve robustness over single-model validation approaches. Readers should learn how to handle multi-modal time-series data, apply custom data augmentations like MixUp, and implement a reliable Kaggle inference server.",
+  "purpose": "ensemble",
+  "competition_flow": "Loads pre-trained two-branch TF models, applies physics-based and statistical feature engineering to raw IMU/TOF sequences, averages model predictions, and submits via the Kaggle evaluation server.",
+  "data_reading": [
+    "Reads raw sensor sequences and demographics using polars and pandas, converts sequences to pandas DataFrames, and loads pre-trained model weights/scalers from Kaggle datasets."
+  ],
+  "data_processing": [
+    "Handles missing values with forward/backward fill and zero-filling, applies StandardScaler normalization, pads/truncates sequences to a fixed length, and uses a custom MixupGenerator for training augmentation."
+  ],
+  "features_engineering": [
+    "Computes linear acceleration by removing gravity using quaternion rotation, calculates angular velocity from quaternion derivatives, computes angular distance between consecutive rotations, and extracts statistical features (mean, std, min, max) for each TOF pixel channel."
+  ],
+  "models": [
+    "Two-branch custom architecture: IMU branch (Residual SE-CNN blocks), TOF branch (Conv1D blocks), merged into BiLSTM + BiGRU + Dense layers with Attention mechanism and GaussianNoise, outputting via Dense(softmax)."
+  ],
+  "frameworks_used": [
+    "tensorflow",
+    "scikit-learn",
+    "polars",
+    "scipy",
+    "numpy",
+    "pandas",
+    "joblib"
+  ],
+  "loss_functions": [],
+  "cv_strategy": "StratifiedGroupKFold",
+  "ensembling": "Averages the predicted probability distributions from multiple pre-trained models before selecting the final class via argmax.",
+  "insights": [
+    "Physics-informed preprocessing (gravity removal, angular velocity/distance) significantly improves sensor data representation.",
+    "Blending multiple models trained with StratifiedGroupKFold provides more robust validation scores than single-model TimeSeriesSplit approaches.",
+    "MixUp augmentation helps regularize the neural network during training."
+  ],
+  "critical_findings": [
+    "Previous validation strategies using TimeSeriesSplit raised robustness concerns, prompting the switch to StratifiedGroupKFold for better generalization."
+  ],
+  "what_did_not_work": [],
+  "source_url": "https://www.kaggle.com/code/hideyukizushi/cmi25-imu-thm-tof-tf-blendingmodel-lb-82",
+  "votes": 624
+}

@@ -1,0 +1,40 @@
+{
+  "summary": "This notebook implements a multi-stage inference pipeline to convert scanned ECG images into digitized time-series waveforms for a competition submission. It chains three sequential neural networks to handle image normalization, geometric rectification, and coordinate regression, followed by signal processing and lead splitting to format the final output. The author demonstrates how to dynamically crop and resize inputs based on metadata, apply adaptive contrast enhancement, and align predicted series lengths with required lead specifications. Readers learn how to structure a robust vision-based digitization workflow and handle post-processing steps critical for competition formats.",
+  "purpose": "inference",
+  "competition_flow": "Loads test ECG images and metadata, processes them through three sequential neural networks for normalization, rectification, and coordinate regression, converts predicted coordinates to time-series values, and exports a formatted CSV submission.",
+  "data_reading": [
+    "Reads test images from `/kaggle/input/physionet-ecg-image-digitization/test` as PNGs using `cv2.imread`.",
+    "Loads test metadata from `test.csv` using `pd.read_csv`."
+  ],
+  "data_processing": [
+    "Applies HSV color space conversion, fastNlMeansDenoising, and adaptive CLAHE for contrast enhancement.",
+    "Crops and resizes images to 1696x4352 based on metadata dimensions.",
+    "Normalizes pixel values to [0,1] and applies Savitzky-Golay filtering and linear interpolation to align predicted series lengths with required lead lengths."
+  ],
+  "features_engineering": [],
+  "models": [
+    "Stage0Net",
+    "Stage1Net",
+    "Net3 (ResNet-34 encoder with custom MyCoordUnetDecoder and 1x1 Conv2d head)"
+  ],
+  "frameworks_used": [
+    "pytorch",
+    "opencv",
+    "numpy",
+    "pandas",
+    "scipy",
+    "timm"
+  ],
+  "loss_functions": [],
+  "cv_strategy": "",
+  "ensembling": "",
+  "insights": [
+    "Chaining multiple specialized vision models improves robustness for complex document/ECG digitization tasks.",
+    "Dynamic cropping and resizing based on metadata ensures consistent model input dimensions.",
+    "Signal smoothing and length interpolation are critical for aligning model outputs with competition submission formats."
+  ],
+  "critical_findings": [],
+  "what_did_not_work": [],
+  "source_url": "https://www.kaggle.com/code/abhishekgodara/digitization-of-ecg-images",
+  "votes": 178
+}

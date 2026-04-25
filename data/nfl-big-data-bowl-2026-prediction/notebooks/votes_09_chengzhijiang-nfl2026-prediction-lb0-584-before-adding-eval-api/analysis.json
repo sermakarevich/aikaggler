@@ -1,0 +1,49 @@
+{
+  "summary": "This notebook implements a trajectory prediction pipeline for the NFL Big Data Bowl competition, forecasting future player positions over a 94-frame horizon. It unifies play directions to a single orientation, engineers extensive kinematic and interaction features, and builds sliding-window sequences for a GRU-Attention model. Training employs a custom temporal Huber loss with smoothness regularization, GroupKFold validation, and multiple data augmentations. Inference leverages multi-seed and multi-fold averaging combined with Test-Time Augmentation to produce robust displacement predictions.",
+  "purpose": "training",
+  "competition_flow": "Loads NFL trajectory CSVs, unifies play directions, computes kinematic and interaction features, builds sliding-window sequences, trains a GRU-Attention model with a custom temporal Huber loss using GroupKFold across multiple seeds, and generates submissions via multi-seed/fold averaging with TTA.",
+  "data_reading": [
+    "Reads weekly train input/output CSVs and test CSVs from the competition directory.",
+    "Concatenates data across weeks and casts game_id, play_id, and nfl_id to int64."
+  ],
+  "data_processing": [
+    "Mirrors coordinates and angles for 'right' plays to unify direction to 'left'.",
+    "Pads sequences to a fixed window size, applies StandardScaler per fold, and inverts coordinates back to original play direction post-inference."
+  ],
+  "features_engineering": [
+    "Kinematic derivatives (velocity, acceleration, momentum, jerk).",
+    "Distance-to-ball metrics and target alignment features.",
+    "Multi-window rolling statistics and extended lags.",
+    "Field position relative to sidelines/endzones and role-specific flags.",
+    "Sinusoidal time features and curvature/landing geometry.",
+    "Receiver-defender interaction features (distances, closing rates, leverage, density).",
+    "QB-relative geometry features."
+  ],
+  "models": [
+    "SeqModel (GRU + Multihead Attention pooling + ResidualMLP head)",
+    "ResidualMLP"
+  ],
+  "frameworks_used": [
+    "pytorch",
+    "scikit-learn",
+    "pandas",
+    "cupy"
+  ],
+  "loss_functions": [
+    "TemporalHuber (Huber loss with exponential time decay + 2nd-order velocity smoothness regularization)"
+  ],
+  "cv_strategy": "GroupKFold(n_splits=5) grouped by f'{game_id}_{play_id}'",
+  "ensembling": "Averages predictions across 5 random seeds and 5 cross-validation folds, applies Test-Time Augmentation (6 iterations with Gaussian noise and temporal context flipping) per model, and computes the final mean displacement before adding to the last known position.",
+  "insights": [
+    "Unifying play direction to a single orientation simplifies sequence modeling and avoids directional bias.",
+    "Using a custom temporal Huber loss with smoothness regularization improves trajectory continuity.",
+    "Multi-seed and multi-fold averaging combined with TTA provides robustness against overfitting and data quirks."
+  ],
+  "critical_findings": [
+    "Ball landing features must be disabled if unavailable in the test set to prevent errors.",
+    "Aggressive interaction features are commented out for a conservative version to avoid unstable behavior."
+  ],
+  "what_did_not_work": [],
+  "source_url": "https://www.kaggle.com/code/chengzhijiang/nfl2026-prediction-lb0-584-before-adding-eval-api",
+  "votes": 194
+}

@@ -1,0 +1,57 @@
+{
+  "summary": "This notebook implements a baseline pipeline for the MABe (Mouse Behavior) competition, focusing on frame-level behavior detection from 2D tracking coordinates. It introduces a robust, FPS-aware feature engineering pipeline that scales all temporal windows and lags by the video's frame rate to ensure duration invariance across videos with different sampling rates. The author trains an ensemble of tree-based models (LightGBM, XGBoost, CatBoost) using a custom wrapper that handles stratified sampling, dynamic class imbalance, and early stopping. Finally, it applies adaptive per-action probability thresholds, temporal smoothing, and frame merging to generate the submission. Readers should take away how to make temporal features duration-invariant, handle severe class imbalance in behavior detection, and use post-processing to stabilize frame-level predictions.",
+  "purpose": "baseline",
+  "competition_flow": "Loads CSV metadata and parquet tracking data, generates FPS-scaled kinematic and interaction features, trains an ensemble of LightGBM/XGBoost/CatBoost models per behavior class, applies adaptive temporal thresholding, and outputs a frame-level behavior detection submission.",
+  "data_reading": [
+    "Reads train.csv and test.csv via pandas.",
+    "Loads 2D tracking coordinates from per-video parquet files ({lab_id}/{video_id}.parquet).",
+    "Parses JSON-encoded behavior labels from the CSV.",
+    "Normalizes pixel coordinates to centimeters using the pix_per_cm_approx field."
+  ],
+  "data_processing": [
+    "Drops MABe22 clips with 'lights on' condition to remove likely sleeping/noise data.",
+    "Pivots long-format tracking data to wide format and filters out noisy headpiece/tail points.",
+    "Scales all temporal windows, lags, and future/past horizons by frames_per_second for duration invariance.",
+    "Converts coordinates and features to numpy float32 arrays and handles missing body parts dynamically.",
+    "Merges overlapping predictions and fills missing videos with uniform time splits during post-processing."
+  ],
+  "features_engineering": [
+    "FPS-scaled rolling windows for speed, acceleration, curvature, turning rate, and behavioral state transitions.",
+    "Relative distances, orientation angles, and approach/chase metrics between mouse pairs.",
+    "Velocity alignment and correlation over scaled windows.",
+    "Symmetric KL divergence of Gaussian fits on past vs. future speed distributions.",
+    "Cumulative path distance, nose-tail/ear distance features, body elongation, and orientation angles.",
+    "Behavioral state binning (speed thresholds) with transition counts over scaled horizons."
+  ],
+  "models": [
+    "LightGBM (LGBMClassifier)",
+    "XGBoost (XGBClassifier)",
+    "CatBoost (CatBoostClassifier)"
+  ],
+  "frameworks_used": [
+    "lightgbm",
+    "xgboost",
+    "catboost",
+    "scikit-learn",
+    "polars",
+    "scipy",
+    "pandas",
+    "numpy"
+  ],
+  "loss_functions": [],
+  "cv_strategy": "Custom StratifiedShuffleSplit (10% holdout) used internally within a wrapper class for early stopping and dynamic class imbalance handling; no explicit cross-validation loop is shown.",
+  "ensembling": "Averages predicted probabilities across multiple LightGBM, XGBoost, and CatBoost models per action class, then applies adaptive per-action thresholds, temporal smoothing, and frame merging to generate the final submission.",
+  "insights": [
+    "Temporal windows and lags must be scaled by the video's frames per second to remain duration-invariant across videos with different sampling rates.",
+    "Class imbalance is handled dynamically via scale_pos_weight and auto_class_weights rather than static resampling or threshold shifting.",
+    "Adaptive per-action probability thresholds combined with temporal smoothing significantly reduce false positives in frame-level behavior detection."
+  ],
+  "critical_findings": [
+    "MABe22 clips with 'lights on' condition are likely sleeping and introduce label noise, so they should be dropped.",
+    "Tracking data contains noisy headpiece and tail points that should be filtered out to prevent feature corruption.",
+    "The competition metric requires frame-level overlap calculation, making temporal consistency and post-processing crucial for high scores."
+  ],
+  "what_did_not_work": [],
+  "source_url": "https://www.kaggle.com/code/mattiaangeli/mabe-extra-trees-gpu",
+  "votes": 572
+}

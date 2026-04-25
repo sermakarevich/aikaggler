@@ -1,0 +1,50 @@
+{
+  "summary": "This notebook presents a leak-prevention-focused baseline pipeline for a multi-target time-series regression competition. It demonstrates how to safely handle chronological data by sorting by `date_id`, restricting features to the train-test intersection, and performing all preprocessing fold-locally to avoid look-ahead bias. The author implements three validation strategies\u2014TimeSeriesSplit, a clean 90-day holdout, and a leaky public-LB proxy\u2014to diagnose generalization gaps and public leaderboard inflation. Each of the 424 targets is modeled independently using LightGBM, with careful handling of missing labels and strict feature-order preservation for inference. Readers should take away practical techniques for avoiding data leakage, robust validation design, and reliable submission generation in Kaggle competitions.",
+  "purpose": "baseline",
+  "competition_flow": "Loads train/test/labels via Polars, sorts chronologically, extracts shared features, trains 424 independent LightGBM regressors with fold-local preprocessing, and generates a shape-safe submission using a custom inference server.",
+  "data_reading": [
+    "polars.read_csv for train.csv, test.csv, and train_labels.csv",
+    "Converted to pandas DataFrames for downstream processing"
+  ],
+  "data_processing": [
+    "Sorts train and labels by date_id to enforce chronology",
+    "Converts object columns to numeric and categoricals to integer codes",
+    "Replaces infinities with NaNs",
+    "Trains each target only on non-null label rows",
+    "Saves training feature order and reindexes inference data with zero-filling to prevent shape/categorical mismatches"
+  ],
+  "features_engineering": [
+    "Uses only columns present in both train and test (excluding date_id, row_id, is_scored)",
+    "Adds a single constant feature target_name_encoded (integer target index) to each row",
+    "Explicit feature engineering function is a placeholder returning raw inputs unchanged"
+  ],
+  "models": [
+    "LightGBM (LGBMRegressor)"
+  ],
+  "frameworks_used": [
+    "lightgbm",
+    "scikit-learn",
+    "polars",
+    "pandas",
+    "numpy",
+    "joblib",
+    "kaggle_evaluation"
+  ],
+  "loss_functions": [],
+  "cv_strategy": "TimeSeriesSplit(n_splits=3) on chronologically sorted data; Clean Public-90 holdout (last ~90 days); Leaky Public-90 diagnostic (full training set evaluated on last ~90 days)",
+  "ensembling": "",
+  "insights": [
+    "Chronological sorting and fold-local preprocessing are critical to prevent look-ahead bias in time-series competitions.",
+    "Restricting features to the train-test intersection mitigates distribution shift and accidental leakage.",
+    "The discrepancy between clean validation scores and public leaderboard scores reliably indicates overfitting to the public LB or weak future generalization.",
+    "Preserving exact feature order and using zero-filling during inference eliminates categorical/shape mismatches that commonly break submissions."
+  ],
+  "critical_findings": [
+    "The competition metric uses -999999 as a filler for missing labels, requiring explicit masking during Spearman correlation calculation.",
+    "Training on non-null labels per target is mandatory due to sparse label availability.",
+    "Public leaderboard scores can be artificially inflated, making the gap between leaky and clean validation metrics a more honest indicator of robustness."
+  ],
+  "what_did_not_work": [],
+  "source_url": "https://www.kaggle.com/code/yusuketogashi/leak-safe-3cv-shakedown-proof-pipeline",
+  "votes": 287
+}

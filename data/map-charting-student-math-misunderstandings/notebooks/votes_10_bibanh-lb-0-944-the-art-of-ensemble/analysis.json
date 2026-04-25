@@ -1,0 +1,55 @@
+{
+  "summary": "This notebook demonstrates a multi-model approach for a math misconception classification task, combining three LLM-based sequence classifiers (Gemma2-9B, Ettin-Encoder-1B, ModernBERT) with a heavy feature-engineered XGBoost baseline. It highlights the impact of prompt engineering (specifically injecting a derived is_correct flag) and shows how to construct a robust ensemble using weighted voting over top-3 predictions. Readers learn how to integrate custom metrics (MAP@3), handle multi-class ranking outputs, and combine heterogeneous models for improved leaderboard performance.",
+  "purpose": "ensemble",
+  "competition_flow": "Loads train/test CSVs, engineers a correctness flag and extensive text/embedding features, trains three LLM classifiers and one XGBoost model with custom MAP@3 evaluation, and combines their top-3 predictions via a weighted voting scheme to generate the final submission.",
+  "data_reading": [
+    "pd.read_csv for train, test, and sample submission files",
+    "Fills NaNs in Misconception column",
+    "Constructs composite target string Category:Misconception"
+  ],
+  "data_processing": [
+    "Tokenization with max_length=256 and padding/truncation",
+    "Text cleaning via regex and lemmatization",
+    "Custom BPE tokenizer training on cleaned text",
+    "Conversion to Hugging Face Dataset objects",
+    "Manual MAP@3 metric computation for evaluation"
+  ],
+  "features_engineering": [
+    "Derives is_correct boolean feature via majority voting per question/answer pair",
+    "Computes text lengths, math keyword counts, and explanation-to-question cosine similarity",
+    "Extracts dense sentence embeddings from multiple pre-trained models (MiniLM, DeBERTa variants, RoBERTa variants)",
+    "Generates word, character, and custom BPE TF-IDF features"
+  ],
+  "models": [
+    "Gemma2-9B-it (LoRA)",
+    "Ettin-Encoder-1B",
+    "ModernBERT-large",
+    "XGBoost"
+  ],
+  "frameworks_used": [
+    "pandas",
+    "numpy",
+    "scikit-learn",
+    "transformers",
+    "peft",
+    "torch",
+    "datasets",
+    "xgboost",
+    "nltk",
+    "sentence_transformers"
+  ],
+  "loss_functions": [
+    "mlogloss"
+  ],
+  "cv_strategy": "20% holdout split (random_state=42) for LLMs; StratifiedKFold(n_splits=5) for XGBoost",
+  "ensembling": "Combines top-3 predictions from four models using a custom weighted voting function where Gemma and Ettin receive weight 4, while ModernBERT and XGBoost receive weight 1, ranking candidates by rank position multiplied by weight to select the final top-3.",
+  "insights": [
+    "Injecting a derived correctness flag into the LLM prompt significantly improves performance.",
+    "Combining diverse sentence embeddings and TF-IDF features creates a strong tree-based baseline.",
+    "Weighted voting over top-k predictions effectively leverages heterogeneous model strengths."
+  ],
+  "critical_findings": [],
+  "what_did_not_work": [],
+  "source_url": "https://www.kaggle.com/code/bibanh/lb-0-944-the-art-of-ensemble",
+  "votes": 215
+}

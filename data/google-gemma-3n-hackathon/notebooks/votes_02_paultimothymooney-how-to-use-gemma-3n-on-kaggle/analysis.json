@@ -1,0 +1,37 @@
+{
+  "summary": "This notebook serves as a practical tutorial demonstrating how to download and run the open-weight Gemma-3n model on Kaggle's GPU runtime using `kagglehub` and the Hugging Face `transformers` library. It walks through two distinct inference workflows: pure text generation and multimodal image-text understanding. The author shows how to properly configure tokenizers, processors, and generation parameters like temperature and max tokens. Readers learn how to structure chat templates for multimodal inputs and handle device/dtype auto-mapping efficiently. The key takeaway is a reproducible, minimal setup for experimenting with Gemma-3n's capabilities without external APIs.",
+  "purpose": "tutorial",
+  "competition_flow": "Downloads the Gemma-3n model via KaggleHub, loads it with Hugging Face transformers, and runs inference for both text generation and image-text understanding tasks.",
+  "data_reading": [
+    "Model weights are downloaded locally using `kagglehub.model_download`.",
+    "An example image is loaded directly from a public URL."
+  ],
+  "data_processing": [
+    "Tokenization and chat template formatting are handled by `AutoTokenizer` and `AutoProcessor`.",
+    "Inputs are moved to the appropriate device and dtype automatically via `device_map` and `torch_dtype`.",
+    "Generation parameters (temperature, max tokens, sampling) are explicitly configured."
+  ],
+  "features_engineering": [],
+  "models": [
+    "Gemma-3n (gemma-3n-e2b-it)",
+    "AutoModelForCausalLM",
+    "AutoModelForImageTextToText"
+  ],
+  "frameworks_used": [
+    "transformers",
+    "torch",
+    "kagglehub"
+  ],
+  "loss_functions": [],
+  "cv_strategy": "",
+  "ensembling": "",
+  "insights": [
+    "Leveraging `kagglehub` allows seamless local model downloads on Kaggle's GPU infrastructure without external dependencies.",
+    "The `transformers` library provides unified interfaces for both causal language modeling and multimodal image-text-to-text tasks.",
+    "Properly applying chat templates and managing generation configs is essential for consistent multimodal model outputs."
+  ],
+  "critical_findings": [],
+  "what_did_not_work": [],
+  "source_url": "https://www.kaggle.com/code/paultimothymooney/how-to-use-gemma-3n-on-kaggle",
+  "votes": 337
+}

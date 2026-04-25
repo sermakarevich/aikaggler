@@ -1,0 +1,64 @@
+{
+  "summary": "The author improved their competition score by leveraging unlabelled data through LLM-generated pseudo-labels. They filtered a large unlabelled dataset by subreddit violation rates to select ~800k high-quality samples, which were used to pretrain a DeBERTa-base model with soft labels. The final submission used DeBERTa-large trained with the same approach and was ensembled with two other public models. Key technical choices included careful data sampling, BCE loss with positive weighting, and avoiding certain filtering heuristics that degraded performance.",
+  "extensive_summary": "The solution centers on exploiting unlabelled data to boost performance in a text classification task. The author identified that a small fraction of test body values originated from a specific unlabelled dataset, prompting them to sample ~800k rows from a pool of 12 million. Sampling was guided by a heuristic: subreddits with a violation rate below 1% were omitted, while others were retained, ensuring higher signal quality. These samples were pseudo-labeled using a public LLM ensemble, and the resulting soft labels were used to pretrain a DeBERTa-base model, lifting the score from ~0.912 to ~0.924 in just one hour across two seeds.\n\nThe final submission switched to DeBERTa-large and maintained the same training pipeline. The author notes that certain preprocessing attempts, such as filtering by body length >50 characters or including low-violation subreddits, actively harmed leaderboard performance and were discarded. Training utilized BCE loss with positive class weighting for one epoch, alongside a consistent learning rate scheduler. The author also highlights a practical GPU optimization tip: avoiding bf16 on T4 GPUs to prevent a 6x slowdown.\n\nThe final prediction was formed by ensembling the DeBERTa-large model with two other public notebooks: a triplet loss-based model with 8x augmentations and a Llama 3B model running in FP16. The author suggests that test-time training with LLMs holds significant potential for future iterations, though time constraints prevented full exploration.",
+  "rank": 12,
+  "competition_flow": "Sample high-violation subreddits from unlabelled data, generate pseudo-labels via an LLM ensemble, pretrain a DeBERTa-base model with soft labels, switch to DeBERTa-large, and ensemble the results with two public models for the final submission.",
+  "data_reading": [],
+  "data_processing": [
+    "Filtered unlabelled dataset by subreddit violation rate (<1% omitted, >=1% kept) to select ~800k samples",
+    "Used LLM ensemble for pseudo-labeling",
+    "Discarded body length >50 char filter due to LB degradation"
+  ],
+  "features_engineering": [],
+  "models": [
+    "DeBERTa-base",
+    "DeBERTa-large",
+    "LLM ensemble",
+    "Llama 3B",
+    "Triplet loss model"
+  ],
+  "frameworks_used": [],
+  "loss_functions": [
+    "BCE with pos_weight",
+    "Triplet loss"
+  ],
+  "cv_strategy": "",
+  "ensembling": "Ensembled DeBERTa-large predictions with a triplet loss model (8x augmentations) and a Llama 3B model (FP16) to form the final submission.",
+  "insights": [
+    "Unlabelled data paired with LLM pseudo-labels can yield meaningful score gains.",
+    "Careful subreddit-level filtering is critical for sampling quality.",
+    "Test-time training with LLMs shows strong potential for further improvements."
+  ],
+  "critical_findings": [
+    "Including subreddits with <1% violation rate actively hurt model performance.",
+    "Filtering text by length >50 characters degraded leaderboard score.",
+    "Using bf16 precision on T4 GPUs caused a 6x slowdown."
+  ],
+  "what_did_not_work": [
+    "Filtering subreddits with <1% violation rate hurt performance.",
+    "Filtering by body length >50 chars hurt LB score.",
+    "Attempting to implement test-time training with another LLM within the time limit did not yield results due to hyperparameter tuning constraints."
+  ],
+  "github_repos": [
+    {
+      "url": "https://github.com/level14taken/jigsaw-comp",
+      "role": "solution"
+    }
+  ],
+  "papers": [],
+  "other_solution_refs": [
+    {
+      "description": "LLM ensemble used for pseudo-labeling",
+      "url": "https://www.kaggle.com/code/bibanh/lb-0-9-re-finetune-qwen2-5-32b-gptq"
+    },
+    {
+      "description": "Triplet loss model with 8x augmentations",
+      "url": "https://www.kaggle.com/code/datafan07/jigsaw-speed-run-10-min-triplet-and-faiss"
+    },
+    {
+      "description": "Llama 3B model with FP16",
+      "url": "https://www.kaggle.com/code/wasupandceacar/jigsaw-pseudo-training-llama-3-2-3b-instruct/notebook?scriptVersionId=266995301"
+    }
+  ],
+  "source_url": "https://www.kaggle.com/competitions/jigsaw-agile-community-rules/discussion/613096"
+}

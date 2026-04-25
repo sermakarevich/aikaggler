@@ -1,0 +1,49 @@
+{
+  "summary": "This notebook provides a complete training and inference pipeline for player trajectory prediction in the NFL Big Data Bowl competition. It combines a massive suite of hand-crafted features\u2014including geometric baselines, GNN-lite neighbor embeddings, route clustering, and temporal lags\u2014with a custom PyTorch Transformer model (`SpatioTemporalTransformer`) that predicts future X/Y displacements. The pipeline handles play direction unification, sequence padding, and separate coordinate prediction before averaging results across multiple cross-validation folds. Readers should take away how geometric rules can serve as a strong deterministic baseline, how attention pooling effectively captures trajectory dynamics, and how weighted neighbor embeddings can approximate spatial interactions without full graph networks.",
+  "purpose": "training",
+  "competition_flow": "Loads NFL tracking data, unifies play direction, computes 150+ hand-crafted features (geometric endpoints, GNN neighbor embeddings, route clusters, lags), feeds sequences into a PyTorch Transformer model to predict future X/Y displacements, and averages predictions across 5-10 cross-validation folds for final output.",
+  "data_reading": [],
+  "data_processing": [
+    "Play direction unification (flipping X/Y coordinates and angles for 'right' direction)",
+    "Padding sequences to a fixed window size",
+    "Filling NaNs with column means",
+    "Clipping coordinates to field boundaries",
+    "StandardScaler for feature normalization",
+    "KMeans clustering for route patterns"
+  ],
+  "features_engineering": [
+    "Geometric endpoint baselines (momentum projection, ball landing, mirror coverage)",
+    "GNN-lite weighted neighbor embeddings (dx/dy/dvx/dvy for allies/opponents within radius)",
+    "Route trajectory clustering (straightness, turns, depth/width)",
+    "Lag/rolling mean/std features",
+    "Velocity/acceleration components",
+    "Momentum/kinetic energy",
+    "Pressure metrics",
+    "Time-to-intercept",
+    "Role-specific geometric coupling features"
+  ],
+  "models": [
+    "SpatioTemporalTransformer",
+    "ImprovedSeqModel"
+  ],
+  "frameworks_used": [
+    "pytorch",
+    "scikit-learn",
+    "numpy",
+    "pandas",
+    "polars"
+  ],
+  "loss_functions": [],
+  "cv_strategy": "GroupKFold(n_splits=5 to 10)",
+  "ensembling": "Averages predicted X and Y displacements across 5-10 cross-validation folds, then converts unified coordinates back to original play direction.",
+  "insights": [
+    "Geometric rules form a strong deterministic baseline that the model only needs to learn corrections for.",
+    "Attention pooling over temporal sequences effectively captures player trajectory dynamics.",
+    "GNN-lite weighted neighbor embeddings successfully encode spatial interactions without full graph neural networks.",
+    "Route clustering and lag features provide crucial context for player intent and recent motion."
+  ],
+  "critical_findings": [],
+  "what_did_not_work": [],
+  "source_url": "https://www.kaggle.com/code/goose666/ensemble-mymodell",
+  "votes": 346
+}

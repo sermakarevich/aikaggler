@@ -1,0 +1,50 @@
+{
+  "summary": "The notebook implements a spatio-temporal trajectory prediction pipeline for the NFL Big Data Bowl 2026 competition. It combines a deterministic geometric baseline with a custom PyTorch STTransformer model that learns residual corrections for player movement. The pipeline extracts approximately 167 features including geometric endpoints, route clustering, and weighted neighbor embeddings, processes them into 10-frame sequences, and trains 10 fold-specific models using GroupKFold. It ensembles predictions from this transformer-based model and a separate GRU model, applying field boundary clipping and direction inversion before generating the final submission.",
+  "purpose": "training",
+  "competition_flow": "Loads NFL player tracking CSVs, computes geometric, route, and neighbor features, trains 10 fold-specific STTransformer models with GroupKFold, and ensembles their predictions with a GRU model to output clipped 2D trajectories.",
+  "data_reading": [
+    "Reads train/input_2023_w*.csv and train/output_2023_w*.csv via pd.read_csv and pd.concat",
+    "API receives Polars DataFrames converted to Pandas for processing"
+  ],
+  "data_processing": [
+    "Converts speed/direction to velocity/acceleration vectors",
+    "Clips coordinates to field boundaries (0-120, 0-53.3)",
+    "Scales features with StandardScaler per fold",
+    "Creates 10-frame sliding windows with padding for short sequences",
+    "Fills NaNs with group means or zeros",
+    "Applies time-decay weighting during loss computation"
+  ],
+  "features_engineering": [
+    "13 geometric endpoint features (targeted receiver convergence, defender mirroring, required velocity/acceleration, alignment)",
+    "Route clustering via KMeans on trajectory metrics (straightness, turns, depth, width, speed)",
+    "Weighted GNN-lite neighbor embeddings (dx, dy, dvx, dvy for allies/opponents within radius 30, top 6 neighbors)",
+    "Opponent interaction features (nearest distance, closing speed, mirror WR tracking)",
+    "Temporal lags (1-5), rolling stats (3, 5), EMAs, and play progress/time features"
+  ],
+  "models": [
+    "STTransformer",
+    "ResidualMLPHead",
+    "GRU"
+  ],
+  "frameworks_used": [
+    "pytorch",
+    "scikit-learn",
+    "pandas",
+    "polars",
+    "numpy"
+  ],
+  "loss_functions": [
+    "TemporalHuber"
+  ],
+  "cv_strategy": "GroupKFold(n_splits=10) split by game_id",
+  "ensembling": "Averages predictions from the STTransformer/GNN model and a GRU model, then clips coordinates to field boundaries and inverts direction based on play direction.",
+  "insights": [
+    "Combining a deterministic geometric baseline with learned neural corrections improves trajectory prediction accuracy.",
+    "Route clustering and spatial neighbor embeddings effectively capture player roles and interactions.",
+    "Time-decayed loss weighting prioritizes earlier prediction steps in trajectory forecasting."
+  ],
+  "critical_findings": [],
+  "what_did_not_work": [],
+  "source_url": "https://www.kaggle.com/code/pankajiitr/ensemble-nfl-big-data-bowl-2026-v1",
+  "votes": 239
+}

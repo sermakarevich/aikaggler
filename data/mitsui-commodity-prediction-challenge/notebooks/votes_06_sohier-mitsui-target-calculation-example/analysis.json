@@ -1,0 +1,27 @@
+{
+  "summary": "This notebook provides a utility function to compute the prediction targets for the Mitsui & Co. Commodity Prediction Challenge. It demonstrates how to calculate lagged log returns for two financial price series and subtract them to form the target variable. Readers should understand that the competition's target is a derived metric rather than a provided label, and that the lag parameter is critical for aligning predictions with the evaluation timeline.",
+  "purpose": "utility",
+  "competition_flow": "The notebook takes raw price columns from pandas DataFrames, computes lagged log returns for each, subtracts them to generate the target series, and returns the result for downstream use.",
+  "data_reading": [
+    "No explicit data loading code is provided; the function assumes raw price data is already loaded into pandas DataFrames with specific column names (e.g., 'LME_CA_Close', 'US_Stock_CCJ_adj_close')."
+  ],
+  "data_processing": [
+    "Computes lagged log returns by iterating through the data index and calculating np.log(data.iloc[t + lag + 1] / data.iloc[t + 1]), using try/except and warning suppression to handle division by zero or out-of-bounds indexing."
+  ],
+  "features_engineering": [],
+  "models": [],
+  "frameworks_used": [
+    "numpy",
+    "pandas"
+  ],
+  "loss_functions": [],
+  "cv_strategy": "",
+  "ensembling": "",
+  "insights": [
+    "The competition target is a derived metric based on the difference of lagged log returns between two assets, not a raw label."
+  ],
+  "critical_findings": [],
+  "what_did_not_work": [],
+  "source_url": "https://www.kaggle.com/code/sohier/mitsui-target-calculation-example",
+  "votes": 256
+}

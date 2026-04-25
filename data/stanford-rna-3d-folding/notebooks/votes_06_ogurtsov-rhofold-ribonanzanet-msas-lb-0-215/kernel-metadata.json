@@ -1,0 +1,35 @@
+{
+  "id": "ogurtsov/rhofold-ribonanzanet-msas-lb-0-215",
+  "id_no": 77887279,
+  "title": "RhoFold + RibonanzaNet + MSAs [LB 0.215]",
+  "code_file": "rhofold-ribonanzanet-msas-lb-0-215.ipynb",
+  "language": "python",
+  "kernel_type": "notebook",
+  "is_private": false,
+  "enable_gpu": true,
+  "enable_tpu": false,
+  "enable_internet": false,
+  "keywords": [
+    "gpu"
+  ],
+  "dataset_sources": [
+    "ogurtsov/biopython",
+    "ogurtsov/ml-collections",
+    "ogurtsov/openmm",
+    "ogurtsov/pytest-runner",
+    "shujun717/rhofold-pretrained-weights",
+    "ogurtsov/rhofold-repo",
+    "shujun717/ribonanzanet-pretrained-checkpoint",
+    "shujun717/ribonanzanet2d-final",
+    "ogurtsov/simtk-0-1"
+  ],
+  "kernel_sources": [
+    "shujun717/ribonanzanet-3d-finetune"
+  ],
+  "competition_sources": [
+    "stanford-rna-3d-folding"
+  ],
+  "model_sources": [],
+  "docker_image": "gcr.io/kaggle-private-byod/python@sha256:d8674e13fab653bf7fb8d9a102f2ae94036771ccb5c73f51888d881421e1f937",
+  "machine_shape": "NvidiaTeslaT4"
+}

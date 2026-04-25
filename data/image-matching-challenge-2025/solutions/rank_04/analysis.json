@@ -1,0 +1,67 @@
+{
+  "summary": "The author achieved 4th place by reframing the image clustering challenge as a binary classification problem to filter false matches between image pairs. They trained a linear transformer classifier on a combination of Kaggle's training data and the MegaDepth dataset to prune incorrect pairings. To compensate for true matches lost during pruning, they strategically added NetVLAD-retrieved pairs with strict min/max constraints per scene. The final pipeline combined orientation correction, RDD feature extraction at multiple scales, LightGlue matching, and test-time augmentation (TTA) to boost the private score to 47.88.",
+  "extensive_summary": "## Core Approach & Problem Framing\nThe solution tackles the messy image clustering challenge by reframing it as a binary classification task: determining whether two images belong to the same scene. This shift allows the author to build a classifier that effectively filters false matches in a large-scale image graph.\n\n## Data Augmentation & Classifier Training\nSince the provided Kaggle training data was insufficient, the author augmented the training set with the MegaDepth dataset. Candidate pairs were generated via image retrieval over the combined dataset, with labels derived from known scene structures. The trained linear transformer classifier achieved 99% accuracy on a validation set mixing IMC and MegaDepth samples, proving highly effective at pruning false matches.\n\n## Pair Pruning & Compensation Strategy\nInitially, adding the pruning step decreased the public leaderboard score because it also removed some true pairs. To mitigate this, the author introduced a compensation strategy using NetVLAD-retrieved pairs. For each scene, they enforced constraints: at least 20 pairs and at most 0.12 \u00d7 n pairs (where n is the scene size). While this didn't improve the public score, it significantly reduced runtime, enabling other score-boosting techniques to run efficiently.\n\n## Feature Extraction & Matching Pipeline\nThe core matching pipeline relies on RDD (Robust Feature Detector and Descriptor using Deformable Transformer) to extract 8192 features at two image sizes (1024 and 1280). LightGlue is used for matching with `filter_threshold=0.2` and `width_confidence=0.99`. Matches from both scales are merged. Orientation correction is handled via `check_orientation`, with a confidence threshold of 0.9 applied to reduce false positives.\n\n## Test-Time Augmentation & Final Results\nThe final submission leverages TTA by running RDD+LightGlue on both 1024 and 1280 image sizes and merging the results. This approach improved the private score from 45.48 to 47.88. The author also notes several untried ideas like ROI matching and rotation augmentation that could potentially yield further gains.",
+  "rank": 4,
+  "competition_flow": "Raw images are orientation-corrected, paired via retrieval, filtered by a linear transformer classifier trained on Kaggle+MegaDepth data, matched using RDD features and LightGlue at multiple scales, and finally aggregated with TTA to produce the submission.",
+  "data_reading": [],
+  "data_processing": [
+    "Orientation correction via confidence thresholding (0.9)",
+    "Resizing to 1024 and 1280 for feature extraction",
+    "Pair pruning via linear transformer classifier",
+    "NetVLAD pair compensation (min 20, max 0.12n per scene)",
+    "TTA by running matching on multiple scales and merging"
+  ],
+  "features_engineering": [],
+  "models": [
+    "RDD",
+    "LightGlue",
+    "linear transformer",
+    "NetVLAD",
+    "check_orientation"
+  ],
+  "frameworks_used": [],
+  "loss_functions": [],
+  "cv_strategy": "Holdout validation set composed of IMC and MegaDepth samples",
+  "ensembling": "Test-time augmentation (TTA) by running RDD+LightGlue matching on two different image sizes (1024 and 1280) and merging the results.",
+  "insights": [
+    "Framing image clustering as a binary pair classification problem effectively filters false matches.",
+    "Augmenting limited competition data with external datasets like MegaDepth is crucial for training robust pair classifiers.",
+    "Strategic pair compensation (e.g., NetVLAD with min/max constraints) can balance runtime and accuracy when pruning removes true matches."
+  ],
+  "critical_findings": [
+    "Adding a highly accurate pair pruning model initially decreased the public leaderboard score because it inadvertently removed true matches.",
+    "The NetVLAD compensation strategy improved runtime significantly without boosting the public score, but enabled other tricks to run that ultimately improved the private score."
+  ],
+  "what_did_not_work": [
+    "Using doppelg\u00e4ngers and its followup work doppelg\u00e4ngers++ to distinguish pairs.",
+    "Combining different keypoint locations (Superpoint, ALIKED, DaD) with RDD descriptors for matching."
+  ],
+  "github_repos": [
+    {
+      "url": "https://github.com/ternaus/check_orientation",
+      "role": "library"
+    },
+    {
+      "url": "https://github.com/xtcpete/rdd",
+      "role": "solution"
+    }
+  ],
+  "papers": [
+    {
+      "title": "RDD: Robust Feature Detector and Descriptor using Deformable Transformer",
+      "url": "https://xtcpete.github.io/rdd/",
+      "arxiv_id": null
+    }
+  ],
+  "other_solution_refs": [
+    {
+      "description": "Baseline notebook",
+      "url": "https://www.kaggle.com/code/octaviograu/baseline-dinov2-aliked-lightglue"
+    },
+    {
+      "description": "Solution notebook",
+      "url": "https://www.kaggle.com/code/xtcpete/merge-rdd-lightglue/notebook?scriptVersionId=243557064"
+    }
+  ],
+  "source_url": "https://www.kaggle.com/competitions/image-matching-challenge-2025/discussion/582959"
+}

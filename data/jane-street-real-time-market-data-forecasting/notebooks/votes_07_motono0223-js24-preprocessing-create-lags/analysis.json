@@ -1,0 +1,34 @@
+{
+  "summary": "This notebook demonstrates a time-aware preprocessing pipeline for the Jane Street Market Data Forecasting competition. It loads raw training data, constructs one-day lagged features by shifting the `responder_0` through `responder_8` columns forward in time, and merges them back to the original dataset. The data is then split temporally using a 5% validation ratio and exported as partitioned Parquet files. Readers should learn how to efficiently create lagged features using Polars and structure time-series data to prevent leakage.",
+  "purpose": "feature_engineering",
+  "competition_flow": "Loads raw Jane Street training data, generates one-day lagged features for responder columns, splits the data temporally into training and validation sets, and exports them as partitioned Parquet files.",
+  "data_reading": [
+    "Uses `polars.scan_parquet` to load `train.parquet`, adds a sequential `id` column, and filters rows where `date_id > 1100`."
+  ],
+  "data_processing": [
+    "Shifts `responder_0` to `responder_8` forward by one day using date arithmetic and group-by-last operations, merges lagged features via a left join, and splits data temporally based on a 5% validation ratio."
+  ],
+  "features_engineering": [
+    "Creates lagged features `responder_X_lag_1` (for X in 0-8) by shifting the original `responder_X` columns forward by one trading day."
+  ],
+  "models": [],
+  "frameworks_used": [
+    "polars",
+    "pandas",
+    "numpy",
+    "matplotlib",
+    "scikit-learn"
+  ],
+  "loss_functions": [],
+  "cv_strategy": "",
+  "ensembling": "",
+  "insights": [
+    "Efficiently creating lagged features in time-series forecasting can be done using Polars' group-by-last and date arithmetic without explicit row shifting.",
+    "Temporal data splits should be based on date boundaries rather than random sampling to prevent data leakage.",
+    "Doubling the target column and casting it to Int32 is a simple label transformation step that may help with downstream model scaling."
+  ],
+  "critical_findings": [],
+  "what_did_not_work": [],
+  "source_url": "https://www.kaggle.com/code/motono0223/js24-preprocessing-create-lags",
+  "votes": 691
+}

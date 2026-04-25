@@ -1,0 +1,33 @@
+{
+  "id": "jiazhuang/new-metric-simple-sd-svg-iterative-optimize",
+  "id_no": 81164638,
+  "title": "[New Metric] Simple SD -> SVG Iterative optimize",
+  "code_file": "new-metric-simple-sd-svg-iterative-optimize.ipynb",
+  "language": "python",
+  "kernel_type": "notebook",
+  "is_private": false,
+  "enable_gpu": true,
+  "enable_tpu": false,
+  "enable_internet": false,
+  "keywords": [
+    "gpu"
+  ],
+  "dataset_sources": [],
+  "kernel_sources": [
+    "metric/svg-constraints",
+    "packagemanager/pm-78722149-at-03-27-2025-14-04-14",
+    "jiazhuang/svg-image-fidelity",
+    "packagemanager/pm-81164638-at-04-19-2025-10-48-06"
+  ],
+  "competition_sources": [
+    "drawing-with-llms"
+  ],
+  "model_sources": [
+    "jiazhuang/clip-vit-large-patch14/Transformers/default/1",
+    "google/paligemma-2/Transformers/paligemma2-10b-mix-448/1",
+    "jiazhuang/sac-logos-ava1-l14-linearmse/Transformers/default/1",
+    "stabilityai/stable-diffusion-v2/PyTorch/1/1"
+  ],
+  "docker_image": "gcr.io/kaggle-private-byod/python@sha256:d8674e13fab653bf7fb8d9a102f2ae94036771ccb5c73f51888d881421e1f937",
+  "machine_shape": "NvidiaTeslaT4"
+}

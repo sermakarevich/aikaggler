@@ -1,0 +1,60 @@
+{
+  "summary": "This notebook demonstrates a complete feature engineering and inference pipeline for a polymer property prediction task. It augments the training set with external datasets by merging on canonicalized SMILES, then computes a rich set of molecular descriptors, graph topology metrics, and transformer-based embeddings clustered via KMeans and HDBSCAN. The processed features are saved and subsequently used to load pre-trained AutoGluon models for each target variable. A notable implementation detail involves directly copying known training labels to the test set where SMILES overlap exists before generating the final submission.",
+  "purpose": "feature_engineering",
+  "competition_flow": "Loads raw CSV and external Excel data, augments targets, computes molecular/graph/embedding features, saves processed datasets, loads pre-trained AutoGluon predictors per target to generate test predictions, and exports a submission CSV.",
+  "data_reading": [
+    "Reads train/test CSVs and external Excel files using pandas",
+    "Canonicalizes SMILES strings via RDKit to prevent duplicates",
+    "Loads pre-saved features and models via pickle and AutoGluon's load method"
+  ],
+  "data_processing": [
+    "Canonicalizes SMILES to standardize molecular representations",
+    "Augments training targets by merging external datasets and imputing missing values",
+    "Replaces infinities with NaNs and imputes missing test features with training means",
+    "Clips test feature values to training min/max bounds",
+    "Applies log10 transformation to the Ipc feature"
+  ],
+  "features_engineering": [
+    "RDKit descriptors (e.g., BCUT2D, Chi indices, SlogP, VSA, substructure counts)",
+    "Graph topology features (diameter, average shortest path, max degree, closeness/betweenness/eigenvector/Katz centrality statistics, ring count/size, heteroatom ratio)",
+    "Mordred descriptors (AMW, TIC2, naRing, MPC3)",
+    "MACCS keys",
+    "TopologicalTorsion bits",
+    "AtomPair bits",
+    "ChemBERTa and MolFormer embedding clusters via KMeans (20 clusters) and HDBSCAN (two parameter configurations)"
+  ],
+  "models": [
+    "AutoGluon TabularPredictor",
+    "ChemBERTa-77M-MLM",
+    "MoLFormer-XL-both-10pct"
+  ],
+  "frameworks_used": [
+    "autogluon",
+    "scikit-learn",
+    "transformers",
+    "rdkit",
+    "mordred",
+    "networkx",
+    "hdbscan",
+    "torch",
+    "pandas",
+    "polars",
+    "joblib"
+  ],
+  "loss_functions": [],
+  "cv_strategy": "",
+  "ensembling": "",
+  "insights": [
+    "External data merging on SMILES effectively expands training coverage for missing targets",
+    "Transformer embeddings paired with clustering yield meaningful structural groupings for tabular learning",
+    "Clipping and mean-imputation stabilize test predictions against distribution shifts",
+    "Direct label copying on overlapping SMILES guarantees perfect performance on those samples"
+  ],
+  "critical_findings": [
+    "The notebook explicitly copies training target values to the test set for any overlapping SMILES, which is a direct data leakage technique.",
+    "External datasets are merged directly on SMILES without validation, potentially introducing label noise or distribution shifts."
+  ],
+  "what_did_not_work": [],
+  "source_url": "https://www.kaggle.com/code/mtinti/neurips-preparedataset-predict",
+  "votes": 328
+}

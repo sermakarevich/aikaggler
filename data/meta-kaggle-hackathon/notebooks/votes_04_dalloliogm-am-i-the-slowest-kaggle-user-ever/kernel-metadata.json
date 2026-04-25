@@ -1,0 +1,25 @@
+{
+  "id": "dalloliogm/am-i-the-slowest-kaggle-user-ever",
+  "id_no": 84287980,
+  "title": "Am I the slowest Kaggle user ever?",
+  "code_file": "am-i-the-slowest-kaggle-user-ever.irnb",
+  "language": "r",
+  "kernel_type": "notebook",
+  "is_private": false,
+  "enable_gpu": false,
+  "enable_tpu": false,
+  "enable_internet": true,
+  "keywords": [],
+  "dataset_sources": [
+    "",
+    "",
+    "bwandowando/meta-kaggle-ported-to-parquet-format"
+  ],
+  "kernel_sources": [],
+  "competition_sources": [
+    "meta-kaggle-hackathon"
+  ],
+  "model_sources": [],
+  "docker_image": "gcr.io/kaggle-images/rstats@sha256:c70d66fad02f40d7ae057c52242d1b715efa967ecc7f9a28f878a979bf76453f",
+  "machine_shape": "None"
+}

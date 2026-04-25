@@ -1,0 +1,61 @@
+{
+  "summary": "This notebook provides a complete baseline pipeline for the CSIRO Biomass competition, demonstrating how to train a multi-target regression model on dual-panel aerial imagery. It combines a Vision Transformer (dinoV3) with a custom Mamba-style fusion neck to process split image halves, alongside a SigLIP-based feature extraction module. The author details data cleaning (artifact removal, date stamp inpainting), a 5-fold stratified group validation scheme, and a training recipe using EMA, gradient accumulation, and TTA. Readers should learn how to handle large dual-panel images, derive missing biomass targets post-inference, and structure a reproducible submission workflow.",
+  "purpose": "baseline",
+  "competition_flow": "Loads training/test CSVs and images, preprocesses them by cropping artifacts and splitting into halves, trains a ViT-based model with Mamba fusion across 5 folds, aggregates TTA predictions, derives missing targets, and generates a formatted submission CSV.",
+  "data_reading": [
+    "cv2.imread for raw images, pd.read_csv for train/test metadata CSVs",
+    "Images are split into left/right halves (1000x1000 each) for dual-input processing",
+    "CSV targets are pivoted and melted to align with image paths and sample IDs"
+  ],
+  "data_processing": [
+    "Resize to 512x512, ImageNet normalization, augmentations (horizontal/vertical flips, random rotation, color jitter)",
+    "Custom clean_image function: crop bottom 10%, HSV mask & inpaint orange date stamp artifacts",
+    "TTA with 4 deterministic transforms (original, hflip, vflip, both flips)",
+    "Gradient accumulation (4 steps), EMA (decay=0.9), gradient checkpointing for VRAM management"
+  ],
+  "features_engineering": [
+    "SigLIP image embeddings extracted via sliding patches and mean-pooled",
+    "Semantic features computed via prompt similarity (positive/negative agronomic descriptions)",
+    "Derived targets computed post-hoc with non-negativity constraints (max(0, gdm - green), max(0, total - gdm))"
+  ],
+  "models": [
+    "vit_huge_plus_patch16_dinov3.lvd1689m (timm backbone)",
+    "LocalMambaBlock (custom depthwise-conv gated fusion neck)",
+    "Siglip2Model/SiglipModel (transformers for embedding extraction)"
+  ],
+  "frameworks_used": [
+    "torch",
+    "timm",
+    "albumentations",
+    "pandas",
+    "numpy",
+    "cv2",
+    "transformers",
+    "sklearn",
+    "matplotlib",
+    "seaborn"
+  ],
+  "loss_functions": [
+    "Weighted SmoothL1Loss (Huber, beta=5.0) across 5 targets, combined with R2-based weighting scheme"
+  ],
+  "cv_strategy": "StratifiedGroupKFold(n_splits=5, shuffle=True, random_state=82947501) with Sampling_Date as groups and State as stratification target",
+  "ensembling": "Averages predictions across 4 TTA views per fold, then averages across 5 trained folds; post-processing applies non-negativity constraints to derived targets.",
+  "insights": [
+    "Splitting wide images into dual inputs improves feature extraction and model focus.",
+    "Removing date stamp artifacts via HSV masking and inpainting prevents model confusion.",
+    "Mamba blocks efficiently mix spatial tokens with linear complexity compared to standard attention.",
+    "EMA stabilizes validation metrics and yields better generalization during training.",
+    "Derived targets can be reliably computed post-inference with simple arithmetic constraints."
+  ],
+  "critical_findings": [
+    "Orange date stamps at the bottom consistently cause artifacts and are reliably removed via HSV masking.",
+    "Bottom 10% of images contains persistent artifacts and is safely cropped without losing signal.",
+    "Gradient checkpointing is necessary to fit the ViT-H model on available Kaggle GPU VRAM.",
+    "TTA uses deterministic flips/rotations rather than stochastic augmentation for reproducible inference."
+  ],
+  "what_did_not_work": [
+    ""
+  ],
+  "source_url": "https://www.kaggle.com/code/llkh0a/cisro-baseline-train-infer-21-12-dinov3-siglip",
+  "votes": 452
+}

@@ -1,0 +1,41 @@
+{
+  "summary": "The author addresses a time-series competition by introducing a subject-based modeling approach that accumulates historical sequence information across submissions. They combine this with a traditional sequence-based model, dynamically selecting and weighting them based on missing value thresholds and the length of available historical data. To mitigate API-induced instability from shuffled sequence orders, they employ targeted training sampling and post-inference weighting adjustments. This strategy yielded a ~0.03 total performance gain over baseline approaches.",
+  "extensive_summary": "## Core Modeling Strategy\nThe solution revolves around two primary architectural tricks. First, the author introduces a **subject-based model** that groups data from the same subject into single batches. Sequential information is extracted using CNN, RNN, or Transformer layers, followed by an additional Transformer layer operating along the subject dimension to capture inter-sequence relationships. During inference, historical sequence information is accumulated per subject before predicting the current sequence. Second, a **sequence-based model** is retained to correct predictions when historical data is insufficient, addressing the instability caused by the evaluation API's shuffled batch order.\n\n## Model Selection & Dynamic Ensembling\nFour model variants were trained: `imu-only_subject`, `imu-only_sequence`, `all_subject`, and `all_sequence`. Model selection and weighting are dynamically controlled during inference:\n- If missing values exceed 50%, only the `imu-only` models are used.\n- Otherwise, the `all` features model is selected, but its predictions are fused with the `imu-only` model using a fixed 0.8/0.2 weight.\n- Weights for the subject-based (`w_imu_tf` or `w_all_tf`) and sequence-based components are scaled by historical record count (`min(n_hist, 15)/15` and `min(n_hist, 30)/30`), ensuring the subject-based model dominates when history is abundant and the sequence-based model takes over when it is sparse.\n\n## Validation & Submission Strategy\nValidation splits data by subject using a 5-fold cross-validation scheme, achieving ~0.855 (imu-only) and ~0.898 (all features) on the validation set. The subject-based model provided a ~0.02 lift over the sequence-based baseline, with the dynamic ensemble adding another ~0.01. Due to API shuffling causing score fluctuations, the author finalized the solution early and used the final 15 submission slots to repeatedly evaluate and select the top two performing configurations.",
+  "rank": 5,
+  "competition_flow": "Raw sequences are grouped by subject and processed through CNN/RNN/Transformer architectures with a subject-level Transformer layer, followed by dynamic model selection and weighted ensembling based on missing value thresholds and historical record counts, culminating in repeated API submissions to select the best two models.",
+  "data_reading": [],
+  "data_processing": [
+    "Groups sequences by subject into batches",
+    "Samples same-subject sequences at varying ratios (0.5\u20130.8) during training",
+    "Applies dynamic weighting based on historical record count",
+    "Switches to imu-only models when missing values exceed 50%"
+  ],
+  "features_engineering": [],
+  "models": [
+    "CNN",
+    "RNN",
+    "Transformer",
+    "imu-only_subject",
+    "imu-only_sequence",
+    "all_subject",
+    "all_sequence"
+  ],
+  "frameworks_used": [],
+  "loss_functions": [],
+  "cv_strategy": "Subject-based split with 5-fold cross-validation.",
+  "ensembling": "Dynamic weighted fusion of subject-based and sequence-based models adjusted by missing value proportion and historical record count, with final model selection from the last 15 API submissions.",
+  "insights": [
+    "Accumulating historical sequence information per subject significantly boosts performance (~0.02 gain).",
+    "Combining subject-based and sequence-based models via dynamic weighting adds further improvement (~0.01).",
+    "The subject-based approach degrades when historical data is insufficient, necessitating a fallback to sequence-based correction."
+  ],
+  "critical_findings": [
+    "When missing values exceed 50%, relying on imu-only features is critical for stability.",
+    "The evaluation API shuffles sequence order per submission, causing score instability that requires dynamic weighting and repeated submission evaluation."
+  ],
+  "what_did_not_work": [],
+  "github_repos": [],
+  "papers": [],
+  "other_solution_refs": [],
+  "source_url": "https://www.kaggle.com/competitions/cmi-detect-behavior-with-sensor-data/discussion/603542"
+}

@@ -1,0 +1,41 @@
+{
+  "summary": "The author contributed to a 10th place solution by fine-tuning a ConvNeXt UNet architecture using a pseudo-labeling strategy. They processed test data through a forward model to generate velocity maps, converted them to input images via FWM, and added them as pseudo-labels to augment the training set. This pseudo-labeling and fine-tuning cycle was repeated three times to improve generalization. Finally, test predictions were refined using backpropagation to minimize L1 loss before being blended with teammates' models.",
+  "extensive_summary": "## Solution Overview\nThe author's contribution centers on a pseudo-labeling and fine-tuning pipeline built upon Berthly's ConvNeXt model. The approach leverages the forward model on test data to generate pseudo-labels, followed by backpropagation-based post-processing to refine predictions.\n\n## Model Structure\nThe base architecture is a ConvNeXt UNet. The author upgraded the backbone from ConvNeXt Small to ConvNeXt Large and applied interpolation-based resizing to the input images.\n\n## Training Process\nTraining occurred in iterative stages. In Stage 1, the model was initially trained on the OpenFWI dataset. The forward model was then applied to test data to generate velocity maps, which were converted into input images using FWM and added as pseudo-labels. For Stage 2 and beyond, these pseudo-labeled test data pairs were merged with the original training set. The model was fine-tuned on this augmented dataset, and the entire pseudo-labeling and fine-tuning cycle was repeated three times.\n\n## Post-Processing & Results\nTest data predictions were further optimized using FWM and backpropagation to minimize the L1 loss between the input data and reconstructed predictions. This iterative pseudo-labeling strategy improved the CV score from 23.9 to 16.8 and the LB score from 27.2 to 17.2. Post-processing further reduced the scores to 12.64 (CV) and 13.5 (LB). The final submission was a weighted average blended with models from the author's teammates.",
+  "rank": 10,
+  "competition_flow": "Raw data from the OpenFWI dataset and test set were fed into a ConvNeXt UNet for initial training; test predictions were then converted to pseudo-labels via a forward model, merged with training data, and used to fine-tune the model over three cycles; test outputs were refined using backpropagation to minimize L1 loss, then blended with teammates' models for the final submission.",
+  "data_reading": [],
+  "data_processing": [
+    "Resized images with interpolation.",
+    "Generated velocity maps from test data and converted them to input images using FWM to create pseudo-labels.",
+    "Augmented the original training set with pseudo-labeled test data pairs and repeated the fine-tuning cycle three times.",
+    "Applied backpropagation to optimize L1 loss on test predictions during post-processing."
+  ],
+  "features_engineering": [],
+  "models": [
+    "ConvNeXt UNet",
+    "ConvNeXt Small",
+    "ConvNeXt Large"
+  ],
+  "frameworks_used": [],
+  "loss_functions": [
+    "L1 loss"
+  ],
+  "cv_strategy": "",
+  "ensembling": "The final submission was a weighted average (blended) of the author's fine-tuned model and contributions from two teammates.",
+  "insights": [
+    "Pseudo-labeling test data via a forward model and retraining on it significantly improves generalization.",
+    "Iteratively repeating the pseudo-labeling and fine-tuning cycle yields progressive score improvements.",
+    "Post-processing test predictions with backpropagation to minimize L1 loss effectively refines final outputs."
+  ],
+  "critical_findings": [],
+  "what_did_not_work": [],
+  "github_repos": [],
+  "papers": [],
+  "other_solution_refs": [
+    {
+      "description": "Teammate's solution",
+      "url": "https://www.kaggle.com/competitions/waveform-inversion/discussion/587429"
+    }
+  ],
+  "source_url": "https://www.kaggle.com/competitions/waveform-inversion/discussion/587412"
+}

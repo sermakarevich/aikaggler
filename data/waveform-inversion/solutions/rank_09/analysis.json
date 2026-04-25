@@ -1,0 +1,47 @@
+{
+  "summary": "The author focused on efficient experimentation and dynamic data augmentation rather than novel model design, adopting architectures from another competitor. The core technical contribution was accelerating seismic wave propagation for augmentation by implementing a custom CUDA kernel, enabling a 100x speedup over CPU implementations. This allowed dynamic seismogram generation during training, which provided the primary score boost. The author also experimented with a solo submission strategy under tight deadlines, highlighting the importance of risk management and iterative checkpointing.",
+  "extensive_summary": "## Strategy & Cross-Validation\nJoining the competition late, the author prioritized efficient experimentation over novel modeling, adopting architectures and hyperparameters from @brendanartley. Data was split by file into 8 folds, with initial training focused exclusively on the `CurveFault_B` class to manage time pressure.\n\n## Training Setup & Learning Rate\nTo handle slow MAE convergence, the learning rate was kept flat at 0.0005. This allowed seamless recycling of training runs when testing new ideas, as the optimizer could continue from the best experiment without restarting.\n\n## The Main Innovation: On-the-Fly Augmentation\nThe primary score improvement came from dynamic augmentations requiring proper wave propagation to generate corresponding seismograms. The original CPU-based generation took ~3s per target, making it impractical for training. The author progressively optimized this pipeline: first porting to pytorch with `torch compile`, then implementing a batched version, and finally writing a custom CUDA kernel for batched wave propagation. This achieved a ~100x speedup, enabling real-time seismogram recalculation during training. Augmentations included shift, scale, rotate, and a custom implementation for shifting intensities.\n\n## Inference & Solo Submission\nIn the final days, the author added 150 epochs with a cosine schedule, giving more sample weights to difficult classes. Test predictions were saved every 3 epochs, with the median of the last 10 used per run, followed by a mean across runs. A separate \"idle speculation\" solo submission approach was also attempted, relying on gut-feel model/fold weighting and a CSV backup to mitigate compute/platform risks under tight deadlines.",
+  "rank": 9,
+  "competition_flow": "The pipeline involved splitting seismic data by file into 8 folds, training CaFormer and ConvNeXtV2 models with a flat learning rate, applying dynamic augmentations via a custom CUDA-accelerated wave propagation kernel to generate seismograms on-the-fly, and ensembling predictions via median-of-last-10-checkpoints per run averaged across runs.",
+  "data_reading": [],
+  "data_processing": [
+    "Dynamic shift, scale, rotate, and custom intensity shifting augmentations",
+    "On-the-fly wave propagation to generate seismograms from augmented targets",
+    "Custom CUDA kernel for batched wave propagation (~100x speedup over CPU)",
+    "Cosine learning rate schedule in final 150 epochs with adjusted sample weights for difficult classes"
+  ],
+  "features_engineering": [],
+  "models": [
+    "caformer_b36.sail_in22k_ft_in1k",
+    "convnextv2_huge.fcmae"
+  ],
+  "frameworks_used": [
+    "pytorch",
+    "torch compile"
+  ],
+  "loss_functions": [],
+  "cv_strategy": "Data split by file into 8 folds; initial training focused exclusively on the CurveFault_B class.",
+  "ensembling": "Median of the last 10 saved test predictions per run, averaged across multiple runs; a separate solo submission approach relied on gut-feel model/fold weighting without formal ensembling.",
+  "insights": [
+    "Keeping the learning rate flat at 0.0005 allows seamless recycling of training runs due to slow MAE convergence.",
+    "Accelerating wave propagation to GPU/CUDA enables practical on-the-fly augmentation during training.",
+    "Solo submissions under tight deadlines require proactive risk management and backup plans to mitigate platform failures."
+  ],
+  "critical_findings": [
+    "The original CPU-based wave propagation took ~3s per target, making on-the-fly augmentation impossible until a custom CUDA kernel provided a ~100x speedup.",
+    "The author realized only 2 days before the deadline that only every 2nd pixel needs to be predicted, which would have doubled training speed."
+  ],
+  "what_did_not_work": [
+    "The initial CPU-based wave propagation implementation was too slow (~3s per target) to be viable during training.",
+    "The solo submission approach yielded a lower score due to lack of formal ensembling and late realization about pixel prediction frequency."
+  ],
+  "github_repos": [],
+  "papers": [],
+  "other_solution_refs": [
+    {
+      "description": "Reference for wave propagation code",
+      "url": "https://www.kaggle.com/code/manatoyo/improved-vel-to-seis"
+    }
+  ],
+  "source_url": "https://www.kaggle.com/competitions/waveform-inversion/discussion/587498"
+}

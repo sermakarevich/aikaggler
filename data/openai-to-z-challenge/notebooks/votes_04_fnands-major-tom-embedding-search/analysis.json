@@ -1,0 +1,54 @@
+{
+  "summary": "The notebook demonstrates a pipeline to filter the Major TOM embedding space for potential geoglyph locations in the Amazon by leveraging known archaeological sites as reference points. Instead of relying on direct visual detection in satellite imagery, the author matches known site coordinates to the nearest pre-computed embeddings using a BallTree spatial index. These matched embeddings are then used to train a lightweight XGBoost classifier to distinguish between Amazon Dark Earth, earthwork, and other land cover types. The trained classifier scores the entire embedding dataset, generating probability maps that highlight areas with a high likelihood of containing similar archaeological features. The approach proves that embedding-space similarity combined with a simple gradient boosting model can effectively narrow down search spaces for remote archaeological discovery, though the author notes the model inadvertently learns to detect deforestation patterns rather than the glyphs themselves.",
+  "purpose": "utility",
+  "competition_flow": "Loads known archaeological site coordinates and pre-computed Major TOM embeddings, matches them spatially using a BallTree, trains an XGBoost classifier on the extracted features, and scores the full embedding dataset to generate ranked probability maps of potential geoglyph locations.",
+  "data_reading": [
+    "Reads GeoJSON and Shapefile boundaries using geopandas",
+    "Loads embedding metadata and feature vectors from multiple Parquet files using polars and duckdb",
+    "Extracts coordinates and embedding arrays into NumPy/Pandas structures"
+  ],
+  "data_processing": [
+    "Reprojects geographic data to Web Mercator (EPSG:3857) for plotting",
+    "Converts lat/lon to radians for haversine distance calculations",
+    "Filters embeddings within a 1120m radius of known sites using BallTree",
+    "Removes embedding IDs associated with multiple conflicting object types",
+    "Stacks embeddings and labels into unified NumPy arrays",
+    "Binarizes/multiplies labels for 3-class classification"
+  ],
+  "features_engineering": [],
+  "models": [
+    "XGBoost"
+  ],
+  "frameworks_used": [
+    "xgboost",
+    "scikit-learn",
+    "polars",
+    "duckdb",
+    "geopandas",
+    "numpy",
+    "pandas",
+    "matplotlib",
+    "contextily",
+    "rasterio",
+    "shapely"
+  ],
+  "loss_functions": [
+    "mlogloss"
+  ],
+  "cv_strategy": "Holdout split (train_test_split with test_size=0.2, random_state=42)",
+  "ensembling": "",
+  "insights": [
+    "Pre-computed SSL embeddings can effectively proxy spatial similarity for archaeological search when direct visual detection is limited by satellite resolution.",
+    "A lightweight gradient boosting model trained on embedding features successfully distinguishes between archaeological land cover types and ranks unknown locations by similarity.",
+    "The model's high performance is largely driven by detecting deforestation patterns correlated with glyph locations rather than the glyphs themselves."
+  ],
+  "critical_findings": [
+    "Sentinel-2's 10m ground sampling distance is too coarse to directly distinguish geoglyphs, making embedding-space filtering a necessary workaround.",
+    "The classifier inadvertently learns to detect cleared land (deforestation) rather than the archaeological features, highlighting a confounding variable in the results."
+  ],
+  "what_did_not_work": [
+    "A previous cosine similarity approach to find similar embeddings did not work well, prompting the switch to an XGBoost classifier which produced more plausible results."
+  ],
+  "source_url": "https://www.kaggle.com/code/fnands/major-tom-embedding-search",
+  "votes": 62
+}

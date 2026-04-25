@@ -1,0 +1,46 @@
+{
+  "summary": "The author developed a 2nd place solution for a mouse behavior detection competition by training separate time-series models for solo and pair actions. They combined multi-scale CNNs with RNNs/Transformers and SqueezeFormer architectures, applying rigorous preprocessing to standardize tracking data to 30 FPS and handle missing values. Key technical choices included lab-stratified cross-validation, per-lab-action threshold optimization, and a specific post-processing adjustment for AdaptableSnail's 25 FPS data that improved the private score. The pipeline utilized sliding-window inference with flip TTA and averaged thresholds for final predictions.",
+  "extensive_summary": "## Data Preprocessing & Input Features\nThe solution processes time-series tracking data of shape `(T = 512, num_features)`, converting all inputs to 30 FPS using linear interpolation for features and nearest-neighbor interpolation for labels. Missing values are handled via linear interpolation, with missing body-part features replaced by the mean of existing features in the same frame. Distance, velocity, and acceleration features are standardized using precomputed statistics. The input pipeline separates meta-features (shared across frames like sex, frame-rate scale, lab ID via embedding, and candidate action label) from per-frame features (body-part distances, velocity, and acceleration for both solo and pair configurations).\n\n## Model Architectures & Training\nTwo architecture families were employed: a CNN + RNN / Transformer pipeline (multi-scale convolutions with kernel sizes 3, 5, 7, 9, followed by conv fusion, Bi-GRU or Transformer, and a linear head) and a SqueezeFormer model. Five variants with varying depths and hyperparameters were trained. Training utilized a 5-fold stratified cross-validation scheme, carefully stratified by lab IDs present in the test set, with CalMS21 and CRIM13 labs always included in training. Each action was trained using a one-vs-rest approach with Binary Cross Entropy loss. Optimization employed EMA (decay 0.999), cosine learning rate scheduling with warmup, and dynamic threshold optimization per lab-action pair on the validation set at each epoch for early stopping. Data augmentation included Gaussian noise, time stretching, frame shifting, left/right body-part flipping, and Mixup.\n\n## Inference & Post-processing\nInference uses a sliding window with a stride of 128, discarding 32 frames at each boundary before averaging predictions. Flip test-time augmentation (TTA) is applied. Final thresholds are computed independently per fold and per lab-action pair, then averaged. For each frame, the highest-scoring action above the threshold is selected. A critical post-processing step addressed AdaptableSnail's 25 FPS tracking data by scaling `start_frame` and `stop_frame` by 30/25. This adjustment was only applied to sequences without mouse ID swaps, yielding a +0.009 improvement in the private score.",
+  "rank": 2,
+  "competition_flow": "Raw tracking data is converted to 30 FPS and standardized, then fed into separate CNN/Transformer and SqueezeFormer models trained with lab-stratified 5-fold CV; predictions are generated via sliding-window inference with flip TTA, averaged per-lab-action thresholds are applied, and a 25-to-30 FPS scaling adjustment is used for AdaptableSnail sequences to produce the final submission.",
+  "data_reading": [],
+  "data_processing": [
+    "Convert all tracking data to 30 FPS using linear interpolation for features and nearest-neighbor interpolation for labels",
+    "Standardize distance, velocity, and acceleration using precomputed statistics",
+    "Fill missing values via linear interpolation, replacing missing body-part features with the mean of existing features in the same frame",
+    "Apply Gaussian noise, time stretching, frame shift (features only), left/right body-part flipping, and Mixup as augmentations"
+  ],
+  "features_engineering": [
+    "Meta features: sex, frame-rate scale, lab ID (passed through an embedding layer), candidate action label",
+    "Per-frame features: body-part distances, velocity, and acceleration (channel counts vary by solo vs pair configuration)"
+  ],
+  "models": [
+    "CNN + RNN / Transformer (Multi-scale Conv, Conv Fusion, Bi-GRU, Transformer, Linear)",
+    "SqueezeFormer"
+  ],
+  "frameworks_used": [],
+  "loss_functions": [
+    "Binary Cross Entropy"
+  ],
+  "cv_strategy": "5-fold stratified cross-validation stratified by lab IDs present in the test set, with CalMS21 and CRIM13 labs always included in training.",
+  "ensembling": "The final submission averages predictions from five model variants and fold-specific thresholds, applies flip TTA, and selects the highest-scoring action above the averaged per-lab-action thresholds, with a specific 25-to-30 FPS scaling adjustment applied to AdaptableSnail sequences lacking mouse ID swaps.",
+  "insights": [
+    "Stratifying cross-validation folds by test-set lab IDs ensures validation metrics closely reflect the test distribution.",
+    "Optimizing thresholds per lab-action pair at each epoch during training significantly improves early stopping and final calibration.",
+    "Separating models for solo and pair actions prevents feature interference and improves task-specific performance."
+  ],
+  "critical_findings": [
+    "Applying a 30/25 frame rate scaling adjustment to AdaptableSnail's 25 FPS tracking data improved the private score by +0.009, but only when mouse ID swaps were absent.",
+    "Discarding 32 frames at both boundaries of the sliding window prevents edge artifacts and stabilizes prediction averaging."
+  ],
+  "what_did_not_work": [],
+  "github_repos": [],
+  "papers": [],
+  "other_solution_refs": [
+    {
+      "description": "Reference for AdaptableSnail's 25 FPS tracking data handling",
+      "url": "https://www.kaggle.com/competitions/MABe-mouse-behavior-detection/discussion/612531#3305943"
+    }
+  ],
+  "source_url": "https://www.kaggle.com/competitions/MABe-mouse-behavior-detection/discussion/663083"
+}

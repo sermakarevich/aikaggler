@@ -1,0 +1,43 @@
+{
+  "summary": "This notebook demonstrates an inference-only pipeline for the BirdCLEF 2025 competition, combining predictions from two pre-trained audio classification models (ConvNeXtV2-Nano and ECA-NFNet-L0). It processes 5-second audio windows into mel spectrograms, runs inference with optional test-time augmentation, and applies targeted post-processing techniques like low-rank power adjustment and temporal smoothing. The author emphasizes that blending diverse architectures and tuning post-processing steps can significantly boost leaderboard scores, though weight adjustments are better suited for private notebooks to avoid leakage. Readers should learn how to structure a robust inference workflow and apply effective post-processing for audio classification tasks.",
+  "purpose": "inference",
+  "competition_flow": "Loads pre-trained ConvNeXtV2 and NFNet models, processes test audio into mel spectrograms, generates per-chunk species predictions, applies power adjustment and temporal smoothing, and blends the outputs into a final submission CSV.",
+  "data_reading": [
+    "Reads .ogg test audio files using librosa.load and torchaudio.load.",
+    "Extracts class labels from directory names in the training audio folder."
+  ],
+  "data_processing": [
+    "Slices audio into 5-second non-overlapping windows.",
+    "Converts to mel spectrograms using librosa and torchaudio with varying parameters (n_fft=2048/1024, n_mels=512/128).",
+    "Applies power-to-db and min-max/standard normalization.",
+    "Resizes spectrograms to 256x256 for the ConvNeXtV2 path.",
+    "Applies test-time augmentations (horizontal and vertical flips on spectrograms).",
+    "Post-processes predictions with low-rank power adjustment on low-confidence columns and temporal smoothing across adjacent chunks."
+  ],
+  "features_engineering": [],
+  "models": [
+    "convnextv2_nano.fcmae_ft_in22k_in1k",
+    "eca_nfnet_l0"
+  ],
+  "frameworks_used": [
+    "pytorch",
+    "timm",
+    "librosa",
+    "torchaudio",
+    "numpy",
+    "pandas",
+    "opencv"
+  ],
+  "loss_functions": [],
+  "cv_strategy": "",
+  "ensembling": "Blends predictions from two models using weights of 0.6 for NFNet and 0.4 for ConvNeXtV2, followed by low-rank power adjustment on low-confidence predictions and temporal smoothing across 5-second audio chunks.",
+  "insights": [
+    "Using diverse model architectures improves robustness and leaderboard performance in audio classification tasks.",
+    "Post-processing techniques like power adjustment and temporal smoothing can effectively boost scores without retraining.",
+    "Adjusting blending weights should be done in private notebooks to prevent data leakage and maintain fairness."
+  ],
+  "critical_findings": [],
+  "what_did_not_work": [],
+  "source_url": "https://www.kaggle.com/code/hideyukizushi/bird25-nfnet-convnextv2-weightedblend-lb-860",
+  "votes": 433
+}

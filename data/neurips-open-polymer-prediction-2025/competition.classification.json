@@ -1,0 +1,13 @@
+{
+  "description": "Participants develop machine learning models to predict physical and chemical properties of polymers for sustainable materials research. Competitors work with molecular representations or tabular descriptors of polymer chains and must output property values to accelerate materials discovery. Model performance is evaluated using a custom competition-specific metric provided in the evaluation environment.",
+  "data_modality": "tabular",
+  "task_type": "regression",
+  "label_structure": "multi_label",
+  "metric": "Custom Metric (open_polymer_2025)",
+  "test_split": "unknown",
+  "format": "two_stage",
+  "dataset_scale": "unknown",
+  "domain": "materials_science",
+  "data_challenges": [],
+  "constraints": []
+}

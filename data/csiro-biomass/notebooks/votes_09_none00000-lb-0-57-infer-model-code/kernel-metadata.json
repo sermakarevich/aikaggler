@@ -1,0 +1,25 @@
+{
+  "id": "none00000/lb-0-57-infer-model-code",
+  "id_no": 97258851,
+  "title": "[LB 0.57]Infer + Model code ",
+  "code_file": "lb-0-57-infer-model-code.ipynb",
+  "language": "python",
+  "kernel_type": "notebook",
+  "is_private": false,
+  "enable_gpu": false,
+  "enable_tpu": false,
+  "enable_internet": false,
+  "keywords": [
+    "gpu"
+  ],
+  "dataset_sources": [],
+  "kernel_sources": [
+    "none00000/csiro"
+  ],
+  "competition_sources": [
+    "csiro-biomass"
+  ],
+  "model_sources": [],
+  "docker_image": "gcr.io/kaggle-images/python@sha256:d17e738679831983025ea49f3d09f81557cf2a54b4d8f8902b45d282e0de9583",
+  "machine_shape": "None"
+}

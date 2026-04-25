@@ -1,0 +1,23 @@
+[
+  {
+    "topic_id": 664755,
+    "title": "Optimized Tunix with Cut-Cross Entropy and Flash Attention",
+    "owner": "Green0-0",
+    "repo": "tunix-cce",
+    "url": "https://github.com/Green0-0/tunix-cce"
+  },
+  {
+    "topic_id": 664755,
+    "title": "Optimized Tunix with Cut-Cross Entropy and Flash Attention",
+    "owner": "apple",
+    "repo": "ml-cross-entropy",
+    "url": "https://github.com/apple/ml-cross-entropy"
+  },
+  {
+    "topic_id": 664755,
+    "title": "Optimized Tunix with Cut-Cross Entropy and Flash Attention",
+    "owner": "jax-ml",
+    "repo": "jax",
+    "url": "https://github.com/jax-ml/jax"
+  }
+]

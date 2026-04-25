@@ -1,0 +1,53 @@
+{
+  "summary": "The author secured 1st place in a tomography competition by training a 3D U-Net with a pre-trained ResNet encoder on heavily augmented tomogram data. Key technical choices include using a downsampled Gaussian heatmap for labels, a multi-component SmoothBCE loss with deep supervision and max-pooled loss, and GPU-accelerated augmentations to bypass slow disk I/O. During inference, the model processes data via a depth-sliding window with edge down-weighting, and predictions are finalized using quantile thresholding on the maximum predicted pixel value rather than fixed thresholds.",
+  "extensive_summary": "## Data Preparation & Preprocessing\nThe author constructed a training set using tomograms from the competition data and the CryoET Data Portal. Each tomogram was resized to (128, 704, 704) using `scipy.ndimage.zoom()`, and tomograms lacking motors were discarded. To address label scarcity, missing motors were manually added using Napari. Labels were generated as Gaussian heatmaps centered on each motor, with the heatmap resolution reduced by 8x to tolerate distance errors in the evaluation metric.\n\n## Model Architecture & Training\nThe core architecture is a 3D U-Net variant where the encoder is a pre-trained ResNet200 (with ResNet101 used in most experiments) sourced from a third-party repository. Stochastic dropout and gradient checkpointing were applied for regularization and VRAM reduction. The decoder consists of a single deconvolution block before the segmentation head. Training utilized heavy augmentations (Mixup, Rescale/Zoom, rotations, flips, axis swaps, coarse dropout, color inversion, cutmix) applied primarily on the GPU to bypass slow disk I/O, with `scipy.ndimage.zoom(..., order=0)` used for fast rescaling. The model was trained for up to 400 epochs without overfitting.\n\n## Loss Function & Validation\nThe training objective combined three SmoothBCE loss components: a main segmentation head, a deep supervision head on the second-to-last feature map, and a max-pooled loss (kernel/stride 4) on the main head to encourage high probabilities around motors while penalizing small localization errors less. Cross-validation used 4 folds, with local CV correlating well with the LB up to ~0.93. Beyond that, the public LB was used for validation, relying on quantile thresholding for reliable feedback.\n\n## Inference & Post-processing\nInference employed a sliding window approach optimized by matching patch height/width and sliding only over depth, enabling high overlap (0.875) and extensive TTA. Edge predictions were down-weighted using an `roi_weight_map` (middle 40% weighted 1.0, edges 0.001). The final submission used an 8-seed ensemble with summed logits after sigmoid activation. Instead of fixed thresholds, the author ranked tomograms by their maximum predicted pixel value and applied quantile thresholding, tuning the quantile on the public LB (0.565) and private LB (0.560) to determine motor presence.",
+  "rank": 1,
+  "competition_flow": "Tomograms are loaded, resized, and labeled with downsampled Gaussian heatmaps, then trained on a 3D U-Net with a ResNet encoder using multi-component SmoothBCE loss and heavy GPU augmentations; inference uses a depth-sliding window with edge weighting, followed by an 8-seed ensemble and quantile thresholding on max predicted pixel values to determine motor presence.",
+  "data_reading": [],
+  "data_processing": [
+    "Resized to (128, 704, 704) via scipy.ndimage.zoom()",
+    "Discarded tomograms without motors",
+    "Manually added missing motors using Napari",
+    "Generated 8x downsampled Gaussian heatmap labels",
+    "Applied heavy augmentations (Mixup, Rescale/Zoom, rotations, flips, axis swaps, coarse dropout, color inversion, cutmix) primarily on GPU",
+    "Incorporated external data from the CryoET Data Portal"
+  ],
+  "features_engineering": [],
+  "models": [
+    "3D U-Net",
+    "ResNet200",
+    "ResNet101"
+  ],
+  "frameworks_used": [],
+  "loss_functions": [
+    "SmoothBCE loss",
+    "deep supervision loss",
+    "max pooled loss"
+  ],
+  "cv_strategy": "4-fold cross-validation, switching to public LB validation beyond ~0.93 local CV score",
+  "ensembling": "The final submission uses an 8-seed ensemble where sigmoid is applied to each model output and the logits are summed, followed by ranking tomograms by their maximum predicted pixel value and applying quantile thresholding to determine motor presence.",
+  "insights": [
+    "Using quantile thresholding is critical for obtaining reliable feedback from the leaderboard.",
+    "Downsampling the Gaussian heatmap labels by 8x aligns well with the metric's high tolerance for distance error.",
+    "Increasing the encoder's capacity directly improves model performance.",
+    "Offloading augmentations to the GPU bypasses slow disk I/O bottlenecks during training."
+  ],
+  "critical_findings": [
+    "Fixed thresholds proved highly unstable for this competition's metric, necessitating a quantile-based approach.",
+    "The optimal quantile threshold remained nearly identical between the public and private leaderboards (0.565 vs 0.560), validating the thresholding strategy."
+  ],
+  "what_did_not_work": [],
+  "github_repos": [
+    {
+      "url": "https://github.com/brendanartley/BYU-competition",
+      "role": "solution"
+    },
+    {
+      "url": "https://github.com/kenshohara/3D-ResNets-PyTorch",
+      "role": "library"
+    }
+  ],
+  "papers": [],
+  "other_solution_refs": [],
+  "source_url": "https://www.kaggle.com/competitions/byu-locating-bacterial-flagellar-motors-2025/discussion/583143"
+}

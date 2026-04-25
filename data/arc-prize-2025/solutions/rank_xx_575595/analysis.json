@@ -1,0 +1,100 @@
+{
+  "summary": "This writeup aggregates and analyzes top-performing approaches to the ARC Prize 2024 competition, highlighting how participants combined test-time training with LoRA-tuned LLMs, classical DSL solvers, custom transformers, and lightweight pre-processing tricks. The author emphasizes that hybrid strategies\u2014merging symbolic reasoning with neural inference and leveraging active-inference loops\u2014consistently outperformed pure end-to-end models. Key insights revolve around the effectiveness of reverse augmentation, colour remapping for palette-irrelevant tasks, and probabilistic ensemble voting to maximize coverage across diverse task types.",
+  "extensive_summary": "## LLM & Test-Time Training Approaches\nThe 2nd place solution (\"Omni-ARC TTT\") utilized test-time training (TTT) on a LoRA-tuned Qwen-0.5 B model, focusing on both drawing and reasoning capabilities. It introduced an AIRV loop (augment \u2192 infer \u2192 reverse \u2192 vote) that outperformed standard rotations and colour permutations. Synthetic training grids were generated to address sparse supervision, and a fallback to a 2020 C++ DSL solver handled purely symbolic cases.\n\n## Classical Solvers & Heuristics\nSeveral top solutions relied on hand-coded rule engines. The 3rd place approach used a library of 120 symmetry, flood-fill, and pattern functions, grid-searching them against training examples with metadata-driven heuristics. The 4th place solution expanded on the 2020 DSL/DAG search, adding CNN and decision-tree modules for colour counts and masks, alongside heavy data augmentation. The 5th place solution merged six 2020 solvers with an iterative solver, using post-filters to auto-repair GA errors and brute-forcing task order via binary search.\n\n## Custom Architectures & Pre-processing\nThe 13th place solution built a 19-token custom Transformer from scratch using PyTorch 2.2, introducing a novel grid positional encoding that surpassed classical sinusoidal methods. An active-inference/reverse augmentation loop contributed significantly to its score. The 21st place solution demonstrated that a lightweight NumPy pre-processor (`recolor_task()`) could remap colours by pixel-count order, yielding a +2 point gain on single-test-pair tasks by exploiting human-like colour-irrelevance detection.\n\n## LLM Hybrids & Competition Context\nThe 34th place solution fine-tuned LLaMA 3.1 8B via Unsloth, sweeping temperatures and prompts to generate candidate grids, then fused results with a classic solver. The writeup concludes by noting key differences for the 2025 iteration, including stricter submission limits, a fresh task set, and increased GPU compute allowances.",
+  "rank": null,
+  "competition_flow": "Raw grid tasks are processed through augmentation or colour remapping, passed to either neural models (LoRA-tuned LLMs, custom transformers) or classical solvers (DSL, flood-fill), then combined via ensemble voting or probabilistic sampling before final submission.",
+  "data_reading": [],
+  "data_processing": [
+    "AIRV loop (augment \u2192 infer \u2192 reverse \u2192 vote)",
+    "Heavy data-augmentation (rot/flip/diag/colour swap)",
+    "`recolor_task()` remaps colours by pixel-count order",
+    "Restores IDs with \u201210/+10 trick",
+    "Generates synthetic train grids to thicken sparse supervision"
+  ],
+  "features_engineering": [
+    "Library of 120 hand-coded symmetry / flood-fill / pattern functions",
+    "CNN & decision-tree modules for colour counts & masks",
+    "Task metadata heuristics to order functions"
+  ],
+  "models": [
+    "LoRA-tuned Qwen-0.5 B",
+    "19-token custom Transformer",
+    "LLaMA 3.1 8B",
+    "2020 C++ DSL solver",
+    "decision-tree",
+    "CNN"
+  ],
+  "frameworks_used": [
+    "PyTorch 2.2",
+    "CUDA 12",
+    "Unsloth",
+    "NumPy",
+    "C++",
+    "Python"
+  ],
+  "loss_functions": [],
+  "cv_strategy": "",
+  "ensembling": "Multiple solutions combined outputs via majority vote, probabilistic sampling proportional to unique solves, or fallback fusion with classical solvers to maximize task coverage.",
+  "insights": [
+    "Active-Inference / reverse augmentation loop yields significant score gains",
+    "Grid positional encoding outperforms classical sinusoidal encoding",
+    "It is easier to delete bad answers than pick the best one, so keeping top-2 attempts is strategic",
+    "Humans spot colour-irrelevance instantly, making cheap pre-processing gains possible"
+  ],
+  "critical_findings": [
+    "AIRV loop beats standard rotations & colour permutations",
+    "Falling back to a 2020 C++ DSL solver for purely symbolic cases adds +14 pts",
+    "Re-color pre-processor adds +2 pts over IceCuber but only works for single-test-pair tasks"
+  ],
+  "what_did_not_work": [],
+  "github_repos": [
+    {
+      "url": "https://github.com/zoenguyenramirez/arc-prize-2024",
+      "role": "solution"
+    }
+  ],
+  "papers": [],
+  "other_solution_refs": [
+    {
+      "description": "2nd place solution discussion",
+      "url": "https://www.kaggle.com/competitions/arc-prize-2024/discussion/545671"
+    },
+    {
+      "description": "2nd place solution summary paper",
+      "url": "https://ironbar.github.io/arc24/05_Solution_Summary/"
+    },
+    {
+      "description": "3rd place notebook",
+      "url": "https://www.kaggle.com/code/alijs1/arc-prize-2024-solution-3rd-place-score-40"
+    },
+    {
+      "description": "4th place discussion",
+      "url": "https://www.kaggle.com/competitions/arc-prize-2024/discussion/550414"
+    },
+    {
+      "description": "4th place notebook",
+      "url": "https://www.kaggle.com/code/williamwu88/fork-of-small-sample-arc24-7d97ca"
+    },
+    {
+      "description": "5th place discussion",
+      "url": "https://www.kaggle.com/competitions/arc-prize-2024/discussion/550336"
+    },
+    {
+      "description": "5th place notebook",
+      "url": "https://www.kaggle.com/code/gromml/arc-prize-2024-poohai-solution"
+    },
+    {
+      "description": "13th place discussion",
+      "url": "https://www.kaggle.com/competitions/arc-prize-2024/discussion/546302"
+    },
+    {
+      "description": "21st place short report",
+      "url": "https://www.kaggle.com/competitions/arc-prize-2024/discussion/550209"
+    },
+    {
+      "description": "34th place silver-medal write-up",
+      "url": "https://www.kaggle.com/competitions/arc-prize-2024/discussion/545886"
+    }
+  ],
+  "source_url": "https://www.kaggle.com/competitions/arc-prize-2025/discussion/575595"
+}

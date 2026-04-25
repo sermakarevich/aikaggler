@@ -1,0 +1,53 @@
+{
+  "summary": "This notebook demonstrates a production-ready inference pipeline that blends three pre-trained models for the Jane Street Real-Time Market Forecasting competition. It loads an XGBoost ensemble, a PyTorch Lightning MLP, and a TabM (FT-Transformer) model from external Kaggle datasets, aligns test data with lagged features, and merges their outputs using fixed weights. The author also incorporates a Ridge regression baseline to stabilize predictions. Readers should learn how to structure a real-time inference server, handle temporal lag alignment, apply consistent feature standardization across heterogeneous architectures, and implement a simple but effective weighted ensemble without retraining.",
+  "purpose": "ensemble",
+  "competition_flow": "Loads pre-trained XGBoost, Neural Network, TabM, and Ridge models from Kaggle datasets, aligns test data with lagged features, generates individual predictions, combines them via fixed weighted averaging, and serves the final responder_6 predictions via the official Jane Street inference server.",
+  "data_reading": [
+    "Uses Polars to scan and collect parquet files for validation/test data and lagged features.",
+    "Loads pre-trained model artifacts via pickle and dill."
+  ],
+  "data_processing": [
+    "Imputes missing values via forward fill followed by zero-fill.",
+    "Standardizes continuous features using pre-computed means and standard deviations.",
+    "Maps categorical features (feature_09, feature_10, feature_11, symbol_id, time_id) to integer indices using explicit dictionaries.",
+    "Clips final predictions to [-5, 5]."
+  ],
+  "features_engineering": [
+    "Adds 9 lagged target features (responder_{idx}_lag_1).",
+    "Applies pre-computed standardization statistics.",
+    "Constructs explicit categorical encoding dictionaries for specific features and IDs."
+  ],
+  "models": [
+    "XGBoost",
+    "MLP (PyTorch Lightning)",
+    "TabM/FT-Transformer",
+    "Ridge Regression"
+  ],
+  "frameworks_used": [
+    "pytorch",
+    "pytorch_lightning",
+    "lightgbm",
+    "xgboost",
+    "catboost",
+    "scikit-learn",
+    "polars",
+    "dill",
+    "joblib",
+    "kaggle_evaluation"
+  ],
+  "loss_functions": [
+    "Weighted MSE loss",
+    "Custom R\u00b2 loss"
+  ],
+  "cv_strategy": "",
+  "ensembling": "Combines predictions from three sources using fixed weights (50% NN+XGB, 10% Ridge, 40% TabM) and clips the final output to [-5, 5].",
+  "insights": [
+    "Lagged target features are essential for temporal alignment in real-time forecasting pipelines.",
+    "Pre-computed standardization and explicit categorical mappings ensure consistent inference across heterogeneous model architectures.",
+    "Weighted blending of tree-based, deep tabular, and linear models can effectively stabilize predictions without retraining."
+  ],
+  "critical_findings": [],
+  "what_did_not_work": [],
+  "source_url": "https://www.kaggle.com/code/yongsukprasertsuk/0-008-js-rmf-ensemble-xgb-nn-tabm-ridge",
+  "votes": 1077
+}

@@ -1,0 +1,53 @@
+{
+  "summary": "The author achieved 2nd place by refining a pre-trained deep learning model's output using regularized Full Waveform Inversion (FWI). The core idea was to balance a data-driven prior with a physics-based forward model to minimize a combined cost function. Key technical choices included designing dataset-specific priors (e.g., total variation, Gaussian Processes), selecting appropriate optimizers (BFGS, Gauss-Newton), and heavily optimizing the computational pipeline with custom CUDA kernels for the forward pass and gradient computation.",
+  "extensive_summary": "## Overview\nThe solution achieves 2nd place by taking a pre-trained deep learning model (which initially scored ~28.8) and refining its predictions using regularized Full Waveform Inversion (FWI). The goal is to invert seismogram measurements back into subsurface velocity profiles by minimizing a combined cost function that balances a learned prior with the physical forward model's residual.\n\n## Core Methodology\nThe optimization targets the function $c(x) = p(x) + ||s(x)-m||^2_2$, where $x$ is the velocity profile, $p(x)$ is a dataset-specific prior cost function, $s(x)$ is the simulated seismogram from the forward model, and $m$ is the measured seismogram. The author notes that FWI converges much better when initialized close to the true solution, hence the reliance on the initial deep learning output. Gradient computation for the forward model is the computational bottleneck, addressed by replacing standard implementations with custom CUDA kernels.\n\n## Dataset-Specific Strategies\nThe data is split into families requiring distinct priors and solver configurations:\n- **FlatVelA and FlatVelB:** Treated as 1D profiles with a smoothed total variation prior. Optimized with a single BFGS pass until convergence.\n- **StyleA:** Uses a Gaussian Process prior with a squared-exponential kernel, plus terms for noise, offset, and slope. Hyperparameters are tuned via maximum likelihood estimation. Due to an ill-conditioned covariance matrix (caused by zero actual noise), the solution space is restricted to the strongest 1073 modes of an SVD decomposition. Optimization uses BFGS followed by a single Gauss-Newton step.\n- **StyleB:** Also uses a Gaussian Process prior but with different hyperparameters. This subset is highly noisy, making regularization difficult. The strategy employs two BFGS passes (the first with 1500 iterations, the second terminated by a gradient criterion). The author notes an inability to capture high-frequency features here.\n- **Other datasets:** Tackled with a 2D total variation prior penalizing absolute differences between neighboring points. Optimized with three BFGS passes, with the final pass scanning for and forcing flat velocity regions to be exactly flat.\n\n## Computational Optimization\nStandard optimization routines were too slow or memory-heavy. The author implemented custom CUDA kernels for the forward pass (30 ms) and backward pass (70 ms) on a V100 at double precision. BFGS overhead was also partially offloaded to CUDA. A key trick involved handling the non-differentiable minimum operation in the forward model by decoupling the minimum velocity as an unpenalized degree of freedom.",
+  "rank": 2,
+  "competition_flow": "Raw seismogram data is fed into a pre-trained deep learning model to generate an initial velocity profile estimate, which is then refined via dataset-specific regularized Full Waveform Inversion (FWI) using custom CUDA-optimized forward models and tailored priors/optimizers to produce the final submission.",
+  "data_reading": [],
+  "data_processing": [],
+  "features_engineering": [],
+  "models": [
+    "CaFormer",
+    "variational auto-encoder"
+  ],
+  "frameworks_used": [],
+  "loss_functions": [
+    "FWI cost function (prior + L2 residual)",
+    "total variation prior",
+    "Gaussian Process prior"
+  ],
+  "cv_strategy": "",
+  "ensembling": "",
+  "insights": [
+    "FWI converges significantly better when initialized close to the true solution, making a rough deep learning prior essential.",
+    "Different data families require fundamentally different priors and solver strategies rather than a one-size-fits-all approach.",
+    "The non-differentiable minimum operation in the forward model can be effectively handled by decoupling the minimum velocity as an unpenalized degree of freedom."
+  ],
+  "critical_findings": [
+    "StyleA has no actual noise, which makes its Gaussian Process covariance matrix extremely ill-conditioned, requiring SVD mode restriction to solve.",
+    "Standard preconditioning techniques for BFGS and Gauss-Newton optimizers provided no benefit in this specific physics-informed context.",
+    "The initial deep learning model was surprisingly effective at ~28.8, leading the author to skip further model improvements in favor of the FWI refinement pipeline."
+  ],
+  "what_did_not_work": [
+    "Describing the StyleB prior using a variational auto-encoder resulted in only seeing noise.",
+    "Various forms of preconditioning for BFGS and Gauss-Newton never brought any benefit."
+  ],
+  "github_repos": [
+    {
+      "url": "https://www.kaggle.com/code/jeroencottaar/geophysical-waveform-inversion-2nd-place",
+      "role": "solution"
+    },
+    {
+      "url": "https://www.kaggle.com/code/brendanartley/caformer-full-resolution-improved",
+      "role": "reference"
+    }
+  ],
+  "papers": [],
+  "other_solution_refs": [
+    {
+      "description": "Starting point model shared by another competitor",
+      "url": "https://www.kaggle.com/code/brendanartley/caformer-full-resolution-improved"
+    }
+  ],
+  "source_url": "https://www.kaggle.com/competitions/waveform-inversion/discussion/587950"
+}

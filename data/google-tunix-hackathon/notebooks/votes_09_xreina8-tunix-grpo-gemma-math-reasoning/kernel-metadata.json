@@ -1,0 +1,21 @@
+{
+  "id": "xreina8/tunix-grpo-gemma-math-reasoning",
+  "id_no": 104542267,
+  "title": "Tunix GRPO Gemma Math Reasoning",
+  "code_file": "tunix-grpo-gemma-math-reasoning.ipynb",
+  "language": "python",
+  "kernel_type": "notebook",
+  "is_private": false,
+  "enable_gpu": false,
+  "enable_tpu": true,
+  "enable_internet": true,
+  "keywords": [],
+  "dataset_sources": [
+    "thedevastator/grade-school-math-8k-q-a"
+  ],
+  "kernel_sources": [],
+  "competition_sources": [],
+  "model_sources": [],
+  "docker_image": "gcr.io/kaggle-private-byod/python-tpuvm@sha256:faf5c1271481db7d75ee51028e9c7e458d5fe12ff48b138fe38cd60f4b9b7b68",
+  "machine_shape": "TpuV5E8"
+}

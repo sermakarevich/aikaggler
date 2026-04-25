@@ -1,0 +1,43 @@
+{
+  "summary": "This notebook implements a PyTorch-based baseline for the CMI3 sensor data competition, processing raw IMU and thermal/time-of-flight sequences through a custom two-branch CNN-LSTM architecture. It applies extensive time-series augmentations, EMA weight updates, and a warmup cosine scheduler to stabilize training across 5 stratified folds. The pipeline demonstrates how to handle variable-length sensor data, extract domain-specific signal features, and aggregate predictions via model averaging. Readers should take away a robust recipe for multi-sensor sequence classification, emphasizing augmentation strategies, temporal modeling, and reliable cross-validation practices.",
+  "purpose": "training",
+  "competition_flow": "Loads raw sensor CSVs, groups rows by sequence ID, applies standard scaling and custom signal processing, trains a two-branch CNN-LSTM model across 5 folds with augmentations and EMA, then averages softmax outputs from all folds for final predictions.",
+  "data_reading": [
+    "Reads train/test data via pd.read_csv, groups rows by sequence_id to form time-series sequences, and uses polars for inference dataframes."
+  ],
+  "data_processing": [
+    "Forward/backward fills missing values, applies StandardScaler, pads/truncates sequences to a fixed length (100), and applies custom augmentations (jitter, scaling, motion drift, sensor dropout) during training.",
+    "Normalizes inputs using precomputed global mean/std tensors and applies a custom FIR filter to IMU channels."
+  ],
+  "features_engineering": [
+    "Computes acceleration/gyro magnitude, jerk, energy (squared), and low-pass/high-pass filtered signals.",
+    "Applies a custom FIR kernel to the first 7 IMU channels and concatenates these derived signals as additional input channels."
+  ],
+  "models": [
+    "TwoBranchModel (custom PyTorch architecture with ImuFeatureExtractor, ResidualSECNNBlock with SE blocks, BiLSTM, AttentionLayer, and dense layers)"
+  ],
+  "frameworks_used": [
+    "pytorch",
+    "timm",
+    "scikit-learn",
+    "polars",
+    "pandas",
+    "numpy",
+    "scipy"
+  ],
+  "loss_functions": [
+    "Cross-entropy (implemented as negative log-likelihood during training and F.cross_entropy during validation)"
+  ],
+  "cv_strategy": "StratifiedKFold(n_splits=5, shuffle=True, random_state=42)",
+  "ensembling": "Averages softmax probabilities across 5 trained fold models before taking argmax for final prediction.",
+  "insights": [
+    "Heavy time-series augmentations (jitter, scaling, drift, dropout) are crucial for sensor data robustness.",
+    "EMA weight updates improve generalization and stabilize training.",
+    "Combining CNN feature extraction with BiLSTM and attention effectively captures spatial-temporal dependencies in multi-sensor sequences.",
+    "Precomputing sequence-level mean/std normalization and using a custom FIR filter stabilizes training."
+  ],
+  "critical_findings": [],
+  "what_did_not_work": [],
+  "source_url": "https://www.kaggle.com/code/myso1987/cmi3-pyroch-baseline-model-add-aug-folds",
+  "votes": 418
+}

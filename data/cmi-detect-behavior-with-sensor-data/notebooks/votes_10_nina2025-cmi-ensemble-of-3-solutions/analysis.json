@@ -1,0 +1,49 @@
+{
+  "summary": "This notebook demonstrates an ensemble approach for the CMI sensor data competition by combining three distinct model architectures: a TensorFlow CNN-LSTM/GRU network, a PyTorch ResNet-SE + BERT model, and a PyTorch CNN-BiLSTM network with custom IMU feature extraction. It details extensive time-series preprocessing, including gravity removal from accelerometers via quaternions, angular velocity/distance computation, and TOF/thermal statistical aggregations. The author loads pre-trained weights across multiple folds and averages their predictions to generate the final submission. Readers should learn how to effectively blend heterogeneous architectures and sensor modalities, and how to handle noisy, variable-length sensor sequences with robust feature engineering and normalization.",
+  "purpose": "ensemble",
+  "competition_flow": "Loads pre-trained sensor data models across multiple folds, applies extensive quaternion-based and statistical feature engineering to raw IMU/TOF/thermal sequences, and averages their predictions to generate a final submission.",
+  "data_reading": [
+    "Reads CSV/Parquet data via pandas/polars, groups by sequence_id, and extracts raw accelerometer, gyroscope, quaternion, TOF, and thermal columns."
+  ],
+  "data_processing": [
+    "Removes gravity from accelerometer data using quaternion rotation, computes angular velocity and angular distance from quaternions, calculates mean/std/min/max statistics for TOF regions, pads variable-length sequences to the 95th percentile, applies StandardScaler normalization, and handles missing values with forward/backward filling. Includes MixUp augmentation for training."
+  ],
+  "features_engineering": [
+    "Gravity-removed linear acceleration, linear acceleration magnitude & jerk, angular velocity components, angular distance, TOF/thermal region statistics (mean, std, min, max), FIR-filtered IMU signals, and magnitude/jerk/energy features."
+  ],
+  "models": [
+    "Custom TF/Keras Two-Branch CNN-LSTM/GRU with SE Blocks & Attention",
+    "PyTorch ResNet-SE + BERT",
+    "PyTorch Two-Branch CNN-BiLSTM with Custom IMU Feature Extractor"
+  ],
+  "frameworks_used": [
+    "tensorflow",
+    "keras",
+    "torch",
+    "transformers",
+    "scikit-learn",
+    "polars",
+    "numpy",
+    "pandas",
+    "scipy"
+  ],
+  "loss_functions": [
+    ""
+  ],
+  "cv_strategy": "StratifiedKFold(n_splits=5), StratifiedGroupKFold, 10-fold",
+  "ensembling": "Averages prediction probabilities from 20 TensorFlow models, 5 PyTorch BERT models, and additional PyTorch CNN-BiLSTM models across multiple folds to produce the final submission.",
+  "insights": [
+    "Blending heterogeneous architectures (CNN-LSTM, BERT, CNN-BiLSTM) captures complementary temporal and spatial patterns in sensor data.",
+    "Quaternion-based gravity removal and angular velocity calculations significantly improve IMU feature quality.",
+    "Region-based statistical aggregation of TOF/thermal data effectively compresses high-dimensional spatial inputs.",
+    "MixUp augmentation and careful sequence padding/normalization are critical for stabilizing training on variable-length time series."
+  ],
+  "critical_findings": [
+    ""
+  ],
+  "what_did_not_work": [
+    ""
+  ],
+  "source_url": "https://www.kaggle.com/code/nina2025/cmi-ensemble-of-3-solutions",
+  "votes": 345
+}

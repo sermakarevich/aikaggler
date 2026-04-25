@@ -1,0 +1,44 @@
+{
+  "summary": "This notebook demonstrates a baseline pipeline for applying the MedGemma-1.5-4B multimodal large language model to the RSNA Abdominal Trauma dataset. It details how to load DICOM/CT slice data, apply abdominal windowing, and sample volumetric slices to avoid irrelevant anatomy. The author uses structured clinical prompts to generate diagnostic reports and injury assessments directly from the images. It highlights the model's ability to provide explainable, zero-shot clinical reasoning compared to traditional discriminative classifiers. Readers learn how to integrate quantized VLMs with medical imaging preprocessing for trauma triage.",
+  "purpose": "tutorial",
+  "competition_flow": "Loads RSNA abdominal trauma CT slices, applies abdominal windowing and volumetric sampling, feeds them into a quantized MedGemma-1.5-4B model with clinical prompts to generate diagnostic reports, and compares outputs against ground truth labels.",
+  "data_reading": [
+    "Reads folds.csv and scores.csv via pandas.",
+    "Loads DICOM files using pydicom.dcmread and PNG/JPG via PIL.Image.open.",
+    "Dynamically searches /kaggle/input/ using glob to locate patient/series directories."
+  ],
+  "data_processing": [
+    "Applies abdominal windowing (WC: 40, WW: 400) to DICOM pixel arrays.",
+    "Normalizes pixel values to 0-255 and converts to RGB PIL images.",
+    "Samples volumetric slices by selecting the middle 40%-70% of the stack or a fixed gap around the mid-index to avoid lungs and pelvis."
+  ],
+  "features_engineering": [],
+  "models": [
+    "google/medgemma-1.5-4b-it"
+  ],
+  "frameworks_used": [
+    "transformers",
+    "bitsandbytes",
+    "torch",
+    "pydicom",
+    "pandas",
+    "matplotlib",
+    "ultralytics"
+  ],
+  "loss_functions": [],
+  "cv_strategy": "",
+  "ensembling": "",
+  "insights": [
+    "Multimodal LLMs can generate explainable clinical reports for trauma CTs without task-specific training.",
+    "Volumetric slice sampling (middle 40-70%) effectively isolates abdominal organs while excluding lungs and pelvis.",
+    "4-bit quantization with bitsandbytes enables running large medical VLMs on limited Kaggle GPU resources.",
+    "Standard discriminative classifiers often fail to detect rare injuries like extravasation due to calibration issues."
+  ],
+  "critical_findings": [
+    "Standard deep learning classifiers for this dataset exhibited 0.0 Recall on critical categories like active extravasation.",
+    "Pure score-based AI models suffer from Calibration Blindness, providing probabilities without anatomical justification."
+  ],
+  "what_did_not_work": [],
+  "source_url": "https://www.kaggle.com/code/dedquoc/medgemma-rsna-trauma-reasoning-baseline",
+  "votes": 30
+}

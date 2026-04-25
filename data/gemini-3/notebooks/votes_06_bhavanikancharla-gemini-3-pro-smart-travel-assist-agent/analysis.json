@@ -1,0 +1,24 @@
+{
+  "summary": "This notebook demonstrates a prompt-engineering approach to building a travel planning assistant using the Gemini 3 Pro model via Google AI Studio. It walks through designing structured prompts that constrain the model to output day-wise itineraries, budget estimates, and safety tips tailored to user preferences. The author highlights how iterative prompt refinement can transform raw LLM outputs into readable, actionable travel advice. Readers should take away practical techniques for prompt design, constraint setting, and formatting control when working with reasoning-focused foundation models. The submission ultimately serves as a proof-of-concept for leveraging commercial LLMs in hackathon-style application development.",
+  "purpose": "tutorial",
+  "competition_flow": "Documents prompt design and iterative refinement for Gemini 3 Pro to generate travel itineraries, then exports a static text file for hackathon submission.",
+  "data_reading": [],
+  "data_processing": [],
+  "features_engineering": [],
+  "models": [
+    "Gemini 3 Pro"
+  ],
+  "frameworks_used": [],
+  "loss_functions": [],
+  "cv_strategy": "",
+  "ensembling": "",
+  "insights": [
+    "Iterative prompt refinement is essential for controlling the structure and relevance of LLM outputs.",
+    "Adding explicit constraints (budget, time, interests) significantly improves the practical utility of generated itineraries.",
+    "Commercial foundation models can serve as rapid prototyping engines for domain-specific AI applications without requiring custom training."
+  ],
+  "critical_findings": [],
+  "what_did_not_work": [],
+  "source_url": "https://www.kaggle.com/code/bhavanikancharla/gemini-3-pro-smart-travel-assist-agent",
+  "votes": 25
+}

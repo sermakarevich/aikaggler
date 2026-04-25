@@ -1,0 +1,38 @@
+{
+  "summary": "This notebook provides a complete inference pipeline for the RSNA 2025 competition, demonstrating how to convert raw DICOM medical imaging series into standardized 3D volumes and run predictions using a pre-trained EfficientNetV2-S model. It highlights a robust preprocessing strategy that relies on statistical percentile normalization rather than traditional CT windowing, and explicitly disables test-time augmentation to preserve critical left/right anatomical orientation. The author shares a practical 5-fold equal-weight ensemble approach alongside a conservative fallback mechanism to ensure submission stability under competition constraints. Readers should take away the end-to-end workflow for handling heterogeneous DICOM inputs, managing GPU memory during Kaggle inference servers, and formatting outputs for the official evaluation API.",
+  "purpose": "inference",
+  "competition_flow": "Loads DICOM series, preprocesses them into 32-channel 384x384 volumes, runs inference through a 5-fold averaged EfficientNetV2-S ensemble, and formats outputs for the RSNA competition submission API.",
+  "data_reading": [
+    "Uses pydicom.dcmread to load .dcm files and extracts pixel_array, ImagePositionPatient, InstanceNumber, RescaleSlope, and RescaleIntercept from DICOM metadata."
+  ],
+  "data_processing": [
+    "Sorts slices by z-position, applies statistical normalization (1-99 percentile clipping) with min-max fallback, handles RescaleSlope/Intercept, resizes 3D volumes using scipy.ndimage.zoom with linear interpolation, pads with edge mode, and applies Albumentations Resize + Normalize + ToTensorV2 during inference. Explicitly skips TTA to prevent left/right anatomical flipping."
+  ],
+  "features_engineering": [],
+  "models": [
+    "tf_efficientnetv2_s.in21k_ft_in1k"
+  ],
+  "frameworks_used": [
+    "pytorch",
+    "timm",
+    "albumentations",
+    "pydicom",
+    "numpy",
+    "scipy",
+    "polars",
+    "kaggle_evaluation"
+  ],
+  "loss_functions": [],
+  "cv_strategy": "",
+  "ensembling": "Averages predictions equally across 5 trained model folds without applying fold-specific weights.",
+  "insights": [
+    "Statistical percentile normalization is preferred over traditional CT windowing for robustness across varying DICOM metadata.",
+    "Test-time augmentation is explicitly prohibited to preserve left/right anatomical orientation required by the task labels.",
+    "DICOM series can arrive as either single 3D files or multiple 2D slices, necessitating flexible loading and z-position sorting.",
+    "Memory cleanup and shared directory management are critical for preventing disk and OOM errors in Kaggle competition inference servers."
+  ],
+  "critical_findings": [],
+  "what_did_not_work": [],
+  "source_url": "https://www.kaggle.com/code/yosukeyama/rsna2025-32ch-img-infer-lb-0-69-share",
+  "votes": 730
+}

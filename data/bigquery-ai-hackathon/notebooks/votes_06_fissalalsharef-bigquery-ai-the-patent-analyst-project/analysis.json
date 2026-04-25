@@ -1,0 +1,45 @@
+{
+  "summary": "This notebook demonstrates an end-to-end pipeline for transforming unstructured patent PDFs into a structured, queryable knowledge graph and semantic search engine entirely within Google BigQuery. It leverages BigQuery's native multimodal AI functions to extract text, analyze technical diagrams, and generate dual embeddings for patents and their components. The author validates the extracted data quality, computes strategic portfolio metrics, and builds a weighted vector search index. Readers should take away how cloud-native SQL AI capabilities can replace traditional ML frameworks for complex unstructured data processing, and how combining context and component embeddings improves semantic search relevance.",
+  "purpose": "tutorial",
+  "competition_flow": "Reads raw patent PDFs from GCS via BigQuery Object Tables, uses Gemini models via SQL to extract structured knowledge graphs and dual embeddings, normalizes vectors, and builds a weighted semantic search index and portfolio analysis dashboard.",
+  "data_reading": [
+    "Loaded via BigQuery Object Tables pointing to gs://gcs-public-data--labeled-patents/*.pdf, with figure metadata joined from bigquery-public-data.labeled_patents.figures using GCS paths."
+  ],
+  "data_processing": [
+    "Multimodal parsing of PDFs using ML.GENERATE_TEXT for text and diagram descriptions; JSON cleaning of LLM outputs; L2 normalization of generated vectors; weighted averaging of patent context and component function embeddings via a custom JS UDF; comprehensive data quality validation (null rates, duplicates, schema consistency, statistical outlier detection)."
+  ],
+  "features_engineering": [
+    ""
+  ],
+  "models": [
+    "gemini-2.5-flash",
+    "gemini-embedding-001"
+  ],
+  "frameworks_used": [
+    "google-cloud-bigquery",
+    "pandas",
+    "plotly",
+    "pyvis",
+    "ipywidgets"
+  ],
+  "loss_functions": [
+    ""
+  ],
+  "cv_strategy": "",
+  "ensembling": "",
+  "insights": [
+    "BigQuery's native multimodal AI functions enable complete unstructured data processing and knowledge graph construction without external ML frameworks.",
+    "Weighted averaging of patent-level context and component-level function embeddings significantly improves semantic search relevance by prioritizing specific technical roles.",
+    "Technical diagrams contain critical architectural complexity that text-only analysis misses, as evidenced by outlier patents with high component counts.",
+    "Cloud-native vector search and SQL-based portfolio metrics allow scalable, cost-effective strategic patent analysis."
+  ],
+  "critical_findings": [
+    "Patents with unusually high component counts are strongly correlated with the presence of technical diagrams, proving multimodal analysis is essential for capturing true invention complexity.",
+    "AI-generated extraction achieved less than 1.2% null rates across key fields, demonstrating high reliability for production-grade knowledge graph construction."
+  ],
+  "what_did_not_work": [
+    ""
+  ],
+  "source_url": "https://www.kaggle.com/code/fissalalsharef/bigquery-ai-the-patent-analyst-project",
+  "votes": 32
+}

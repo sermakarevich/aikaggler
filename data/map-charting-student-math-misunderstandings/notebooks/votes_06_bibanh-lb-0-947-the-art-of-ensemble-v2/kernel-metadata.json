@@ -1,0 +1,41 @@
+{
+  "id": "bibanh/lb-0-947-the-art-of-ensemble-v2",
+  "id_no": 89066333,
+  "title": "[LB 0.947] The Art of Ensemble v2",
+  "code_file": "lb-0-947-the-art-of-ensemble-v2.ipynb",
+  "language": "python",
+  "kernel_type": "notebook",
+  "is_private": false,
+  "enable_gpu": true,
+  "enable_tpu": false,
+  "enable_internet": false,
+  "keywords": [
+    "gpu"
+  ],
+  "dataset_sources": [
+    "donkeys/bge-base-en-v1-5",
+    "bibanh/deberta-xsmall-map",
+    "jaytonde/deekseepmath-7b-map-competition",
+    "cdeotte/ettin-encoder-1b-cv943",
+    "cdeotte/gemma2-9b-it-bf16",
+    "cdeotte/gemma2-9b-it-cv945",
+    "jaytonde/map-exp-14-full",
+    "cdeotte/modernbert-large-cv938",
+    "jaytonde/qwen3-8b-map-competition",
+    "bibanh/roberta-large-map",
+    "shinomoriaoshi/sentencetransformersallminilml6v2"
+  ],
+  "kernel_sources": [
+    "bibanh/embedding-all-map",
+    "bibanh/debertav3base-map",
+    "bibanh/debertasmall-map",
+    "codingloading/experiment-no-1",
+    "bibanh/roberta-base-map"
+  ],
+  "competition_sources": [
+    "map-charting-student-math-misunderstandings"
+  ],
+  "model_sources": [],
+  "docker_image": "gcr.io/kaggle-private-byod/python@sha256:320043e14c68293f1c946585b9257123385205a58af4b94b17d31868cae4e868",
+  "machine_shape": "NvidiaTeslaT4"
+}

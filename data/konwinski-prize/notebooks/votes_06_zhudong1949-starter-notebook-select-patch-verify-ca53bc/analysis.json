@@ -1,0 +1,37 @@
+{
+  "summary": "This notebook demonstrates a multi-step 'Select-Patch-Verify' inference pipeline for an automated code patching competition. It loads a quantized 32B LLM via vLLM and orchestrates a reasoning chain: first prompting the model to select relevant repository files and search terms, then extracting contextual code snippets, generating a git diff patch, and finally running a self-verification prompt to filter invalid outputs. The author shows how to structure deterministic prompts, handle repository archives, and integrate with Kaggle's evaluation gateway. Readers should learn how to build a reliable, zero-shot LLM agent for code generation without training, leveraging quantization and tensor parallelism to fit large models on limited GPU memory.",
+  "purpose": "inference",
+  "competition_flow": "Extracts a code repository and problem statement, uses a quantized 32B LLM to select relevant files, extract code context, generate a git diff patch, and verify its correctness before returning the patch for submission.",
+  "data_reading": [
+    "Unpacks a .tar archive from a BytesIO buffer into a local repo directory using shutil.unpack_archive.",
+    "Reads problem statements and instance IDs from a local data.parquet file using pandas/polars."
+  ],
+  "data_processing": [
+    "Converts directory trees to newline-separated strings for LLM context.",
+    "Parses LLM XML outputs with regex and xml.etree.ElementTree.",
+    "Extracts code snippets with configurable context windows and merges overlapping/adjacent lines.",
+    "Extracts patch strings via regex and handles file encoding errors gracefully.",
+    "Formats directory paths and search terms into structured prompt templates."
+  ],
+  "features_engineering": [],
+  "models": [
+    "deepseek-r1-distill-qwen-32b-awq",
+    "QwQ-32B-Preview-AWQ"
+  ],
+  "frameworks_used": [
+    "vllm",
+    "kaggle_evaluation"
+  ],
+  "loss_functions": [],
+  "cv_strategy": "",
+  "ensembling": "",
+  "insights": [
+    "Multi-step prompting with structured XML outputs improves LLM reliability for file selection and patch generation.",
+    "AWQ quantization combined with vLLM tensor parallelism enables running 32B models on consumer/server GPUs within memory limits.",
+    "Self-verification prompts can filter out invalid patches before submission, acting as a lightweight quality gate without additional training."
+  ],
+  "critical_findings": [],
+  "what_did_not_work": [],
+  "source_url": "https://www.kaggle.com/code/zhudong1949/starter-notebook-select-patch-verify-ca53bc",
+  "votes": 121
+}

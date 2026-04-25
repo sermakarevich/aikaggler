@@ -15,3 +15,12 @@ notebooks slug="human-protein-atlas-image-classification":
 
 run-competitions *args="":
     uv run python run_competitions.py {{args}}
+
+kb *args="list":
+    uv run akb {{args}}
+
+kb-mcp:
+    uv run akb-mcp
+
+kb-test:
+    uv run pytest src/aikaggler/plugins/knowledge_base_mcp/tests -v

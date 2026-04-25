@@ -1,0 +1,25 @@
+{
+  "id": "aleaiest/lb-0-945-qwen2-5-32b-gptq",
+  "id_no": 87448849,
+  "title": "[LB 0.945] qwen2.5-32b-gptq",
+  "code_file": "lb-0-945-qwen2-5-32b-gptq.ipynb",
+  "language": "python",
+  "kernel_type": "notebook",
+  "is_private": false,
+  "enable_gpu": false,
+  "enable_tpu": false,
+  "enable_internet": false,
+  "keywords": [
+    "gpu"
+  ],
+  "dataset_sources": [],
+  "kernel_sources": [],
+  "competition_sources": [
+    "map-charting-student-math-misunderstandings"
+  ],
+  "model_sources": [
+    ""
+  ],
+  "docker_image": "gcr.io/kaggle-images/python@sha256:20d75b6c2a67c98a3a9f199ea97d51168548b4eb54898f30849e11d68ee06ea1",
+  "machine_shape": "None"
+}

@@ -1,0 +1,49 @@
+{
+  "summary": "The author placed 7th by adapting the IMC'24 winning solution, focusing on comprehensive matching and rotation correction across all image pairs, followed by graph-based clustering. They constructed a similarity graph from inlier counts, thresholded edges, and extracted connected components as clusters while filtering outliers. Extensive experiments with modern SfM models like MASt3R-SfM, VGGSfM, and VGGT were attempted but ultimately abandoned due to accuracy or VRAM constraints.",
+  "extensive_summary": "The solution builds upon the IMC'24 winning approach, emphasizing two main components: comprehensive matching and rotation correction for all image pairs, and a post-matching clustering step. The core innovation lies in constructing a similarity graph derived from inlier counts between image pairs. By removing edges below a specific threshold, the authors extract connected components to form clusters, treating isolated points and small components as outliers.\n\nThe author extensively experimented with modern structure-from-motion (SfM) pipelines, including MASt3R-SfM, VGGSfM, and VGGT. MASt3R-SfM was evaluated using its semi-dense matches and fastNN camera poses, but despite visually plausible results on certain scenes (ETs and stairs), it failed to meet the competition's accuracy threshold. Meanwhile, VGGSfM and VGGT proved too VRAM-intensive, forcing a fallback to a track-refinement-only strategy inspired by the IMC'24 2nd place solution. Modifications to the `pycolmap` API were required for this approach, though the author notes potential bugs may have hindered performance. Ultimately, the graph-based clustering and rotation correction pipeline formed the backbone of the final submission.",
+  "rank": 7,
+  "competition_flow": "Images are processed through pairwise matching and rotation correction, followed by similarity graph construction from inlier counts to extract clusters via connected components, with attempted modern SfM integration that was ultimately rolled back to track refinement.",
+  "data_reading": [],
+  "data_processing": [
+    "Pairwise matching and rotation correction for all image pairs",
+    "Similarity graph construction from inlier counts with edge thresholding",
+    "Connected component extraction for clustering",
+    "Outlier filtering for isolated/small components",
+    "Track refinement"
+  ],
+  "features_engineering": [],
+  "models": [
+    "MASt3R-SfM",
+    "MASt3R's fastNN",
+    "VGGSfM",
+    "VGGT"
+  ],
+  "frameworks_used": [
+    "pycolmap"
+  ],
+  "loss_functions": [],
+  "cv_strategy": "",
+  "ensembling": "",
+  "insights": [
+    "Graph-based clustering using inlier counts and edge thresholding effectively isolates scene clusters while filtering outliers.",
+    "Rotation correction applied to all image pairs is a critical component for accurate matching.",
+    "Modern SfM models like MASt3R can produce visually plausible poses but may still fall short of strict competition metric thresholds."
+  ],
+  "critical_findings": [
+    "MASt3R-SfM's semi-dense matches and fastNN camera poses appeared accurate visually but failed to surpass the evaluation metric threshold.",
+    "VGGSfM and VGGT demand excessive VRAM, making a track-refinement-only fallback necessary but potentially error-prone due to API changes."
+  ],
+  "what_did_not_work": [
+    "MASt3R-SfM experiments on ETs and stairs did not yield expected improvements.",
+    "Implementing track refinement with modified pycolmap API for VGGSfM/VGGT integration did not improve scores and may have contained bugs."
+  ],
+  "github_repos": [],
+  "papers": [],
+  "other_solution_refs": [
+    {
+      "description": "IMC'24 winning solution",
+      "url": "https://www.kaggle.com/competitions/image-matching-challenge-2024/discussion/510084"
+    }
+  ],
+  "source_url": "https://www.kaggle.com/competitions/image-matching-challenge-2025/discussion/583184"
+}

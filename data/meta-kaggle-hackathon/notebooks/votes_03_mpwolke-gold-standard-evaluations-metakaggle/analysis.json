@@ -1,0 +1,37 @@
+{
+  "summary": "This notebook explores Kaggle's Meta Kaggle dataset and the 2023 Kaggle AI report to analyze competition metadata and winning solution discussions. It demonstrates how Kaggle competitions function as dynamic, evergreen benchmarks that address the limitations of static evaluation in generative AI. The author highlights the value of tracking leaderboards, forum discussions, and competition tags to understand how community progress and model capabilities evolve over time. Readers should take away the insight that continuous, competition-driven evaluation and open sharing of solution discussions provide more rigorous and actionable insights for advancing AI research than fixed datasets.",
+  "purpose": "eda",
+  "competition_flow": "Loads Kaggle Meta Kaggle and AI report CSVs, processes competition metadata and forum titles, and generates word clouds and HTML tables summarizing top solution discussions across featured competitions.",
+  "data_reading": [
+    "Loads CSV files from `/kaggle/input/` using `pd.read_csv()`, including the 2023 Kaggle AI report and Meta Kaggle datasets (Competitions, ForumTopics, CompetitionTags, Tags).",
+    "Parses date columns with `pd.to_datetime()` and sets display options for wide DataFrames."
+  ],
+  "data_processing": [
+    "Filters competitions by `HostSegmentTitle` (Featured, Research, Recruitment) and sorts by enabled date.",
+    "Merges tag metadata dataframes to map competition IDs to tag names.",
+    "Applies string-based filtering to forum discussion titles to identify solution-related posts, excluding common false positives."
+  ],
+  "features_engineering": [],
+  "models": [],
+  "frameworks_used": [
+    "pandas",
+    "numpy",
+    "matplotlib",
+    "seaborn",
+    "plotly",
+    "wordcloud",
+    "IPython"
+  ],
+  "loss_functions": [],
+  "cv_strategy": "",
+  "ensembling": "",
+  "insights": [
+    "Kaggle competitions provide a dynamic, evergreen evaluation framework that overcomes the limitations of static benchmarks in generative AI.",
+    "Tracking competition metadata and community discussions reveals how model capabilities and evaluation standards evolve over time.",
+    "Openly sharing solution discussions and performance metrics is critical for advancing empirical rigor in AI research."
+  ],
+  "critical_findings": [],
+  "what_did_not_work": [],
+  "source_url": "https://www.kaggle.com/code/mpwolke/gold-standard-evaluations-metakaggle",
+  "votes": 59
+}

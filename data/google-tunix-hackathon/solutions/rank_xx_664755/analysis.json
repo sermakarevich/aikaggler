@@ -1,0 +1,58 @@
+{
+  "summary": "The author optimized the Tunix training codebase to implement Cut-Cross Entropy (CCE) and Flash Attention with softcapping, drastically reducing TPU memory consumption during full fine-tuning of Gemma-2-2B. These patches enabled a fourfold increase in context length and a twofold increase in effective batch size while fixing gradient accumulation and JIT compilation overhead. The work trades backend stability for memory efficiency, successfully matching Unsloth's training loss curves while enabling larger-scale training runs. However, the aggressive optimizations introduce compatibility breaks and context length limitations that require careful backend tuning.",
+  "extensive_summary": "## Motivation and Memory Optimization\nThe author encountered severe out-of-memory (OOM) errors when running full fine-tuning (FFT) on TPU devices using the Tunix framework, even with a modest 2048 context length. To address this without resorting to parameter-efficient methods like LoRA, they patched the Tunix training loop to integrate Cut-Cross Entropy (CCE) and Flash Attention with softcapping. These changes, combined with a gradient accumulation fix and modified full model rematerialization, saved over 15 GB of memory per TPU device (exceeding 120 GB with FSDP).\n\n## Technical Implementation and Trade-offs\nThe author rewrote the forward pass to resolve JIT compilation blowups, reducing compilation time to approximately five minutes. While the aggressive rematerialization and memory-saving patches slightly increase computational overhead, better TPU utilization offsets this cost, potentially yielding 2x speedups. However, the optimizations come with significant caveats: the backend code becomes fragile, LoRA compatibility is broken, Gemma3 1B support is lost, and DPO/GRPO training may fail due to unpatched kernels. Additionally, sliding window attention activation breaks the Flash Attention kernel, hard-capping the effective context length at 4096.\n\n## Validation and Benchmarking\nTraining was validated against an Unsloth baseline using a 440-million-token dataset. Loss curves closely matched, confirming functional correctness. Inference was benchmarked using vLLM, showing clear improvements over the base model, though the fine-tuned outputs did not surpass Google's official instruction-tuned variant. The author emphasizes that while the code is currently buggy and requires versioning monkey patches, it successfully unlocks larger training scales on constrained hardware.",
+  "rank": null,
+  "competition_flow": "Raw tokenized dataset is loaded via HuggingFace, processed with prepacking and padding, fine-tuned using a patched Tunix loop with Cut-Cross Entropy and Flash Attention, and evaluated via vLLM inference benchmarks.",
+  "data_reading": [
+    "HuggingFace dataset `G-reen/medium_set` (prepacked, tokenized, and padded)"
+  ],
+  "data_processing": [
+    "Prepacked, tokenized, and padded tokens; context length capped at 4096 due to sliding window attention constraints."
+  ],
+  "features_engineering": [],
+  "models": [
+    "Gemma-2-2B"
+  ],
+  "frameworks_used": [
+    "tunix",
+    "Unsloth",
+    "vLLM",
+    "JAX",
+    "Orbax",
+    "safetensors"
+  ],
+  "loss_functions": [
+    "Cut-Cross Entropy (CCE)"
+  ],
+  "cv_strategy": "",
+  "ensembling": "",
+  "insights": [
+    "Memory optimization enables significantly larger context lengths and batch sizes without OOM.",
+    "JIT compilation time can be drastically reduced by rewriting the forward pass.",
+    "TPU utilization improvements can offset the computational overhead of aggressive rematerialization."
+  ],
+  "critical_findings": [
+    "Sliding window attention activation breaks the Flash Attention kernel, capping effective context length at 4096.",
+    "Aggressive full model remat saves memory but degrades code stability and breaks compatibility with LoRA/DPO/GRPO."
+  ],
+  "what_did_not_work": [
+    "LoRA compatibility, Gemma3 1B support, DPO/GRPO training, and attempting to outperform Google's official instruction-tuned variant."
+  ],
+  "github_repos": [
+    {
+      "url": "https://github.com/Green0-0/tunix-cce",
+      "role": "solution"
+    },
+    {
+      "url": "https://github.com/apple/ml-cross-entropy",
+      "role": "library"
+    },
+    {
+      "url": "https://github.com/jax-ml/jax",
+      "role": "library"
+    }
+  ],
+  "papers": [],
+  "other_solution_refs": [],
+  "source_url": "https://www.kaggle.com/competitions/google-tunix-hackathon/discussion/664755"
+}

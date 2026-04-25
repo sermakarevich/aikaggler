@@ -1,0 +1,37 @@
+{
+  "summary": "This notebook provides a baseline submission strategy for the March Mania 2025 competition by predicting matchup win probabilities solely based on team seed differences. It demonstrates a simple linear formula (0.5 + 0.03 * seed_diff) to generate predictions ranging from 5% to 95%. The author walks through parsing the sample submission IDs, merging seed data, and calculating a mock Brier score to evaluate the baseline. Readers should understand how to quickly generate a valid submission and use seed rankings as a strong, interpretable baseline feature.",
+  "purpose": "baseline",
+  "competition_flow": "Loads team seed data and sample submission IDs, extracts season and team identifiers, merges seed values, calculates predictions using a linear seed-difference formula, and saves the output as a CSV submission file.",
+  "data_reading": [
+    "Reads WNCAATourneySeeds.csv, MNCAATourneySeeds.csv, and SampleSubmissionStage2.csv using pd.read_csv.",
+    "Concatenates the men's and women's seed datasets along axis 0 and fills missing values with 0.05."
+  ],
+  "data_processing": [
+    "Parses submission IDs into year and team IDs via string splitting.",
+    "Extracts numeric seed values from strings, defaulting to 16 for errors or unselected teams.",
+    "Merges seed data for both TeamID1 and TeamID2 in each matchup using left joins.",
+    "Fills missing predictions with 0.5 before saving."
+  ],
+  "features_engineering": [
+    "Computes SeedDiff as the difference between SeedValue1 and SeedValue2.",
+    "Applies a linear transformation (0.5 + 0.03 * SeedDiff) to map seed differences to win probabilities."
+  ],
+  "models": [],
+  "frameworks_used": [
+    "numpy",
+    "pandas",
+    "scikit-learn"
+  ],
+  "loss_functions": [],
+  "cv_strategy": "",
+  "ensembling": "",
+  "insights": [
+    "Seed differences alone can serve as a strong, interpretable baseline for predicting tournament matchup outcomes.",
+    "A simple linear mapping of seed gaps to probabilities effectively captures expected win likelihood without complex modeling.",
+    "Mock evaluation using a Brier score against a simulated ground truth demonstrates how to validate submission formats before official results are available."
+  ],
+  "critical_findings": [],
+  "what_did_not_work": [],
+  "source_url": "https://www.kaggle.com/code/paultimothymooney/simple-starter-notebook-for-march-mania-2025",
+  "votes": 639
+}

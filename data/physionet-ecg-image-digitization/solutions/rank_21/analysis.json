@@ -1,0 +1,53 @@
+{
+  "summary": "The author developed a multi-stage pipeline to digitize ECG images from PhysioNet, focusing on precise grid point detection and signal extraction. Key innovations include a cascade of refinement CNNs for sub-pixel grid alignment, soft labels for signal intensity mapping, and a dual-mode training strategy to enable aggressive spatial augmentations. The pipeline warps raw images to canonical resolutions, extracts signals via weighted averaging on patch ensembles, and applies post-processing corrections.",
+  "extensive_summary": "## Pipeline Overview\nThe solution implements a five-stage inference pipeline extending a prior demo submission. Stage A handles initial orientation and keypoint detection. Stage B applies homography to warp images into both a low-resolution (1440x1152) and high-resolution (2400x1920) canonical format. Stage C detects grid points on the low-res image, maps them to the high-res coordinate system, and refines them using a cascade of two 5-layer heatmap CNNs. Stage D extracts the ECG signal from patches using an ensemble of 10 models, while Stage E applies lead ensembling and Einthoven error correction.\n\n## Grid Refinement & Labeling\nTo overcome pixel-level grid detection errors, the author trained two refinement networks sequentially. The first handles larger translations (5px), while the second fine-tunes positions with smaller translations (2px), achieving an average Euclidean distance of 0.146 pixels. Training leveraged 800 hand-labeled locations via a custom labeler. For signal extraction, the author replaced hard labels with soft labels, mapping adjacent pixel intensities based on sub-pixel proximity to the signal path.\n\n## Signal Extraction & Training Strategy\nSignal extraction processes the image in patches through a modified stage2 model that injects both x and y coordinates into the final layer. To circumvent the difficulty of applying spatial augmentations (rotations, perspective shifts) when coordinates are fixed, a dual-mode training approach was used: 50% of the time the network trains before coordinate injection (allowing aggressive spatial augmentations), and 50% after (using only horizontal translation and color shifts). A 100-pixel window around the argmax for weighted averaging proved optimal for estimating QRS spikes.",
+  "rank": 21,
+  "competition_flow": "Raw ECG images are oriented and warped to canonical resolutions, grid points are detected and refined via a cascade of CNNs, signals are extracted from image patches using a coordinate-injected model ensemble, and the final traces are corrected using lead ensembling and Einthoven error correction.",
+  "data_reading": [],
+  "data_processing": [
+    "Homography warping to 1440x1152 and 2400x1920 resolutions",
+    "Image scaling to 2x length for signal extraction",
+    "Patch-based processing",
+    "Weighted averaging window of 100 pixels around argmax",
+    "Soft label generation for sub-pixel signal mapping",
+    "Custom hand-labeling of 800 grid points",
+    "Augmentations: 5px/2px translations, rotations, perspective shifts, horizontal translation, and color shifts"
+  ],
+  "features_engineering": [],
+  "models": [
+    "stage0 model",
+    "stage1 network",
+    "cascade of two 5-layer heatmap CNNs",
+    "stage2 model (modified with x/y coordinate injection)",
+    "ensemble of 10 models"
+  ],
+  "frameworks_used": [],
+  "loss_functions": [],
+  "cv_strategy": "",
+  "ensembling": "Signals are extracted using an ensemble of 10 models trained with different random seeds, and the first quarter of the long II lead is ensembled with the short II lead before applying Einthoven error correction.",
+  "insights": [
+    "Soft labels enable sub-pixel resolution signal specification, outperforming hard labels.",
+    "Dual-mode training allows the use of aggressive spatial augmentations despite coordinate injection in the final layer.",
+    "A 100-pixel window for weighted averaging effectively captures QRS spikes without diminishing returns."
+  ],
+  "critical_findings": [
+    "Scaling the image to 2x length for signal extraction significantly outperformed other scaling factors.",
+    "The second refinement network, trained on a simpler 2px translation task, achieved higher accuracy (0.146px) despite being more sensitive to input deviations."
+  ],
+  "what_did_not_work": [
+    "Tried various image scaling factors (2x2, 1x4, 1x8) for signal extraction, but they underperformed compared to 1x2 scaling."
+  ],
+  "github_repos": [],
+  "papers": [],
+  "other_solution_refs": [
+    {
+      "description": "Original demo submission notebook used as the starting point",
+      "url": "https://www.kaggle.com/code/hengck23/demo-submission"
+    },
+    {
+      "description": "Discussion post recommending 2x image scaling",
+      "url": "https://www.kaggle.com/competitions/physionet-ecg-image-digitization/discussion/624054"
+    }
+  ],
+  "source_url": "https://www.kaggle.com/competitions/physionet-ecg-image-digitization/discussion/669645"
+}

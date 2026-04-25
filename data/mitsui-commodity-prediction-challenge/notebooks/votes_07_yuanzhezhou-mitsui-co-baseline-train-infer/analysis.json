@@ -1,0 +1,54 @@
+{
+  "summary": "This notebook implements a baseline pipeline for the Mitsui Commodity Prediction Challenge, focusing on unifying heterogeneous financial data into a single tabular format. It engineers rolling technical indicators, price ratios, and pairwise asset interactions, then trains three variants of a CatBoost regressor to forecast future returns. The models are combined via a weighted additive ensemble and evaluated using a rank correlation Sharpe ratio metric. The final cell packages the trained models into a Kaggle inference server for live competition submission.",
+  "purpose": "baseline",
+  "competition_flow": "Loads raw financial CSV data, preprocesses and unifies it into a standard OHLCV table, engineers rolling and pairwise features, trains three CatBoost variants on a fixed temporal holdout, ensembles their predictions, and deploys them via a Kaggle inference server for live scoring.",
+  "data_reading": [
+    "pd.read_csv for train.csv, target_pairs.csv, and train_labels.csv",
+    "pd.read_parquet for submission.parquet",
+    "kaggle_evaluation.mitsui_inference_server for live inference gateway"
+  ],
+  "data_processing": [
+    "Unifies LME metals, JPX futures, US stocks, and FX pairs into a standard table with columns: date, id, close, open, high, low, volume, sprice, interest",
+    "Fills missing fields per asset class with None/NaN",
+    "Replaces competition null filler (-999999) with None before scoring",
+    "Sorts data by id and date"
+  ],
+  "features_engineering": [
+    "OHLC ratios: (col1-col2)/(col1+col2)",
+    "open/close shift-1 ratio",
+    "Rolling returns, volatility, and volume ratios over windows [5, 10, 20]",
+    "Technical features based on close vs shifted high/low",
+    "Premium/discount and volume/interest ratios",
+    "Hardcoded numeric mapping for asset IDs",
+    "Pairwise feature concatenation using a predefined indexlist in v3"
+  ],
+  "models": [
+    "CatBoostRegressor (v1, v2, v3)"
+  ],
+  "frameworks_used": [
+    "pandas",
+    "numpy",
+    "catboost",
+    "polars",
+    "kaggle_evaluation.mitsui_inference_server"
+  ],
+  "loss_functions": [
+    "MultiRMSE"
+  ],
+  "cv_strategy": "holdout 134 days",
+  "ensembling": "Additive ensemble of three model predictions with weights 1, 1, and 3 (prediction1 + prediction2 + prediction3 * 3), plus a tiny random noise injection (1e-10) to prevent exact ties.",
+  "insights": [
+    "Unifying disparate financial asset classes into a single tabular schema enables a unified feature engineering and modeling pipeline.",
+    "Rank-transforming continuous targets can stabilize training when the competition metric relies on rank correlation.",
+    "Hardcoded pairwise feature expansion significantly increases model capacity without requiring complex graph or attention architectures."
+  ],
+  "critical_findings": [
+    "The scoring metric requires masking the competition's null filler value (-999999) before computing rank correlation, otherwise it breaks the calculation.",
+    "Many asset classes (e.g., FX, LME) only provide close prices, requiring explicit NaN handling to avoid feature computation errors."
+  ],
+  "what_did_not_work": [
+    ""
+  ],
+  "source_url": "https://www.kaggle.com/code/yuanzhezhou/mitsui-co-baseline-train-infer",
+  "votes": 218
+}

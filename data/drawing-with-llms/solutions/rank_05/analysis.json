@@ -1,0 +1,85 @@
+{
+  "summary": "The author achieved 5th place by generating images with SDXL-turbo, converting them to SVGs using VTracer, and optimizing a differentiable aesthetic patch via DiffVG. A proxy scoring function based on the VQA model's \"Yes/No\" probability was used to select the best SVG from an ensemble of candidates. Key technical choices included parallelizing CPU and GPU processes to maximize Kaggle resources and carefully balancing patch size to avoid degrading the VQA score.",
+  "extensive_summary": "## Image Generation & Prompt Selection\nThe pipeline begins with generating images using SDXL-turbo. Rather than relying on a single prompt, the author ran approximately 200 prompts and used beam search to select a subset that produced the best ensembled results. Negative prompts like `no text` and `no other colors` were consistently added to improve SVG convertibility.\n\n## Raster to Vector Conversion\nThe author compared `primitive` and VTracer for raster-to-vector conversion. While `primitive` could yield better results when tuned, it was too slow on Kaggle's CPUs (>30 seconds for 50 paths). VTracer converted images in under 2 seconds on a single core with nearly comparable quality. Post-processing included polygon simplification, size clipping, and adding a white OCR decoy with a black background to ensure it wasn't missed.\n\n## Proxy Scoring & Selection\nTo select the best SVG, the author implemented a proxy function using the VQA model's \"Yes\" vs \"No\" probability for a fixed question format. This approach proved more robust than generating custom questions with Qwen-2.5. The original VQA model (10b 448) consistently outperformed smaller and faster versions despite its latency.\n\n## Pipeline Optimization & Resource Utilization\nRecognizing that VTracer was CPU-bound while SDXL-turbo was GPU-bound, the author parallelized three processes: SDXL on `cuda:0`, VTracer on `cpu`, and the proxy function on `cuda:1`. This allowed processing ~28 SVGs per example efficiently within the time limit.\n\n## Aesthetic Patch Optimization\nA major insight was adding a differentiable aesthetic patch to boost the average aesthetic score. Using DiffVG, the author performed gradient ascent over the aesthetic score on a dataset of 150 images to find a ~100x100 pixel patch. The patch size was carefully balanced to improve aesthetics without consuming too many bytes, which would hurt the VQA score. Patch placement also had to avoid image edges due to cropping effects.",
+  "rank": 5,
+  "competition_flow": "Generate images with SDXL-turbo, convert them to SVGs using VTracer, optimize a differentiable aesthetic patch via DiffVG, score candidates using a VQA proxy function, and select the best SVG based on the proxy score.",
+  "data_reading": [],
+  "data_processing": [
+    "Prompt selection via beam search on a generated dataset",
+    "Negative prompts (`no text`, `no other colors`) to improve SVG convertibility",
+    "Polygon simplification and size clipping during VTracer conversion",
+    "Adding a white OCR decoy with a black background",
+    "Optimizing and appending a ~100x100 pixel aesthetic patch to SVGs",
+    "Balancing patch byte size to preserve the VQA score"
+  ],
+  "features_engineering": [],
+  "models": [
+    "SDXL-turbo",
+    "VQA model (10b 448)",
+    "VQA model (3b 224)",
+    "VQA model (3b 448)",
+    "VTracer",
+    "primitive",
+    "DiffVG",
+    "ReNO",
+    "ImageReward"
+  ],
+  "frameworks_used": [
+    "DiffVG",
+    "VTracer",
+    "primitive"
+  ],
+  "loss_functions": [],
+  "cv_strategy": "",
+  "ensembling": "The author ensembled multiple generated images and prompts, then selected the best SVG from ~28 candidates using a proxy VQA function to maximize the final score.",
+  "insights": [
+    "Ensembling multiple prompts and images significantly improves the final score.",
+    "VTracer is much faster than primitive on Kaggle's CPUs despite potentially lower peak quality.",
+    "Proxy scoring using the VQA model's \"Yes/No\" probability is more robust than generating custom questions.",
+    "Parallelizing CPU and GPU processes maximizes Kaggle resource utilization.",
+    "Balancing aesthetic patch size is critical to avoid degrading the VQA score."
+  ],
+  "critical_findings": [
+    "Adding a large aesthetic patch improves the average aesthetic score almost independently of the background but hurts the VQA score due to byte budget and noise.",
+    "VTracer on a single core is faster than primitive on all Kaggle CPU cores.",
+    "The original VQA model (10b 448) consistently outperformed smaller and faster versions despite its latency.",
+    "The aesthetic patch position must avoid image edges due to cropping effects."
+  ],
+  "what_did_not_work": [
+    "Optimizing the full score directly with DiffVG was too slow and unstable.",
+    "Reducing the VQA OCR score to hide text did not yield better results.",
+    "Optimizing a proxy function over the VQA score to find the best SVG failed to work well.",
+    "Plugging the full function into ReNO to optimize the diffusion process directly was inefficient and did not correlate perfectly with the competition score.",
+    "Directly finetuning a diffusion model using a differentiable VQA loss was too slow and required too much GPU memory."
+  ],
+  "github_repos": [
+    {
+      "url": "https://github.com/matheuspf/draw",
+      "role": "solution"
+    },
+    {
+      "url": "https://github.com/THUDM/ImageReward",
+      "role": "reference"
+    },
+    {
+      "url": "https://github.com/fogleman/primitive",
+      "role": "reference"
+    }
+  ],
+  "papers": [],
+  "other_solution_refs": [
+    {
+      "description": "Final solution notebook",
+      "url": "https://www.kaggle.com/code/tomirol/fork-of-sdxl-turbo-vtracer-multi-gpu-10b-448-24x?scriptVersionId=242123343"
+    },
+    {
+      "description": "Aesthetic patch optimization notebook",
+      "url": "https://www.kaggle.com/code/tomirol/sdxl-turbo-vtracer-aest-opt?scriptVersionId=242366685"
+    },
+    {
+      "description": "ReNO + VQA optimization notebook",
+      "url": "https://www.kaggle.com/code/tomirol/fork-of-sdxl-turbo-reno-vqa?scriptVersionId=242363815"
+    }
+  ],
+  "source_url": "https://www.kaggle.com/competitions/drawing-with-llms/discussion/581128"
+}

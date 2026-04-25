@@ -1,0 +1,52 @@
+{
+  "summary": "This notebook implements a gradient boosting ensemble for the MABe mouse behavior detection competition, focusing on transforming raw 2D pose tracking coordinates into rich, FPS-scaled time-series features for single mice and mouse pairs. It loads pre-trained CatBoost and XGBoost models, optimizes their per-action ensemble weights and probability thresholds using Optuna on out-of-fold predictions, and applies rigorous post-processing to ensure valid submission formats. Readers should learn how to derive domain-specific kinematic features from pose data, how to effectively combine multiple gradient boosting models via Optuna, and why careful frame-level post-processing is critical for sparse action recognition tasks.",
+  "purpose": "ensemble",
+  "competition_flow": "Loads CSV metadata and parquet tracking/annotation files, extracts FPS-scaled time-series features for single mice and pairs, loads pre-trained CatBoost/XGBoost models, optimizes ensemble weights and thresholds via Optuna, and generates a robustified submission CSV.",
+  "data_reading": [
+    "pd.read_csv for train.csv and test.csv",
+    "pd.read_parquet for tracking and annotation files in /kaggle/input/MABe-mouse-behavior-detection/{train,test}_tracking/ and train_annotation/",
+    "json.loads for parsing behaviors_labeled strings"
+  ],
+  "data_processing": [
+    "Drops specific headpiece/tail body parts",
+    "Normalizes coordinates by pix_per_cm_approx",
+    "Scales rolling windows to physical time using video FPS",
+    "Handles sparse labels and overlapping predictions per agent/target pair",
+    "Extends predictions to video end and fills empty videos with fallback actions"
+  ],
+  "features_engineering": [
+    "Curvature features: velocity, acceleration, cross product, curvature, turn rate with FPS-scaled rolling windows",
+    "Multiscale speed features: mean, std, and ratio over multiple window sizes",
+    "State features: speed discretization into bins with rolling state probabilities and transition counts",
+    "Long-range features: rolling mean of coordinates, exponential weighted mean, speed percentile",
+    "Interaction features: relative distance, lead angles, chase metrics, speed correlation for mouse pairs",
+    "Single mouse features: pairwise squared body part distances, lagged ear/tail speeds, elongation, body angle, rolling coordinate stats, nose-tail distance lags",
+    "Pair features: squared distances between all body part combinations, relative orientation, nose approach, distance bins, rolling distance stats, interaction correlation, nose distance lags/close probability"
+  ],
+  "models": [
+    "CatBoost",
+    "XGBoost"
+  ],
+  "frameworks_used": [
+    "catboost",
+    "xgboost",
+    "sklearn",
+    "optuna",
+    "polars",
+    "pandas",
+    "numpy",
+    "joblib"
+  ],
+  "loss_functions": [],
+  "cv_strategy": "StratifiedGroupKFold(n_splits=3)",
+  "ensembling": "Optimizes CatBoost, XGBoost, and XGBoost-2 weights per action class using Optuna on OOF predictions, applies per-action probability thresholds, and post-processes predictions by thresholding, handling frame transitions, extending to video end, and removing overlapping predictions.",
+  "insights": [
+    "Raw 2D pose coordinates can be transformed into rich motion features by scaling temporal windows to physical time and computing derivatives, rolling statistics, and relative kinematics.",
+    "Per-action gradient boosting models can be effectively combined using Optuna-optimized weights and thresholds rather than fixed averaging or equal weighting.",
+    "Careful post-processing (handling sparse labels, overlapping frames, and empty videos) is critical for valid submission formats in frame-level action recognition."
+  ],
+  "critical_findings": [],
+  "what_did_not_work": [],
+  "source_url": "https://www.kaggle.com/code/ravaghi/social-action-recognition-in-mice-ensemble",
+  "votes": 357
+}

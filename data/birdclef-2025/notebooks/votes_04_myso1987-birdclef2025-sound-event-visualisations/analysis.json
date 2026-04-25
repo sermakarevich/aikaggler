@@ -1,0 +1,34 @@
+{
+  "summary": "This notebook provides a diagnostic visualization tool for the BirdCLEF 2025+ competition, allowing users to inspect model predictions alongside the corresponding audio spectrograms. It loads `.ogg` soundscapes, computes mel spectrograms, and overlays the model's temporal species predictions as heatmaps. By comparing visualizations across submissions with different leaderboard scores, users can assess prediction accuracy, temporal alignment, and confidence distribution. The notebook serves as a practical utility for debugging and understanding model behavior on audio event detection tasks.",
+  "purpose": "utility",
+  "competition_flow": "Loads audio files from a directory, passes them through a custom prediction utility to generate temporal species probabilities, and visualizes the mel spectrograms alongside the prediction heatmaps for manual inspection.",
+  "data_reading": [
+    "Reads `.ogg` audio files from a specified directory using `torchaudio.load`, extracts base filenames, and supports a debug mode that subsets the data to a fixed range."
+  ],
+  "data_processing": [
+    "Normalizes audio waveforms by peak amplitude (divides by max absolute value).",
+    "Computes mel spectrograms using `torchaudio.transforms.MelSpectrogram` with 32kHz sample rate, 1024 FFT, 512 hop length, 128 mel bins, HTK scale, and Slaney normalization.",
+    "Converts mel spectrogram magnitudes to decibels using `10 * torch.log10()`."
+  ],
+  "features_engineering": [],
+  "models": [],
+  "frameworks_used": [
+    "torch",
+    "torchaudio",
+    "pandas",
+    "matplotlib",
+    "numpy"
+  ],
+  "loss_functions": [],
+  "cv_strategy": "",
+  "ensembling": "",
+  "insights": [
+    "Overlaying mel spectrograms with prediction heatmaps allows direct visual correlation between acoustic events and model confidence.",
+    "Comparing visualizations across submissions with varying leaderboard scores helps diagnose whether improvements stem from better temporal alignment or higher prediction certainty.",
+    "Peak normalization and mel spectrogram configuration are critical for consistent feature visualization during model debugging."
+  ],
+  "critical_findings": [],
+  "what_did_not_work": [],
+  "source_url": "https://www.kaggle.com/code/myso1987/birdclef2025-sound-event-visualisations",
+  "votes": 531
+}

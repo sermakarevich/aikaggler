@@ -1,0 +1,25 @@
+{
+  "id": "kadircandrisolu/efficientnet-b0-pytorch-train-birdclef-25",
+  "id_no": 78727667,
+  "title": "EfficientNet B0 Pytorch [Train] | BirdCLEF'25",
+  "code_file": "efficientnet-b0-pytorch-train-birdclef-25.ipynb",
+  "language": "python",
+  "kernel_type": "notebook",
+  "is_private": false,
+  "enable_gpu": true,
+  "enable_tpu": false,
+  "enable_internet": true,
+  "keywords": [
+    "gpu"
+  ],
+  "dataset_sources": [
+    "kadircandrisolu/birdclef25-mel-spectrograms"
+  ],
+  "kernel_sources": [],
+  "competition_sources": [
+    "birdclef-2025"
+  ],
+  "model_sources": [],
+  "docker_image": "gcr.io/kaggle-private-byod/python@sha256:d8674e13fab653bf7fb8d9a102f2ae94036771ccb5c73f51888d881421e1f937",
+  "machine_shape": "NvidiaTeslaT4"
+}

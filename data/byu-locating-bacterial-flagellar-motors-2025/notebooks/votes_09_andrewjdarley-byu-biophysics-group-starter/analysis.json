@@ -1,0 +1,35 @@
+{
+  "summary": "This notebook serves as a solution overview and index for a Kaggle competition entry focused on locating bacterial flagellar motors in 3D cryo-ET tomograms. It frames the volumetric detection problem as a 2D object detection task using YOLOv8, followed by 3D post-processing to consolidate predictions. Key takeaways include the effectiveness of percentile-based intensity normalization, the necessity of tomogram-level train/validation splits to prevent data leakage, and the use of 3D non-maximum suppression to cluster redundant slice-level detections. Readers learn how to adapt a standard 2D detector for specialized biological imaging and optimize inference for offline Kaggle environments.",
+  "purpose": "tutorial",
+  "competition_flow": "Extracts 2D slices from 3D tomograms, normalizes intensity, trains a YOLOv8 detector on tomogram-level splits, and generates a submission by running inference across slices with 3D non-maximum suppression.",
+  "data_reading": [
+    "Extracts 2D slices from 3D tomograms",
+    "Converts annotations to YOLO bounding box format"
+  ],
+  "data_processing": [
+    "Percentile-based intensity normalization for contrast enhancement",
+    "Extraction of multiple slices around annotated motors to capture 3D context",
+    "Tomogram-level train/validation split (80/20) to prevent leakage"
+  ],
+  "features_engineering": [],
+  "models": [
+    "YOLOv8"
+  ],
+  "frameworks_used": [
+    "ultralytics"
+  ],
+  "loss_functions": [
+    "DFL loss"
+  ],
+  "cv_strategy": "Tomogram-level holdout split (80/20)",
+  "ensembling": "Applies 3D non-maximum suppression to cluster nearby 2D detections into single 3D motor locations during inference.",
+  "insights": [
+    "Treating volumetric biological imaging as a 2D object detection task simplifies the pipeline while retaining accuracy.",
+    "Tomogram-level data splitting is critical to prevent information leakage between training and validation sets.",
+    "3D non-maximum suppression effectively clusters redundant 2D detections into single 3D motor locations."
+  ],
+  "critical_findings": [],
+  "what_did_not_work": [],
+  "source_url": "https://www.kaggle.com/code/andrewjdarley/byu-biophysics-group-starter",
+  "votes": 233
+}

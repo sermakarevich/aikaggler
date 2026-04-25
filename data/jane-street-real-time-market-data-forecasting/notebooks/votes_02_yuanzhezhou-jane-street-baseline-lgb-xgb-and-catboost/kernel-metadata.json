@@ -1,0 +1,23 @@
+{
+  "id": "yuanzhezhou/jane-street-baseline-lgb-xgb-and-catboost",
+  "id_no": 67717730,
+  "title": "\ud83e\udd47\ud83e\udd47Jane Street Baseline lgb, xgb and catboost\ud83e\udd47\ud83e\udd47",
+  "code_file": "jane-street-baseline-lgb-xgb-and-catboost.ipynb",
+  "language": "python",
+  "kernel_type": "notebook",
+  "is_private": false,
+  "enable_gpu": false,
+  "enable_tpu": false,
+  "enable_internet": false,
+  "keywords": [],
+  "dataset_sources": [
+    "yuanzhezhou/jsbaselinezyz"
+  ],
+  "kernel_sources": [],
+  "competition_sources": [
+    "jane-street-real-time-market-data-forecasting"
+  ],
+  "model_sources": [],
+  "docker_image": "gcr.io/kaggle-images/python@sha256:a16cda2c5d52fa988d413876f3ffad7a46cca58678514601feb175990dc187c0",
+  "machine_shape": "None"
+}

@@ -1,0 +1,55 @@
+{
+  "summary": "The author fine-tuned Stable Diffusion 3.5 Medium using Flow-GRPO, a reinforcement learning method, to directly maximize the competition's evaluation metric (harmonic mean of VQA and aesthetic scores). Training data was synthetically generated using Gemini 2.5 Flash. Generated images were converted to SVGs via vtracer with coordinate and command post-processing. During inference, multiple candidates are filtered using PaliGemma to produce the final submission.",
+  "extensive_summary": "## Pipeline & Data Generation\nThe solution bypasses traditional preference optimization methods like DPO, which were deemed unsuitable for the metric-driven evaluation. Instead, the author generated 4,000 synthetic training samples and 200 test samples using Gemini 2.5 Flash, each containing a description, question, and answer.\n\n## Model Selection & Training\nDue to VRAM constraints with larger models like Flux, Stable Diffusion 3.5 Medium was selected for direct fine-tuning. The training leveraged Flow-GRPO (Group Relative Policy Optimization), an online RL strategy that maximizes the competition's reward function: the harmonic mean of the PaliGemma VQA score and an aesthetic score. Training ran on four H800 GPUs, generating 16 images per prompt per step (8 per GPU) at 512x512 resolution. A KL divergence weight of 4e-4 was applied to accelerate training and prevent model degradation.\n\n## Post-Processing & Inference\nGenerated images were converted to SVGs using vtracer, followed by post-processing steps including merging identical commands, converting absolute coordinates to relative ones, and combining closely spaced short line segments. During inference, three images are generated per prompt, filtered via a dummy question with PaliGemma10b, and the best SVG is submitted.\n\n## Results & Observations\nInitial SD3.5M scores were low (~0.65 public, ~0.72 local). After 500 GRPO steps, local scores peaked at ~0.77. A key observation was that while the reward targeted aesthetics, the VQA score improved more dramatically (0.82 to 0.91), indicating GRPO successfully aligned the model with PaliGemma's preferences.",
+  "rank": 12,
+  "competition_flow": "Synthetic text prompts are generated via Gemini 2.5 Flash, used to fine-tune Stable Diffusion 3.5 Medium with Flow-GRPO to maximize a harmonic reward of VQA and aesthetic scores, followed by vtracer SVG conversion, coordinate/command post-processing, and PaliGemma-based filtering during inference.",
+  "data_reading": [],
+  "data_processing": [
+    "Synthetic data generation via Gemini 2.5 Flash",
+    "Image-to-SVG conversion using vtracer",
+    "Post-processing: merging identical SVG commands, converting absolute to relative coordinates, combining closely spaced short line segments",
+    "Inference filtering: generating 3 candidates per prompt and filtering with PaliGemma using a dummy question"
+  ],
+  "features_engineering": [],
+  "models": [
+    "Stable Diffusion 3.5 Medium",
+    "Flow-GRPO",
+    "PaliGemma10b",
+    "Gemini 2.5 Flash",
+    "vtracer"
+  ],
+  "frameworks_used": [],
+  "loss_functions": [
+    "KL divergence weight of 4e-4",
+    "Harmonic mean of the VQA score and the aesthetic score (used as reward function)"
+  ],
+  "cv_strategy": "",
+  "ensembling": "Generates three images per prompt during inference, filters them using PaliGemma with a dummy question, and selects the final SVG output.",
+  "insights": [
+    "GRPO training effectively guided Stable Diffusion to produce images more aligned with PaliGemma's preferences, leading to a substantial boost in VQA performance.",
+    "Traditional preference-based methods like DPO were less suitable for this metric-driven evaluation compared to direct RL optimization."
+  ],
+  "critical_findings": [
+    "While the primary goal was to enhance aesthetic scores, the VQA score saw a more significant improvement (0.82 to 0.91 on local validation).",
+    "Initial SD3.5M performance was quite low (~0.65 public, ~0.72 local), but peaked at ~0.77 local after 500 GRPO steps, highlighting the importance of checkpoint timing."
+  ],
+  "what_did_not_work": [
+    "Missed submitting at the optimal checkpoint, resulting in a lower private leaderboard score (~0.73).",
+    "DPO was found to be less suitable for the competition's metric-driven evaluation."
+  ],
+  "github_repos": [
+    {
+      "url": "https://github.com/yanyanhuang/12th-Place-Solution-for-Kaggle-Drawing-with-LLMs",
+      "role": "solution"
+    }
+  ],
+  "papers": [
+    {
+      "title": "Flow-GRPO: Training Flow Matching Models via Online RL",
+      "url": "https://arxiv.org/abs/2505.05470",
+      "arxiv_id": "2505.05470"
+    }
+  ],
+  "other_solution_refs": [],
+  "source_url": "https://www.kaggle.com/competitions/drawing-with-llms/discussion/581034"
+}

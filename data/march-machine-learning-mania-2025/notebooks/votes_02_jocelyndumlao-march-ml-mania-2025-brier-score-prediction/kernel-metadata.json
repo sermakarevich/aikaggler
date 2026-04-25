@@ -1,0 +1,21 @@
+{
+  "id": "jocelyndumlao/march-ml-mania-2025-brier-score-prediction",
+  "id_no": 76424169,
+  "title": "March ML Mania 2025 - Brier Score Prediction",
+  "code_file": "march-ml-mania-2025-brier-score-prediction.ipynb",
+  "language": "python",
+  "kernel_type": "notebook",
+  "is_private": false,
+  "enable_gpu": false,
+  "enable_tpu": false,
+  "enable_internet": true,
+  "keywords": [],
+  "dataset_sources": [],
+  "kernel_sources": [],
+  "competition_sources": [
+    "march-machine-learning-mania-2025"
+  ],
+  "model_sources": [],
+  "docker_image": "gcr.io/kaggle-images/python@sha256:df5bb865ba69fd6ef584de23ddc655e1ea6958c60ceb02eb5eed0459fa2819a2",
+  "machine_shape": "None"
+}

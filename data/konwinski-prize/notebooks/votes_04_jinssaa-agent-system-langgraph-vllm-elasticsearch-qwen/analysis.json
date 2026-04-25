@@ -1,0 +1,38 @@
+{
+  "summary": "The notebook implements an autonomous coding agent pipeline designed for the Konwinski Prize competition. It provisions a local vLLM server running Qwen2.5-14B-Instruct and an Elasticsearch instance to index Python codebases. Using LangGraph, it constructs a stateful agent workflow equipped with tools for file operations and semantic code search. The agent receives a GitHub issue and a repository archive, analyzes the code structure, and generates a git diff patch to fix the reported bug. Readers learn how to integrate LLMs with external tools, search databases, and code parsing libraries to build autonomous software engineering agents.",
+  "purpose": "inference",
+  "competition_flow": "Unpacks a repository archive, parses its Python files into a flattened syntax tree, indexes the structure in Elasticsearch, runs a LangGraph agent powered by a locally served Qwen2.5-14B model to analyze and edit the code, and outputs a git diff patch for submission.",
+  "data_reading": [
+    "Unpacks a `.tar` archive from a `BytesIO` buffer into a local `repo` directory."
+  ],
+  "data_processing": [
+    "Parses Python source files using `tree-sitter` to extract hierarchical syntax trees, flattens them into a list of dictionaries containing node types, file paths, text snippets, and line/column coordinates, then indexes this structured data into Elasticsearch."
+  ],
+  "features_engineering": [
+    "Flattened syntax tree nodes (function/class definitions) with parent-child relationships, file paths, and start/end line/column coordinates indexed for BM25 search."
+  ],
+  "models": [
+    "Qwen2.5-14B-Instruct"
+  ],
+  "frameworks_used": [
+    "vllm",
+    "elasticsearch",
+    "langgraph",
+    "langchain",
+    "tree-sitter",
+    "pydantic",
+    "unidiff"
+  ],
+  "loss_functions": [],
+  "cv_strategy": "",
+  "ensembling": "",
+  "insights": [
+    "Integrating a local LLM with Elasticsearch enables efficient, context-aware codebase navigation for autonomous agents.",
+    "Flattening hierarchical AST nodes into a searchable index preserves structural relationships while enabling fast BM25 retrieval.",
+    "LangGraph's stateful workflow effectively manages the iterative tool-calling loop required for complex code editing tasks."
+  ],
+  "critical_findings": [],
+  "what_did_not_work": [],
+  "source_url": "https://www.kaggle.com/code/jinssaa/agent-system-langgraph-vllm-elasticsearch-qwen",
+  "votes": 150
+}

@@ -1,0 +1,136 @@
+{
+  "summary": "The author secured 3rd place by developing an ensemble of 3D, 2.5D, and 2D UNet-based models tailored for cryo-EM tomogram analysis. Key technical decisions included resampling all volumes to a fixed 16.0 \u00c5 voxel spacing, rendering Gaussian heatmaps with physically consistent sigma values, and fusing low-level features via a simple FPN neck to improve semantic propagation. The pipeline heavily leveraged MONAI and Albumentations for domain-robust augmentations, integrated a large external dataset through pseudo-labeling and manual CVAT review, and abandoned local CV in favor of direct LB training in the final stages. Post-processing combined quantile thresholding with Weighted Box Fusion (WBF) to maximize recall across multiple models and TTAs.",
+  "extensive_summary": "## Validation Strategy & Training Paradigm\nThe author initially used a 4-StratifiedKFold CV grouped by motor count, augmented with Rotate90+Flip combinations to stabilize metrics. However, once local CV saturated above 0.96, it lost correlation with the LB. Consequently, the final pipeline shifted to training all models on the combined train + external dataset without local validation, relying solely on LB scores for hyperparameter guidance.\n\n## Data Processing & Heatmap Generation\nAll tomograms were resampled to a fixed 16.0 \u00c5 voxel spacing, which optimally balanced fine texture preservation against computational load. For 3D models, sliding window patches of `(224, 448, 448)` were extracted, while 2D models sampled sparse Z-slices and resized XY to `(896, 896)`. Target heatmaps were rendered as Gaussian distributions with a fixed real-world sigma of 200 \u00c5, dynamically rescaled during augmentations to maintain physical consistency. A custom affine transform was implemented to rotate ellipsoidal heatmaps, though a standard ball-like Gaussian was ultimately preferred for simplicity.\n\n## 3D/2.5D Modeling\nThe 3D approach utilized UNet decoders with various encoders (ResNeXt50, DenseNet121, X3D-M). A critical architectural insight was adding a simple FPN neck to fuse low-level features into the stride-16 output map, solving the information propagation bottleneck in deeper UNets. A 2.5D variant treated depth as a batch dimension with progressive downsampling, proving lightweight and effective for pure CNN backbones.\n\n## 2D Modeling & Context\nThe 2D pipeline proved more resource-efficient and critical for final performance. Hierarchical Conv-Transformer backbones (MaxViT, CoaT) significantly outperformed pure CNNs (EfficientNet, ConvNeXt), demonstrating that global context is essential for detection. Heavy Albumentations pipelines handled noise, downscaling, geometric transforms, and safe cropping to maintain motor presence during augmentation.\n\n## External Data & Pseudo-Labeling\nA major score driver was integrating an external dataset via pseudo-labeling. The author re-downloaded the data preserving voxel spacing metadata, re-spaced it to `max(16.0, ori_spacing)`, and ran inference with a low threshold (0.05). False positives and negatives were manually reviewed and corrected using CVAT, which stabilized training, prevented overfitting, and allowed longer epochs without CV degradation.\n\n## Post-Processing\nFinal predictions avoided fixed thresholds in favor of 55% quantile thresholding. Heatmaps were decoded into candidate keypoints via NMS, then combined using Weighted Box Fusion (WBF) with L2 distance clustering and average confidence mode, which successfully mitigated strong peak signals from individual models and boosted recall.",
+  "rank": 3,
+  "competition_flow": "Resample tomograms to 16.0 \u00c5 spacing -> generate Gaussian heatmaps -> train 3D/2D UNets with heavy augmentations on combined train/external data -> decode predictions via NMS -> ensemble with WBF and quantile thresholding.",
+  "data_reading": [
+    "Full volumes loaded to RAM with LINEAR interpolation for 2D inference",
+    "3D training uses MONAI lazy resampling via F.grid_sample",
+    "2D training samples sparse Z-slices directly from disk"
+  ],
+  "data_processing": [
+    "Resampling all tomograms to fixed 16.0 \u00c5 voxel spacing",
+    "Sliding window patching (3D: 224x448x448; 2D: 896x896)",
+    "Gaussian heatmap generation with sigma=200A, dynamically rescaled during augmentations",
+    "Heavy 3D augmentations via MONAI (RandZoom, RandAffined, intensity shifts, RandSimulateLowResolutiond, RandCoarseDropoutKeepKeypoints)",
+    "Heavy 2D augmentations via Albumentations (noise, downscaling, geometric transforms, safe cropping)",
+    "External dataset integration: pseudo-labeling with low threshold (0.05), manual CVAT review of FPs/FNs, coordinate correction, re-spacing to max(16.0, ori_spacing)",
+    "Positive/negative patch ratio control (20/1 for 3D, 0.75 for 2D)"
+  ],
+  "features_engineering": [],
+  "models": [
+    "3D ResNeXt50",
+    "3D DenseNet121",
+    "3D X3D-M",
+    "2D MaxViT",
+    "2D CoaT",
+    "EfficientNet",
+    "ConvNeXt",
+    "I3D",
+    "ResNet50",
+    "ConvNeXt Tiny",
+    "CoaT Lite Medium",
+    "MaxViT Tiny"
+  ],
+  "frameworks_used": [
+    "MONAI",
+    "Albumentations",
+    "timm",
+    "segmentation_models_pytorch_3d",
+    "OpenCV"
+  ],
+  "loss_functions": [
+    "BCE"
+  ],
+  "cv_strategy": "4-StratifiedKFold by motor count, later shifted to training on all data with LB validation",
+  "ensembling": "Ensemble of 5 models with 2xTTA, decoded via NMS, and combined using Weighted Box Fusion (WBF) with L2 distance clustering and average confidence mode.",
+  "insights": [
+    "Resampling to ~16.0 \u00c5 voxel spacing optimally balances detail preservation and computational load.",
+    "Fusing low-level features via a simple FPN neck significantly improves information propagation to coarse output maps.",
+    "Hierarchical Conv-Transformer backbones outperform pure CNNs for 2D tasks, emphasizing the importance of global context.",
+    "Heavy augmentations enable longer training epochs and improve robustness to domain shifts.",
+    "Pseudo-labeling combined with manual review of external data drastically improves model stability and recall."
+  ],
+  "critical_findings": [
+    "The optimal target voxel spacing (16.0 \u00c5) differs from the average test spacing (~13.1 \u00c5), yet yields the highest LB score.",
+    "CV saturated and lost correlation with LB when scores exceeded ~0.96, making local validation unreliable for final hyperparameter tuning.",
+    "Mixup and Cutmix augmentations provided no clear improvement and were discarded.",
+    "Training on all data without local validation in the final week proved more effective than strict CV monitoring."
+  ],
+  "what_did_not_work": [
+    "Other losses: MSE, L1, Weighted BCE, Focal, Tversky, and combining multiple losses.",
+    "Mixup and Cutmix augmentations.",
+    "Injecting LSTM layers after 2D features (CV went up but LB unchanged).",
+    "Predicting voxel spacing on test data (MAE=5.1, not useful)."
+  ],
+  "github_repos": [
+    {
+      "url": "https://github.com/MIC-DKFZ/nnUNet",
+      "role": "reference"
+    },
+    {
+      "url": "https://github.com/ZFTurbo/segmentation_models_pytorch_3d",
+      "role": "library"
+    },
+    {
+      "url": "https://github.com/ZFTurbo/timm_3d",
+      "role": "library"
+    },
+    {
+      "url": "https://github.com/facebookresearch/SlowFast",
+      "role": "library"
+    },
+    {
+      "url": "https://github.com/albumentations-team/albumentations",
+      "role": "library"
+    },
+    {
+      "url": "https://github.com/cvat-ai/cvat",
+      "role": "reference"
+    },
+    {
+      "url": "https://github.com/dangnh0611/kaggle_byu",
+      "role": "solution"
+    }
+  ],
+  "papers": [
+    {
+      "title": "3D PAN (Path Aggregation Network)",
+      "url": "https://arxiv.org/abs/1803.01534",
+      "arxiv_id": "1803.01534"
+    },
+    {
+      "title": "FPN",
+      "url": "https://arxiv.org/pdf/1612.03144",
+      "arxiv_id": "1612.03144"
+    },
+    {
+      "title": "Unified FPN architecture",
+      "url": "http://presentations.cocodataset.org/COCO17-Stuff-FAIR.pdf",
+      "arxiv_id": null
+    }
+  ],
+  "other_solution_refs": [
+    {
+      "description": "External dataset discussion",
+      "url": "https://www.kaggle.com/competitions/byu-locating-bacterial-flagellar-motors-2025/discussion/569921"
+    },
+    {
+      "description": "Note on wrong-quantized tomograms",
+      "url": "https://www.kaggle.com/competitions/byu-locating-bacterial-flagellar-motors-2025/discussion/575028"
+    },
+    {
+      "description": "Host clarification on flagellum marking",
+      "url": "https://www.kaggle.com/competitions/byu-locating-bacterial-flagellar-motors-2025/discussion/579540#3217068"
+    },
+    {
+      "description": "Source code reference for 2D modeling",
+      "url": "https://www.kaggle.com/competitions/google-research-identify-contrails-reduce-global-warming/discussion/430491"
+    },
+    {
+      "description": "Inference notebook",
+      "url": "https://www.kaggle.com/code/dangnh0611/3rd-place-solution-submit"
+    }
+  ],
+  "source_url": "https://www.kaggle.com/competitions/byu-locating-bacterial-flagellar-motors-2025/discussion/583380"
+}

@@ -1,0 +1,21 @@
+{
+  "id": "allegich/arc-agi-2025-visualization-all-1000-120-tasks",
+  "id_no": 79389937,
+  "title": "ARC-AGI 2025: Visualization all 1000+120 tasks",
+  "code_file": "arc-agi-2025-visualization-all-1000-120-tasks.ipynb",
+  "language": "python",
+  "kernel_type": "notebook",
+  "is_private": false,
+  "enable_gpu": false,
+  "enable_tpu": false,
+  "enable_internet": false,
+  "keywords": [],
+  "dataset_sources": [],
+  "kernel_sources": [],
+  "competition_sources": [
+    "arc-prize-2025"
+  ],
+  "model_sources": [],
+  "docker_image": "gcr.io/kaggle-images/python@sha256:8c08b4a4c60e213b1357119ba58fa71e365a5af738e3d22b32c0d6d24d494484",
+  "machine_shape": "None"
+}

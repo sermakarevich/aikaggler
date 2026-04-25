@@ -1,0 +1,28 @@
+{
+  "id": "sadettinamilverdil/ncaa-basketball-predictions-with-xgboost",
+  "id_no": 76671558,
+  "title": "\ud83c\udfc0 NCAA Basketball Predictions with XGBoost",
+  "code_file": "ncaa-basketball-predictions-with-xgboost.ipynb",
+  "language": "python",
+  "kernel_type": "notebook",
+  "is_private": false,
+  "enable_gpu": true,
+  "enable_tpu": false,
+  "enable_internet": true,
+  "keywords": [
+    "xgboost",
+    "beginner",
+    "data visualization",
+    "data analytics",
+    "feature engineering",
+    "gpu"
+  ],
+  "dataset_sources": [],
+  "kernel_sources": [],
+  "competition_sources": [
+    "march-machine-learning-mania-2025"
+  ],
+  "model_sources": [],
+  "docker_image": "gcr.io/kaggle-private-byod/python@sha256:ff73f172a2ebcff8591eaae2ade447df7b6d2c6b7b4655f628e57f12fab3c687",
+  "machine_shape": "NvidiaTeslaT4"
+}

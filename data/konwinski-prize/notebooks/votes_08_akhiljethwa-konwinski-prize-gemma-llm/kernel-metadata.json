@@ -1,0 +1,25 @@
+{
+  "id": "akhiljethwa/konwinski-prize-gemma-llm",
+  "id_no": 73176525,
+  "title": "[Konwinski Prize] Gemma LLM",
+  "code_file": "konwinski-prize-gemma-llm.ipynb",
+  "language": "python",
+  "kernel_type": "notebook",
+  "is_private": false,
+  "enable_gpu": true,
+  "enable_tpu": false,
+  "enable_internet": true,
+  "keywords": [
+    "gpu"
+  ],
+  "dataset_sources": [],
+  "kernel_sources": [],
+  "competition_sources": [
+    "konwinski-prize"
+  ],
+  "model_sources": [
+    "keras/gemma/Keras/gemma_2b_en/2"
+  ],
+  "docker_image": "gcr.io/kaggle-private-byod/python@sha256:f9647cc12ad6b5bff2567807c9baa993ae44f17e770a4e099dbde5f4e3a2f1ae",
+  "machine_shape": "Gpu"
+}

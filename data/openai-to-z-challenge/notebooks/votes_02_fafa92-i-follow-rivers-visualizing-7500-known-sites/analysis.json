@@ -1,0 +1,43 @@
+{
+  "summary": "This notebook performs a spatial analysis of over 7,500 archaeological sites across the Amazon region to investigate their historical proximity to river systems. It aggregates site coordinates from multiple heterogeneous CSV datasets, standardizes them into a unified WGS84 format, and extracts river networks from OpenStreetMap using a tiled Overpass API approach with local caching. By generating 10km buffer zones around these rivers and overlaying the site locations, the author demonstrates a strong spatial correlation between ancient settlements and waterways. The primary takeaway is that river access was likely a critical determinant for settlement patterns in ancient Amazonia, providing essential transportation routes, food resources, and fertile soils for agriculture.",
+  "purpose": "eda",
+  "competition_flow": "Loads multi-source archaeological site coordinates and OpenStreetMap river data, computes 10km spatial buffers around rivers, and outputs an interactive HTML map visualizing the spatial overlap between sites and waterways.",
+  "data_reading": [
+    "Reads five CSV files (mound_villages_acre.csv, casarabe_sites_utm.csv, amazon_geoglyphs_sites.csv, submit.csv, science.ade2541_data_s2.csv) using pandas, handling mixed coordinate systems (UTM vs lat/lon) and inconsistent column naming conventions across datasets."
+  ],
+  "data_processing": [
+    "Converts UTM coordinates to WGS84 lat/lon using pyproj transformers, drops rows with missing or invalid coordinates, samples large datasets for rendering performance, and reprojects geometries to UTM (EPSG:32719) for accurate metric buffering before converting back to WGS84."
+  ],
+  "features_engineering": [
+    "Generates 10km spatial buffer polygons around extracted river networks using geopandas and shapely, and calculates implicit site-to-river proximity for spatial overlay analysis."
+  ],
+  "models": [],
+  "frameworks_used": [
+    "pandas",
+    "numpy",
+    "folium",
+    "pyproj",
+    "geopandas",
+    "shapely",
+    "requests",
+    "pickle",
+    "matplotlib",
+    "seaborn",
+    "openpyxl"
+  ],
+  "loss_functions": [],
+  "cv_strategy": "",
+  "ensembling": "",
+  "insights": [
+    "River proximity strongly correlates with ancient settlement locations in Amazonia.",
+    "Tiled querying with local caching effectively bypasses OpenStreetMap API rate limits for large-scale spatial extraction.",
+    "Standardizing heterogeneous coordinate formats is critical for multi-source archaeological data integration."
+  ],
+  "critical_findings": [
+    "Approximately 80% of archaeological sites fall within a 10km river buffer, while only 20% lie beyond this threshold.",
+    "Large geospatial datasets require aggressive sampling to maintain interactive map rendering performance."
+  ],
+  "what_did_not_work": [],
+  "source_url": "https://www.kaggle.com/code/fafa92/i-follow-rivers-visualizing-7500-known-sites",
+  "votes": 120
+}

@@ -1,0 +1,18 @@
+{
+  "description": "Participants forecast the future trajectories of football players during pass plays using structured tracking data. The dataset contains time-series coordinates, velocities, and orientations for all players across multiple games. Competitors must predict continuous player positions over a short future horizon, with submissions ranked by a custom NFL-specific scoring function on a held-out private test set.",
+  "data_modality": "time_series",
+  "task_type": "forecasting",
+  "label_structure": "unknown",
+  "metric": "NFL_2025",
+  "test_split": "temporal",
+  "format": "standard",
+  "dataset_scale": "unknown",
+  "domain": "sports_analytics",
+  "data_challenges": [
+    "temporal_correlation",
+    "private_test_shift"
+  ],
+  "constraints": [
+    "no_external_data"
+  ]
+}

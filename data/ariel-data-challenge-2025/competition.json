@@ -1,0 +1,122 @@
+{
+  "id": 101849,
+  "competitionName": "ariel-data-challenge-2025",
+  "title": "NeurIPS - Ariel Data Challenge 2025",
+  "briefDescription": "Derive exoplanet signals from Ariel's optical instruments",
+  "dateEnabled": "2025-06-26T19:53:40.570Z",
+  "deadline": "2025-09-24T23:59:00Z",
+  "hasLeaderboard": true,
+  "leaderboardPercentage": 33,
+  "maxDailySubmissions": 3,
+  "numScoredSubmissions": 2,
+  "hasSolution": true,
+  "numPrizes": 6,
+  "forumId": 7833780,
+  "finalLeaderboardHasBeenVerified": true,
+  "userRankMultiplier": 1,
+  "dateCreated": "2025-05-12T23:31:40.250806100Z",
+  "competitionHostSegmentId": 1,
+  "maxTeamSize": 5,
+  "medalsAllowed": true,
+  "enableTeamFiles": true,
+  "teamFileDeadline": "2025-10-20T00:00:00Z",
+  "teamMergerExplicitDeadline": "2025-09-17T23:59:00Z",
+  "prohibitNewEntrantsExplicitDeadline": "2025-09-17T23:59:00Z",
+  "kernelsPublishingDisabledDeadline": "2025-09-17T23:59:00Z",
+  "organizationId": 4417,
+  "hasCoverImageUrl": true,
+  "showPrivateLeaderboard": true,
+  "hasScripts": true,
+  "onlyAllowKernelSubmissions": true,
+  "totalTeams": 860,
+  "totalCompetitors": 1038,
+  "totalSubmissions": 14836,
+  "rulesRequired": true,
+  "usesSynchronousReruns": true,
+  "maxCpuRuntimeMinutes": 540,
+  "maxGpuRuntimeMinutes": 540,
+  "rowIdColumnName": "planet_id",
+  "requiredSubmissionFilename": "submission.csv",
+  "evaluationAlgorithm": {
+    "id": 2111,
+    "name": "Ariel Gaussian Log Likelihood",
+    "isMax": true,
+    "environmentRenderType": "ENVIRONMENT_RENDER_TYPE_JSON",
+    "kernelId": 62368338,
+    "latestCompetitionMetricVersionId": 41440,
+    "state": "AVAILABLE"
+  },
+  "categories": [
+    {
+      "id": 17081,
+      "name": "multimodal",
+      "fullPath": "data type > multimodal data",
+      "description": "",
+      "datasetCount": 801,
+      "competitionCount": 31,
+      "scriptCount": 300,
+      "slug": "multimodal-data",
+      "displayName": "Multimodal"
+    },
+    {
+      "id": 14203,
+      "name": "regression",
+      "fullPath": "task > regression",
+      "datasetCount": 2678,
+      "competitionCount": 1572,
+      "scriptCount": 8093,
+      "slug": "regression",
+      "displayName": "Regression"
+    },
+    {
+      "id": 7401,
+      "name": "astronomy",
+      "fullPath": "subject > earth and nature > physical science > astronomy",
+      "description": "There are lots of fun datasets here for you to analyze, and who knows, maybe you'll find a habitable planet hidden in the data that no one else saw. Then you could have a planet named after you!",
+      "datasetCount": 1965,
+      "competitionCount": 24,
+      "scriptCount": 1032,
+      "slug": "astronomy",
+      "displayName": "Astronomy"
+    },
+    {
+      "id": 13103,
+      "name": "intermediate",
+      "fullPath": "audience > intermediate",
+      "datasetCount": 6337,
+      "competitionCount": 103,
+      "scriptCount": 6978,
+      "slug": "intermediate",
+      "displayName": "Intermediate"
+    },
+    {
+      "name": "custom metric",
+      "description": "This competition's metric is defined under the 'Evaluation' tab",
+      "displayName": "Custom Metric"
+    }
+  ],
+  "organization": {
+    "slug": "university-college-london",
+    "name": "University College London",
+    "thumbnailImageUrl": "https://storage.googleapis.com/kaggle-organizations/4417/thumbnail.jpg",
+    "profileUrl": "/organizations/university-college-london"
+  },
+  "launched": true,
+  "createdByUserId": 1132983,
+  "license": {
+    "id": 14,
+    "name": "Attribution-NonCommercial 4.0 International (CC BY-NC 4.0)",
+    "url": "https://creativecommons.org/licenses/by-nc/4.0/",
+    "agreementRequired": false
+  },
+  "hostName": "University College London",
+  "scoreTruncationNumDecimals": 3,
+  "locked": true,
+  "totalJoinedUsers": 5925,
+  "requiresIdentityVerification": true,
+  "submissionSizeLimitMb": 20480,
+  "reward": {
+    "id": "USD",
+    "quantity": 50000
+  }
+}

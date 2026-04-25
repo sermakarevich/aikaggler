@@ -1,0 +1,62 @@
+{
+  "summary": "The author achieved 5th place by prioritizing model diversity over individual optimization to tackle rare, hard-to-predict samples. They identified three difficult data types, notably focusing on ensuring correct misconceptions appear in top predictions for ambiguous cases. By leveraging the fact that answer correctness is known, they reduced the task to a 37-class classification problem and built both 37-class and 65-class models. The final ensemble combined six fine-tuned LLMs with a simple weighted average, augmented by post-inference probability masking based on question-specific misconception constraints.",
+  "extensive_summary": "## Strategy Overview: Emphasis on Diversity\nThe baseline model already achieved ~94% accuracy, so further gains required targeting a small subset of hard-to-predict data. The author hypothesized that misclassifications clustered around three types: `True_Misconception:XXX` (correct answer, wrong explanation), `False_Correct:NA` (wrong answer, correct explanation), and ambiguous explanations. Since the `Question` allows determining correctness beforehand, the problem effectively becomes a 37-class classification task (`Correct`, `Neither`, and 35 `Misconceptions`). Rather than over-optimizing the `Correct`/`Neither` distinction, the focus shifted to ensuring the correct `Misconception` appears in the top three candidates for ambiguous cases. To avoid model-specific biases, the author emphasized training diversity and ensembled multiple approaches.\n\n## Ensemble Strategy and CV/LB Correlation\nInitially, `StratifiedKFold` was used based on `Misconception` labels, but identical `StudentExplanation` texts across folds caused overly optimistic CV scores. The strategy switched to `StratifiedGroupKFold`, grouping by `StudentExplanation` after stripping spaces and periods. Once single models reached a Public LB of ~0.946, CV/LB correlation completely broke down, likely due to rare hard samples and unseen test expressions. Consequently, ensemble selection relied solely on Public LB improvement, with minimal weight adjustments to prevent LB overfitting. Two models from public notebooks were directly incorporated to boost diversity.\n\n## Data Processing and Post-Processing\nData augmentation was applied to one model to address `True_Misconception` cases: extracting `False_Misconception` samples per question, sampling 10%, rewriting the answer to be correct, and relabeling. For inference, the author leveraged domain knowledge that valid misconceptions are strictly limited per `QuestionId`. A training-derived question-misconception map was created, and during inference, probabilities for impossible misconceptions were forcibly set to zero.\n\n## Models and Training\nBoth 65-class and 37-class models were built and ensembled for diversity. The final lineup included:\n- Gemma2-9b-it (37-class, LoRA)\n- Qwen2.5-14B-Instruct (37-class, QLoRA)\n- Gemma2-9b-it (65-class, QLoRA)\n- Qwen2.5-14B-Instruct (37-class, QLoRA)\n- Qwen3-8B (65-class, Full FT)\n- Deepseek-math-7b-instruct (65-class, QLoRA)\nEach used tailored prompts and was combined via a simple weighted average of predicted probabilities.",
+  "rank": 5,
+  "competition_flow": "Raw text data containing questions, answers, and explanations is loaded into pandas DataFrames, split via StratifiedGroupKFold, fine-tuned across six diverse LLMs using LoRA/QLoRA/FullFT, and processed through question-specific misconception masking before being combined via a weighted average ensemble for submission.",
+  "data_reading": [
+    "pandas DataFrame"
+  ],
+  "data_processing": [
+    "Data augmentation by rewriting incorrect answers to correct ones for specific misconception types",
+    "Stripping spaces and periods from StudentExplanation for grouping",
+    "Creating a training-derived question-misconception map for inference masking",
+    "Reducing classification task from 65 to 37 classes by leveraging known answer correctness"
+  ],
+  "features_engineering": [],
+  "models": [
+    "Gemma2-9b-it",
+    "Qwen2.5-14B-Instruct",
+    "Qwen3-8B",
+    "Deepseek-math-7b-instruct"
+  ],
+  "frameworks_used": [],
+  "loss_functions": [],
+  "cv_strategy": "StratifiedGroupKFold grouped by StudentExplanation (with spaces and periods removed); initially used StratifiedKFold.",
+  "ensembling": "Simple weighted average of predicted probabilities from six fine-tuned LLMs, with post-processing that forces impossible misconceptions to zero probability per question ID.",
+  "insights": [
+    "Prioritizing model diversity rather than individual model optimization is essential for improving predictions on rare, hard-to-classify data.",
+    "Cross-validation scores can completely lose correlation with leaderboard scores when the test set contains novel expressions not present in training.",
+    "Leveraging domain knowledge that valid misconceptions are strictly limited per question significantly boosts prediction accuracy."
+  ],
+  "critical_findings": [
+    "Identical StudentExplanation texts across folds cause overly optimistic cross-validation scores.",
+    "CV and Public LB correlation disappears once single model scores reach approximately 0.946.",
+    "The set of possible misconceptions is strictly constrained per QuestionId, enabling effective probability masking during inference."
+  ],
+  "what_did_not_work": [],
+  "github_repos": [],
+  "papers": [],
+  "other_solution_refs": [
+    {
+      "description": "Gemma2-9B-it CV 0.945",
+      "url": "https://www.kaggle.com/code/cdeotte/gemma2-9b-it-cv-0-945"
+    },
+    {
+      "description": "DeepSeekMath-7B LB:0.944",
+      "url": "https://www.kaggle.com/code/jaytonde/deepseekmath-7b-lb-0-944"
+    },
+    {
+      "description": "FullFT Qwen3-8B by SFTTrainer (Train)",
+      "url": "https://www.kaggle.com/code/sinchir0/lb-0-942-train-fullft-qwen3-8b-by-sfttrainer"
+    },
+    {
+      "description": "FullFT Qwen3-8B by SFTTrainer (Infer)",
+      "url": "https://www.kaggle.com/code/sinchir0/lb-0-942-infer-fullft-qwen3-8b-by-sfttrainer"
+    },
+    {
+      "description": "Fine tuning Gemma2-2b-it considerations",
+      "url": "https://www.kaggle.com/code/ueueue/some-considerations-fine-tuning-gemma2-2b-it"
+    }
+  ],
+  "source_url": "https://www.kaggle.com/competitions/map-charting-student-math-misunderstandings/discussion/612124"
+}

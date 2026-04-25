@@ -1,0 +1,34 @@
+{
+  "id": "allegich/jane-street-time-series-analysis-eda-ensemble",
+  "id_no": 71869611,
+  "title": "Jane Street: Time series analysis + EDA + Ensemble",
+  "code_file": "jane-street-time-series-analysis-eda-ensemble.ipynb",
+  "language": "python",
+  "kernel_type": "notebook",
+  "is_private": false,
+  "enable_gpu": false,
+  "enable_tpu": false,
+  "enable_internet": false,
+  "keywords": [
+    "finance",
+    "data visualization",
+    "exploratory data analysis",
+    "tabular",
+    "time series analysis"
+  ],
+  "dataset_sources": [
+    "voix97/js-with-lags-trained-xgb",
+    "voix97/js-xs-nn-trained-model"
+  ],
+  "kernel_sources": [
+    "motono0223/js24-preprocessing-create-lags"
+  ],
+  "competition_sources": [
+    "jane-street-real-time-market-data-forecasting"
+  ],
+  "model_sources": [
+    "xuanleekaggle/jane-street-5-and-7_/Other/default/1"
+  ],
+  "docker_image": "gcr.io/kaggle-images/python@sha256:f4b6dd72d4ac48c76fbb02bce0798b80b284102886ad37e6041e9ab721dc8873",
+  "machine_shape": "None"
+}

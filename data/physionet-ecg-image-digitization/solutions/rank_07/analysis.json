@@ -1,0 +1,72 @@
+{
+  "summary": "The authors developed a multi-stage pipeline for ECG image analysis involving rotation correction, lead detection/segmentation, and digitization. They generated synthetic training data by modifying the ECG-image-kit repository to simulate realistic artifacts, backgrounds, and shadows. The pipeline combines diverse digitization models (MaxViT and ViT variants) with specialized loss functions and a multi-stage progressive training approach. An out-of-distribution detection model was integrated to selectively mask predictions, boosting the final ensemble score.",
+  "extensive_summary": "## Pipeline Overview & Data Generation\nThe solution employs a sequential pipeline: rotation correction, lead detection/segmentation, digitization, and out-of-distribution (OOD) detection. Since the competition lacked lead annotations, the authors modified the `ECG-image-kit` repository to generate synthetic training data. This involved inserting ECG plots onto varied backgrounds, simulating shadows, and using variable colors/textures to create realistic artifacts. Raw ECG values came from the PTBXL dataset, while backgrounds and shadows were sourced from the Describable Textures Dataset (DTD).\n\n## Rotation & Lead Detection/Segmentation\nA lightweight classification model using HGNet-V2 variants (B4 and B5) predicts the required rotation (0, 90, 180, or 270 degrees). For lead localization, a hybrid detection/segmentation model based on the ConvNeXt family predicts objectiveness, class scores, and offsets. The detection head was explicitly sized to >=128 channels to ensure sufficient capacity. A two-pass cropping strategy with minimum dimensions (16px height, 64px width) refined the area of interest, eliminating catastrophic detections and improving leaderboard scores. A segmentation branch outputs pixel-wise masks for 13 lead classes, which feed into the digitization stage.\n\n## Digitization Models & Training\nTwo parallel digitization approaches were developed. The first uses a `maxxvitv2_nano_rw_256.sw_in1k` encoder with a 1D UNet decoder, taking a 5-channel input (RGB + lead probability + max probability of other leads) to handle overlapping leads. Training involved heavy augmentations (color, distortion, flips, shifts, coarse dropout) and a custom Albumentations module for ECG keywords. The second approach, inspired by a Yale competition solution, uses a `vit_small_patch16_dinov3.lvd1689m` encoder with three model variations (V27, V27-SNR, V6) trained on different crop sources with MAE or SNR losses. These models utilize progressive image size scaling across five stages (e.g., 224x896 to 336x3584) over 20 epochs per stage, with minimal augmentations (horizontal flips only). All models use the Muon optimizer from timm.\n\n## Ensemble & OOD Detection\nThe final submission combines Harshit\u2019s in-distribution-optimized models and Bartley\u2019s out-of-distribution-robust models via a simple mean ensemble. To further refine predictions, an OOD detection model was trained using `tf_efficientnetv2_s` with ArcFace Loss. During inference, cosine similarity between test embeddings and training set averages is computed; predictions from Harshit\u2019s models are masked if similarity drops below 0.5, yielding a final score of 22.80/22.48.",
+  "rank": 7,
+  "competition_flow": "Raw ECG images are processed through a rotation correction model, followed by lead detection and segmentation to crop and mask specific leads, which are then digitized using diverse ViT/MaxViT models with progressive training, and finally combined via a mean ensemble with an OOD detection filter to produce the final submission.",
+  "data_reading": [],
+  "data_processing": [
+    "Synthetic data generation with realistic artifacts, shadows, and backgrounds",
+    "Rotation correction via lightweight classification",
+    "Lead detection/segmentation with two-pass cropping (min 16x64px)",
+    "5-channel image inputs combining RGB with lead probability maps",
+    "Heavy augmentations (color, distortion, flips, shifts, coarse dropout, custom keyword overlays) for MaxViT models",
+    "Progressive resolution scaling across five training stages for ViT models",
+    "Minimal augmentations (horizontal flips, random padding) for ViT variants"
+  ],
+  "features_engineering": [],
+  "models": [
+    "HGNet-V2",
+    "ConvNeXt",
+    "maxxvitv2_nano_rw_256.sw_in1k",
+    "vit_small_patch16_dinov3.lvd1689m",
+    "tf_efficientnetv2_s"
+  ],
+  "frameworks_used": [
+    "timm",
+    "Albumentations"
+  ],
+  "loss_functions": [
+    "SNRloss",
+    "MAE",
+    "ArcFace Loss"
+  ],
+  "cv_strategy": "k-fold cross-validation across all samples; lightweight models validated on all folds, expensive models validated on a 100-sample subset.",
+  "ensembling": "A simple mean ensemble of diverse digitization models was combined with an OOD detection filter that masks specific model predictions during inference when cosine similarity to training embeddings drops below 0.5.",
+  "insights": [
+    "Validating expensive models on just 100 samples provides a strong correlation with the leaderboard while speeding up experiments.",
+    "Ensuring sufficient capacity in the bounding box detection head (>=128 channels) is critical for learning signal features.",
+    "Using a 5-channel input combining RGB with lead probability maps improves robustness on crops with overlapping leads.",
+    "Progressive image size scaling across multiple stages ensures stable convergence for digitization models.",
+    "The Muon optimizer from timm significantly outperforms other optimizers across all trained models."
+  ],
+  "critical_findings": [
+    "Enforcing minimum crop dimensions (16px height, 64px width) eliminated catastrophic detection failures and improved the leaderboard by ~0.2-3 points.",
+    "The MaxViT digitization model failed to fully converge during training but continued to yield performance gains until the competition deadline.",
+    "Testing models on photographs of ECG plots from different monitors showed consistent scores, confirming robustness to distribution shifts."
+  ],
+  "what_did_not_work": [
+    "The MaxViT digitization model with heavy augmentations and a custom Albumentations module for ECG keywords failed to fully converge during training, though it continued to improve until the deadline."
+  ],
+  "github_repos": [
+    {
+      "url": "https://github.com/TheoViel/kaggle_rsna_abdominal_trauma",
+      "role": "reference"
+    },
+    {
+      "url": "https://github.com/brendanartley/PhysioNet-Competition",
+      "role": "solution"
+    }
+  ],
+  "papers": [],
+  "other_solution_refs": [
+    {
+      "description": "Harshit's 1st Place Solution in the Yale Competition",
+      "url": "https://www.kaggle.com/competitions/waveform-inversion/writeups/harshit-sheoran-1st-place-solution"
+    },
+    {
+      "description": "Inference code",
+      "url": "https://www.kaggle.com/code/harshitsheoran/physionet-infer-v-final"
+    }
+  ],
+  "source_url": "https://www.kaggle.com/competitions/physionet-ecg-image-digitization/discussion/669548"
+}

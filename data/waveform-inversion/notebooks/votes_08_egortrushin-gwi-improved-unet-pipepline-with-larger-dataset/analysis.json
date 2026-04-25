@@ -1,0 +1,37 @@
+{
+  "summary": "This notebook demonstrates a training pipeline for seismic waveform inversion using a custom U-Net architecture with residual connections. It highlights efficient handling of large .npy datasets via memory mapping and implements mixed-precision training to optimize GPU usage. The author applies a fixed linear scaling to the model outputs to match the physical velocity range and uses a simple file-based holdout split for validation. Readers should take away practical techniques for scaling deep learning workflows to large geophysical datasets, including memory-efficient data loading, residual block design, and output post-processing.",
+  "purpose": "baseline",
+  "competition_flow": "Loads seismic trace files, trains a custom residual U-Net with L1 loss and mixed precision, and exports predicted velocity models to a CSV submission.",
+  "data_reading": [
+    "Custom SeismicDataset and TestDataset classes load .npy files using np.load with mmap_mode='r', extracting seismic traces and target velocity models."
+  ],
+  "data_processing": [
+    "Memory-mapped file loading to avoid OOM errors",
+    "Padding/cropping inputs to 70x70 and initial average pooling",
+    "Train/valid split via file indexing (valid_frac=36, train_frac=5)",
+    "Mixed precision training via torch.autocast",
+    "Final output scaling (logits * 1000.0 + 1500.0) to match physical velocity range"
+  ],
+  "features_engineering": [],
+  "models": [
+    "Custom UNet with ResidualDoubleConv blocks (depth=5, init_features=32)"
+  ],
+  "frameworks_used": [
+    "pytorch",
+    "numpy"
+  ],
+  "loss_functions": [
+    "L1Loss"
+  ],
+  "cv_strategy": "Holdout split via file indexing (valid_frac=36, train_frac=5)",
+  "ensembling": "",
+  "insights": [
+    "Memory mapping large numpy arrays prevents GPU OOM errors during dataset iteration.",
+    "Residual connections in U-Net encoder/decoder blocks improve gradient flow for deeper architectures.",
+    "Applying a fixed linear scaling to logits aligns the model's output range with the physical velocity domain."
+  ],
+  "critical_findings": [],
+  "what_did_not_work": [],
+  "source_url": "https://www.kaggle.com/code/egortrushin/gwi-improved-unet-pipepline-with-larger-dataset",
+  "votes": 222
+}

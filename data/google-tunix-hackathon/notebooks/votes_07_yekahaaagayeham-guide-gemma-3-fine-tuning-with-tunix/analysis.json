@@ -1,0 +1,42 @@
+{
+  "summary": "This notebook provides a complete, step-by-step recipe for full fine-tuning the Gemma 3 1B model on a Kaggle TPU runtime using Google's Tunix framework. It demonstrates how to properly shard model weights across TPU devices, format GSM8K math problems into a strict `<reasoning>`/`<answer>` instruction-following schema, and build efficient JAX/Grain input pipelines. The author emphasizes critical deployment details like verifying TPU placement, handling GSM8K annotation artifacts, and using robust answer extraction with majority voting for evaluation. Readers should learn how to bridge raw LLM weights to a structured SFT workflow while avoiding common JAX/TPU pitfalls.",
+  "purpose": "tutorial",
+  "competition_flow": "Downloads Gemma 3 weights, formats GSM8K data into strict XML-tagged prompts, fine-tunes the model on a TPU using Tunix and Optax, and evaluates performance using majority voting over generated completions.",
+  "data_reading": [
+    "Loads GSM8K dataset via `datasets.load_dataset` and attempts to load a CSV for evaluation with a hardcoded fallback list."
+  ],
+  "data_processing": [
+    "Cleans GSM8K calculation artifacts, extracts reasoning/answer components, formats data into strict XML-tagged chat templates, tokenizes with padding/truncation, and creates causal loss masks to ignore prompt tokens."
+  ],
+  "features_engineering": [],
+  "models": [
+    "Gemma 3 1B"
+  ],
+  "frameworks_used": [
+    "jax",
+    "tunix",
+    "optax",
+    "grain",
+    "flax",
+    "kagglehub",
+    "datasets",
+    "pandas"
+  ],
+  "loss_functions": [],
+  "cv_strategy": "GSM8K train/test split holdout",
+  "ensembling": "Evaluates predictions using majority voting over multiple sampled completions (self-consistency) to improve answer accuracy.",
+  "insights": [
+    "Strict instruction formatting with XML tags during training ensures consistent machine-parseable outputs at inference.",
+    "Explicitly verifying TPU device placement for model parameters prevents silent CPU training failures.",
+    "Robust answer extraction requires cascading regex patterns and normalization to handle formatting variations in LLM outputs.",
+    "Majority voting over diverse generations significantly improves math problem accuracy compared to single greedy decoding."
+  ],
+  "critical_findings": [
+    "Mixing tokenizers across checkpoints can corrupt training and evaluation, so tokenizer/model alignment is critical.",
+    "The first training step takes 2-5 minutes due to XLA compilation, after which TPU utilization becomes apparent.",
+    "GSM8K datasets contain non-standard calculation annotations that must be cleaned to avoid confusing the model during SFT."
+  ],
+  "what_did_not_work": [],
+  "source_url": "https://www.kaggle.com/code/yekahaaagayeham/guide-gemma-3-fine-tuning-with-tunix",
+  "votes": 81
+}

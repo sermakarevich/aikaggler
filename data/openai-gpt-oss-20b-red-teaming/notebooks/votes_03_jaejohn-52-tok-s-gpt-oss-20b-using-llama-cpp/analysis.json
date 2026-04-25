@@ -1,0 +1,27 @@
+{
+  "summary": "This notebook demonstrates how to deploy and interact with the GPT-OSS-20B large language model locally on a Kaggle GPU environment using llama.cpp. It walks through installing system dependencies, launching a local HTTP server, and managing multi-turn conversations via a custom Python wrapper. The author highlights the model's specific chat template structure, which explicitly separates internal reasoning from final outputs using custom delimiters. Readers should learn how to efficiently run open-weight models locally, handle server latency, and parse structured model responses for downstream use.",
+  "purpose": "utility",
+  "competition_flow": "Installs llama.cpp dependencies, launches a local HTTP server to run the GPT-OSS-20B model, and demonstrates multi-turn conversational inference with custom response parsing.",
+  "data_reading": [],
+  "data_processing": [],
+  "features_engineering": [],
+  "models": [
+    "gpt-oss-20b"
+  ],
+  "frameworks_used": [
+    "llama.cpp",
+    "requests"
+  ],
+  "loss_functions": [],
+  "cv_strategy": "",
+  "ensembling": "",
+  "insights": [
+    "Deploying large open-weight models locally via llama.cpp is straightforward and requires minimal setup on Kaggle GPUs.",
+    "The GPT-OSS-20B architecture explicitly separates chain-of-thought reasoning from final answers using custom XML-like delimiters.",
+    "Wrapping an HTTP-based model server in a Python class simplifies conversation state management and response extraction."
+  ],
+  "critical_findings": [],
+  "what_did_not_work": [],
+  "source_url": "https://www.kaggle.com/code/jaejohn/52-tok-s-gpt-oss-20b-using-llama-cpp",
+  "votes": 97
+}

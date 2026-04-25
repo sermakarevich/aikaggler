@@ -1,0 +1,104 @@
+{
+  "id": 101597,
+  "competitionName": "openai-to-z-challenge",
+  "title": "OpenAI to Z Challenge",
+  "briefDescription": "Use OpenAI o3/o4 mini and GPT 4.1 models to help identify possibly hidden archeological sites",
+  "dateEnabled": "2025-05-15T10:55:00Z",
+  "deadline": "2025-06-29T23:59:00Z",
+  "leaderboardPercentage": 30,
+  "maxDailySubmissions": 1,
+  "numScoredSubmissions": 1,
+  "numPrizes": 3,
+  "forumId": 7805147,
+  "finalLeaderboardHasBeenVerified": true,
+  "dateCreated": "2025-05-09T18:27:55.527342300Z",
+  "competitionHostSegmentId": 1,
+  "maxTeamSize": 5,
+  "organizationId": 5089,
+  "hasCoverImageUrl": true,
+  "showPrivateLeaderboard": true,
+  "hasScripts": true,
+  "totalTeams": 225,
+  "totalCompetitors": 309,
+  "totalSubmissions": 225,
+  "rulesRequired": true,
+  "categories": [
+    {
+      "id": 13206,
+      "name": "geospatial analysis",
+      "fullPath": "analysis > geospatial analysis",
+      "datasetCount": 1449,
+      "competitionCount": 26,
+      "scriptCount": 1059,
+      "slug": "geospatial-analysis",
+      "displayName": "Geospatial Analysis"
+    },
+    {
+      "id": 3300,
+      "name": "south america",
+      "fullPath": "geography and places > south america",
+      "description": "South America is a continent located in the western hemisphere, mostly in the southern hemisphere, with a relatively small portion in the northern hemisphere. It may also be considered a subcontinent of the Americas, which is how it is viewed in the Spanish-speaking regions of the Americas.",
+      "datasetCount": 273,
+      "competitionCount": 1,
+      "scriptCount": 47,
+      "slug": "south-america",
+      "displayName": "South America"
+    },
+    {
+      "id": 3025,
+      "name": "brazil",
+      "fullPath": "geography and places > south america > brazil",
+      "description": "You don't have to visit Brazil to learn about their politics, soccer, and brush with Zika. This tag covers all the things you might be interested in about Brazil.",
+      "datasetCount": 881,
+      "competitionCount": 3,
+      "scriptCount": 309,
+      "slug": "brazil",
+      "displayName": "Brazil"
+    },
+    {
+      "id": 13207,
+      "name": "computer vision",
+      "fullPath": "technique > computer vision",
+      "description": "Teaching a machine to interpret real-world images and videos. Applications include detecting objects, capturing motion, and restoring images.",
+      "datasetCount": 6463,
+      "competitionCount": 136,
+      "scriptCount": 6208,
+      "slug": "image-processing",
+      "displayName": "Computer Vision"
+    },
+    {
+      "id": 13310,
+      "name": "deep learning",
+      "fullPath": "technique > deep learning",
+      "datasetCount": 5709,
+      "competitionCount": 90,
+      "scriptCount": 18653,
+      "slug": "deep-learning",
+      "displayName": "Deep Learning"
+    }
+  ],
+  "organization": {
+    "slug": "openai",
+    "name": "OpenAI",
+    "thumbnailImageUrl": "https://storage.googleapis.com/kaggle-organizations/5089/thumbnail.png?t=2025-08-14-19-21-59",
+    "profileUrl": "/organizations/openai"
+  },
+  "launched": true,
+  "createdByUserId": 1314380,
+  "license": {
+    "id": 42,
+    "name": "Subject to Competition Rules",
+    "agreementRequired": false
+  },
+  "hostName": "OpenAI",
+  "scoreTruncationNumDecimals": 5,
+  "locked": true,
+  "totalJoinedUsers": 8156,
+  "submissionSizeLimitMb": 20480,
+  "reward": {
+    "id": "USD",
+    "quantity": 500000,
+    "clarification": ""
+  },
+  "hackathon": true
+}

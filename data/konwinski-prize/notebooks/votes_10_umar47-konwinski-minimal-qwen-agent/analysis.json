@@ -1,0 +1,45 @@
+{
+  "summary": "This notebook demonstrates a minimal retrieval-augmented generation pipeline for the Konwinski Prize competition, where a Qwen2.5-Coder-7B model generates git diff patches to resolve GitHub issues. It combines TF-IDF and CodeBERT embeddings to retrieve the most relevant repository files, structures them into a constrained prompt, and uses strict formatting rules to guide the LLM toward valid patches. The author emphasizes memory optimization techniques like offloading, context truncation, and explicit cache management to run the 7B model on Kaggle GPUs. Readers should learn how to build a functional code-fixing agent with minimal dependencies and understand the importance of retrieval quality and prompt engineering in LLM-based software engineering tasks.",
+  "purpose": "inference",
+  "competition_flow": "Loads problem statements and repository archives, retrieves relevant code files using TF-IDF and semantic similarity, feeds them into a Qwen2.5-Coder-7B agent with a structured prompt to generate a git diff patch, validates the output, and serves predictions via Kaggle's evaluation server.",
+  "data_reading": [
+    "Reads data.parquet using pandas, prefixes instance_id with repo__",
+    "Extracts repository archives from data.a_zip into a local directory"
+  ],
+  "data_processing": [
+    "Filters repository files by extension and size",
+    "Computes TF-IDF vectors for the problem statement and file contents to retrieve top-N relevant files",
+    "Truncates directory structures and file contents to fit context limits",
+    "Validates generated patches using unidiff"
+  ],
+  "features_engineering": [
+    "Hand-crafted repository analysis including directory tree traversal, git commit history extraction, and pattern-based priority file identification",
+    "TF-IDF and CodeBERT cosine similarity scores used for file retrieval"
+  ],
+  "models": [
+    "Qwen2.5-Coder-7B-Instruct",
+    "CodeBERT"
+  ],
+  "frameworks_used": [
+    "transformers",
+    "torch",
+    "scikit-learn",
+    "unidiff",
+    "kaggle_evaluation",
+    "gitpython",
+    "pandas",
+    "numpy"
+  ],
+  "loss_functions": [],
+  "cv_strategy": "",
+  "ensembling": "",
+  "insights": [
+    "Retrieval-augmented generation with TF-IDF and CodeBERT embeddings effectively narrows down relevant repository files for large language models.",
+    "Structured prompting with explicit formatting rules and step-by-step reasoning improves patch generation reliability.",
+    "Memory management (offloading, chunking, cache clearing) is critical for running 7B models on Kaggle GPUs."
+  ],
+  "critical_findings": [],
+  "what_did_not_work": [],
+  "source_url": "https://www.kaggle.com/code/umar47/konwinski-minimal-qwen-agent",
+  "votes": 73
+}

@@ -1,0 +1,21 @@
+{
+  "id": "modeh7/final-solution-ncaa-2025",
+  "id_no": 80606256,
+  "title": "Final-Solution-NCAA-2025",
+  "code_file": "final-solution-ncaa-2025.ipynb",
+  "language": "python",
+  "kernel_type": "notebook",
+  "is_private": false,
+  "enable_gpu": false,
+  "enable_tpu": false,
+  "enable_internet": true,
+  "keywords": [],
+  "dataset_sources": [],
+  "kernel_sources": [],
+  "competition_sources": [
+    "march-machine-learning-mania-2025"
+  ],
+  "model_sources": [],
+  "docker_image": "gcr.io/kaggle-images/python@sha256:36bd91c0e9248f9f2748be5cf354e070f2f93034099b1c02932530ef1e928303",
+  "machine_shape": "None"
+}

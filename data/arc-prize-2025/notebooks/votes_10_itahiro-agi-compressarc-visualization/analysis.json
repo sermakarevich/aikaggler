@@ -1,0 +1,37 @@
+{
+  "summary": "This notebook demonstrates an optimized inference pipeline for the ARC-AGI competition using the CompressARC method. Instead of solving puzzles sequentially, it implements a dynamic memory and time-aware scheduler to parallelize execution across multiple GPUs and CPUs. It calculates per-puzzle memory usage, estimates step duration, and allocates the remaining time budget to maximize the number of steps per puzzle. The pipeline outputs a formatted submission.json and includes a comprehensive visualization module to compare model predictions against ground truth, along with automated accuracy statistics. Readers should learn how to efficiently manage hardware resources and time constraints for large-scale grid-based reasoning tasks.",
+  "purpose": "inference",
+  "competition_flow": "Loads ARC-AGI test puzzles from JSON, runs the CompressARC model in parallel with dynamic memory/time scheduling to generate predictions, and outputs a formatted submission.json with optional visualization and accuracy metrics.",
+  "data_reading": [
+    "Reads puzzle inputs and metadata from ../input/arc-prize-2025/arc-agi_{split}_challenges.json using Python's json module.",
+    "Loads ground truth solutions from arc-agi_training_solutions.json and arc-agi_evaluation_solutions.json for visualization and accuracy calculation."
+  ],
+  "data_processing": [
+    "No explicit preprocessing or cleaning in this notebook; relies on external imported modules (preprocessing.py, solve_task.py, etc.) for task handling.",
+    "The notebook itself focuses on scheduling, memory/time budgeting, and JSON serialization for submission."
+  ],
+  "features_engineering": [],
+  "models": [
+    "CompressARC"
+  ],
+  "frameworks_used": [
+    "torch",
+    "numpy",
+    "multiprocessing",
+    "matplotlib"
+  ],
+  "loss_functions": [],
+  "cv_strategy": "",
+  "ensembling": "Generates two attempts per puzzle via parallel execution; no explicit ensembling or post-processing is applied.",
+  "insights": [
+    "Dynamic memory and time-aware scheduling prevents GPU underutilization and fits within strict competition time budgets.",
+    "Parallelizing puzzle solving across multiple GPUs and CPUs significantly increases the number of steps per puzzle compared to sequential execution.",
+    "Automated visualization and accuracy calculation streamline the evaluation of grid-based reasoning model outputs."
+  ],
+  "critical_findings": [
+    "Solving puzzles sequentially underutilizes available GPU hardware and easily exceeds the 12-hour time limit, necessitating parallel execution."
+  ],
+  "what_did_not_work": [],
+  "source_url": "https://www.kaggle.com/code/itahiro/agi-compressarc-visualization",
+  "votes": 180
+}

@@ -1,0 +1,38 @@
+{
+  "summary": "This notebook demonstrates a baseline pipeline for extracting and classifying research data citations (DOIs) from academic PDFs using a large language model. It converts PDFs to text, isolates DOI mentions with regex, and prompts a quantized Qwen-3 8B model to extract the full DOI URL and classify the data source as Primary, Secondary, or Not Relevant. The pipeline includes post-processing steps like deduplication and filtering frequent false-positive dataset IDs to refine predictions. Readers should learn how to structure LLM prompts for precise information extraction, handle PDF parsing quirks, and apply simple heuristic filters to improve baseline performance without training a custom model.",
+  "purpose": "baseline",
+  "competition_flow": "Extracts text from academic PDFs, uses regex to isolate DOI contexts, prompts a quantized LLM to extract and classify DOIs, applies frequency-based filtering and deduplication, and generates a formatted submission CSV for evaluation.",
+  "data_reading": [
+    "Loads PDF files from a local directory using `fitz` (PyMuPDF), iterates through pages to extract raw text, splits text at the \"references\" keyword to exclude citation lists, and extracts `article_id` from filenames."
+  ],
+  "data_processing": [
+    "Uses regex to find DOI patterns (`10.\\d{4}`), creates 400-character context windows around each match, saves chunks to pickle, parses LLM JSON outputs, removes \"Not Relevant\" classifications, deduplicates entries, and filters out `dataset_id`s appearing three or more times."
+  ],
+  "features_engineering": [],
+  "models": [
+    "Qwen-3 8B (AWQ quantized)"
+  ],
+  "frameworks_used": [
+    "vllm",
+    "torch",
+    "pandas",
+    "fitz",
+    "re",
+    "json",
+    "pickle"
+  ],
+  "loss_functions": [],
+  "cv_strategy": "",
+  "ensembling": "",
+  "insights": [
+    "Clear prompt engineering and context windowing enable LLMs to reliably extract and classify DOI citations from unstructured academic text.",
+    "Filtering frequent false-positive predictions significantly improves precision in citation extraction tasks.",
+    "Excluding the References section during text extraction prevents the model from misinterpreting citation metadata as primary data sources."
+  ],
+  "critical_findings": [
+    "Frequent false-positive DOI predictions occur naturally and can be mitigated by filtering dataset IDs that appear three or more times across the dataset."
+  ],
+  "what_did_not_work": [],
+  "source_url": "https://www.kaggle.com/code/yeoyunsianggeremie/keyword-search-llm-baseline-cv-0-120-lb-0-105",
+  "votes": 235
+}

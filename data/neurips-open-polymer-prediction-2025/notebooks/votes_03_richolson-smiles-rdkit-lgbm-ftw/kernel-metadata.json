@@ -1,0 +1,25 @@
+{
+  "id": "richolson/smiles-rdkit-lgbm-ftw",
+  "id_no": 85246290,
+  "title": "SMILES->RDKIT->LGBM->FTW  \ud83e\uddea\u26a1\ud83d\ude80",
+  "code_file": "smiles-rdkit-lgbm-ftw.ipynb",
+  "language": "python",
+  "kernel_type": "notebook",
+  "is_private": false,
+  "enable_gpu": false,
+  "enable_tpu": false,
+  "enable_internet": false,
+  "keywords": [],
+  "dataset_sources": [
+    "richolson/rdkit-install-whl"
+  ],
+  "kernel_sources": [
+    "richolson/open-polymer-2025-metric"
+  ],
+  "competition_sources": [
+    "neurips-open-polymer-prediction-2025"
+  ],
+  "model_sources": [],
+  "docker_image": "gcr.io/kaggle-images/python@sha256:3223337db7786b068bfeac3a1b741bf0d572a4bf309735b45692de873b7758db",
+  "machine_shape": "None"
+}

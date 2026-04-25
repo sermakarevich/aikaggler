@@ -1,0 +1,23 @@
+{
+  "id": "danielhanchen/gemma-3n-4b-audio-finetuning",
+  "id_no": 88209925,
+  "title": "Gemma 3N 4B Audio finetuning",
+  "code_file": "gemma-3n-4b-audio-finetuning.ipynb",
+  "language": "python",
+  "kernel_type": "notebook",
+  "is_private": false,
+  "enable_gpu": true,
+  "enable_tpu": false,
+  "enable_internet": true,
+  "keywords": [
+    "gpu"
+  ],
+  "dataset_sources": [],
+  "kernel_sources": [],
+  "competition_sources": [
+    "google-gemma-3n-hackathon"
+  ],
+  "model_sources": [],
+  "docker_image": "gcr.io/kaggle-private-byod/python@sha256:5de7f3337f4166df89b2d68f886fb08b30c4260df90e55e6587be5fd7648cf3f",
+  "machine_shape": "NvidiaTeslaT4"
+}

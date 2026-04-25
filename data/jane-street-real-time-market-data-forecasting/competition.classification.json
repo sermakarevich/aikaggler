@@ -1,0 +1,21 @@
+{
+  "description": "Participants forecast financial market movements using historical tabular trading data. The task requires predicting continuous target values for future time steps based on real-world market features. Success is evaluated using a custom 'Jane Street Zero-Mean R2' metric on a held-out temporal test set. Competitors submit models via notebooks under strict daily submission limits and offline inference rules.",
+  "data_modality": "tabular",
+  "task_type": "forecasting",
+  "label_structure": "single_label",
+  "metric": "Jane Street Zero-Mean R2",
+  "test_split": "temporal",
+  "format": "code_comp",
+  "dataset_scale": "unknown",
+  "domain": "finance",
+  "data_challenges": [
+    "domain_shift",
+    "label_noise",
+    "private_test_shift"
+  ],
+  "constraints": [
+    "no_internet_during_inference",
+    "kernels_only",
+    "strict_submission_limits"
+  ]
+}

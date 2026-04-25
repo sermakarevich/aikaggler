@@ -1,0 +1,40 @@
+{
+  "summary": "This notebook presents a complete training and inference pipeline for full-resolution seismic velocity model prediction. It introduces a modified CAFormer backbone paired with an enhanced U-Net decoder that incorporates pixel shuffle upsampling, SCSE attention blocks, and intermediate convolutions to preserve fine spatial details. The author demonstrates a custom ConstantCosineLR scheduler, EMA weight tracking, and DDP training across multiple GPUs. Readers should understand how targeted decoder modifications and learning rate scheduling can significantly improve regression performance in geophysical tasks. The notebook also provides a practical multi-model ensemble and TTA strategy for robust validation and test inference.",
+  "purpose": "training",
+  "competition_flow": "Loads preprocessed seismic data and velocity targets from CSV/mmap files, trains a modified CAFormer/ConvNeXt U-Net with EMA and a custom scheduler, then ensembles multiple checkpoints for validation scoring and test submission generation.",
+  "data_reading": [
+    "Loads metadata from folds.csv, resolves data/label file paths via glob, and reads float16 seismic data and velocity targets as numpy arrays using np.load with mmap_mode='r'."
+  ],
+  "data_processing": [
+    "Applies horizontal (temporal) flip augmentation during training, uses ReflectionPad2d in the network stem, and applies inverse output scaling (* 1500 + 3000) during the forward pass."
+  ],
+  "features_engineering": [],
+  "models": [
+    "caformer_b36.sail_in22k_ft_in1k",
+    "convnext_small.fb_in22k_ft_in1k",
+    "custom U-Net decoder with PixelShuffle, SCSE blocks, and intermediate convolutions"
+  ],
+  "frameworks_used": [
+    "torch",
+    "timm",
+    "monai",
+    "numpy",
+    "pandas",
+    "matplotlib"
+  ],
+  "loss_functions": [
+    "L1Loss"
+  ],
+  "cv_strategy": "Fold-based split using folds.csv (fold 0 for validation, others for training), DDP training, and early stopping (patience=3).",
+  "ensembling": "Combines multiple pretrained checkpoints with weighted averaging (0.8 for the first model, 0.1 for subsequent models) and applies TTA by averaging predictions from horizontally flipped inputs.",
+  "insights": [
+    "Pixel shuffle upsampling combined with SCSE attention blocks preserves fine spatial details better than standard deconvolution in full-resolution tasks.",
+    "A constant learning rate phase followed by cosine annealing prevents early training instability while enabling precise convergence.",
+    "Replacing BatchNorm with InstanceNorm and ReLU with GELU stabilizes ConvNeXt training for geophysical regression.",
+    "Horizontal flip TTA during inference effectively doubles the effective sample size without additional training cost."
+  ],
+  "critical_findings": [],
+  "what_did_not_work": [],
+  "source_url": "https://www.kaggle.com/code/overvalueawareness/caformer-full-resolution-improved",
+  "votes": 611
+}

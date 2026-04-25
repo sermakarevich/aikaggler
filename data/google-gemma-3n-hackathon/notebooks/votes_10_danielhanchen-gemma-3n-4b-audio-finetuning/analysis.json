@@ -1,0 +1,39 @@
+{
+  "summary": "This notebook demonstrates how to fine-tune the Gemma-3N-4B multimodal model for German automatic speech recognition using a small dataset of 3,000 samples. It walks through loading the Emilia-DE dataset, formatting audio-text pairs into a multi-turn chat template, and applying LoRA fine-tuning via the Unsloth library. The author evaluates a baseline inference step, trains the model for one epoch, and measures the improvement in Word Error Rate. Readers learn how to efficiently adapt a 4-bit quantized multimodal LLM for audio tasks with minimal data and compute.",
+  "purpose": "training",
+  "competition_flow": "Loads a German speech dataset, formats audio-text pairs into a chat template, fine-tunes a 4-bit quantized Gemma-3N-4B model using LoRA for one epoch, and evaluates the reduction in Word Error Rate before saving the adapters.",
+  "data_reading": [
+    "Loads the `unsloth/Emilia-DE-B000000` dataset via Hugging Face `datasets`.",
+    "Selects 3,000 training samples and reserves one sample for testing.",
+    "Casts the audio column to a 16kHz sampling rate."
+  ],
+  "data_processing": [
+    "Formats raw audio-text pairs into a system/user/assistant chat structure.",
+    "Applies a chat template to tokenize text and process audio inputs.",
+    "Masks padding, audio, and special tokens in the label tensor to exclude them from loss computation."
+  ],
+  "features_engineering": [],
+  "models": [
+    "Gemma-3N-E4B-It"
+  ],
+  "frameworks_used": [
+    "unsloth",
+    "transformers",
+    "trl",
+    "datasets",
+    "torch",
+    "peft"
+  ],
+  "loss_functions": [],
+  "cv_strategy": "",
+  "ensembling": "",
+  "insights": [
+    "Fine-tuning a multimodal LLM with LoRA on just 3,000 samples can significantly reduce ASR error rates.",
+    "Using `do_sample=False` is necessary for deterministic speech transcription outputs.",
+    "Targeting both language and audio-specific projection layers in LoRA is crucial for multimodal adaptation."
+  ],
+  "critical_findings": [],
+  "what_did_not_work": [],
+  "source_url": "https://www.kaggle.com/code/danielhanchen/gemma-3n-4b-audio-finetuning",
+  "votes": 42
+}

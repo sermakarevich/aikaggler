@@ -1,0 +1,27 @@
+{
+  "id": "egortrushin/gwi-unet-with-float16-dataset",
+  "id_no": 81694370,
+  "title": "[GWI] UNet with float16 dataset",
+  "code_file": "gwi-unet-with-float16-dataset.ipynb",
+  "language": "python",
+  "kernel_type": "notebook",
+  "is_private": false,
+  "enable_gpu": true,
+  "enable_tpu": false,
+  "enable_internet": true,
+  "keywords": [
+    "gpu"
+  ],
+  "dataset_sources": [
+    "egortrushin/open-wfi-1",
+    "egortrushin/open-wfi-2",
+    "egortrushin/open-wfi-test"
+  ],
+  "kernel_sources": [],
+  "competition_sources": [
+    "waveform-inversion"
+  ],
+  "model_sources": [],
+  "docker_image": "gcr.io/kaggle-private-byod/python@sha256:5b3264d2d3aefa4f5e4d6f036b0d2b2d9691dab62493ae3af85a3153608f30a7",
+  "machine_shape": "NvidiaTeslaT4"
+}

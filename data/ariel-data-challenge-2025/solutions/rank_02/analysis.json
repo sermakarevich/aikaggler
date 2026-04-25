@@ -1,0 +1,36 @@
+{
+  "summary": "The author achieved 2nd place using a linear regression approach focused on estimating transit depth from light curves via polynomial fitting rather than modeling full physics. Key features were derived by detecting transit boundaries through the second derivative's extrema and fitting polynomials to out-of-transit regions for detrending. Features were organized into three groups: SNR-weighted AIRS frequencies, intersecting windows across adjacent AIRS frequencies, and the FG1 channel. Uncertainty was estimated using bootstrapping combined with cross-validation standard deviations, and edge transits were handled with a separate Ridge model.",
+  "extensive_summary": "## Approach Overview\nThe solution relies on linear regression (specifically Ridge) combined with hand-crafted features that capture transit shape patterns from light curves. Instead of modeling the full physics of transits, the author focuses on polynomial fitting to estimate transit depth and detrend the data.\n\n## Feature Engineering\nTransit boundaries are identified by detecting four extrema of the second derivative, marking where light curve curvature changes most rapidly. A polynomial of a chosen degree is fitted to out-of-transit points, and the curve is divided by this interpolation for detrending. Features fall into three main groups: depth estimates from AIRS frequencies averaged with SNR weights, depth estimates from intersecting windows across adjacent AIRS frequencies, and depth estimates from the FG1 channel separately. For each group, multiple depth values are calculated, including average across transit, mid-transit, and various percentiles. For noisy frequency windows, a rough estimate based on the flux ratio inside and outside the transit is used instead of polynomial interpolation. Slope features measuring wall steepness are also computed for the SNR-weighted AIRS and FG1 groups.\n\n## Model Training & Outlier Handling\nThe main model is trained on normal cases, while a separate Ridge model handles transits near observation edges identified as outliers. Poor quality transits are removed during training, and larger sigma values are applied during inference for these cases. Polynomial degree optimization (1-5) was attempted for the SNR-weighted group using a custom loss function balancing RMSE and degree penalization, though it yielded only minor leaderboard improvements.\n\n## Uncertainty Estimation\nUncertainty is estimated via bootstrapping: multiple resampled datasets are trained, the standard deviation of predictions is taken, and multiplied by an optimized constant. This is combined linearly with cross-validation standard deviations averaged per frequency.",
+  "rank": 2,
+  "competition_flow": "Raw light curve data undergoes standard competition preprocessing, followed by transit boundary detection via second derivative extrema and polynomial detrending to extract depth features across three frequency/channel groups; Ridge regression models are then trained with edge-transit outlier handling and bootstrapping-based uncertainty estimation to produce the final submission.",
+  "data_reading": [],
+  "data_processing": [
+    "Standard competition preprocessing was applied without additional steps. Transits near observation edges were flagged as outliers, poor quality transits were removed during training, and larger sigma values were applied during inference for low-quality cases."
+  ],
+  "features_engineering": [
+    "Transit boundaries detected via 4 extrema of the second derivative; polynomial fitting to out-of-transit points for detrending; depth estimates from SNR-weighted AIRS frequencies, intersecting windows across adjacent AIRS frequencies, and FG1 channel; average, mid-transit, and percentile depth values; flux ratio estimates for noisy windows; slope features measuring wall steepness between boundary points."
+  ],
+  "models": [
+    "Ridge regression",
+    "linear regression"
+  ],
+  "frameworks_used": [],
+  "loss_functions": [],
+  "cv_strategy": "",
+  "ensembling": "No model ensembling was used; uncertainty calibration was handled by combining bootstrapping prediction standard deviations with cross-validation standard deviations averaged per frequency.",
+  "insights": [
+    "Higher polynomial degrees become less reliable when transits occupy a large portion of the observation due to fewer out-of-transit points for baseline fitting.",
+    "Slope features and percentile-based depth measurements significantly improved the score compared to using only average/mid-transit depths.",
+    "Bootstrapping was essential for robust uncertainty estimation, as removing it caused a major score drop."
+  ],
+  "critical_findings": [
+    "Optimizing polynomial degree (1-5) yielded only marginal leaderboard improvements despite theoretical appeal.",
+    "Removing bootstrapping caused a severe private score drop (61.2 to 57.6), highlighting its critical role in uncertainty calibration.",
+    "Slope features were highly impactful, as their removal caused a massive score drop from 60.9 to 52.6."
+  ],
+  "what_did_not_work": [],
+  "github_repos": [],
+  "papers": [],
+  "other_solution_refs": [],
+  "source_url": "https://www.kaggle.com/competitions/ariel-data-challenge-2025/discussion/610252"
+}

@@ -1,0 +1,44 @@
+{
+  "summary": "This notebook provides a baseline training pipeline for the BirdCLEF 2025 competition, demonstrating how to convert raw audio recordings into mel spectrograms and train a multi-label classification model using PyTorch. It highlights a flexible data loading strategy that supports both pre-computed spectrograms for speed and on-the-fly generation, alongside standard audio-to-image augmentations and mixup regularization. The author emphasizes reproducibility through fixed seeds and a structured configuration class, while offering a debug mode for rapid experimentation. Readers should take away a practical, end-to-end recipe for audio classification baselines, including proper handling of variable-length audio, multi-label encoding, and stratified cross-validation.",
+  "purpose": "baseline",
+  "competition_flow": "Loads raw audio and metadata, converts them to 256x256 mel spectrograms, trains an EfficientNet-B0 model with multi-label BCE loss across 5 stratified folds, and saves per-fold checkpoints.",
+  "data_reading": [
+    "Reads train.csv and taxonomy.csv via pandas.",
+    "Optionally loads pre-computed mel spectrograms from a .npy file when LOAD_DATA=True.",
+    "Uses librosa.load for on-the-fly audio parsing when spectrograms are not pre-computed."
+  ],
+  "data_processing": [
+    "Converts audio to mel spectrograms (128 bins, 1024 FFT, 512 hop, 50-14kHz range).",
+    "Normalizes spectrograms to [0,1] and resizes to 256x256.",
+    "Pads or truncates audio to a fixed 5-second center crop.",
+    "Applies time/frequency masking and brightness/contrast augmentations with 50% probability.",
+    "Applies mixup regularization (alpha=0.5) during training."
+  ],
+  "features_engineering": [],
+  "models": [
+    "EfficientNet-B0"
+  ],
+  "frameworks_used": [
+    "pytorch",
+    "timm",
+    "librosa",
+    "scikit-learn",
+    "numpy",
+    "pandas"
+  ],
+  "loss_functions": [
+    "BCEWithLogitsLoss"
+  ],
+  "cv_strategy": "StratifiedKFold(n_splits=5, shuffle=True, random_state=42)",
+  "ensembling": "",
+  "insights": [
+    "Pre-computed mel spectrograms significantly reduce training time compared to on-the-fly generation.",
+    "Mixup regularization and spectrogram augmentations help mitigate overfitting on multi-label audio data.",
+    "Stratified cross-validation is essential for preserving class distribution in imbalanced bird sound datasets.",
+    "Handling variable-length audio via center-cropping and padding ensures consistent input dimensions for CNNs."
+  ],
+  "critical_findings": [],
+  "what_did_not_work": [],
+  "source_url": "https://www.kaggle.com/code/kadircandrisolu/efficientnet-b0-pytorch-train-birdclef-25",
+  "votes": 949
+}

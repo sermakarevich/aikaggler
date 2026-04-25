@@ -1,0 +1,21 @@
+{
+  "id": "ryanholbrook/jane-street-rmf-demo-submission",
+  "id_no": 67263608,
+  "title": "Jane Street RMF Demo Submission",
+  "code_file": "jane-street-rmf-demo-submission.ipynb",
+  "language": "python",
+  "kernel_type": "notebook",
+  "is_private": false,
+  "enable_gpu": false,
+  "enable_tpu": false,
+  "enable_internet": false,
+  "keywords": [],
+  "dataset_sources": [],
+  "kernel_sources": [],
+  "competition_sources": [
+    "jane-street-real-time-market-data-forecasting"
+  ],
+  "model_sources": [],
+  "docker_image": "gcr.io/kaggle-images/python@sha256:a16cda2c5d52fa988d413876f3ffad7a46cca58678514601feb175990dc187c0",
+  "machine_shape": "None"
+}

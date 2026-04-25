@@ -1,0 +1,63 @@
+{
+  "summary": "The solution combines two distinct pipelines into an equal blend to achieve a robust ensemble. One pipeline uses a multi-modal architecture with cross-modal attention, residual CNNs, and a BiLSTM with multi-task auxiliary learning to handle IMU, THM, and ToF sensor data. The second pipeline employs a simpler, single-model approach with custom alignment transformations, on-the-fly augmentations, and a gating mechanism to dynamically weight sensor streams and handle missing data. Key insights include the importance of handling device orientation quirks (like upside-down wearers) via integrated detectors rather than manual flips, and avoiding OOF label distillation to prevent data leakage, with architectural diversity proving crucial for the final score.",
+  "extensive_summary": "## Pipeline 1: Multi-Modal Architecture with Auxiliary Learning\nThe first pipeline processes three sensor modalities (IMU, THM, ToF) using mode-specific branches. The IMU branch extracts raw acceleration and jerk features, feeding them into two residual CNN blocks with SE attention. The THM branch uses two residual CNN blocks with SE attention, while the ToF branch applies spatial attention, depthwise separable convolutions, and multi-scale feature extraction on (5, 8, 8) inputs. These branches are fused via bidirectional cross-modal attention with residual connections. The combined features pass through a BiLSTM with attention pooling and dropout. The model employs multi-task auxiliary learning, predicting gesture (20 classes), orientation (4 classes), handedness (2 classes), and per-timestep behavior (4 classes). Missing values are handled via learnable embeddings for IMU/THM and a tunable parameter for ToF.\n\n## Pipeline 2: Gated Single-Model with Custom Alignments\nThe second pipeline focuses on standardizing sequences and handling device wear quirks. It applies rigorous alignment transformations: rotating ToF sensors 3 and 5 by 90\u00b0, flipping THM/ToF images and adjusting axes for left-handed users, and detecting/flipping upside-down device orientations. Sequences are padded/cropped to length 96. Training uses on-the-fly augmentations including alignment-aware MIXUP, random Z-axis quaternion rotations (\u00b130\u00b0), random stretching, and ignoring initial sequence points. The architecture uses independent 1D convolutions for acceleration and quaternions, plus a 2D CNN for ToF images. A custom `GatingUnit_v2` dynamically weights each sensor stream by pooling features and applying a sigmoid gate. Streams are combined via a gated sum (`numerator / (denominator + 1e-6)`) before attention pooling and MLP heads. The model predicts 18 gestures, binary targets, orientation, location, action, and child status.\n\n## Key Insights and Lessons\nThe author emphasizes that diversity between pipelines was critical, as merging a 86.5 CV model from each pipeline yielded a 87.6 LB score. A major lesson involved device orientation: initially flipping two subjects' data manually caused a CV/LB discrepancy, but later realizing an upside-down detector should be integrated into the pipeline prevented leakage. Another critical takeaway was avoiding OOF label distillation, which caused severe data leakage and inflated CV scores while hurting LB performance. The author also notes that demographics data was too sparse to be meaningful, and custom location/action/child targets were likely useless.",
+  "rank": 17,
+  "competition_flow": "Raw sensor sequences (IMU, THM, ToF) are aligned and augmented, processed through two distinct multi-modal pipelines (one with cross-modal attention and auxiliary heads, another with a gated single-model architecture), and their predictions are equally blended for the final submission.",
+  "data_reading": [],
+  "data_processing": [
+    "90\u00b0 rotation of ToF sensors 3 and 5 for pixel alignment",
+    "Left-handed alignment: flipping THM/ToF images and adjusting acceleration/rotation axes",
+    "Upside-down device orientation detection and axis negation/sensor swapping",
+    "Sequence padding/cropping to fixed length 96",
+    "On-the-fly augmentations: alignment-aware MIXUP, random Z-axis quaternion rotations (\u00b130\u00b0), random stretching, ignoring initial sequence points",
+    "NaN handling via learnable embeddings (IMU/THM) and tunable broadcasted parameters (ToF)",
+    "Random masking of THM/ToF features during training to force missing-data robustness"
+  ],
+  "features_engineering": [
+    "Raw acceleration (acc_x/y/z) and jerk (acceleration derivatives)",
+    "6D rotation matrix differences (col1/col2)",
+    "Absolute and relative 6D rotation differences",
+    "Gravity estimation and linear acceleration components",
+    "Subject-aligned tangential/lateral/vertical acceleration and jerk",
+    "Tilt and tilt difference calculations",
+    "Temporal differences, acc_mal_jerk, normalized sequence position",
+    "Rotation angle/velocity, distances, angular velocity norm, 10-window rolling mean"
+  ],
+  "models": [
+    "Residual CNN blocks with SE attention",
+    "Depthwise separable convolutions",
+    "BiLSTM with attention pooling",
+    "GatingUnit_v2",
+    "MLP heads"
+  ],
+  "frameworks_used": [],
+  "loss_functions": [],
+  "cv_strategy": "",
+  "ensembling": "Equal blend of two pipelines (Anil's multi-modal architecture and Optimo's gated single-model), with diversity between approaches driving the final LB score.",
+  "insights": [
+    "Architectural diversity between pipelines is crucial for robust ensemble performance.",
+    "Device orientation quirks must be handled via integrated detectors during training to prevent CV/LB leakage.",
+    "Demographics data was too sparse to meaningfully impact model training.",
+    "Custom auxiliary targets like location, action, and child status provided little to no value."
+  ],
+  "critical_findings": [
+    "Manually flipping upside-down subjects for CV caused a significant CV/LB discrepancy, proving that orientation detection must be part of the training pipeline to avoid leakage.",
+    "Using OOF labels to distill/train new models created powerful data leakage that inflated CV scores while degrading LB performance.",
+    "A relatively simple gated single-model architecture with dynamic sensor weighting can be highly competitive without needing separate IMU-only and full-sensor models."
+  ],
+  "what_did_not_work": [
+    "Manually flipping two subjects' device orientation post-hoc instead of integrating a detector into the pipeline.",
+    "Using OOF labels for model distillation, which caused severe data leakage.",
+    "Relying on demographics data due to insufficient subject count.",
+    "Using custom location, action, and child auxiliary targets."
+  ],
+  "github_repos": [],
+  "papers": [],
+  "other_solution_refs": [
+    {
+      "description": "Left-handed alignment transformation guide",
+      "url": "https://www.kaggle.com/competitions/cmi-detect-behavior-with-sensor-data/discussion/603566"
+    }
+  ],
+  "source_url": "https://www.kaggle.com/competitions/cmi-detect-behavior-with-sensor-data/discussion/603573"
+}

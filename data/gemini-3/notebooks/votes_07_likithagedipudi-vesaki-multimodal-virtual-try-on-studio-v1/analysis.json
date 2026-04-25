@@ -1,0 +1,39 @@
+{
+  "summary": "This notebook demonstrates a multimodal virtual try-on application built on Google's Gen AI SDK, combining a logic model for prompt refinement with a vision model for photorealistic image editing. It shows how to enforce strict identity preservation and negative constraints to prevent 'semantic bleed' during fashion edits. The workflow also illustrates how to extract structured clothing data and generate outfit suggestions using Pydantic-validated JSON schemas. Readers should learn how to mitigate prompt leakage in virtual try-on, implement privacy guardrails, and reliably parse multimodal model outputs in Python.",
+  "purpose": "tutorial",
+  "competition_flow": "Loads a base fashion image, processes it through prompt refinement and a vision model to generate a photorealistic try-on image, and optionally outputs structured clothing data or outfit suggestions via JSON.",
+  "data_reading": [
+    "Reads local image files via pathlib, extracts raw bytes, infers MIME types, and wraps them in google.genai.types.Part objects or base64 data URLs."
+  ],
+  "data_processing": [
+    "Applies a logic model to refine prompts and isolate target/preservation zones, enforces identity lock and negative constraints, uses Pydantic schemas for structured JSON parsing, and implements a keyword-based privacy guardrail."
+  ],
+  "features_engineering": [],
+  "models": [
+    "gemini-2.5-flash",
+    "gemini-2.5-flash-image",
+    "veo-3.1-fast-generate-preview"
+  ],
+  "frameworks_used": [
+    "google-genai",
+    "pydantic",
+    "pillow",
+    "kaggle_secrets"
+  ],
+  "loss_functions": [],
+  "cv_strategy": "",
+  "ensembling": "",
+  "insights": [
+    "Prompt refinement using a separate logic model effectively prevents semantic bleed during virtual try-on edits.",
+    "Explicit identity lock constraints and negative prompts are necessary to preserve facial features and body pose.",
+    "Using Pydantic schemas with response_schema ensures reliable, type-safe parsing of multimodal model outputs.",
+    "Privacy guardrails can be easily implemented by checking prompts against a blocklist before generation."
+  ],
+  "critical_findings": [
+    "Model availability and permissions vary significantly across Google Cloud accounts, often requiring manual model swapping.",
+    "The system explicitly blocks requests containing specific lingerie/underwear keywords to enforce privacy guardrails."
+  ],
+  "what_did_not_work": [],
+  "source_url": "https://www.kaggle.com/code/likithagedipudi/vesaki-multimodal-virtual-try-on-studio-v1",
+  "votes": 23
+}

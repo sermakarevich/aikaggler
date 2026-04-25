@@ -1,0 +1,46 @@
+{
+  "summary": "This notebook implements a refactored, end-to-end inference pipeline for the PhysioNet ECG Digitization competition. It processes ECG images through a three-stage deep learning architecture: homography-based normalization, grid rectification, and pixel-to-signal extraction. The author integrates a comprehensive local validation framework that replicates the competition's SNR scoring metric, tracks per-lead and per-type performance, and generates diagnostic plots. Key technical additions include logit-averaging TTA during rectification and a signal-averaging trick for Lead II. Readers should learn how to structure a multi-stage medical imaging pipeline, implement competition-specific scoring locally, and apply lightweight TTA for robust inference.",
+  "purpose": "inference",
+  "competition_flow": "Loads ECG images and metadata from the PhysioNet dataset, processes them through a 3-stage PyTorch pipeline (normalization, rectification, signal extraction), applies TTA, extracts 12-lead signals, and outputs a CSV submission scored against ground truth using a custom SNR metric.",
+  "data_reading": [
+    "Reads test/train metadata via pandas.read_csv",
+    "Loads RGB images using cv2.imread",
+    "Loads per-image ground truth signals from individual CSV files in the training directory"
+  ],
+  "data_processing": [
+    "Applies homography normalization",
+    "Performs grid-based image rectification",
+    "Crops to coordinate frame",
+    "Converts pixels to voltage using zero-line and scaling constants",
+    "Filters series by limits",
+    "Interpolates signals to match metadata row counts",
+    "Applies TTA with brightness/contrast adjustments"
+  ],
+  "features_engineering": [],
+  "models": [
+    "Stage0Net",
+    "Stage1Net",
+    "Stage2Net"
+  ],
+  "frameworks_used": [
+    "torch",
+    "numpy",
+    "pandas",
+    "cv2",
+    "scipy",
+    "matplotlib"
+  ],
+  "loss_functions": [],
+  "cv_strategy": "Holdout validation on a subset of training images with ground truth CSVs, scoring predictions against labels using the competition's exact SNR metric.",
+  "ensembling": "Averages logits across 4 brightness/contrast TTA variations during Stage 1 inference, and averages short and full Lead II signals to predict the first fourth of Lead II.",
+  "insights": [
+    "A modular 3-stage pipeline effectively decouples image correction from signal extraction for medical imaging tasks.",
+    "Logit-averaging TTA with simple brightness/contrast shifts provides robust inference improvements without complex data augmentation.",
+    "Implementing the exact competition scoring function locally is essential for reliable lead-level debugging and performance tracking.",
+    "Interpolating predicted signals to match metadata-specified row lengths is critical for correct submission formatting."
+  ],
+  "critical_findings": [],
+  "what_did_not_work": [],
+  "source_url": "https://www.kaggle.com/code/davidlist/demo-submission-validation-framework",
+  "votes": 189
+}

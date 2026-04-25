@@ -1,0 +1,44 @@
+{
+  "summary": "This notebook provides a baseline for the NeurIPS 2025 Open Polymer Prediction competition by augmenting the training set with external datasets containing polymer properties. It canonicalizes SMILES strings, computes RDKit molecular descriptors, and extracts graph-based topological features using NetworkX. The author trains separate LightGBM regressors for five polymer targets using 5-fold cross-validation and evaluates them with MAE and a custom weighted MAE metric. A key takeaway is the explicit exploitation of test-set leakage by directly copying labels from the training set when SMILES match, which drastically improves the leaderboard score. The notebook also highlights ethical and licensing concerns regarding the use of publicly sourced external data in competition test sets.",
+  "purpose": "baseline",
+  "competition_flow": "Loads competition and external datasets, canonicalizes SMILES, computes molecular descriptors and graph features, trains five independent LightGBM regressors via 5-fold CV, and generates a submission while explicitly leveraging test-set label leakage.",
+  "data_reading": [
+    "Loads train/test CSVs and external CSV/XLSX files using pandas; renames external columns to match competition targets."
+  ],
+  "data_processing": [
+    "Canonicalizes SMILES via RDKit; filters out constant, NaN, and highly correlated features; computes RDKit molecular descriptors and NetworkX graph features; replaces infinities with NaN; merges external target data into training set by SMILES matching; filters features per target based on non-null target subsets."
+  ],
+  "features_engineering": [
+    "RDKit molecular descriptors (filtered), NetworkX graph features (graph_diameter, avg_shortest_path, num_cycles), external target imputation/merging."
+  ],
+  "models": [
+    "LightGBM"
+  ],
+  "frameworks_used": [
+    "lightgbm",
+    "scikit-learn",
+    "rdkit",
+    "networkx"
+  ],
+  "loss_functions": [
+    "regression_l1",
+    "MAE"
+  ],
+  "cv_strategy": "KFold(n_splits=5, shuffle=True, random_state=42)",
+  "ensembling": "No model ensembling; test predictions are averaged across 5 CV folds per target.",
+  "insights": [
+    "External datasets can significantly expand training data when merged via SMILES matching.",
+    "Graph topology features complement molecular descriptors for polymer property prediction.",
+    "LightGBM with L1 regression and early stopping serves as an effective baseline for multi-target regression.",
+    "Feature filtering per target is necessary due to target-dependent constant columns."
+  ],
+  "critical_findings": [
+    "The test set contains labels from publicly available sources, creating direct data leakage that can be exploited for a much higher leaderboard score.",
+    "Only the competition organizer can verify the licensing status of the external data used."
+  ],
+  "what_did_not_work": [
+    ""
+  ],
+  "source_url": "https://www.kaggle.com/code/dmitryuarov/neurips-baseline-external-data",
+  "votes": 440
+}

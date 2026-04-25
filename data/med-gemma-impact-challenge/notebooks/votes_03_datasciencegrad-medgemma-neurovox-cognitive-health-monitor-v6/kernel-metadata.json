@@ -1,0 +1,26 @@
+{
+  "id": "datasciencegrad/medgemma-neurovox-cognitive-health-monitor-v6",
+  "id_no": 107253356,
+  "title": "MedGemma - NeuroVox: Cognitive Health Monitor | v6",
+  "code_file": "medgemma-neurovox-cognitive-health-monitor-v6.ipynb",
+  "language": "python",
+  "kernel_type": "notebook",
+  "is_private": false,
+  "enable_gpu": false,
+  "enable_tpu": false,
+  "enable_internet": true,
+  "keywords": [
+    "computer science",
+    "science and technology",
+    "healthcare",
+    "artificial intelligence"
+  ],
+  "dataset_sources": [],
+  "kernel_sources": [],
+  "competition_sources": [
+    "med-gemma-impact-challenge"
+  ],
+  "model_sources": [],
+  "docker_image": "gcr.io/kaggle-images/python@sha256:2565f241bd4ecac85a132676664dabd5e3e8b4567db1b936507a987b37095f59",
+  "machine_shape": "None"
+}

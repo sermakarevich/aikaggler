@@ -1,0 +1,21 @@
+{
+  "id": "olaflundstrom/nfl-big-data-bowl-2026-air-yards-efficiency-index",
+  "id_no": 95394418,
+  "title": "NFL Big Data Bowl 2026/Air Yards Efficiency Index",
+  "code_file": "nfl-big-data-bowl-2026-air-yards-efficiency-index.ipynb",
+  "language": "python",
+  "kernel_type": "notebook",
+  "is_private": false,
+  "enable_gpu": false,
+  "enable_tpu": false,
+  "enable_internet": true,
+  "keywords": [],
+  "dataset_sources": [],
+  "kernel_sources": [],
+  "competition_sources": [
+    "nfl-big-data-bowl-2026-analytics"
+  ],
+  "model_sources": [],
+  "docker_image": "gcr.io/kaggle-images/python@sha256:d17e738679831983025ea49f3d09f81557cf2a54b4d8f8902b45d282e0de9583",
+  "machine_shape": "None"
+}

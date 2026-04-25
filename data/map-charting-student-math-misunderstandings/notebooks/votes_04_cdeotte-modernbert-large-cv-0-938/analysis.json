@@ -1,0 +1,43 @@
+{
+  "summary": "This notebook demonstrates a complete training and inference pipeline for the Kaggle MAP competition using the ModernBERT-large model. It highlights the importance of prompt engineering and a custom MAP@3 evaluation metric over standard classification metrics. The author shows how to validate on a 20% holdout set, retrain on the full dataset, and generate a quick submission via inference-only execution. Readers should learn how to adapt LLMs for multi-class ranking tasks, handle precision compatibility across local vs. Kaggle GPUs, and implement competition-specific metrics in the Hugging Face Trainer.",
+  "purpose": "tutorial",
+  "competition_flow": "Loads tabular student math data, engineers a correctness feature, formats prompts for ModernBERT, trains on a 20% holdout split, re-trains on full data, and generates a top-3 ranked submission via inference.",
+  "data_reading": [
+    "pd.read_csv for train.csv and test.csv",
+    "Fills missing Misconception values with 'NA'",
+    "Constructs a composite target string Category:Misconception"
+  ],
+  "data_processing": [
+    "Merges train/test with a precomputed correctness feature",
+    "Formats raw text columns into structured prompts",
+    "Tokenizes with AutoTokenizer (max_length=256, padding, truncation)",
+    "Converts to HuggingFace Dataset with PyTorch tensor formatting"
+  ],
+  "features_engineering": [
+    "Creates an is_correct boolean feature by identifying the most frequently selected answer per QuestionId and merging it back to train/test sets"
+  ],
+  "models": [
+    "ModernBERT-large (answerdotai/ModernBERT-large)"
+  ],
+  "frameworks_used": [
+    "transformers",
+    "datasets",
+    "scikit-learn",
+    "pandas",
+    "numpy",
+    "torch",
+    "matplotlib"
+  ],
+  "loss_functions": [],
+  "cv_strategy": "20% holdout validation split (train_test_split with test_size=0.2)",
+  "ensembling": "",
+  "insights": [
+    "Prompt structure and content significantly impact validation scores.",
+    "Half-precision training/inference requires checking GPU architecture compatibility (bf16 vs fp16).",
+    "Standard classification metrics should be replaced with competition-specific metrics like MAP@3 for proper model selection."
+  ],
+  "critical_findings": [],
+  "what_did_not_work": [],
+  "source_url": "https://www.kaggle.com/code/cdeotte/modernbert-large-cv-0-938",
+  "votes": 371
+}

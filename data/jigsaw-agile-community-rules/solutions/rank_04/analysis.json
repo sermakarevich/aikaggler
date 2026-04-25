@@ -1,0 +1,47 @@
+{
+  "summary": "The author achieved 4th place in the Kaggle Jigsaw competition by applying SALSA (Single-pass Autoregressive LLM Structured Classification), which treats next-token logits from an instruction-tuned LLM as a Bayesian estimator for classification. They replaced standard cross-entropy with Generalized Cross-Entropy (Tsallis) to handle label noise and implemented a two-stage training pipeline using pseudo-labeling on uncertain test samples to boost performance. Key technical choices included removing the subreddit field, collapsing duplicates to compute soft targets, and optimizing inference via KV-cache reuse through strategic prompt templating and batching. The final submission blended predictions from a 4B and 14B Qwen-3 model to achieve a private AUC of 0.9286.",
+  "extensive_summary": "## Overview & Core Methodology\nThe solution leverages **SALSA** (Single-pass Autoregressive LLM Structured Classification), a framework that treats an instruction-tuned LLM's next-token logits over a constrained vocabulary as a Bayesian estimator for classification. Instead of multi-step decoding, the method relies on a single pass where normalized logits directly map to class probabilities. This approach capitalizes on the strong zero-shot baselines of larger, well-aligned instruction models.\n\n## Data Processing & Preparation\nThe author made several critical data modifications to improve signal quality. The **subreddit** field was removed because it introduced misleading signals unrelated to the few-shot examples. Training duplicates were collapsed into unique texts, and a **rule-violation ratio** was computed per unique text-comment pair to serve as a **soft target** during training. Additionally, each training record was augmented with four few-shot exemplars (two positive, two negative) to act as auxiliary labels.\n\n## Training & Loss Optimization\nTo mitigate label noise, standard cross-entropy was replaced with **Generalized Cross-Entropy (Tsallis)** with `q = 0.955`, which provided a measurable boost to the public leaderboard score. The author experimented with **Qwen-3 4B** and **Qwen-3 14B** backbones, utilizing **AWQ** quantization to preserve model capability within Kaggle's compute constraints. Inference was optimized by placing the comment at the end of the prompt template to maximize prefix KV-cache reuse, and by batching inputs by rule.\n\n## Two-Stage Pseudo-Labeling & Ensembling\nA two-stage pipeline was introduced to extract additional AUC without increasing compute. A smaller model generated predictions on the test set, and ~8,000 highly uncertain samples were selected as soft pseudo-labels. The larger Qwen-3 14B model was then finetuned on the original data combined with these pseudo-labels. The final submission blended Stage-1 and Stage-2 predictions with an 0.8:0.2 weight ratio, yielding a private AUC of 0.9286. The author notes that while the gain was decisive for ranking, the added engineering complexity requires careful cost-benefit analysis.",
+  "rank": 4,
+  "competition_flow": "Raw text data was cleaned by removing the subreddit field and collapsing duplicates to create soft targets, then fed into a two-stage SALSA pipeline using instruction-tuned Qwen-3 models with pseudo-labeling and KV-cache optimized inference to produce blended classification predictions.",
+  "data_reading": [],
+  "data_processing": [
+    "Removed subreddit field due to misleading signals",
+    "Collapsed training duplicates to create unique dataset",
+    "Computed rule-violation ratio per unique text to generate soft targets",
+    "Added four few-shot exemplars (2 positive, 2 negative) per record as auxiliary labels"
+  ],
+  "features_engineering": [],
+  "models": [
+    "Qwen-3 4B",
+    "Qwen-3 14B"
+  ],
+  "frameworks_used": [],
+  "loss_functions": [
+    "Generalized Cross-Entropy (Tsallis)",
+    "Cross-Entropy"
+  ],
+  "cv_strategy": "",
+  "ensembling": "Blended predictions from the Stage-1 (small model) and Stage-2 (large model with pseudo-labels) pipelines using a 0.8:0.2 weight ratio.",
+  "insights": [
+    "Treating next-token logits over a constrained vocabulary as a Bayesian estimator allows direct probability mapping without multi-step decoding.",
+    "Larger and better-aligned instruction models yield stronger SALSA signals due to superior zero-shot baselines.",
+    "Pseudo-labeling uncertain test samples anchors relative scores rather than introducing new knowledge, effectively leveraging pretrained model capabilities.",
+    "The engineering complexity of a two-stage pseudo-labeling pipeline must be weighed against its modest AUC gains relative to compute budget."
+  ],
+  "critical_findings": [
+    "Dataloader seed changes caused ~0.002 AUC variance, making smaller gains like those from Generalized Cross-Entropy statistically insignificant.",
+    "The subreddit field introduced misleading signals because the few-shot examples were unrelated to it.",
+    "Reordering the prompt template to place instructions at the end yielded negligible improvements for the smaller model, falling below statistical significance."
+  ],
+  "what_did_not_work": [],
+  "github_repos": [],
+  "papers": [
+    {
+      "title": "SALSA: Single-pass Autoregressive LLM Structured Classification.",
+      "url": "https://arxiv.org/abs/2510.22691",
+      "arxiv_id": "2510.22691"
+    }
+  ],
+  "other_solution_refs": [],
+  "source_url": "https://www.kaggle.com/competitions/jigsaw-agile-community-rules/discussion/613473"
+}

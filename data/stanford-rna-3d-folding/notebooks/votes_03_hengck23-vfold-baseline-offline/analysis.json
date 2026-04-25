@@ -1,0 +1,32 @@
+{
+  "summary": "This notebook generates a competition submission by loading precomputed 3D RNA structure coordinates from a pickle file and formatting them into the required CSV schema. It demonstrates how to adapt external structural prediction outputs to a competition's submission format without training a model. Readers should understand how to handle sequence-length mismatches, map external predictions to the correct ID/resname/resid structure, and quickly generate baselines using precomputed results. The approach highlights the utility of leveraging pre-trained models for rapid submission generation.",
+  "purpose": "inference",
+  "competition_flow": "Loads precomputed 3D coordinates from a pickle file, aligns them with test sequences, formats them into the required submission CSV, and saves the file.",
+  "data_reading": [
+    "Reads `test_sequences.csv` using `pandas.read_csv`."
+  ],
+  "data_processing": [
+    "Truncates precomputed coordinates to match test sequence lengths using `min(len(sequence), len(prediction))`.",
+    "Formats 3D coordinates into the competition's required ID/resname/resid CSV schema."
+  ],
+  "features_engineering": [],
+  "models": [],
+  "frameworks_used": [
+    "pandas",
+    "numpy",
+    "torch",
+    "matplotlib"
+  ],
+  "loss_functions": [],
+  "cv_strategy": "",
+  "ensembling": "",
+  "insights": [
+    "Precomputed structural predictions can be directly adapted to competition submission formats by matching sequence lengths and coordinate dimensions.",
+    "Loading external pickle files allows rapid baseline generation without retraining.",
+    "Proper formatting of 3D coordinates into the competition's ID/resname/resid schema is critical for valid submissions."
+  ],
+  "critical_findings": [],
+  "what_did_not_work": [],
+  "source_url": "https://www.kaggle.com/code/hengck23/vfold-baseline-offline",
+  "votes": 460
+}

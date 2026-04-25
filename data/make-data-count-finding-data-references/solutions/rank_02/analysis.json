@@ -1,0 +1,62 @@
+{
+  "summary": "The solution tackles a competition focused on identifying and classifying dataset references (DOIs and Accession IDs) in scientific papers by splitting the pipeline into candidate retrieval and primary/secondary classification. For retrieval, the authors join training articles with external corpora like the Data Citation Corpus and DataCite Public Data File to achieve 100% recall, then apply strict repository filtering and regex-based text matching to improve precision. The classification stage initially relies on straightforward heuristics that alone secure a gold medal, but is further enhanced by a dual-model approach using a fine-tuned BERT variant and a LoRA-adapted Gemma model. To overcome severe instability from limited training data, the authors stabilize training with large batch sizes, token replacement strategies, and multi-seed averaging of out-of-fold predictions.",
+  "extensive_summary": "The solution addresses a competition requiring the identification and classification of dataset references (DOIs and Accession IDs) within scientific literature. The pipeline is divided into two distinct stages: candidate retrieval and primary/secondary classification.\n\n### Stage 1: Candidate Retrieval\nThe authors first focus on finding all potential dataset references in the training data. For DOIs, they join the training article IDs with the Data Citation Corpus Data File (v2) and the DataCite Public Data File 2024, achieving 100% recall. To improve precision, they filter out specific repositories (`figshare`, `cambridge crystallographic data centre`, `hepdata`) and drop IDs not present in the PDF/XML test files using a custom regex. For Accession IDs, they download a corpus from EuropePMC, join it with the training data, and apply similar filtering rules, dropping repositories like `hgnc`, `gca`, `go`, and others based on identifier formats and public availability constraints. A key heuristic involves dropping accession numbers from articles that already contain a DOI candidate, and adding a rule to exclude `SAMN` IDs from online-only tables, which yields a 0.98 F1 score without classification.\n\n### Stage 2: Classification Heuristics & Models\nInitial classification relies on straightforward heuristics (e.g., tagging `SAMN`/`EMDB` as Primary, using publication dates and `isSupplementTo` flags for DOIs), which alone secure a gold medal. However, the authors also develop specialized classification models. They separate the problem into two models: one for Accession IDs and one for DOIs.\nFor DOI classification, the author constructs context (<2048 tokens) by mapping dataset authors/abstracts from DataCite and extracting text chunks around the first regex match plus the top 3 BM25-similar chunks. This is fed into a `MedGemma-4B` model with LoRA.\nFor Accession ID classification, context is built from table rows/captions, references, and data availability sections. The base model used is `microsoft/BiomedNLP-BiomedBERT-base-uncased-abstract-fulltext`. To combat severe instability caused by limited training data, they implement several stabilization techniques: replacing non-target IDs with `\"other dataset id\"` and the target with `\"Prediction {DATASET_ID}\"`, using a large batch size of 256, and averaging OOF predictions across multiple random seeds. Context windows are optimized per ID type (300 chars for Accessions, 150 for DOIs to prevent overfitting). Additional features include mention frequency tokens and repository source tokens prepended to the context.",
+  "rank": 2,
+  "competition_flow": "Raw paper text/PDFs are parsed to extract candidate DOIs and Accession IDs using external corpora (DataCite, EuropePMC) and regex, followed by rule-based filtering and a dual-model classification pipeline (BERT and Gemma-LoRA) stabilized by token replacement, large batch sizes, and multi-seed averaging to output Primary/Secondary labels.",
+  "data_reading": [
+    "regex parsing of PDF/XML text for dataset IDs"
+  ],
+  "data_processing": [
+    "Filtering out specific repositories (figshare, cambridge crystallographic data centre, hepdata, hgnc, gca, go, rrid, chebi, orpha, rhea, efo, ebisc, hipsci, omim, eudract)",
+    "Dropping IDs not present in PDF/XML test files",
+    "Stripping Dryad version tags (.v1, .v2, etc.)",
+    "Joining external corpora (Data Citation Corpus v2, DataCite Public Data File 2024, EuropePMC)",
+    "Token replacement ('other dataset id', 'Prediction {DATASET_ID}')",
+    "Context windowing (300 chars for Accessions, 150 for DOIs)",
+    "BM25 similarity chunk retrieval for context construction"
+  ],
+  "features_engineering": [
+    "Mention frequency tokenized as 'More than 3 mentions'",
+    "Repository source prepended as a token",
+    "isSupplementTo flag from DataCite",
+    "Publication date sorting for multi-paper datasets",
+    "Online-only table detection for SAMN IDs",
+    "BM25 similarity scores for context chunk selection"
+  ],
+  "models": [
+    "MedGemma-4B lora",
+    "microsoft/BiomedNLP-BiomedBERT-base-uncased-abstract-fulltext"
+  ],
+  "frameworks_used": [],
+  "loss_functions": [],
+  "cv_strategy": "Cross-validation with multiple folds showing inconsistent convergence, with threshold optimization performed by averaging out-of-fold predictions across multiple random seeds.",
+  "ensembling": "Averaging out-of-fold (OOF) predictions across multiple random seeds to stabilize thresholds and improve generalization.",
+  "insights": [
+    "Separating DOI and Accession ID classification into distinct models prevents interference and improves stability.",
+    "Using a large batch size (256) significantly improves training stability for small datasets.",
+    "Reducing the context window for DOIs to 150 characters prevents overfitting and improves generalization.",
+    "Replacing irrelevant dataset IDs with a generic token focuses the model's attention on the target identifier.",
+    "Metadata signals like mention frequency and repository source provide strong classification cues when tokenized appropriately."
+  ],
+  "critical_findings": [
+    "Initial NER model attempts were unnecessary because rule-based retrieval and heuristics alone secured a gold medal.",
+    "Training data size limitations caused severe model instability, with folds showing wildly different convergence behaviors.",
+    "Dropping accession numbers from articles that already contain a DOI candidate eliminates a major source of false positives.",
+    "SAMN IDs from online-only tables were a persistent source of false positives, requiring a specific XML parsing rule to fix."
+  ],
+  "what_did_not_work": [
+    "Single model approaches for classification did not work for the authors.",
+    "Initial NER model attempts were abandoned as they were not required.",
+    "The Accession ID classification model suffered from massive overfitting and instability, preventing further work.",
+    "Downloading an open access corpus from PubMed to gather more data was started but work was abandoned."
+  ],
+  "github_repos": [
+    {
+      "url": "https://github.com/Make-Data-Count-Community/corpus-data-file",
+      "role": "solution"
+    }
+  ],
+  "papers": [],
+  "other_solution_refs": [],
+  "source_url": "https://www.kaggle.com/competitions/make-data-count-finding-data-references/discussion/606786"
+}

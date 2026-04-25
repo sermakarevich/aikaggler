@@ -1,0 +1,93 @@
+[
+  {
+    "topic_id": 611846,
+    "title": "1st Place Solution",
+    "owner": "uchiyama33",
+    "repo": "rsna2025_1st_place",
+    "url": "https://github.com/uchiyama33/rsna2025_1st_place"
+  },
+  {
+    "topic_id": 611849,
+    "title": "5th place solution with code",
+    "owner": "hoanghuyen797",
+    "repo": "RSNA-Intracranial-Aneurysm-Detection",
+    "url": "https://github.com/hoanghuyen797/RSNA-Intracranial-Aneurysm-Detection"
+  },
+  {
+    "topic_id": 611849,
+    "title": "5th place solution with code",
+    "owner": "HumanSignal",
+    "repo": "labelImg",
+    "url": "https://github.com/HumanSignal/labelImg"
+  },
+  {
+    "topic_id": 611908,
+    "title": "9th place solution",
+    "owner": "tom99763",
+    "repo": "9th-place-solution-RSNA-IAD",
+    "url": "https://github.com/tom99763/9th-place-solution-RSNA-IAD"
+  },
+  {
+    "topic_id": 611908,
+    "title": "9th place solution",
+    "owner": "tom99763",
+    "repo": "9th-place-solution-yolo-RSNA-IAD",
+    "url": "https://github.com/tom99763/9th-place-solution-yolo-RSNA-IAD"
+  },
+  {
+    "topic_id": 611856,
+    "title": "3rd place solution",
+    "owner": "tamotamo17",
+    "repo": "RSNA2025-3rd-place-solution",
+    "url": "https://github.com/tamotamo17/RSNA2025-3rd-place-solution"
+  },
+  {
+    "topic_id": 611867,
+    "title": "2nd Place Solution",
+    "owner": "PengchengShi1220",
+    "repo": "RSNA2025_Intracranial-Aneurysm-Detection",
+    "url": "https://github.com/PengchengShi1220/RSNA2025_Intracranial-Aneurysm-Detection"
+  },
+  {
+    "topic_id": 612039,
+    "title": "7th place solution - 3D nnU-Net + blob regression (again)",
+    "owner": "MIC-DKFZ",
+    "repo": "kaggle_BYU_Locating_Bacterial-Flagellar_Motors_2025_solution",
+    "url": "https://github.com/MIC-DKFZ/kaggle_BYU_Locating_Bacterial-Flagellar_Motors_2025_solution"
+  },
+  {
+    "topic_id": 612039,
+    "title": "7th place solution - 3D nnU-Net + blob regression (again)",
+    "owner": "MIC-DKFZ",
+    "repo": "nnUNet",
+    "url": "https://github.com/MIC-DKFZ/nnUNet"
+  },
+  {
+    "topic_id": 612039,
+    "title": "7th place solution - 3D nnU-Net + blob regression (again)",
+    "owner": "MIC-DKFZ",
+    "repo": "nnDetection",
+    "url": "https://github.com/MIC-DKFZ/nnDetection"
+  },
+  {
+    "topic_id": 612039,
+    "title": "7th place solution - 3D nnU-Net + blob regression (again)",
+    "owner": "jinxiaokuang",
+    "repo": "RWS-MT",
+    "url": "https://github.com/jinxiaokuang/RWS-MT"
+  },
+  {
+    "topic_id": 612039,
+    "title": "7th place solution - 3D nnU-Net + blob regression (again)",
+    "owner": "MIC-DKFZ",
+    "repo": "kaggle-rsna-intracranial-aneurysm-detection-2025-solution",
+    "url": "https://github.com/MIC-DKFZ/kaggle-rsna-intracranial-aneurysm-detection-2025-solution"
+  },
+  {
+    "topic_id": 612186,
+    "title": "11th Place Solution",
+    "owner": "icometrix",
+    "repo": "dicom2nifti",
+    "url": "https://github.com/icometrix/dicom2nifti"
+  }
+]

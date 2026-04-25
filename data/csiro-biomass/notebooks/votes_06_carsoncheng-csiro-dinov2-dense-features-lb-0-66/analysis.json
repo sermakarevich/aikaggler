@@ -1,0 +1,41 @@
+{
+  "summary": "This notebook demonstrates a regression pipeline for the CSIRO Biomass competition that leverages dense patch features from a pre-trained DINOv2 model. It extracts features from each image patch, processes them through a weight-shared MLP, and averages the patch-level predictions to produce an image-level output. The author highlights the use of sharpness-aware minimization (SAM) during training and computes the loss exclusively on image-level labels. During inference, the pipeline incorporates test-time augmentation (TTA) with geometric flips, rotations, and Gaussian blurs to improve prediction stability. Readers should understand how to adapt foundation model features for regression tasks and effectively combine TTA with pre-trained regressors for competition submissions.",
+  "purpose": "baseline",
+  "competition_flow": "Loads test images from CSV, extracts dense patch embeddings via a frozen DINOv2 backbone, processes them through a shared MLP, applies TTA, averages predictions across augmentations and folds, clips negatives to zero, and exports a CSV submission.",
+  "data_reading": [
+    "Reads test.csv to retrieve image_path and sample_id, then opens each image using PIL.Image.open."
+  ],
+  "data_processing": [
+    "Resizes all images to 224x224, normalizes with ImageNet mean/std, and applies TTA during inference including horizontal/vertical flips, 90/270-degree rotations, and Gaussian blur (kernel size 5)."
+  ],
+  "features_engineering": [],
+  "models": [
+    "DINOv2-Giant (frozen backbone)",
+    "custom BiomassMLP (Linear -> LeakyReLU -> Linear)",
+    "pre-trained regressors and scalers"
+  ],
+  "frameworks_used": [
+    "pytorch",
+    "torchvision",
+    "transformers",
+    "pandas",
+    "numpy",
+    "PIL",
+    "joblib"
+  ],
+  "loss_functions": [
+    "Sharpness-aware minimization (SAM)",
+    "image-level loss"
+  ],
+  "cv_strategy": "",
+  "ensembling": "Averages predictions across 5 TTA augmentations and 5 pre-trained fold models per target type, then applies a ReLU clamp to discard negative predictions.",
+  "insights": [
+    "Dense patch features from foundation models can be efficiently aggregated via a shared MLP for regression tasks.",
+    "TTA with geometric transforms and Gaussian blur significantly stabilizes inference.",
+    "Clipping negative outputs is a necessary post-processing step for biomass regression."
+  ],
+  "critical_findings": [],
+  "what_did_not_work": [],
+  "source_url": "https://www.kaggle.com/code/carsoncheng/csiro-dinov2-dense-features-lb-0-66",
+  "votes": 340
+}

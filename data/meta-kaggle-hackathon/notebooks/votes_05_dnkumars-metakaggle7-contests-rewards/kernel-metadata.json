@@ -1,0 +1,24 @@
+{
+  "id": "dnkumars/metakaggle7-contests-rewards",
+  "id_no": 86803820,
+  "title": "MetaKaggle7|Contests & Rewards",
+  "code_file": "metakaggle7-contests-rewards.ipynb",
+  "language": "python",
+  "kernel_type": "notebook",
+  "is_private": false,
+  "enable_gpu": false,
+  "enable_tpu": false,
+  "enable_internet": true,
+  "keywords": [],
+  "dataset_sources": [
+    "",
+    ""
+  ],
+  "kernel_sources": [],
+  "competition_sources": [
+    "meta-kaggle-hackathon"
+  ],
+  "model_sources": [],
+  "docker_image": "gcr.io/kaggle-images/python@sha256:20d75b6c2a67c98a3a9f199ea97d51168548b4eb54898f30849e11d68ee06ea1",
+  "machine_shape": "None"
+}

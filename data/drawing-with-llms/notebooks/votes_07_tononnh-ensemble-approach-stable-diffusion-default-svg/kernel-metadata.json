@@ -1,0 +1,32 @@
+{
+  "id": "tononnh/ensemble-approach-stable-diffusion-default-svg",
+  "id_no": 78386142,
+  "title": "Ensemble Approach: Stable Diffusion & Default SVG",
+  "code_file": "ensemble-approach-stable-diffusion-default-svg.ipynb",
+  "language": "python",
+  "kernel_type": "notebook",
+  "is_private": false,
+  "enable_gpu": true,
+  "enable_tpu": false,
+  "enable_internet": false,
+  "keywords": [
+    "gpu",
+    "package"
+  ],
+  "dataset_sources": [],
+  "kernel_sources": [
+    "metric/svg-constraints",
+    "metric/sac-logos-ava1-l14-linearmse",
+    "metric/openai-clip-vit-large-patch14",
+    "packagemanager/pm-78386142-at-03-13-2025-06-18-29"
+  ],
+  "competition_sources": [
+    "drawing-with-llms"
+  ],
+  "model_sources": [
+    "google/paligemma-2/Transformers/paligemma2-10b-mix-448/1",
+    "stabilityai/stable-diffusion-v2/PyTorch/1/1"
+  ],
+  "docker_image": "gcr.io/kaggle-private-byod/python@sha256:d8674e13fab653bf7fb8d9a102f2ae94036771ccb5c73f51888d881421e1f937",
+  "machine_shape": "NvidiaTeslaT4"
+}

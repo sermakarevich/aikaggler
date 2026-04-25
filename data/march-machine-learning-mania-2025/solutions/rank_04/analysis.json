@@ -1,0 +1,61 @@
+{
+  "summary": "The author placed 4th by combining XGBoost and logistic regression to predict win/loss outcomes on point differential. They engineered Laplace-smoothed temporal features and stacked out-of-fold predictions on top of an existing feature set. Validation relied on a leave-one-season-out strategy guided by Brier score intuition rather than standard cross-validation, which suffered from time-based leakage. The final submission used model averaging across seasons to produce calibrated probabilities.",
+  "extensive_summary": "## Approach Overview\nThe solution targets the March Machine Learning Mania 2025 competition by predicting win/loss outcomes using a two-stage modeling pipeline. The core architecture applies logistic regression on the leaf nodes of an XGBoost model trained with a Cauchy loss function on point differential.\n\n## Feature Engineering & Data\nThe author built upon the feature set from Raddar's Vilnius NCAA solution, adding Laplace-smoothed features derived from prior season matchups, away wins, and a 14-day win ratio. Out-of-fold predictions were uniquely stacked to enhance predictive power. Only Kaggle-published data was used, with no external data or manual manipulation.\n\n## Validation & Leakage Mitigation\nA major focus was avoiding temporal leakage. The author explicitly discarded the original CV code due to time-based leakage and removed a spline component that caused target leakage. Instead of traditional cross-validation, they employed a leave-one-season-out strategy for model averaging, guided by personal intuition calibrated against the Brier score of a left-out 2024 season. Models with superior but leaky local CV scores were intentionally rejected.\n\n## Ensembling & Submission\nThe final submission leveraged model averaging across seasons. The author also notes a secondary submission utilizing Raddar's historical R-based GitHub solution. Reproducibility code is provided, though non-seeded team matches are hardcoded to 0.5 to save memory and compute time.",
+  "rank": 4,
+  "competition_flow": "Raw Kaggle data is processed to extract temporal and matchup features, which are fed into an XGBoost model with Cauchy loss to generate leaf node predictions; these are combined via logistic regression and averaged across leave-one-season-out folds to produce final win/loss probabilities.",
+  "data_reading": [],
+  "data_processing": [
+    "Laplace smoothing on temporal features (prior season matchup, away wins, last 14-day win ratio)",
+    "Stacking out-of-fold predictions",
+    "Removing spline components to prevent target leakage",
+    "Hardcoding non-seeded team matches to 0.5 for memory efficiency"
+  ],
+  "features_engineering": [
+    "Laplace-smoothed features (prior season matchup, away wins, last 14-day win ratio)",
+    "Stacked out-of-fold predictions",
+    "Features inherited from Raddar's Vilnius NCAA solution"
+  ],
+  "models": [
+    "XGBoost",
+    "Logistic regression"
+  ],
+  "frameworks_used": [],
+  "loss_functions": [
+    "Cauchy loss function"
+  ],
+  "cv_strategy": "Leave-one-season-out for model averaging, guided by Brier score intuition on a left-out 2024 season; explicitly avoided standard CV due to time-based leakage.",
+  "ensembling": "Model averaging across leave-one-season-out predictions to produce final win/loss probabilities.",
+  "insights": [
+    "Temporal leakage severely compromises validation in time-series sports data, making leave-one-season-out a more reliable averaging strategy than standard CV.",
+    "Brier score intuition on a held-out season effectively guides validation strategy selection.",
+    "Stacking out-of-fold predictions alongside Laplace-smoothed temporal features significantly boosts predictive performance."
+  ],
+  "critical_findings": [
+    "Standard cross-validation code contained time-based leakage that artificially inflated local scores.",
+    "Including a spline component introduced target leakage, degrading model validity.",
+    "Models with 'better' leaky local CV scores were actually inferior and were correctly discarded."
+  ],
+  "what_did_not_work": [
+    "CV code with time-based leakage",
+    "Spline component causing target leakage",
+    "Models with superior but leaky local CV scores"
+  ],
+  "github_repos": [
+    {
+      "url": "https://github.com/fakyras/ncaa_women_2018",
+      "role": "reference"
+    }
+  ],
+  "papers": [],
+  "other_solution_refs": [
+    {
+      "description": "Vilnius NCAA feature engineering baseline",
+      "url": "https://www.kaggle.com/code/raddar/vilnius-ncaa"
+    },
+    {
+      "description": "Author's gold medal solution code",
+      "url": "https://www.kaggle.com/code/mikeskim/gold-medal-solution-mike-kim"
+    }
+  ],
+  "source_url": "https://www.kaggle.com/competitions/march-machine-learning-mania-2025/discussion/572466"
+}

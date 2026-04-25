@@ -1,0 +1,88 @@
+{
+  "id": 110281,
+  "competitionName": "bigquery-ai-hackathon",
+  "title": "BigQuery AI - Building the Future of Data",
+  "briefDescription": "Build AI solutions with BigQuery",
+  "dateEnabled": "2025-08-12T16:26:04.707Z",
+  "deadline": "2025-09-22T23:59:00Z",
+  "leaderboardPercentage": 30,
+  "maxDailySubmissions": 5,
+  "numScoredSubmissions": 2,
+  "numPrizes": 1,
+  "forumId": 8496528,
+  "finalLeaderboardHasBeenVerified": true,
+  "dateCreated": "2025-08-01T00:41:03.818705700Z",
+  "competitionHostSegmentId": 1,
+  "maxTeamSize": 5,
+  "organizationId": 445,
+  "hasCoverImageUrl": true,
+  "showPrivateLeaderboard": true,
+  "hasScripts": true,
+  "totalTeams": 277,
+  "totalCompetitors": 346,
+  "totalSubmissions": 277,
+  "rulesRequired": true,
+  "clonedFromCompetitionId": 100890,
+  "categories": [
+    {
+      "id": 14101,
+      "name": "tabular",
+      "fullPath": "data type > tabular",
+      "datasetCount": 15194,
+      "competitionCount": 15461,
+      "scriptCount": 7996,
+      "slug": "tabular-data",
+      "displayName": "Tabular"
+    },
+    {
+      "id": 14104,
+      "name": "text",
+      "fullPath": "data type > text",
+      "datasetCount": 10255,
+      "competitionCount": 185,
+      "scriptCount": 4976,
+      "slug": "text-data",
+      "displayName": "Text"
+    },
+    {
+      "id": 17081,
+      "name": "multimodal",
+      "fullPath": "data type > multimodal data",
+      "description": "",
+      "datasetCount": 801,
+      "competitionCount": 31,
+      "scriptCount": 300,
+      "slug": "multimodal-data",
+      "displayName": "Multimodal"
+    },
+    {
+      "id": 14106,
+      "name": "bigquery",
+      "fullPath": "data type > bigquery",
+      "datasetCount": 555,
+      "competitionCount": 5,
+      "scriptCount": 732,
+      "slug": "bigquery",
+      "displayName": "Bigquery"
+    }
+  ],
+  "organization": {
+    "slug": "google-cloud",
+    "name": "Google Cloud",
+    "thumbnailImageUrl": "https://storage.googleapis.com/kaggle-organizations/445/thumbnail.png",
+    "profileUrl": "/organizations/google-cloud"
+  },
+  "launched": true,
+  "createdByUserId": 1095143,
+  "hostName": "Google Cloud",
+  "scoreTruncationNumDecimals": 5,
+  "locked": true,
+  "totalJoinedUsers": 5350,
+  "requiresIdentityVerification": true,
+  "submissionSizeLimitMb": 20480,
+  "reward": {
+    "id": "USD",
+    "quantity": 100000
+  },
+  "hackathon": true
+}

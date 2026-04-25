@@ -1,0 +1,13 @@
+{
+  "description": "Participants develop an AI system to automatically resolve new GitHub issues without human intervention. Competitors analyze issue descriptions, comments, and repository context to predict whether each issue can be successfully closed. Success is measured by a custom 'K Prize Metric' that evaluates the system's ability to achieve a 90% closure rate while minimizing false positives. The competition targets practical automation for software development workflows.",
+  "data_modality": "text",
+  "task_type": "classification",
+  "label_structure": "single_label",
+  "metric": "K Prize Metric",
+  "test_split": "unknown",
+  "format": "code_comp",
+  "dataset_scale": "unknown",
+  "domain": "software_engineering",
+  "data_challenges": [],
+  "constraints": []
+}

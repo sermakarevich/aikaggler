@@ -1,0 +1,47 @@
+{
+  "summary": "The author achieved 8th place by building a generative pipeline that fine-tunes SDXL on curated high-scoring images from 16 previous Flux Schnell and SDXL runs. They optimized inference to generate 14-18 candidates per prompt, converted them to size-constrained SVGs using VTracer and scour, added a corner '+' for OCR robustness, and filtered outputs with a VQA proxy prompt and MedianBlur. To counteract high variance in local and public leaderboard scores, they ensembled two high-scoring submissions that differed only in random seeds.",
+  "extensive_summary": "## Local Validation Strategy\nThe team relied on a custom local validation setup consisting of a few hundred prompt/question samples. While this setup showed good correlation with the public leaderboard, both local and public scores exhibited high variance. This instability directly influenced their final submission strategy, leading them to prioritize seed diversity over complex validation tuning.\n\n## Core Generation & Fine-Tuning\nThe backbone of the pipeline was an SDXL model fine-tuned on the best images from 16 previous runs of prompted Flux Schnell and SDXL models, selected based on a local validation score. To maximize compute efficiency, they utilized both GPUs in parallel for image generation while scoring occurred in a single thread per GPU. They noted that the kagglehub package initially caused context errors, forcing an API-based approach, though newer versions have resolved this.\n\n## SVG Conversion & OCR\nGenerated bitmaps were converted to SVGs using optimized VTracer settings. To meet the strict 10kB file size limit, they applied minification steps primarily leveraging the scour library and reduced the original image dimensions before conversion. For OCR reliability, they injected a small \"+\" in one corner of the image, which proved robust and computationally cheap, though they acknowledged it may negatively impact aesthetic scores.\n\n## Scoring & Selection\nAll candidate images were scored using a proxy VQA prompt that asked whether the image matched the original prompt. To reduce inference runtime, they applied MedianBlur before scoring. The highest-scoring image per sample was selected for the final submission.\n\n## Failed Attempts & Lessons\nThe team invested significant effort into diffvg and fully differentiable image preprocessing steps. While promising locally and in simpler pipelines, these approaches ultimately failed during submission due to \"Package Prediction Error\" and competition defense mechanics. They also noted that incorporating prompt-image similarity scores and diffvg would have likely improved their final rank.",
+  "rank": 8,
+  "competition_flow": "The pipeline fine-tunes an SDXL model on curated high-scoring images, generates 14-18 candidates per prompt using parallel GPU inference, converts them to size-constrained SVGs via VTracer and scour, adds a corner '+' for OCR robustness, scores outputs with a VQA proxy prompt, and selects the best image per sample.",
+  "data_reading": [],
+  "data_processing": [
+    "Fine-tuning SDXL on best images from 16 previous Flux Schnell and SDXL runs",
+    "Converting bitmaps to SVG using optimized VTracer settings",
+    "Minifying SVGs with scour library",
+    "Reducing original image size to fit 10kB requirement",
+    "Applying MedianBlur to reduce VQA scoring runtime",
+    "Adding a small '+' in one corner for OCR robustness"
+  ],
+  "features_engineering": [],
+  "models": [
+    "SDXL",
+    "Flux Schnell"
+  ],
+  "frameworks_used": [
+    "scour",
+    "diffvg",
+    "kagglehub"
+  ],
+  "loss_functions": [],
+  "cv_strategy": "Local validation using a few hundred prompt/question samples with high variance; mitigated by ensembling two high-scoring submissions with different seeds.",
+  "ensembling": "The final submission was formed by ensembling two high-scoring runs that differed only in random seeds to mitigate validation and leaderboard variance.",
+  "insights": [
+    "Fine-tuning SDXL on curated high-scoring images from previous runs significantly improved output quality.",
+    "Using a simple VQA proxy prompt with MedianBlur effectively filtered outputs while reducing inference runtime.",
+    "Ensembling two runs with different seeds is a practical way to stabilize high-variance local and public LB scores.",
+    "Adding a small '+' in the corner provides a cheap and robust OCR anchor, though it may hurt aesthetic scores."
+  ],
+  "critical_findings": [
+    "Local validation scores showed high variance and often correlated poorly with the public LB, making seed-based ensembling necessary.",
+    "Fully differentiable preprocessing steps like diffvg failed in production due to package prediction errors and competition defense mechanics, despite promising local results.",
+    "The author realized they missed using diffvg and prompt-image similarity scores, which likely would have improved their final rank."
+  ],
+  "what_did_not_work": [
+    "Using diffvg and differentiable image preprocessing steps stopped by Package Prediction Error during submission.",
+    "Hacking the aesthetic score with fully differentiable preprocessing steps yielded limited success due to defense mechanics and VQA score constraints."
+  ],
+  "github_repos": [],
+  "papers": [],
+  "other_solution_refs": [],
+  "source_url": "https://www.kaggle.com/competitions/drawing-with-llms/discussion/581095"
+}

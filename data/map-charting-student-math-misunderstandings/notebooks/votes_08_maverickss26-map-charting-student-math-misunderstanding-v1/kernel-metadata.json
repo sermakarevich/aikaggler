@@ -1,0 +1,32 @@
+{
+  "id": "maverickss26/map-charting-student-math-misunderstanding-v1",
+  "id_no": 87470692,
+  "title": "MAP - Charting student math misunderstanding v1",
+  "code_file": "map-charting-student-math-misunderstanding-v1.ipynb",
+  "language": "python",
+  "kernel_type": "notebook",
+  "is_private": false,
+  "enable_gpu": true,
+  "enable_tpu": false,
+  "enable_internet": false,
+  "keywords": [
+    "gpu"
+  ],
+  "dataset_sources": [
+    "jaytonde/deekseepmath-7b-map-competition",
+    "cdeotte/ettin-encoder-1b-cv943",
+    "cdeotte/gemma2-9b-it-bf16",
+    "cdeotte/gemma2-9b-it-cv945",
+    "cdeotte/modernbert-large-cv938",
+    "jaytonde/qwen3-8b-map-competition"
+  ],
+  "kernel_sources": [],
+  "competition_sources": [
+    "map-charting-student-math-misunderstandings"
+  ],
+  "model_sources": [
+    "google/gemma-3/Transformers/gemma-3-1b-it/1"
+  ],
+  "docker_image": "gcr.io/kaggle-private-byod/python@sha256:320043e14c68293f1c946585b9257123385205a58af4b94b17d31868cae4e868",
+  "machine_shape": "NvidiaTeslaT4"
+}

@@ -1,0 +1,26 @@
+{
+  "id": "dedquoc/medgemma-rsna-trauma-reasoning-baseline",
+  "id_no": 106940040,
+  "title": "MedGemma-RSNA-Trauma-Reasoning-Baseline",
+  "code_file": "medgemma-rsna-trauma-reasoning-baseline.ipynb",
+  "language": "python",
+  "kernel_type": "notebook",
+  "is_private": false,
+  "enable_gpu": true,
+  "enable_tpu": false,
+  "enable_internet": true,
+  "keywords": [
+    "artificial intelligence",
+    "healthcare"
+  ],
+  "dataset_sources": [
+    "gunesevitan/rsna-2023-abdominal-trauma-detection-dataset"
+  ],
+  "kernel_sources": [],
+  "competition_sources": [
+    "med-gemma-impact-challenge"
+  ],
+  "model_sources": [],
+  "docker_image": "gcr.io/kaggle-private-byod/python@sha256:536e3d9752ddf933ae83b0a0c3ea67d38e6236db11a1cd47d84927a0b8d2c440",
+  "machine_shape": "Gpu"
+}

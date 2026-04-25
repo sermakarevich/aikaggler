@@ -1,0 +1,56 @@
+{
+  "summary": "This notebook implements a baseline for the MABe mouse behavior detection challenge using XGBoost. It processes 2D tracking coordinates from parquet files, engineering extensive temporal and interaction features scaled by video FPS. It trains separate binary XGBoost classifiers for each action type using StratifiedGroupKFold, optimizes per-action prediction thresholds via Optuna, and converts frame-wise probabilities into contiguous action segments. Key takeaways include the importance of FPS-aware feature scaling, group stratification by video to prevent data leakage, and robust post-processing for sparse, overlapping temporal labels.",
+  "purpose": "baseline",
+  "competition_flow": "Loads CSV metadata and parquet tracking data, engineers FPS-scaled temporal and pairwise features, trains per-action binary XGBoost models with StratifiedGroupKFold, optimizes thresholds via Optuna, converts frame-wise probabilities to action segments, and outputs a cleaned submission CSV.",
+  "data_reading": [
+    "pd.read_csv for train/test metadata",
+    "pd.read_parquet for tracking/annotation data",
+    "Filters out MABe22 lab IDs",
+    "Parses behaviors_labeled JSON strings"
+  ],
+  "data_processing": [
+    "Drops specific headpiece/tail body parts",
+    "Pivots tracking data to frames",
+    "Scales coordinates by pix_per_cm_approx",
+    "Handles missing FPS with fallback to 30.0",
+    "Removes overlapping predictions and invalid frames during post-processing"
+  ],
+  "features_engineering": [
+    "FPS-scaled rolling windows for speed, curvature, position, and variance",
+    "Exponential weighted means and speed state binning",
+    "Relative distance, lead angles, chase metrics, and speed correlation for pairs",
+    "Pairwise body part distances and relative orientation",
+    "Ear distance shifts and nose-tail distance lags",
+    "Action thresholding per frame"
+  ],
+  "models": [
+    "XGBoost (XGBClassifier)"
+  ],
+  "frameworks_used": [
+    "scikit-learn",
+    "xgboost",
+    "optuna",
+    "koolbox",
+    "pandas",
+    "polars",
+    "numpy",
+    "joblib"
+  ],
+  "loss_functions": [],
+  "cv_strategy": "StratifiedGroupKFold(n_splits=3, groups=video_id)",
+  "ensembling": "No model ensembling is used; predictions are combined frame-wise across independent binary classifiers per action, followed by threshold application and segment merging.",
+  "insights": [
+    "FPS-aware scaling is critical for temporal features across videos with different frame rates.",
+    "Stratifying by video_id prevents data leakage during cross-validation.",
+    "Training binary classifiers per action handles class imbalance better than multiclass approaches.",
+    "Optimizing per-action thresholds via Optuna improves F1 over fixed thresholds."
+  ],
+  "critical_findings": [
+    "The custom evaluation metric requires careful handling of sparse labels and overlapping predictions.",
+    "Videos with no predictions must be filled with dummy segments to avoid submission errors.",
+    "Dropping specific headpiece/tail tracking points reduces noise without losing behavioral signal."
+  ],
+  "what_did_not_work": [],
+  "source_url": "https://www.kaggle.com/code/ravaghi/social-action-recognition-in-mice-xgboost",
+  "votes": 656
+}

@@ -1,0 +1,30 @@
+{
+  "summary": "This notebook serves as a diagnostic probe for the Mitsui Commodity Prediction Challenge, designed to test whether the public leaderboard test set overlaps with the training period. It achieves this by loading the training labels into memory and intercepting the inference server's test input to extract the `date_id`. During prediction, it directly looks up the corresponding ground truth row from the training labels and returns it as the model output. If the test dates match the training dates, the public score becomes artificially high, effectively revealing data leakage or test/train overlap. Readers should understand how to safely audit leaderboard integrity without submitting actual model predictions.",
+  "purpose": "other",
+  "competition_flow": "Loads `train_labels.csv` into memory, intercepts the inference server's test input to extract `date_id`, looks up the corresponding ground truth row in the training labels, and returns it as the prediction to artificially inflate the public leaderboard score.",
+  "data_reading": [
+    "Reads `/kaggle/input/mitsui-commodity-prediction-challenge/train_labels.csv` using `pandas.read_csv` and casts the `date_id` column to `np.uint16`."
+  ],
+  "data_processing": [
+    "Casts `date_id` to `uint16` and fills missing values with 0 during the ground truth lookup in the inference function."
+  ],
+  "features_engineering": [],
+  "models": [],
+  "frameworks_used": [
+    "pandas",
+    "polars",
+    "numpy",
+    "kaggle_evaluation.mitsui_inference_server"
+  ],
+  "loss_functions": [],
+  "cv_strategy": "",
+  "ensembling": "",
+  "insights": [
+    "Mapping test `date_id` to training labels during inference can effectively probe whether the public test set overlaps with the training period.",
+    "A leaderboard score significantly higher than a dummy submission indicates data leakage or test/train overlap."
+  ],
+  "critical_findings": [],
+  "what_did_not_work": [],
+  "source_url": "https://www.kaggle.com/code/ravi20076/mitsui2025-lbprobe-v1",
+  "votes": 521
+}

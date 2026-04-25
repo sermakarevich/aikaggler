@@ -1,0 +1,46 @@
+{
+  "summary": "This notebook provides a complete end-to-end baseline pipeline for the Jane Street Real-Time Market Data Forecasting competition. It demonstrates how to efficiently load and process large tabular data, implement time-based cross-validation, and train three gradient boosting models with custom weighted R2 metrics. The code also covers GPU acceleration, aggressive memory optimization, and the specific inference server requirements needed to meet Jane Street's strict latency constraints. Readers learn how to structure a production-ready baseline that handles real-time prediction deadlines and custom evaluation metrics.",
+  "purpose": "baseline",
+  "competition_flow": "Loads training data filtered by date_id, trains LightGBM, XGBoost, and CatBoost models across 5 time-based folds using a custom weighted R2 metric, then averages their predictions during inference to generate a submission via the official Kaggle inference server.",
+  "data_reading": [
+    "Loads train.parquet via pd.read_parquet, filters rows by date_id, and uses polars for inference data loading."
+  ],
+  "data_processing": [
+    "Custom memory downcasting function reduces integer and float column dtypes to the smallest safe range.",
+    "Filters training data to exclude the first 500 dates and isolates the last 100 dates for validation."
+  ],
+  "features_engineering": [],
+  "models": [
+    "LightGBM (LGBMRegressor)",
+    "XGBoost (XGBRegressor)",
+    "CatBoost (CatBoostRegressor)"
+  ],
+  "frameworks_used": [
+    "lightgbm",
+    "xgboost",
+    "catboost",
+    "pandas",
+    "polars",
+    "numpy",
+    "joblib",
+    "kaggle_evaluation.jane_street_inference_server"
+  ],
+  "loss_functions": [
+    "l2",
+    "reg:squarederror",
+    "RMSE"
+  ],
+  "cv_strategy": "Time-based split: skips first 500 dates, uses last 100 dates for validation, and splits remaining dates into 5 folds using modulo indexing on the date index.",
+  "ensembling": "Averages predictions across all trained LightGBM, XGBoost, and CatBoost models from each fold using np.mean(pred, axis=0).",
+  "insights": [
+    "GPU acceleration is enabled for all three gradient boosting frameworks to speed up training.",
+    "Memory downcasting is essential for handling large tabular datasets without OOM errors.",
+    "Jane Street's inference server requires returning a Polars DataFrame and enforces strict latency limits, with a relaxed 15-minute window for the first predict call."
+  ],
+  "critical_findings": [
+    "The official Kaggle inference server code has a bug that requires returning a Polars DataFrame instead of Pandas for submission."
+  ],
+  "what_did_not_work": [],
+  "source_url": "https://www.kaggle.com/code/yuanzhezhou/jane-street-baseline-lgb-xgb-and-catboost",
+  "votes": 1618
+}

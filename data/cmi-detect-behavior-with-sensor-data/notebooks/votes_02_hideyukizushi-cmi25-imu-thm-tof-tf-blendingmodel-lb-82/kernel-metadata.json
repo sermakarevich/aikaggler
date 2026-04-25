@@ -1,0 +1,30 @@
+{
+  "id": "hideyukizushi/cmi25-imu-thm-tof-tf-blendingmodel-lb-82",
+  "id_no": 85882819,
+  "title": "CMI25 | IMU+THM/TOF |TF BlendingModel |LB.82",
+  "code_file": "cmi25-imu-thm-tof-tf-blendingmodel-lb-82.ipynb",
+  "language": "python",
+  "kernel_type": "notebook",
+  "is_private": false,
+  "enable_gpu": true,
+  "enable_tpu": false,
+  "enable_internet": false,
+  "keywords": [
+    "gpu"
+  ],
+  "dataset_sources": [
+    "hideyukizushi/20250627-cmi-b-102-b-105",
+    "hideyukizushi/cmi-d-111",
+    "hideyukizushi/cmi25-imu-thmtof-tf-bilstm-gru-attentionlb-xx"
+  ],
+  "kernel_sources": [
+    "richolson/cmi-2025-metric-copy-for-import",
+    "hideyukizushi/lb-0-78-quaternions-tf-bilstm-gru-attention"
+  ],
+  "competition_sources": [
+    "cmi-detect-behavior-with-sensor-data"
+  ],
+  "model_sources": [],
+  "docker_image": "gcr.io/kaggle-private-byod/python@sha256:5de7f3337f4166df89b2d68f886fb08b30c4260df90e55e6587be5fd7648cf3f",
+  "machine_shape": "Gpu"
+}

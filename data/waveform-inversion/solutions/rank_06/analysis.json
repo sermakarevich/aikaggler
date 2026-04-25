@@ -1,0 +1,51 @@
+{
+  "summary": "The author achieved 6th place by heavily leveraging synthetic data generation to augment the training set, creating 10 million samples using Gaussian noise, Mixup, and Denoising Diffusion Implicit Models (DDIM). They trained two vision models, ConvNeXtV2-Base and CaFormer-B36, in a two-stage process: primary training on synthetic data followed by test-time fine-tuning on additional synthetic samples derived from the test set. A key insight was the substantial leaderboard improvement gained from this late-stage test-time fine-tuning, which was cut short just before the deadline.",
+  "extensive_summary": "## Synthetic Data Generation\nThe core of the solution revolves around generating approximately 10 million additional training samples to augment the original dataset. To optimize storage, inputs were downsampled to dimensions (5, 500, 70) and stored in `np.float16`. The synthetic dataset was composed of 40% Gaussian noise with random rotations, scaling, and shifts; 40% Mixup-augmented samples; and 20% samples generated via Denoising Diffusion Implicit Models (DDIM).\n\n## Model Architecture\nThe author utilized two pre-trained vision models: `ConvNeXtV2-Base` (specifically `convnextv2_base.fcmae_ft_in22k_in1k_384`) and `CaFormer-B36` (`caformer_b36.sail_in22k_ft_in1k_384`). Architectural modifications were adapted from existing Kaggle kernels focused on full-resolution improvements for both architectures.\n\n## Training Strategy\nTraining was split into two stages. Stage 1 involved primary training for 60 epochs on the synthetic dataset, yielding strong cross-validation and leaderboard scores. Stage 2 focused on test-time fine-tuning, where the models were further trained for 2 epochs on synthetic data derived from the test set. This was achieved by generating forward modeling predictions on test data (mapping y to x) and applying horizontal flipping for augmentation, resulting in 300k additional samples. This late-stage fine-tuning provided a significant score boost, though the author noted that halting training 30 minutes before the deadline likely left additional gains on the table.",
+  "rank": 6,
+  "competition_flow": "The pipeline generates 10 million synthetic training samples via noise, Mixup, and DDIM, trains ConvNeXtV2-Base and CaFormer-B36 for 60 epochs, then fine-tunes them for 2 epochs on test-derived synthetic data before submitting the ensemble predictions.",
+  "data_reading": [],
+  "data_processing": [
+    "downsampled to dimensions (5, 500, 70)",
+    "stored in np.float16 format",
+    "Gaussian noise with random rotations, scaling, and shifts",
+    "Mixup augmentation",
+    "Denoising Diffusion Implicit Models (DDIM)",
+    "horizontal flipping (HFlip)"
+  ],
+  "features_engineering": [],
+  "models": [
+    "ConvNeXtV2-Base",
+    "CaFormer-B36"
+  ],
+  "frameworks_used": [],
+  "loss_functions": [],
+  "cv_strategy": "",
+  "ensembling": "The author ensembled predictions from ConvNeXtV2-Base and CaFormer-B36 across both training stages, though the specific weighting or post-processing method is not detailed.",
+  "insights": [
+    "Test-time fine-tuning on synthetic data derived from the test set provided a substantial leaderboard improvement in the final hours.",
+    "Halting training just before the deadline likely left significant additional score gains on the table."
+  ],
+  "critical_findings": [],
+  "what_did_not_work": [],
+  "github_repos": [],
+  "papers": [],
+  "other_solution_refs": [
+    {
+      "description": "Improved VEL to SEIS",
+      "url": "https://www.kaggle.com/code/manatoyo/improved-vel-to-seis/notebook"
+    },
+    {
+      "description": "Waveform Inversion (VEL to SEIS)",
+      "url": "https://www.kaggle.com/code/jaewook704/waveform-inversion-vel-to-seis"
+    },
+    {
+      "description": "CaFormer Full-Resolution Improved",
+      "url": "https://www.kaggle.com/code/brendanartley/caformer-full-resolution-improved"
+    },
+    {
+      "description": "ConvNeXt Full-Resolution Baseline",
+      "url": "https://www.kaggle.com/code/brendanartley/convnext-full-resolution-baseline"
+    }
+  ],
+  "source_url": "https://www.kaggle.com/competitions/waveform-inversion/discussion/587460"
+}

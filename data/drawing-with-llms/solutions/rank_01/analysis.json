@@ -1,0 +1,43 @@
+{
+  "summary": "The author won 1st place by generating 64 candidate images using a diffusion model, converting them to compressed SVGs, and strategically embedding text and aesthetic artifacts to maximize scoring metrics. Key techniques included using a lightweight autoencoder and DPM-Solver for efficient generation, quantizing images to six colors, and extracting contours to build compressed SVGs. The final submission was selected by converting SVGs back to images, applying the competition's image processing pipeline, and picking the highest aesthetic score.",
+  "extensive_summary": "The solution centers on a deterministic generation and selection pipeline rather than training a custom model. First, 64 baseline images are generated using Segmind's SSD-1B diffusion model at 384\u00d7384 resolution. To accelerate inference, the default VAE is swapped for madebyollin's Tiny AutoEncoder for Stable Diffusion (XL), a DPM-Solver multistep scheduler with 12 steps is used, and DeepCache is enabled. Generation runs on dual T4 GPUs, though single-threading is enforced to avoid Kaggle package bugs.\n\nEach generated image is downsampled and quantized to exactly six colors. OpenCV is used to extract contours, which are simplified into polygons, scaled back to original dimensions, and converted to compressed SVG paths. Paths are ranked by size, centrality, and simplicity, then added until a 6000-byte limit is reached.\n\nThe SVG is scaled to 40% and placed top-center. To bypass OCR penalties while retaining prompt information, the author embeds the description text under a repeating, noise-like SVG pattern that hides it in raw/partially processed views but reveals it in the fully processed metric image. Anti-hallucination text (\"ZOK\") is placed in the top-left corner. Additional aesthetic artifacts (colored square patches, specific green/gray text strings like \"KUZ\", \"3Q3\", \"SSQ\", and \"FRANCE XK ARTS\") are added based on genetic algorithms and hill-climbing searches. Finally, all candidates are converted back to images, run through a custom, efficient replica of the competition's image processor, and the highest aesthetic score is selected.",
+  "rank": 1,
+  "competition_flow": "Generate 64 candidate images with a diffusion model, convert them to compressed SVGs with hidden prompt text and aesthetic artifacts, run them through a custom image processing pipeline, and select the highest-scoring SVG for submission.",
+  "data_reading": [
+    "Not explicitly stated; inputs are text prompts used to drive image generation."
+  ],
+  "data_processing": [
+    "Images generated at 384\u00d7384 are downsampled and quantized to six colors; contours are extracted via OpenCV, simplified to polygons, scaled back, and converted to compressed SVG paths under a 6000-byte limit. SVGs are scaled to 40%, embedded with hidden text patterns, anti-OCR decoys, and aesthetic patches, then converted back to images for metric evaluation."
+  ],
+  "features_engineering": [],
+  "models": [
+    "SSD-1B",
+    "Tiny AutoEncoder for Stable Diffusion (XL)"
+  ],
+  "frameworks_used": [
+    "opencv"
+  ],
+  "loss_functions": [],
+  "cv_strategy": "Holdout validation dataset",
+  "ensembling": "No traditional ensembling; the pipeline generates 64 candidate SVGs, evaluates each through a custom replica of the competition's image processing pipeline, and selects the single highest-scoring candidate.",
+  "insights": [
+    "Embedding the specific three-letter string \"ZOK\" in the top-left corner avoids OCR hallucinations while maximizing aesthetic scores.",
+    "Hiding prompt text behind a repeating noise-like pattern bypasses OCR penalties in raw/partially processed views but remains visible in the fully processed metric image.",
+    "Single-threading image generation is preferred over multi-threading to avoid reliability bugs in Kaggle's environment."
+  ],
+  "critical_findings": [
+    "ZOK was empirically found to yield the highest average aesthetic scores without negatively impacting VQA scores.",
+    "A repeating, noise-like SVG pattern successfully hides text from OCR systems while preserving it for the final aesthetic/VQA evaluation.",
+    "Generating more than 64 images improved scores on the private LB, but was not used in the final submission due to time constraints."
+  ],
+  "what_did_not_work": [
+    "Incorporating CLIP or VQA scores into the selection equation.",
+    "Generating more than 64 images in the final submission.",
+    "Calculating mean aesthetic scores across multiple pipeline applications.",
+    "Testing different placements for colored square patches."
+  ],
+  "github_repos": [],
+  "papers": [],
+  "other_solution_refs": [],
+  "source_url": "https://www.kaggle.com/competitions/drawing-with-llms/discussion/581027"
+}

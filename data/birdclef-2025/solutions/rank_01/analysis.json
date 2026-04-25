@@ -1,0 +1,95 @@
+{
+  "summary": "The author secured 1st place in BirdCLEF 2025 by implementing a multi-iterative noisy student self-training pipeline on 20-second audio chunks. Key innovations include mixing pseudo-labeled soundscapes with labeled data using a constant 0.5 blending weight, applying a power transform to pseudo-labels to mitigate noise accumulation across iterations, and sampling pseudo-labeled data with a WeightedRandomSampler based on label probability sums. A dedicated model for underrepresented Amphibia and Insecta groups using extended Xeno-Canto data, combined with overlapping framewise prediction averaging during inference, drove the final score.",
+  "extensive_summary": "## Data & Preprocessing\nThe solution processes 20-second audio chunks normalized by absmax. These chunks are converted to mel spectrograms using a sample rate of 32kHz, 224 mel bins, frequency range 0-16kHz, n_fft of 4096, hop size of 1252, and top_db of 80.0. The spectrograms are 0-1 normalized and repeated 3 times to form the input channels. External Xeno-Canto data was filtered for durations under 60 seconds and used to train a dedicated model for the Amphibia and Insecta groups.\n\n## Model Architecture & Supervised Training\nThe core architecture combines a Self-Event Detection (SED) head with Gem frequency pooling. Backbones evolved across training stages, starting with `tf_efficientnet_b0.ns_jft_in1k` and `regnety_008.pycls_in1k`, then progressing to `tf_efficientnet_b3/ns_jft_in1k`, `regnety_016.tv2_in1k`, `tf_efficientnet_b4.ns_jft_in1k`, and `eca_nfnet_l0.ra2_in1k`. The supervised stage used CrossEntropy loss, AdamW optimizer, CosineAnnealingWarmRestarts scheduler, and MixUp augmentation (p=0.5) on raw audio with left-side zero padding to ensure consistent mixing.\n\n## Multi-Iterative Noisy Student Self-Training\nAfter hitting a supervised ceiling, the author pseudo-labeled unlabeled soundscapes and integrated them via MixUp. A constant blending weight of 0.5 (Beta parameters = inf) proved superior to Beta-distributed weights. Stochastic Depth (`drop_path_rate = 0.15`) was applied exclusively during self-training to inject noise and force robust feature learning. To combat noise amplification in later iterations, a power transform greater than 1 was applied to pseudo-label probabilities, preserving confident signals while suppressing noise. A WeightedRandomSampler prioritized soundscapes with higher sums of maximum label probabilities, stabilizing training.\n\n## Inference & Ensembling\nInference leverages overlapping framewise predictions from neighboring chunks, averaged to act as a 1D sliding-window segmentation and implicit TTA. Post-processing includes edge padding, smoothing with weights [0.1, 0.2, 0.4, 0.2, 0.1], and delta shift TTA. The final submission ensembles 7 models from different stages and backbones with equal weights, optimized via OpenVINO for inference speed.",
+  "rank": 1,
+  "competition_flow": "Raw audio is split into 20-second chunks, converted to mel spectrograms, and fed into CNNs with an SED head; models are trained via supervised learning and multi-iterative noisy student self-training with MixUp and power-transformed pseudo-labels, then ensembled with overlapping framewise averaging and delta shift TTA for final predictions.",
+  "data_reading": [
+    "20-second audio chunks normalized by absmax, converted to mel spectrograms (32kHz, 224 mel bins, 0-16kHz, n_fft=4096, hop=1252, top_db=80) and repeated 3 times as input channels"
+  ],
+  "data_processing": [
+    "20-second chunking with absmax normalization",
+    "Mel spectrogram conversion with specified parameters",
+    "0-1 normalization and channel repetition",
+    "External Xeno-Canto data filtering (duration < 60s)",
+    "MixUp augmentation (p=0.5) on raw audio with left-side zero padding",
+    "Power transform on pseudo-labels to reduce noise",
+    "WeightedRandomSampler based on sum of max label probabilities",
+    "Smoothing and delta shift TTA during inference"
+  ],
+  "features_engineering": [],
+  "models": [
+    "SED head with Gem frequency pooling",
+    "tf_efficientnet_b0.ns_jft_in1k",
+    "regnety_008.pycls_in1k",
+    "tf_efficientnet_b3.ns_jft_in1k",
+    "regnety_016.tv2_in1k",
+    "tf_efficientnet_b4.ns_jft_in1k",
+    "eca_nfnet_l0.ra2_in1k"
+  ],
+  "frameworks_used": [
+    "OpenVINO"
+  ],
+  "loss_functions": [
+    "CrossEntropy"
+  ],
+  "cv_strategy": "5 folds with at least 1 sample per label per fold; validated primarily on Public LB due to poor CV/LB correlation.",
+  "ensembling": "Final submission used equal weights across 7 models from different training stages and backbones, combined with overlapping framewise prediction averaging, smoothing, and delta shift TTA.",
+  "insights": [
+    "Longer 20-second input chunks optimally balance model performance and inference speed compared to shorter durations.",
+    "MixUp with a constant 0.5 blending weight prevents suppression of meaningful signals when mixing clean and noisy pseudo-labeled data.",
+    "Applying a power transform greater than 1 to pseudo-label probabilities effectively mitigates noise accumulation in multi-iterative self-training.",
+    "WeightedRandomSampler based on the sum of maximum label probabilities stabilizes training by prioritizing higher-quality pseudo-labeled samples."
+  ],
+  "critical_findings": [
+    "Family-level Insecta labels from Xeno-Canto worsened results when used as-is, but assigning unique species-level labels improved performance.",
+    "CrossEntropy outperformed BCE/Focal losses because it penalizes overrepresented negative classes more strongly when rare positives are misclassified.",
+    "Stochastic Depth only improved results during self-training, not supervised training, confirming the noisy student dynamic."
+  ],
+  "what_did_not_work": [
+    "Concatenating pseudo-labeled data into training batches separately failed to improve results.",
+    "Using Beta distribution parameters too low for MixUp blending weights suppressed meaningful signals.",
+    "Training deeper models for the dedicated Amphibia/Insecta group dropped scores.",
+    "Raising the minimum samples per species to 5 for the dedicated model dropped scores."
+  ],
+  "github_repos": [],
+  "papers": [
+    {
+      "title": "Self-training with Noisy Student improves ImageNet classification",
+      "url": "https://arxiv.org/abs/1911.04252",
+      "arxiv_id": "1911.04252"
+    },
+    {
+      "title": "Design Choices for Enhancing Noisy Student Self-Training",
+      "url": "https://openaccess.thecvf.com/content/WACV2024/papers/Radhakrishnan_Design_Choices_for_Enhancing_Noisy_Student_Self-Training_WACV_2024_paper.pdf",
+      "arxiv_id": null
+    },
+    {
+      "title": "Deep Networks with Stochastic Depth",
+      "url": "https://arxiv.org/abs/1603.09382",
+      "arxiv_id": "1603.09382"
+    }
+  ],
+  "other_solution_refs": [
+    {
+      "description": "4th place 2021 solution reference",
+      "url": "https://www.kaggle.com/competitions/birdclef-2021/discussion/243293"
+    },
+    {
+      "description": "2nd solution 2023 reference",
+      "url": "https://www.kaggle.com/competitions/birdclef-2023/discussion/412707"
+    },
+    {
+      "description": "2nd place solution 2024 reference",
+      "url": "https://www.kaggle.com/competitions/birdclef-2024/discussion/512340"
+    },
+    {
+      "description": "Inference notebook",
+      "url": "https://www.kaggle.com/code/nikitababich/birdclef2025-1st-place-inference"
+    },
+    {
+      "description": "Extra Xeno-Canto dataset",
+      "url": "https://www.kaggle.com/datasets/nikitababich/birdclef2025-1st-place-extra-data"
+    }
+  ],
+  "source_url": "https://www.kaggle.com/competitions/birdclef-2025/discussion/583577"
+}

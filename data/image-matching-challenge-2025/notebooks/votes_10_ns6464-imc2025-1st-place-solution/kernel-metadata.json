@@ -1,0 +1,32 @@
+{
+  "id": "ns6464/imc2025-1st-place-solution",
+  "id_no": 85152646,
+  "title": "imc2025-1st-place-solution",
+  "code_file": "imc2025-1st-place-solution.ipynb",
+  "language": "python",
+  "kernel_type": "notebook",
+  "is_private": false,
+  "enable_gpu": true,
+  "enable_tpu": false,
+  "enable_internet": false,
+  "keywords": [
+    "gpu"
+  ],
+  "dataset_sources": [
+    "ns6464/glomap",
+    "ns6464/imc2023models",
+    "ns6464/imc2025models",
+    "ns6464/ns64-imc2025lib"
+  ],
+  "kernel_sources": [],
+  "competition_sources": [
+    "image-matching-challenge-2025"
+  ],
+  "model_sources": [
+    "oldufo/aliked/PyTorch/aliked-n16/1",
+    "metaresearch/dinov2/PyTorch/base/1",
+    "oldufo/lightglue/PyTorch/aliked/1"
+  ],
+  "docker_image": "gcr.io/kaggle-private-byod/python@sha256:5b3264d2d3aefa4f5e4d6f036b0d2b2d9691dab62493ae3af85a3153608f30a7",
+  "machine_shape": "NvidiaTeslaT4"
+}

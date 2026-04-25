@@ -1,0 +1,71 @@
+{
+  "id": 100890,
+  "competitionName": "meta-kaggle-hackathon",
+  "title": "Meta Kaggle Hackathon",
+  "briefDescription": "Dive into data about Kaggle and share your best meta-analyses & meta-applications",
+  "dateEnabled": "2025-05-29T19:25:54.667Z",
+  "deadline": "2025-07-21T23:59:00Z",
+  "leaderboardPercentage": 30,
+  "maxDailySubmissions": 5,
+  "numScoredSubmissions": 2,
+  "numPrizes": 1,
+  "forumId": 7731692,
+  "finalLeaderboardHasBeenVerified": true,
+  "dateCreated": "2025-05-02T19:07:09.320236100Z",
+  "competitionHostSegmentId": 1,
+  "maxTeamSize": 5,
+  "organizationId": 4,
+  "hasCoverImageUrl": true,
+  "showPrivateLeaderboard": true,
+  "hasScripts": true,
+  "totalTeams": 119,
+  "totalCompetitors": 149,
+  "totalSubmissions": 121,
+  "rulesRequired": true,
+  "categories": [
+    {
+      "id": 14101,
+      "name": "tabular",
+      "fullPath": "data type > tabular",
+      "datasetCount": 15194,
+      "competitionCount": 15461,
+      "scriptCount": 7998,
+      "slug": "tabular-data",
+      "displayName": "Tabular"
+    },
+    {
+      "id": 14104,
+      "name": "text",
+      "fullPath": "data type > text",
+      "datasetCount": 10257,
+      "competitionCount": 185,
+      "scriptCount": 4974,
+      "slug": "text-data",
+      "displayName": "Text"
+    }
+  ],
+  "organization": {
+    "slug": "kaggle",
+    "name": "Kaggle",
+    "thumbnailImageUrl": "https://storage.googleapis.com/kaggle-organizations/4/thumbnail.png",
+    "profileUrl": "/organizations/kaggle"
+  },
+  "launched": true,
+  "createdByUserId": 495305,
+  "license": {
+    "id": 1,
+    "name": "CC0: Public Domain",
+    "url": "https://creativecommons.org/publicdomain/zero/1.0/",
+    "agreementRequired": false
+  },
+  "hostName": "Kaggle",
+  "scoreTruncationNumDecimals": 5,
+  "locked": true,
+  "totalJoinedUsers": 3851,
+  "submissionSizeLimitMb": 20480,
+  "reward": {
+    "id": "USD",
+    "quantity": 50000
+  },
+  "hackathon": true
+}

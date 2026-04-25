@@ -1,0 +1,78 @@
+{
+  "summary": "The authors achieved 3rd place (Public 1st) by combining two complementary LLM-based pipelines for identifying student math misconceptions. monsaraida's approach focused on prompt engineering (adding alternative answer choices and probability-ordered misunderstanding hints) and multi-task supervised fine-tuning with LoRA, enhanced by R-Drop, AWP, and EMA for regularization. Masaya's pipeline leveraged a CausalLM with constrained token prediction per QuestionId, using a multi-stage inference strategy that first runs smaller models (14B/32B) and re-inferences low-confidence samples with a larger 72B model. Key insights included the value of presenting alternative answer choices in prompts, limiting prediction tokens to question-specific misconceptions, and optimizing inference speed via dtype/padding changes to enable larger ensembles.",
+  "extensive_summary": "## Overview\nThe solution is split into two complementary pipelines developed by monsaraida and Masaya, both targeting the identification of student math misconceptions using large language models.\n\n## monsaraida\u2019s Part: Prompting & Multi-Task SFT\nmonsaraida focused on prompt structure and regularization during supervised fine-tuning. Key prompt modifications included replacing the single `{Answer}` field with `{Choices / Selected}` to help the LLM identify misunderstandings, and adding a probability-ordered list of predetermined misunderstandings as hints. For training, Qwen/Qwen3-14B was selected as the base model after testing numerous alternatives. The model was fine-tuned using LoRA with `AutoModelForSequenceClassification` in a multi-task learning setup. The primary task was \"Category: Misconception (65 classes)\", supplemented by auxiliary tasks: True/False, Correct/Misconception/Neither, and Misconception (36 classes). To combat high label noise, R-Drop (Regularized Dropout) was introduced, yielding a significant CV improvement. This was further augmented with AWP (Adversarial Weight Perturbation) and EMA (Exponential Moving Average) for stability and accuracy gains.\n\n## Masaya\u2019s Part: CausalLM & Multi-Stage Inference\nMasaya's approach utilized a CausalLM to handle variable-length labels efficiently. Recognizing that each `QuestionId` had a limited set of possible misconceptions, the prompt was constrained to only include the relevant Misconception, Correct, and Incorrect options for that specific question, excluding `True_`/`False_` labels to be resolved via rule-based logic later. This constraint significantly improved accuracy and reduced inference time. Training employed LoRA (`r=16, lora_alpha=32, lora_dropout=0.05`) on target modules (`q_proj`, `k_proj`, `v_proj`, `o_proj`, `gate_proj`, `up_proj`, `down_proj`) with a learning rate of 1e-4 and EMA. For inference, a multi-stage strategy was implemented: smaller models (14B and 32B via AWQ) processed the full test set first, and only the lowest-confidence 50% were re-inferred using a quantized 72B model (GPTQ). Inference speed was optimized by switching from `bfloat16` to `float16` and setting `padding=False`, achieving a 4x speedup.\n\n## Key Technical Choices & Lessons\nBoth pipelines heavily relied on prompt engineering to constrain the output space and improve generalization. The authors found that including alternative answer choices in prompts was a critical trick for accuracy. They also highlighted that high learning rates improved scores but required careful tuning to avoid collapse. The multi-stage inference pipeline was essential for balancing accuracy and the strict 9-hour inference time limit.",
+  "rank": 3,
+  "competition_flow": "Raw question and explanation data is structured into constrained prompts containing question-specific choices and hints, then processed through multi-stage LLM inference pipelines (combining classification and CausalLM approaches) with confidence-based re-inference and rule-based post-processing to generate final misconception predictions.",
+  "data_reading": [],
+  "data_processing": [
+    "Prompt construction with constrained token sets per QuestionId",
+    "Adding alternative answer choices and probability-ordered misunderstanding hints to prompts",
+    "Excluding True/False labels for later rule-based assignment",
+    "Converting CausalLM outputs back to 65 labels",
+    "Applying rule-based logic for True/False inference"
+  ],
+  "features_engineering": [],
+  "models": [
+    "Qwen/Qwen3-14B",
+    "google/gemma-2-9b-it",
+    "Qwen/Qwen2.5-14B-Instruct",
+    "Qwen/Qwen2.5-Math-7B-Instruct",
+    "deepseek-ai/deepseek-math-7b-instruct",
+    "Qwen/Qwen2.5-Coder-14B",
+    "deepseek-ai/DeepSeek-R1-Distill-Qwen-14B",
+    "mistralai/Mistral-Nemo-Instruct-2407",
+    "mistralai/Mixtral-8x7B-Instruct-v0.1",
+    "mistralai/Mathstral-7B-v0.1",
+    "AmanPriyanshu/gpt-oss-10.8b-specialized-instruction_following-pruned-moe-only-15-experts",
+    "Qwen2.5-72B-Instruct-GPTQ",
+    "Qwen/Qwen2.5-14B-Instruct-AWQ",
+    "Qwen/Qwen2.5-32B-Instruct-AWQ",
+    "Llama 3.3-70B",
+    "gemma2"
+  ],
+  "frameworks_used": [
+    "vllm",
+    "auto-round",
+    "transformers",
+    "pytorch"
+  ],
+  "loss_functions": [],
+  "cv_strategy": "",
+  "ensembling": "Multi-stage inference ensembles results from multiple models (14B, 32B, 72B) by first processing the full test set, then re-inferencing the lowest-confidence 50% with a larger model, with outputs aligned to 65 labels and combined via probability averaging.",
+  "insights": [
+    "Presenting alternative answer choices in prompts significantly helps LLMs identify potential misunderstandings.",
+    "Constraining CausalLM prediction tokens to only the misconceptions relevant to each specific QuestionId improves accuracy and reduces inference time.",
+    "High learning rates can improve scores but require careful tuning to prevent training collapse.",
+    "Optimizing inference speed via dtype and padding changes enables larger model ensembles within strict time limits."
+  ],
+  "critical_findings": [
+    "High noise levels in the competition's labels necessitated regularization techniques like R-Drop, AWP, and EMA to stabilize training and improve generalization.",
+    "Using float16 instead of bfloat16 on Kaggle T4 instances avoids conversion overhead and doubles inference speed.",
+    "Setting padding=False for short prompts provides an additional 2x speedup, crucial for fitting more models into the ensemble."
+  ],
+  "what_did_not_work": [
+    "Models other than Qwen2.5 (including Llama 3.3-70B and gemma2) performed worse.",
+    "Using CausalLM for pair-wise decision making was too time-consuming.",
+    "Fixing choices tokens for each label (e.g., A, B, F, D, R) did not work.",
+    "Pretraining on Eedi competition data did not improve results.",
+    "Considering label noise by including reversed True/False versions in top predictions slightly decreased final accuracy."
+  ],
+  "github_repos": [
+    {
+      "url": "https://github.com/intel/auto-round",
+      "role": "library"
+    }
+  ],
+  "papers": [],
+  "other_solution_refs": [
+    {
+      "description": "Discussion on label noise and True/False handling",
+      "url": "https://www.kaggle.com/competitions/map-charting-student-math-misunderstandings/discussion/589400"
+    },
+    {
+      "description": "Reference for Qwen2.5-72B & Llama 3.3-70B inference on 2xT4",
+      "url": "https://www.kaggle.com/competitions/eedi-mining-misconceptions-in-mathematics/discussion/550223"
+    }
+  ],
+  "source_url": "https://www.kaggle.com/competitions/map-charting-student-math-misunderstandings/discussion/612059"
+}

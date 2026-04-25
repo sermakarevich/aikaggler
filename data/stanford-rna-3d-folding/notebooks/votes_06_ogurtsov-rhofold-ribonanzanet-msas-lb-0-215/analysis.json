@@ -1,0 +1,44 @@
+{
+  "summary": "This notebook demonstrates a hybrid inference pipeline for the Stanford RNA 3D Folding competition, combining RibonanzaNet for long sequences (>400 residues) and RhoFold for shorter sequences (\u2264400 residues). It details how to install and run RhoFold on Kaggle, extract C1' coordinates from PDB outputs, and merge predictions from both models into a single submission file. The author highlights GPU memory constraints with RhoFold and shows how to handle sequence length splits and coordinate alignment. Readers learn practical techniques for multi-model RNA structure prediction, MSA integration, and submission formatting.",
+  "purpose": "ensemble",
+  "competition_flow": "Loads test sequences, runs RibonanzaNet inference for all targets, runs RhoFold inference with MSAs for sequences \u2264400 residues, extracts C1' coordinates from PDB files, merges the two prediction sets by filling missing coordinates, and exports a formatted submission CSV.",
+  "data_reading": [
+    "Reads test_sequences.csv using pandas.",
+    "Converts sequences to FASTA files for RhoFold input.",
+    "Loads precomputed MSA files from /kaggle/input/stanford-rna-3d-folding/MSA/."
+  ],
+  "data_processing": [
+    "Maps nucleotides (A, C, G, U) to integer tokens for model input.",
+    "Splits inference by sequence length to manage GPU memory.",
+    "Extracts C1' atom coordinates from PDB files using Biopython's PDBParser.",
+    "Aligns and merges coordinate predictions across models by target ID and residue index.",
+    "Duplicates extracted coordinates across five prediction columns for submission formatting."
+  ],
+  "features_engineering": [],
+  "models": [
+    "RibonanzaNet (finetuned 3D variant)",
+    "RhoFold"
+  ],
+  "frameworks_used": [
+    "pytorch",
+    "biopython",
+    "pandas",
+    "numpy",
+    "yaml"
+  ],
+  "loss_functions": [],
+  "cv_strategy": "",
+  "ensembling": "Combines RibonanzaNet and RhoFold predictions by sequence length, merging them on target ID and residue index, and filling missing RhoFold coordinates with RibonanzaNet coordinates for the first four prediction columns while keeping the fifth from RibonanzaNet.",
+  "insights": [
+    "RhoFold yields higher accuracy but triggers out-of-memory errors on long sequences when using GPU.",
+    "Splitting inference by sequence length allows both models to run within Kaggle's resource limits.",
+    "Precomputed MSAs significantly enhance RhoFold's structural predictions.",
+    "Disabling relaxation steps reduces inference time without severely impacting leaderboard scores."
+  ],
+  "critical_findings": [],
+  "what_did_not_work": [
+    "Running RhoFold on CPU for long sequences caused notebook timeouts during leaderboard evaluation, despite functioning in public testing."
+  ],
+  "source_url": "https://www.kaggle.com/code/ogurtsov/rhofold-ribonanzanet-msas-lb-0-215",
+  "votes": 338
+}

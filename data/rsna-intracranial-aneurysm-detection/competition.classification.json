@@ -1,0 +1,15 @@
+{
+  "description": "Participants detect the presence and location of intracranial aneurysms in medical imaging scans. The competition frames the problem as a multi-label classification task, where each scan is evaluated for multiple aneurysm types or regions. Submissions are ranked using a custom Mean Weighted Columnwise AUCROC metric on a private test set.",
+  "data_modality": "image",
+  "task_type": "classification",
+  "label_structure": "multi_label",
+  "metric": "Mean Weighted Columnwise AUCROC",
+  "test_split": "unknown",
+  "format": "standard",
+  "dataset_scale": "unknown",
+  "domain": "medical_imaging",
+  "data_challenges": [
+    "class_imbalance"
+  ],
+  "constraints": []
+}

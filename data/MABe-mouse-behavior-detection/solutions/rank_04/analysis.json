@@ -1,0 +1,62 @@
+{
+  "summary": "The authors developed a hybrid XGBoost and 3D CNN pipeline for social action recognition in mice, trained separately per lab. They standardized sensor keypoints across labs, engineered extensive spatial, relational, and temporal features, and trained binary classifiers for each action. Temporal features were captured via sliding window copying and statistical aggregation. Final predictions were selected per lab based on cross-validation scores, with majority voting applied to specific labs.",
+  "extensive_summary": "## Overview\nThe solution tackles social action recognition in mice by training separate XGBoost and neural network models for each lab. The pipeline emphasizes robust keypoint standardization, extensive feature engineering, and tailored temporal modeling.\n\n## Data Standardization & Processing\nRaw sensor keypoints are standardized to a common set (`nose`, `ear_left`, `ear_right`, `body_center`, `tail_base`). Missing `body_center` is derived from hip or lateral coordinates, or interpolated from the tail and ears. `head` is replaced by `nose`. Videos are normalized to 30fps. For specific labs with high missingness, linear temporal interpolation is applied with binary flags to track interpolated values. The NN pipeline additionally removes `headpiece` and `spine`, and computes availability masks alongside coordinate interpolation.\n\n## Feature Engineering\nFeatures are split into single-mouse, pair, and temporal categories. Single-mouse features include pairwise distances, velocity, elongation/compactness, body angles, displacement, acceleration/jerk, angular velocity, grooming metrics, mouse metadata, and arena boundary proximity. Pair features capture cross-mouse distances, relative kinematics, orientation, allogrooming, and pair metadata. Temporal modeling uses two strategies: a \"simple copy\" sliding window that concatenates neighbor frame features (leveraging XGBoost's robustness to high dimensionality), and a \"statistics over window\" approach computing median, min, max, and std aggregations.\n\n## Model Architectures & Training\nXGBoost models are trained as binary classifiers per action, grouped in 4-fold CV stratified by action label. Thresholds are optimized per action using OOF F1 scores. The NN uses 3D convolutions with varying dilations, residual connections after GroupNorms, InstanceNorm3d, ELU activations, and large pooling windows. Extra features (mouse distances, speed/heading similarities, behavior labels) are late-injected. Loss is `BCEWithLogitsLoss` masked for NaN targets and weighted by `sqrt(binary_label_mean)` to handle class imbalance. Training starts on all labs before fine-tuning per lab. A gated max classification mechanism allows the model to choose between its prediction and a max classification, useful for mixed mice.\n\n## Ensemble & Post-processing\nFinal submissions select the per-lab model with the highest CV score. For \"LyricalHare\", \"InvincibleJellyfish\", and \"ElegantMink\", frame-wise majority voting across three models is applied. Rare/harder action logits are multiplied by 1.5 before argmax in the NN pipeline.",
+  "rank": 4,
+  "competition_flow": "Standardized mouse keypoint data is engineered into spatial, relational, and temporal features, fed into per-lab XGBoost and 3D CNN binary classifiers, then combined via CV-based model selection and majority voting for submission.",
+  "data_reading": [],
+  "data_processing": [
+    "Normalize FPS to 30fps",
+    "Standardize sensors to nose, ear_left, ear_right, body_center, tail_base",
+    "Derive or interpolate missing body_center from hips/laterals or tail/ears",
+    "Replace head with nose",
+    "Linear temporal interpolation with binary flags for specific labs",
+    "Remove headpiece and spine",
+    "Interpolate missing x/y coordinates while preserving availability masks"
+  ],
+  "features_engineering": [
+    "Pair-wise distances between sensor keypoints",
+    "Velocity for ear and tail",
+    "Elongation vs. compactness features",
+    "Body angle features",
+    "Body center displacement, acceleration, and jerk features",
+    "Angular velocity and turn-rate",
+    "Grooming specific features",
+    "Mouse and pair metadata (sex, color, device, is_same_sex, is_same_color)",
+    "Arena boundary proximity features",
+    "Cross-mice relative speed, acceleration, jerk, and orientation",
+    "Allogroom specific features",
+    "Sliding window feature copying (simple copy)",
+    "Window statistics aggregations (median, min, max, std)"
+  ],
+  "models": [
+    "XGBoost (binary classifiers per action)",
+    "3D CNN with dilated convolutions, residual connections, GroupNorms, InstanceNorm3d, ELU, large avg/max pooling, gated max classification"
+  ],
+  "frameworks_used": [],
+  "loss_functions": [
+    "BCEWithLogitsLoss (masked for NaN targets)",
+    "Weighted by sqrt(binary_label_mean)"
+  ],
+  "cv_strategy": "4-fold CV grouped per video and stratified by action label; individual action thresholds optimized by F1 score on OOF predictions.",
+  "ensembling": "Selected the per-lab model with the highest CV score, except for three labs where frame-wise majority voting across three models was used.",
+  "insights": [
+    "Standardizing sensor keypoints across labs is essential for handling missing data.",
+    "XGBoost handles high-dimensional features from sliding window copies robustly.",
+    "Weighting loss by sqrt(binary_label_mean) effectively balances rare classes.",
+    "Gated max classification improves performance when mice are visually mixed."
+  ],
+  "critical_findings": [
+    "Temporal interpolation significantly helps some labs but fails in others due to tracking ID-switches, necessitating binary interpolation flags.",
+    "Training binary classifiers per action and combining them via residual thresholds outperforms direct multi-class approaches."
+  ],
+  "what_did_not_work": [],
+  "github_repos": [
+    {
+      "url": "https://www.kaggle.com/code/ravaghi/social-action-recognition-in-mice-xgboost",
+      "role": "reference"
+    }
+  ],
+  "papers": [],
+  "other_solution_refs": [],
+  "source_url": "https://www.kaggle.com/competitions/MABe-mouse-behavior-detection/discussion/663181"
+}

@@ -1,0 +1,42 @@
+{
+  "summary": "This notebook demonstrates a baseline approach for digitizing electrocardiogram (ECG) signals from scanned medical images. It introduces two complementary extraction methods: a deterministic top-down plane sweep algorithm for clean color scans, and a dense neural network that predicts signal amplitude from narrow vertical image stripes along lead lines. The author emphasizes robust marker detection via template matching, signal alignment, and cross-lead consistency enforcement using Einthoven's law. Readers should learn how to transform a complex image-to-signal regression problem into tractable algorithmic and machine learning pipelines, and understand when to rely on deterministic extraction versus statistical fallbacks.",
+  "purpose": "baseline",
+  "competition_flow": "Loads ECG images and CSV labels, extracts 17 line endpoints via template matching, digitizes signals using either a top-down plane sweep algorithm or a dense neural network on image stripes, applies Einthoven's law and signal alignment, and generates a submission CSV.",
+  "data_reading": [
+    "Reads train.csv and test.csv via pandas; loads PNG images with cv2.imread; parses per-ECG CSV labels into a dictionary for fast lookup."
+  ],
+  "data_processing": [
+    "Converts images to grayscale or isolates the red channel; applies cv2.matchTemplate to locate 17 marker coordinates; crops and slices images into 600x11 vertical stripes along lead lines; scales pixel values to [-1, 1]; handles missing values by padding with white pixels; applies median filtering and outlier clipping to extracted signals; aligns predicted and ground truth signals using cross-correlation and vertical shift optimization."
+  ],
+  "features_engineering": [],
+  "models": [
+    "Dense feed-forward neural network (4 hidden layers: 1024, 512, 256, 256 with SELU activations)"
+  ],
+  "frameworks_used": [
+    "tensorflow.keras",
+    "opencv-python",
+    "numpy",
+    "pandas",
+    "scipy",
+    "scikit-learn"
+  ],
+  "loss_functions": [
+    "MeanSquaredError"
+  ],
+  "cv_strategy": "KFold(shuffle=True, random_state=1)",
+  "ensembling": "Averages predictions from the neural network and the plane sweep algorithm for color scanned images; uses only the neural network for grayscale scanned images; falls back to per-lead mean training labels for unprocessable mobile photos.",
+  "insights": [
+    "Template matching reliably locates ECG line endpoints in scanned images without requiring complex computer vision pipelines.",
+    "A simple top-down plane sweep efficiently extracts signals from clean color scans by tracking black-to-white transitions.",
+    "Slicing images into narrow vertical stripes along lead lines transforms digitization into a tractable 1D regression task.",
+    "Applying Einthoven's law significantly improves lead consistency and reduces cross-lead noise.",
+    "A per-lead mean baseline is surprisingly effective and robust for fallback predictions on unprocessable images."
+  ],
+  "critical_findings": [
+    "The plane sweep algorithm breaks down on images with black gridlines or heavy noise, necessitating a neural network fallback.",
+    "Mobile photos and damaged scans lack consistent scale and grid structure, making deterministic extraction unreliable without statistical baselines."
+  ],
+  "what_did_not_work": [],
+  "source_url": "https://www.kaggle.com/code/ambrosm/ecg-original-explained-baseline",
+  "votes": 278
+}

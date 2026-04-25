@@ -1,0 +1,41 @@
+{
+  "summary": "This notebook implements an inference and validation pipeline for the Stanford RNA 3D Folding competition using the Protenix diffusion model. It loads RNA sequences, runs the model to predict 3D atomic coordinates, and evaluates predictions against ground truth structures using the TM-score metric via USalign. The author highlights practical considerations such as filtering sequences longer than 300 nucleotides, correctly extracting coordinates for the C1' atom, and managing GPU memory during batch inference. Readers should understand how to adapt a pre-trained diffusion model for RNA structure prediction and compute standard structural alignment metrics for benchmarking.",
+  "purpose": "inference",
+  "competition_flow": "Loads RNA sequence CSVs, runs the Protenix diffusion model to predict 3D coordinates, evaluates predictions on a validation set using TM-score via USalign, and writes final predictions to a submission CSV.",
+  "data_reading": [
+    "Reads train_sequences.csv, train_labels.csv, and test_sequences.csv from /kaggle/input/stanford-rna-3d-folding using pandas.",
+    "Extracts sequence and target_id columns for model input and ground truth alignment."
+  ],
+  "data_processing": [
+    "Filters sequences longer than 300 nucleotides to manage memory and runtime.",
+    "Converts predicted and ground truth coordinates to PDB format for structural alignment.",
+    "Uses USalign to compute TM-scores and rotation matrices between predicted and true structures.",
+    "Handles missing/NaN coordinates and extracts specific atom indices (C1' for RNA, index 12) from model outputs."
+  ],
+  "features_engineering": [],
+  "models": [
+    "Protenix"
+  ],
+  "frameworks_used": [
+    "torch",
+    "pandas",
+    "numpy",
+    "matplotlib",
+    "biopython",
+    "biotite",
+    "rdkit"
+  ],
+  "loss_functions": [],
+  "cv_strategy": "",
+  "ensembling": "",
+  "insights": [
+    "Protenix can effectively predict RNA 3D structures using a diffusion-based approach.",
+    "TM-score calculated via USalign provides a reliable metric for evaluating structural alignment quality.",
+    "Correctly indexing the target atom (C1' for RNA, index 12) is critical for accurate coordinate extraction.",
+    "Filtering sequences longer than 300 nucleotides is necessary to manage computational constraints during inference."
+  ],
+  "critical_findings": [],
+  "what_did_not_work": [],
+  "source_url": "https://www.kaggle.com/code/adamlogman/randomness",
+  "votes": 566
+}

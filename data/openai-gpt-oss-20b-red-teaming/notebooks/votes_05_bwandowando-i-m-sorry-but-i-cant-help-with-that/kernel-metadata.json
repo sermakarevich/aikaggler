@@ -1,0 +1,23 @@
+{
+  "id": "bwandowando/i-m-sorry-but-i-cant-help-with-that",
+  "id_no": 88819300,
+  "title": "\ud83e\udd16 \"I'm sorry, but I cant help with that\"",
+  "code_file": "i-m-sorry-but-i-cant-help-with-that.ipynb",
+  "language": "python",
+  "kernel_type": "notebook",
+  "is_private": false,
+  "enable_gpu": true,
+  "enable_tpu": false,
+  "enable_internet": true,
+  "keywords": [
+    "gpu"
+  ],
+  "dataset_sources": [],
+  "kernel_sources": [],
+  "competition_sources": [
+    "openai-gpt-oss-20b-red-teaming"
+  ],
+  "model_sources": [],
+  "docker_image": "gcr.io/kaggle-private-byod/python@sha256:320043e14c68293f1c946585b9257123385205a58af4b94b17d31868cae4e868",
+  "machine_shape": "NvidiaTeslaT4"
+}

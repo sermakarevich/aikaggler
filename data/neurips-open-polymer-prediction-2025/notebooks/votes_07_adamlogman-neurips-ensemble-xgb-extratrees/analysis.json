@@ -1,0 +1,33 @@
+{
+  "summary": "The notebook implements a regression pipeline to predict five polymer properties (Tg, Tc, Rg, FFV, Density) using molecular graph representations. It combines precomputed RDKit/Mordred 2D descriptors with custom NetworkX-derived graph topology features. The author trains separate XGBoost regressors for each target alongside an averaged ensemble of ExtraTrees models with varied random seeds, then combines their outputs for the final submission. Readers should observe a practical, low-complexity approach to molecular feature extraction and model averaging as a baseline strategy. No cross-validation or extensive tuning is demonstrated, highlighting a straightforward recipe for quick prototyping.",
+  "purpose": "baseline",
+  "competition_flow": "Loads precomputed molecular descriptors and test SMILES, computes graph topology features, trains separate XGBoost and ExtraTrees models for five polymer targets, averages their predictions, and exports a CSV submission.",
+  "data_reading": [
+    "Reads multiple CSV files containing precomputed descriptors and test data using pandas.read_csv."
+  ],
+  "data_processing": [
+    "Drops columns with constant values or non-numeric dtypes, canonicalizes SMILES strings to avoid duplicates, replaces infinite values with NaN, and applies a log10 transformation to the Ipc column."
+  ],
+  "features_engineering": [
+    "Filters RDKit/Mordred 2D descriptors by removing a predefined list of redundant features, and computes graph topology features (graph diameter, average shortest path length, number of cycles) using NetworkX adjacency matrices."
+  ],
+  "models": [
+    "XGBRegressor",
+    "ExtraTreesRegressor"
+  ],
+  "frameworks_used": [
+    "xgboost",
+    "scikit-learn",
+    "rdkit",
+    "mordred",
+    "networkx"
+  ],
+  "loss_functions": [],
+  "cv_strategy": "train_test_split with 20% holdout validation",
+  "ensembling": "Averages predictions from three ExtraTrees models with different random seeds, averages predictions from five target-specific XGBoost models, and then averages the two ensemble outputs to generate the final submission.",
+  "insights": [],
+  "critical_findings": [],
+  "what_did_not_work": [],
+  "source_url": "https://www.kaggle.com/code/adamlogman/neurips-ensemble-xgb-extratrees",
+  "votes": 255
+}

@@ -1,0 +1,44 @@
+{
+  "summary": "This notebook implements a lightweight inference pipeline for the Ariel Data Challenge 2025, combining a physics-inspired 1D transit depth estimator with a pre-trained ResNet-MLP for atmospheric spectral predictions. It demonstrates how to robustly preprocess raw detector signals, estimate noise parameters with conservative clipping, and generate competitive submissions without heavy training overhead. Readers should learn how to handle complex calibration files, apply variance-based weighting, and use simple post-processing techniques like Savitzky-Golay smoothing to improve leaderboard scores. The approach proves that careful signal conditioning and lightweight ensembling can yield strong results with minimal computational cost.",
+  "purpose": "inference",
+  "competition_flow": "Loads raw detector signals and calibration metadata, preprocesses them with phase detection and noise estimation, computes a 1D transit depth, feeds meta-features into a pre-trained ResNet-MLP for spectral predictions, applies smoothing and blending, and outputs a formatted submission CSV.",
+  "data_reading": [
+    "Reads parquet files for raw signals, dark current, dead pixels, flat fields, and linear correction coefficients per planet and sensor.",
+    "Loads CSV files for ADC gain/offset information and star metadata."
+  ],
+  "data_processing": [
+    "Applies ADC gain/offset correction, hot pixel masking via sigma clipping, alternating dark current subtraction, flat-fielding, ROI cropping, and variance-based weighting.",
+    "Performs percentile clipping, conservative sigma estimation with expanded clipping bounds and a 1.04 scaling factor, and Savitzky-Golay smoothing."
+  ],
+  "features_engineering": [
+    "Extracts meta-features including scaled transit depth, stellar radius (Rs), and orbital inclination (i) from star metadata to serve as inputs for the ResNet model."
+  ],
+  "models": [
+    "ResNetMLP2 (custom ResNet-MLP with residual blocks, BatchNorm, ReLU, Dropout)",
+    "TransitModel (custom 1D estimator using gradient-based phase detection and Nelder-Mead optimization)"
+  ],
+  "frameworks_used": [
+    "torch",
+    "numpy",
+    "pandas",
+    "scipy",
+    "sklearn",
+    "pqdm",
+    "astropy"
+  ],
+  "loss_functions": [],
+  "cv_strategy": "",
+  "ensembling": "Blends raw AIRS spectral predictions with a lightly smoothed version using a 0.65:0.3 weight ratio before formatting the final submission.",
+  "insights": [
+    "Robust sigma estimation benefits from conservative clipping bounds and a slight global scaling factor to prevent noise underestimation.",
+    "Savitzky-Golay smoothing on spectral predictions can improve leaderboard scores without requiring complex model retraining.",
+    "Combining physics-inspired transit depth estimation with lightweight neural networks provides a strong, efficient baseline for atmospheric characterization tasks."
+  ],
+  "critical_findings": [
+    "Expanding sigma clipping bounds (e.g., 0.85\u20131.30) and applying a 1.04 multiplier prevents underestimation of noise in the final submission.",
+    "Hot pixel masking and alternating dark current scaling are critical for stabilizing raw detector signals before binning and weighting."
+  ],
+  "what_did_not_work": [],
+  "source_url": "https://www.kaggle.com/code/seowoohyeon/resnet-for-airs-finetuned-lb0-369",
+  "votes": 186
+}

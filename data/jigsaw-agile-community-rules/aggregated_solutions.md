@@ -1,0 +1,248 @@
+# jigsaw-agile-community-rules: cross-solution summary
+
+This competition focused on binary rule-violation classification for Reddit comments, where winning approaches heavily favored instruction-tuned LLMs, embedding models, and lightweight classifiers fine-tuned via parameter-efficient methods. Top solutions converged on aggressive data cleaning (subreddit removal, exact/near-deduplication), test-time training (TTT) or pseudo-labeling to adapt to hidden test distributions, and sophisticated rank-normalized ensembling to stabilize calibration across heterogeneous model families.
+
+## Competition flows
+- Raw CSVs -> deduplication/upsampling -> masked loss fine-tuning -> log-odds scoring -> per-rule normalization -> ensembling
+- Raw comments/rules -> prompt template -> Deep Mutual Learning fine-tuning -> ensembling
+- Raw text -> rule-specific paraphrasing -> QLoRA fine-tuning -> direct submission
+- Raw text -> deduplication/label resolution -> train-on-test fine-tuning -> ensemble
+- Test set -> semantic augmentation -> LLM/DeBERTa inference with TTA -> re-ranking uncertain rows -> rule-based ranking aggregation
+- Deduplication/augmentation -> QLoRA fine-tuning -> length-sorted inference -> global ranking ensembling
+- Unlabeled sampling -> pseudo-labeling -> DeBERTa pretraining/training -> ensemble
+- Custom dataset -> LoRA pretraining -> TTT fine-tuning -> embedding extraction -> classic ML classification -> ensemble
+- Deduplication -> parallel pipelines (generative TTT, DeBERTa, BGE) -> rank normalization -> weighted averaging
+- Deduplication/clustering -> diverse ensemble (embedding, NLI, LLM) -> TTT -> rank normalization -> hierarchical blending
+- Deduplication/soft targets -> SALSA pipeline -> pseudo-labeling -> KV-cache inference -> blended submission
+
+## Data reading
+- CSV files (train.csv, test.csv) loaded and parsed
+- Positive/negative examples from test.csv repurposed as training data
+- Raw Reddit comments and subreddit rules formatted into prompt templates
+- Unlabeled dataset filtered by subreddit violation rates
+- Custom dataset compiled from rules, bodies, examples, and targets
+
+## Data processing
+- Excluded subreddit column before deduplication
+- Upsampled test examples once before fine-tuning
+- Used LLM built-in chat templates
+- Manually masked irrelevant tokens in loss computation
+- Sorted test data by length for inference
+- Applied per-rule rank normalization to [0, 1]
+- Generated rule-specific paraphrases using Qwen3-32B
+- Removed duplicates using rule-body-label as unique key
+- Resolved label inconsistencies via majority voting and discarded ties
+- Augmented test set with top 2 positive and top 2 negative semantically similar examples per row
+- Applied 4x TTA by randomly sampling positive/negative combinations
+- Added absolute negative samples from official unlabeled dataset
+- Filtered unlabelled data by subreddit violation rate (<1% omitted, >=1% kept)
+- Constructed custom dataset from rules, bodies, examples, and targets
+- Flipped rules for bge-base training
+- Merged LoRA weights for two 7B models
+- Randomly matched positive/negative samples for each example
+- Restricted generative TTT to 5% of test data
+- Applied mean pooling instead of CLS token pooling
+- Dropped subreddit field as noisy signal
+- Clustered and down-weighted near-duplicates per rule (cosine > 0.95–0.97)
+- Applied dynamic positive/negative balancing (~50/50, capped at 32x) during TTT
+- Used constrained Yes/No decoding
+- Applied probability clipping to [1e-6, 1-1e-6]
+- Collapsed training duplicates to create unique dataset
+- Computed rule-violation ratio per unique text to generate soft targets
+- Added four few-shot exemplars (2 positive, 2 negative) per record
+
+## Models
+- Qwen3-14B
+- Qwen2.5-14B-Instruct
+- Qwen3-8B
+- Qwen3-4B-Instruct-2507
+- Llama3.1-8B
+- Ettin-400M
+- Qwen3Guard-Gen-4B
+- Phi-4
+- Gemma-2-9B-IT
+- ShieldGemma-9B
+- Qwen3-32B
+- Llama3.2-3B-Instruct
+- DeBERTa-v3-base
+- DeBERTa-v3-large
+- DistilRoBERTa-base
+- Qwen2.5-32B
+- Llama2-13B
+- bge-base-en-v1.5
+- Qwen2.5-7B-Instruct
+- Qwen2.5-instruct-7B
+- Qwen3-instruct-7B
+- Qwen3-embedding-0.6B
+- DeBERTa-v3-small
+- LightGBM
+- XGBoost
+- SVC
+- E5
+- MPNet-base
+- BGE
+- GTE
+- Logistic Regression
+- k-NN
+- FAISS
+- Triplet (classifier/model variant)
+
+## Frameworks used
+- Transformers
+- PyTorch
+- Unsloth
+- vLLM
+- pandas
+- QLoRA
+- LightGBM
+- XGBoost
+
+## Loss functions
+- Cross-entropy loss (with manual token masking)
+- KL divergence loss
+- BCE with positive weighting
+- Triplet loss
+- ArcFace loss
+- Generalized Cross-Entropy (Tsallis)
+
+## CV strategies
+- Public Leaderboard used as primary validation metric
+- Train-set CV with rule-body-label combinations (found uncorrelated with LB)
+- 6-fold cross-validation for embedding head hyperparameter tuning
+- Direct LB optimization without CV
+
+## Ensembling
+- Weighted averaging of fine-tuned models
+- Per-rule rank normalization to align calibration
+- Global ranking ensembling over within-rule ranking
+- Hierarchical blending with geometric decay
+- Probability clipping to [1e-6, 1-1e-6]
+- Self-ensembling across training configurations and random seeds
+- Merging LoRA weights for inference efficiency
+- Averaging across multiple seeds per model
+
+## Insights
+- Excluding the subreddit column during deduplication significantly improves performance by removing cross-subreddit duplicates.
+- Upsampling test examples once effectively doubles their training weight, boosting performance.
+- Masking irrelevant tokens in the loss computation standardizes convergence across different LLM architectures.
+- Larger models generally perform better, with Qwen3 outperforming other common LLMs.
+- Normalizing scores per rule before ensembling provides consistent score improvements.
+- DML enables effective knowledge transfer without a larger teacher by allowing models to learn from each other's soft predictions.
+- Expanding the peer cohort to three diverse models helps mitigate error correlation and boosts ensemble performance.
+- Sorting test data by sequence length and splitting it balances GPU workloads for efficient parallel inference.
+- Targeted, rule-aware data augmentation is more effective than generic expansion or pseudo-labeling for violation detection tasks.
+- Parameter-efficient fine-tuning (QLoRA) combined with memory optimization (Unsloth) enables training multiple large models efficiently.
+- Ignoring the subreddit feature improved scores by +0.007 because it was not part of the annotation process.
+- Deduplicating data by rule-body-label significantly reduced training time without harming performance.
+- Resolving label inconsistencies via majority voting and discarding ties improved training stability and final scores.
+- Trusting the leaderboard over cross-validation is justified when the test set is sufficiently large and CV shows no correlation.
+- ShieldGemma-9B outperformed larger models like Qwen3-14B, demonstrating that safety-tuned variants can be highly effective for this task.
+- vLLM's hardcoded fp16 restriction for Gemma2 can be safely bypassed via config patching without numerical instability.
+- Synthetic data caused training loss to approach zero but ultimately degraded the final score, indicating a failure to emulate the test distribution.
+- Retrieving semantically similar positive and negative examples significantly improves the LLM's ability to detect rule violations.
+- Targeting only the 20% of most uncertain predictions for expensive re-ranking efficiently corrects the majority of errors.
+- The competition's AUC metric requires ranking predictions within each rule before averaging across models to be effective.
+- Global ranking ensembling outperformed within-rule ranking.
+- Group_by_length=True doubled training speed.
+- Sorting data by length and using bucketed batch sizes during inference yielded a 4x speedup.
+- Direct LB optimization without CV is viable when the metric is stable and the LB split is random.
+- Unlabelled data paired with LLM pseudo-labels can yield meaningful score gains.
+- Careful subreddit-level filtering is critical for sampling quality.
+- Test-time training with LLMs shows strong potential for further improvements.
+- Test-Time Training is essential for adapting to hidden test rules.
+- Pretraining with LoRA provides a strong initialization that improves TTT performance.
+- The subreddit column provides no value for this task.
+- Merging LoRA weights preserves performance while significantly reducing inference time.
+- Generative test-time training requires strict data volume control to avoid overfitting to repeated or noisy examples.
+- Mean pooling consistently outperformed CLS token pooling for representation learning in classification heads.
+- Applying a 2x learning rate to the classification head significantly accelerated convergence without destabilizing training.
+- Discriminative learning rates across transformer layers improved representation quality across all classification models.
+- Removing noisy metadata like subreddit information can simultaneously reduce runtime and improve leaderboard scores.
+- Dropping the subreddit field removed noisy signal and improved prediction consistency.
+- Exact deduplication reduced training size to under 10k examples without measurable LB drop, significantly speeding up training.
+- Asymmetric few-shot example selection using cosine similarity to canonical positives and negatives noticeably tightens the classification decision boundary.
+- Per-rule rank-normalization effectively removes calibration drift when blending models from different paradigms like retrieval, NLI, and LLMs.
+- Hierarchical blending with geometric decay naturally regularizes the ensemble and prevents single-model dominance.
+- Treating next-token logits over a constrained vocabulary as a Bayesian estimator allows direct probability mapping without multi-step decoding.
+- Larger and better-aligned instruction models yield stronger SALSA signals due to superior zero-shot baselines.
+- Pseudo-labeling uncertain test samples anchors relative scores rather than introducing new knowledge, effectively leveraging pretrained model capabilities.
+
+## Critical findings
+- Chat templates introduce extra tokens that, if included in loss computation, slow training and cause inconsistent convergence across models.
+- The Public LB is a reliable validation metric because the host confirmed the public/private split is random and the public set is large enough (~30% of test) to ensure low variance.
+- Even after fine-tuning on Yes/No tokens, the model's output probabilities can scatter across the vocabulary, necessitating candidate token sets for robust scoring.
+- Classic logits-based knowledge distillation fails here because teacher softmax outputs are too sharp, making temperature scaling ineffective.
+- Co-training in DML can introduce correlated errors, necessitating diverse peer models for a strong ensemble.
+- Pseudo-labeling, the Muon optimizer, and few-shot prompting for data generation all failed to improve performance, suggesting they are unsuitable for this specific data distribution or task formulation.
+- ShieldGemma-9B outperformed larger models like Qwen3-14B, demonstrating that safety-tuned variants can be highly effective for this task.
+- vLLM's hardcoded fp16 restriction for Gemma2 can be safely bypassed via config patching without numerical instability, likely due to the single-token inference requirement.
+- Synthetic data caused training loss to approach zero but ultimately degraded the final score, indicating a failure to emulate the test distribution.
+- The 20% of rows where the initial LLM is most confused contain the majority of its mistakes, making them the optimal and most cost-effective target for re-ranking.
+- Qwen3-14B can only train two models in parallel on dual T4s without OOM, whereas smaller models like Llama3.1-8B face no such restriction.
+- Unsloth must be initialized before training begins.
+- Including subreddits with <1% violation rate actively hurt model performance.
+- Filtering text by length >50 characters degraded leaderboard score.
+- Using bf16 precision on T4 GPUs caused a 6x slowdown.
+- Flipping rules during bge-base training and using centroid subtraction for embeddings yielded better results than standard triplet loss.
+- Using only the comment body (without the rule) for Qwen3-embedding input did not improve scores over rule+body inputs.
+- Generative models were extremely sensitive to data volume during test-time training, making deduplication and random positive/negative matching essential for stability.
+- Ensembling newly trained models with the original public notebook models yielded higher scores than the original approach alone, highlighting the value of iterative test-time refinement.
+- Rule-based ensemble weighting failed completely, demonstrating that performance-driven weight tuning is necessary when combining heterogeneous model families.
+- Removing exact duplicates shrank the training set to under 10k examples without any measurable drop on the leaderboard, proving redundancy was harming efficiency rather than performance.
+- Asymmetric few-shot prompting (selecting the most similar positives and least similar negatives) yielded a +0.006 gain over vanilla few-shot by tightening the decision boundary.
+- Clustering and down-weighting near-duplicates within each rule prevented embedding classifiers from overfitting to repeated textual patterns.
+- Dataloader seed changes caused ~0.002 AUC variance, making smaller gains like those from Generalized Cross-Entropy statistically insignificant.
+- The subreddit field introduced misleading signals because the few-shot examples were unrelated to it.
+- Reordering the prompt template to place instructions at the end yielded negligible improvements for the smaller model, falling below statistical significance.
+
+## What did not work
+- Vanilla transformers + pytorch fine-tuning could not scale beyond 7B models due to memory limitations.
+- Offline distillation only covered 2 out of 6 known rules.
+- Classic logits-based knowledge distillation with temperature scaling was ineffective due to sharp softmax outputs.
+- Pseudo-labeling.
+- Muon optimizer.
+- New training data using few-shot prompting.
+- Inferring only public rules with a Qwen3-32B model trained on train data yielded significantly worse scores, likely due to distribution shifts from the train-on-test approach.
+- Adding synthetic data to the training set worsened the score and was discarded early.
+- Filtering subreddits with <1% violation rate hurt performance.
+- Filtering by body length >50 chars hurt LB score.
+- Attempting to implement test-time training with another LLM within the time limit did not yield results due to hyperparameter tuning constraints.
+- Training Qwen3-embedding with more than two output classes performed poorly.
+- Using '{rule}: {body}' as input for Qwen3-embedding did not improve the score compared to body-only inputs.
+- Two-stage training.
+- Semantic matching for positive/negative examples.
+- Rule-specific prompt.
+- Label smoothing.
+- Logit-based ensembling.
+- Layer freezing.
+- SENet fusion of CLS, mean pooling and max pooling.
+- Rule-based ensemble weighting.
+
+## Notable individual insights
+- rank 1 (1st place solution): Excluding the subreddit column during deduplication significantly improves performance by removing cross-subreddit duplicates.
+- rank 6 (6th Place Solution: Online Distillation via Deep Mutual Learning): Classic logits-based knowledge distillation fails here because teacher softmax outputs are too sharp, making temperature scaling ineffective.
+- rank 7 (7th place solution): ShieldGemma-9B outperformed larger models like Qwen3-14B, demonstrating that safety-tuned variants can be highly effective for this task.
+- rank 120 (Silver Medal - 120th - RAG + ReRanker): Targeting only the 20% of most uncertain predictions for expensive re-ranking is the most cost-effective error correction strategy.
+- rank 3 (3rd Place Solution): Merging LoRA weights preserves performance while significantly reducing inference time during Test-Time Training.
+- rank 5 (5th Place solution - Diverse Ensemble): Exact deduplication can shrink training data to <10k examples without LB drop, proving redundancy harms efficiency rather than performance.
+- rank 4 (4th place writeup - Instruct LLM is all you need): Treating next-token logits over a constrained vocabulary as a Bayesian estimator allows direct probability mapping without multi-step decoding.
+
+## Solutions indexed
+- #1 [[solutions/rank_01/solution|1st place solution]]
+- #3 [[solutions/rank_03/solution|3rd Place Solution]]
+- #4 [[solutions/rank_04/solution|4th place writeup - Instruct LLM is all you need]]
+- #5 [[solutions/rank_05/solution|5th Place solution - Diverse Ensemble]]
+- #6 [[solutions/rank_06/solution|6th Place Solution: Online Distillation via Deep Mutual Learning]]
+- #7 [[solutions/rank_07/solution|7th place solution]]
+- #8 [[solutions/rank_08/solution|[8th] Qwen3-14B*3 + Llama2-13B*1 + bge-base-en-v1.5]]
+- #9 [[solutions/rank_09/solution|9th Place Solution: Bringing It All Together]]
+- #12 [[solutions/rank_12/solution|12th place solution]]
+- #18 [[solutions/rank_18/solution|18th Solution(public 11th)]]
+- #120 [[solutions/rank_120/solution|Silver Medal - 120th - RAG + ReRanker]]
+
+## GitHub links
+- [level14taken/jigsaw-comp](https://github.com/level14taken/jigsaw-comp) _(solution)_ — from [[solutions/rank_12/solution|12th place solution]]
+
+## Papers cited
+- [Deep Mutual Learning](https://arxiv.org/abs/1706.00384)
+- [SALSA: Single-pass Autoregressive LLM Structured Classification.](https://arxiv.org/abs/2510.22691)

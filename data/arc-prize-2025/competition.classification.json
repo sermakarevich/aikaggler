@@ -1,0 +1,21 @@
+{
+  "description": "Participants develop AI systems capable of novel abstract reasoning by learning to map input grids to output grids. The competition provides a dataset of visual pattern tasks where each example consists of a small grid of colored cells. Competitors must train models that generalize to unseen tasks with minimal examples, typically using a few-shot learning approach. Success is measured by a custom evaluation metric based on the Abstraction and Reasoning Challenge framework, which assesses the model's ability to correctly transform input patterns into the expected output patterns.",
+  "data_modality": "image",
+  "task_type": "generation",
+  "label_structure": "single_label",
+  "metric": "Abstraction and Reasoning Challenge",
+  "test_split": "random",
+  "format": "code_comp",
+  "dataset_scale": "small",
+  "domain": "cognitive_reasoning",
+  "data_challenges": [
+    "few_shot_classes",
+    "domain_shift",
+    "novel_reasoning"
+  ],
+  "constraints": [
+    "kernels_only",
+    "no_external_data",
+    "compute_budget_limit"
+  ]
+}

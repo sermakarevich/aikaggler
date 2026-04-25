@@ -1,0 +1,26 @@
+{
+  "id": "cdeotte/gemma2-9b-it-cv-0-945",
+  "id_no": 87748657,
+  "title": "Gemma2-9B-it - CV 0.945",
+  "code_file": "gemma2-9b-it-cv-0-945.ipynb",
+  "language": "python",
+  "kernel_type": "notebook",
+  "is_private": false,
+  "enable_gpu": true,
+  "enable_tpu": false,
+  "enable_internet": false,
+  "keywords": [
+    "gpu"
+  ],
+  "dataset_sources": [
+    "cdeotte/gemma2-9b-it-bf16",
+    "cdeotte/gemma2-9b-it-cv945"
+  ],
+  "kernel_sources": [],
+  "competition_sources": [
+    "map-charting-student-math-misunderstandings"
+  ],
+  "model_sources": [],
+  "docker_image": "gcr.io/kaggle-private-byod/python@sha256:320043e14c68293f1c946585b9257123385205a58af4b94b17d31868cae4e868",
+  "machine_shape": "NvidiaTeslaT4"
+}

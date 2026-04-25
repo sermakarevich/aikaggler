@@ -1,0 +1,58 @@
+{
+  "summary": "The author developed an end-to-end deep learning pipeline that directly predicts ECG time-series signals from ECG images by combining image segmentation with signal refinement in a single differentiable framework. The approach uses a UNet-based segmentation network to generate soft masks, followed by a differentiable centroid extraction step that converts pixel probabilities into 1D signals while preserving gradient flow. A subsequent 1D ResUNet refines the extracted signals, and the final outputs are combined via a weighted model ensemble and a resampling ensemble to mitigate edge artifacts. Key drivers of success included end-to-end joint optimization, strategic data augmentations like horizontal flipping, and architectural diversity in the ensemble.",
+  "extensive_summary": "## Pipeline Architecture\nThe solution implements an end-to-end (E2E) differentiable pipeline that maps preprocessed ECG images directly to 12-lead ECG time-series signals. The pipeline consists of three main stages. Stage 0/1 handles preprocessing (rotation correction, cropping, resizing to 5600\u00d71280) using a public notebook. Stage 2 employs a UNet segmentation network with an EfficientNet-B3/B4 or ResNet34 encoder (via `timm`) and a coordinate-channel decoder to produce a 4-channel soft segmentation mask, one per ECG row. Stage 3 applies a 1D Residual UNet to refine the extracted signals and correct artifacts.\n\n## Differentiable Signal Extraction\nA core innovation is the differentiable centroid extraction layer that bridges segmentation and signal prediction. By computing the weighted centroid of the probability distribution across rows for each column, the method converts the 2D mask into a 1D signal while maintaining full gradient flow back to the segmentation network. This enables joint optimization of segmentation and signal quality, proving superior to training stages separately.\n\n## Training Strategy & Augmentation\nTraining uses a combined loss function with scheduled weighting, initially prioritizing segmentation BCE loss and gradually shifting focus to signal L1 and SNR losses. The optimizer is AdamW with cosine annealing over 32 effective epochs (batch size 4 with gradient accumulation to 16). Precision is kept in FP32 to avoid NaN issues, and EMA (decay=0.995) is applied. Data augmentation was critical, with horizontal flipping providing a notable +0.6 dB gain by doubling effective data and encouraging orientation-invariant features. Other augmentations include grayscale conversion, brightness/contrast adjustments, JPEG compression, Cutout, and Gaussian noise.\n\n## Ensemble & Post-Processing\nThe final submission combines six models with varying encoders, depths, and augmentation settings, weighted by their individual leaderboard performance. A novel resampling ensemble technique averages outputs from three different resampling methods (`decimate_fir`, `polyphase`, `linear`) to cancel out method-specific artifacts, particularly at signal edges. The pipeline ultimately trains on all available data without a validation split for the final models.",
+  "rank": 13,
+  "competition_flow": "Raw ECG images are preprocessed (cropped, resized), passed through a differentiable UNet segmentation network to generate soft masks, converted to 1D signals via weighted centroid extraction, refined by a 1D ResUNet, and finally combined via a weighted model and resampling ensemble to produce the 12-lead ECG signal submission.",
+  "data_reading": [],
+  "data_processing": [
+    "Preprocessing includes image rotation correction, cropping, and resizing to 5600\u00d71280.",
+    "Training augmentations: horizontal flip (0.5), grayscale conversion (0.2), brightness/contrast adjustment (0.3), JPEG compression (0.2), Cutout (0.2), Gaussian noise (0.2).",
+    "Final models trained on all available data without a validation split."
+  ],
+  "features_engineering": [],
+  "models": [
+    "UNet",
+    "EfficientNet-B3",
+    "EfficientNet-B4",
+    "ResNet34",
+    "1D ResUNet",
+    "BiLSTM",
+    "ConvNeXt"
+  ],
+  "frameworks_used": [
+    "timm"
+  ],
+  "loss_functions": [
+    "BCE with pos_weight=10",
+    "L1 loss",
+    "SNR loss",
+    "combined scheduled loss"
+  ],
+  "cv_strategy": "No validation split for final models; training relied on scheduled loss weighting and gradient accumulation.",
+  "ensembling": "Weighted average of six models with varying architectures and augmentations, combined with a resampling ensemble that averages outputs from decimate_fir, polyphase, and linear resampling methods to cancel edge artifacts.",
+  "insights": [
+    "End-to-end joint optimization of segmentation and signal extraction outperforms training stages separately.",
+    "Horizontal flip augmentation provides a significant performance boost by encouraging orientation-invariant features.",
+    "EfficientNet encoders consistently outperform ResNet by ~0.2 dB.",
+    "Deeper Stage 3 networks help capture longer-range signal dependencies.",
+    "Resampling ensemble effectively reduces edge artifacts in the final signal."
+  ],
+  "critical_findings": [
+    "Horizontal flip augmentation unexpectedly delivered a +0.6 dB improvement, likely due to doubling effective training data and promoting orientation invariance.",
+    "Different resampling algorithms introduce distinct edge artifacts that can be canceled out by averaging their outputs."
+  ],
+  "what_did_not_work": [
+    "BiLSTM for Stage 3 performed worse than ResUNet.",
+    "Higher resolution (7200\u00d71280) and larger output length (15000) provided negligible gains while increasing complexity.",
+    "ConvNeXt encoder caused training instability."
+  ],
+  "github_repos": [],
+  "papers": [],
+  "other_solution_refs": [
+    {
+      "description": "hengck23's public notebook used for Stage 1 preprocessing",
+      "url": "https://www.kaggle.com/hengck23"
+    }
+  ],
+  "source_url": "https://www.kaggle.com/competitions/physionet-ecg-image-digitization/discussion/669546"
+}

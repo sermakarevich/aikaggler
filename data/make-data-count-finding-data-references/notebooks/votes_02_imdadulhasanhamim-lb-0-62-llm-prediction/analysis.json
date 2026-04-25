@@ -1,0 +1,43 @@
+{
+  "summary": "The notebook implements a multi-stage pipeline for identifying and classifying data citations within scientific papers. It combines PDF parsing, extensive regex-based extraction of dataset identifiers (DOIs, accessions), and context window generation to prepare citation data. A Qwen2.5-32B LLM is then applied in sequential steps to classify citations as data vs. literature, and subsequently as primary vs. secondary data, leveraging constrained decoding and structured prompt engineering. The pipeline includes a post-filtering step to reduce false positives, demonstrating how hybrid regex-LLM approaches can effectively tackle complex citation classification tasks without traditional model training.",
+  "purpose": "inference",
+  "competition_flow": "Parses PDFs to text, extracts dataset IDs via regex and context windows, classifies them as data/literature and primary/secondary using a Qwen2.5-32B LLM with constrained decoding, applies post-filtering, and outputs a CSV submission.",
+  "data_reading": [
+    "PDFs are converted to plain text using pymupdf and loaded into Polars DataFrames.",
+    "Ground truth labels are read from CSV files."
+  ],
+  "data_processing": [
+    "String normalization (NFKC, ASCII filtering, Zenodo URL mapping).",
+    "Regex-based ID extraction and normalization for DOIs and specific accession formats.",
+    "Context window extraction around citation strings.",
+    "Deduplication and filtering of known false-positive DOI prefixes."
+  ],
+  "features_engineering": [],
+  "models": [
+    "Qwen2.5-32B-Instruct-AWQ"
+  ],
+  "frameworks_used": [
+    "vllm",
+    "polars",
+    "pymupdf",
+    "logits-processor-zoo",
+    "torch",
+    "numpy"
+  ],
+  "loss_functions": [],
+  "cv_strategy": "",
+  "ensembling": "",
+  "insights": [
+    "Context windows and DOI prefixes are critical for distinguishing data citations from literature references.",
+    "Constrained decoding via logits processors improves LLM classification reliability.",
+    "Post-filtering based on contextual keywords effectively reduces false positives in citation classification."
+  ],
+  "critical_findings": [
+    "DOI prefixes alone are insufficient for classification due to overlaps between data repositories and publishers.",
+    "Regex extraction misses certain ID formats, necessitating LLM fallback.",
+    "GBIF occurrence data requires specialized context window handling to avoid misclassification."
+  ],
+  "what_did_not_work": [],
+  "source_url": "https://www.kaggle.com/code/imdadulhasanhamim/lb-0-62-llm-prediction",
+  "votes": 322
+}

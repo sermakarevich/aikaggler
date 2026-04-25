@@ -1,0 +1,49 @@
+{
+  "summary": "This notebook demonstrates a multi-model fine-tuning and inference pipeline for the Jigsaw Agile Community Rules competition. It fine-tunes a Qwen2.5-0.5B model with LoRA for direct classification, runs constrained decoding inference on a Qwen2.5-14B model, and explores a semantic retrieval approach using a fine-tuned Qwen3-Embedding-0.6B model. The author combines these three distinct approaches via rank-based blending to produce a final submission. Key takeaways include effective few-shot prompt engineering, the reliability of constrained decoding via logits processors, and the performance gains from blending generation and embedding-based models of different scales.",
+  "purpose": "ensemble",
+  "competition_flow": "Loads Reddit comment data with rules and examples, fine-tunes Qwen2.5-0.5B via LoRA and Qwen3-Embedding-0.6B, runs constrained decoding inference on both plus a Qwen2.5-14B baseline, and blends the ranked predictions into a final submission.",
+  "data_reading": [
+    "pd.read_csv for train.csv and test.csv",
+    "Randomly samples 50% of test data for training augmentation",
+    "Constructs prompts by concatenating subreddit, rule, randomly selected positive/negative examples, and the target comment"
+  ],
+  "data_processing": [
+    "Randomly selects one positive and one negative example per row for training/test",
+    "Applies cleantext.clean for text normalization in the embedding pipeline",
+    "Uses completion_only_loss=True during training to mask prompt tokens",
+    "Applies softmax to logprobs in one inference script",
+    "Normalizes predictions via rank-based scaling rank/(N+1)"
+  ],
+  "features_engineering": [],
+  "models": [
+    "Qwen2.5-0.5B-Instruct-GPTQ-INT4",
+    "Qwen2.5-14B-Instruct-GPTQ-INT4",
+    "Qwen3-Embedding-0.6B"
+  ],
+  "frameworks_used": [
+    "transformers",
+    "peft",
+    "trl",
+    "vllm",
+    "sentence_transformers",
+    "accelerate",
+    "deepspeed",
+    "pandas",
+    "numpy",
+    "scipy"
+  ],
+  "loss_functions": [
+    "Cross-entropy (via TRL's completion_only_loss)"
+  ],
+  "cv_strategy": "",
+  "ensembling": "Combines predictions from a LoRA-finetuned Qwen2.5-0.5B, a semantic retrieval model (Qwen3-Embedding-0.6B), and a Qwen2.5-14B baseline by ranking each submission, normalizing scores, and blending them with weights 0.5, 0.3, and 0.2 respectively.",
+  "insights": [
+    "Few-shot prompt formatting with randomly selected positive/negative examples improves classification consistency across different rules.",
+    "Constrained decoding via MultipleChoiceLogitsProcessor ensures valid Yes/No outputs without sampling overhead or hallucination.",
+    "Rank-based normalization and blending across models of different sizes and paradigms (generation vs. embedding) yields more robust predictions than any single model."
+  ],
+  "critical_findings": [],
+  "what_did_not_work": [],
+  "source_url": "https://www.kaggle.com/code/maverickss26/jigsaw-fine-tuned-solution-v1",
+  "votes": 399
+}

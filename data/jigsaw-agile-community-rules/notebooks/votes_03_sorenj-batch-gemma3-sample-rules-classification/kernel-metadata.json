@@ -1,0 +1,25 @@
+{
+  "id": "sorenj/batch-gemma3-sample-rules-classification",
+  "id_no": 87567898,
+  "title": "Batch Gemma3 Sample Rules Classification",
+  "code_file": "batch-gemma3-sample-rules-classification.ipynb",
+  "language": "python",
+  "kernel_type": "notebook",
+  "is_private": false,
+  "enable_gpu": true,
+  "enable_tpu": false,
+  "enable_internet": false,
+  "keywords": [
+    "gpu"
+  ],
+  "dataset_sources": [],
+  "kernel_sources": [],
+  "competition_sources": [
+    "jigsaw-agile-community-rules"
+  ],
+  "model_sources": [
+    "google/gemma-3/Transformers/gemma-3-1b-it/1"
+  ],
+  "docker_image": "gcr.io/kaggle-private-byod/python@sha256:320043e14c68293f1c946585b9257123385205a58af4b94b17d31868cae4e868",
+  "machine_shape": "NvidiaTeslaT4"
+}

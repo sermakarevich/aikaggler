@@ -1,0 +1,53 @@
+{
+  "summary": "The author generated over 10 million synthetic seismic samples using a custom GPU-accelerated Python vel-to-seis tool, then trained a ~100M parameter custom ViT+2D conv model with interlaced transformer and convolutional blocks. Training utilized AdamW with a half-cosine LR scheduler and a composite MAE + confidence loss. Final performance was boosted through family-specific post-processing (clipping, rounding, and bias restoration) and ensembling multiple checkpoints and specialized models weighted by a validation classifier.",
+  "extensive_summary": "## Data Generation & Augmentation\nThe author implemented a custom Python vel-to-seis pipeline on GPU, generating over 10 million synthetic samples (~13k/hr on T4). Initial training used heavy augmentations including cut-mix across all families, scaling, and shifting. This was later refined by implementing the host's method for CurveVel and CurveFault generation, while Style families relied on cutmix within the same style group. Seismic data was downcasted to 5*288*70 and stored as bfloat16.\n\n## Model Architecture & Training\nThe core architecture is a custom ~100M parameter ViT+2D conv model featuring interlaced layers of transformers and 2D conv blocks, which the author notes significantly aids convergence due to inductive bias. Input tensors (288*70*5) were patched to 18*18*384, passed through 28 blocks of alternating 2D conv and transformer layers, and reconstructed to 70*70*1. Optimization used AdamW with a half-cosine LR scheduler starting at 1e-3.\n\n## Loss & Post-processing\nThe training objective combined MAE with a confidence loss defined as MAE(confidence, MAE(targets, preds)). Post-processing included clipping predictions between 1500 and 4500, rounding to integers for non-Style families, and a technique called \"restoring bias\" where grouped predictions were replaced by their most prominent value to correct for limited velocity values in certain families.\n\n## Ensembling & Final Tuning\nThe author initially experimented with horizontal flip augmentation + TTA but discovered that generating exact flipped samples by only recalculating the central seismic trace was more efficient and effective. Two models (unflipped and fully flipped) were trained and ensembled. In the final week, a third model focused specifically on the underperforming Style B family was added. All models were ensembled with ~10 checkpoints each, using family-specific weights calculated from a prediction classifier on a 10K validation split.",
+  "rank": 4,
+  "competition_flow": "Synthetic velocity data was converted to seismic waveforms via a custom GPU-accelerated Python vel-to-seis implementation, processed through a custom interlaced ViT+2D conv model trained with MAE+confidence loss, and refined via family-specific post-processing and multi-model checkpoint ensembling to produce final velocity maps.",
+  "data_reading": [],
+  "data_processing": [
+    "Heavy cut-mix augmentation across all families, scaling, and shifting",
+    "Cutmix within the same style family",
+    "Downcasted seis to 5*288*70 and saved as bfloat16",
+    "Generated exact flipped samples by recalculating only the central seismic trace",
+    "Clipped predictions between 1500 and 4500",
+    "Rounded predictions to int for non-Style families",
+    "Restored bias by grouping predictions and replacing each group with its most prominent value"
+  ],
+  "features_engineering": [],
+  "models": [
+    "Custom ~100M parameter ViT+2D conv model",
+    "Interlaced layers of transformers and 2D conv blocks",
+    "MaxViT 2D conv block implementation"
+  ],
+  "frameworks_used": [],
+  "loss_functions": [
+    "MAE + confidence Loss (MAE(confidence, MAE(targets, preds)))"
+  ],
+  "cv_strategy": "Holdout split of 10K samples (1K per family) used for validation and ensemble weight calculation.",
+  "ensembling": "Ensembled ~10 checkpoints per model, combined two flip-augmented models with a third Style-focused model, and applied family-specific weights derived from a prediction classifier on a 10K validation split, followed by clipping, rounding, and bias restoration.",
+  "insights": [
+    "Interlacing transformer and 2D conv blocks significantly improves convergence due to inductive bias.",
+    "Generating exact flipped samples by only recalculating the central seismic trace is more efficient and effective than standard flip augmentation.",
+    "Family-specific post-processing (clipping, rounding, and restoring bias) yields measurable validation gains.",
+    "Focusing a dedicated model on underperforming families during the final week can provide significant targeted improvements."
+  ],
+  "critical_findings": [
+    "Training on exact flipped samples outperformed standard flip augmentation.",
+    "Restoring bias by grouping predictions and replacing them with the most prominent value per group yielded a 0.1 validation bump for families with limited velocity values.",
+    "A classifier trained on predictions proved highly effective for determining optimal ensemble weights per family."
+  ],
+  "what_did_not_work": [],
+  "github_repos": [
+    {
+      "url": "https://github.com/tensorflow/models",
+      "role": "reference"
+    },
+    {
+      "url": "https://github.com/shlomoron/GWI-solution",
+      "role": "solution"
+    }
+  ],
+  "papers": [],
+  "other_solution_refs": [],
+  "source_url": "https://www.kaggle.com/competitions/waveform-inversion/discussion/587500"
+}

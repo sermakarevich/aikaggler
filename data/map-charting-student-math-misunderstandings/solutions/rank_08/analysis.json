@@ -1,0 +1,52 @@
+{
+  "summary": "The author achieved 8th place by fine-tuning multiple Qwen2.5 and Qwen3 models using LoRA for a causal language modeling task to predict student math misconceptions. Key innovations included restructuring prompts to explicitly include answer choices alongside the question, mapping target labels to single special tokens for efficient generation, and synthesizing training data for rare or hard-to-predict misconception categories using GPT-5 and o3. The pipeline leveraged vLLM for inference acceleration and combined 50 models across different architectures and synthetic data configurations via weighted ensembling. Careful joint tuning of learning rate and batch size proved critical for stable cross-validation scores.",
+  "extensive_summary": "## Overview & Task Formulation\nThe competition focused on predicting student math misconceptions from question text, images, and student explanations. The author framed the task as a Causal Language Modeling problem to enable fast inference with vLLM. The core insight was that explicitly providing the multiple-choice options (a\u2013d) within the prompt significantly improved the model's ability to compare the student's answer against alternatives and correctly identify the corresponding misconception.\n\n## Prompt Engineering & Tokenization\nThe author reconstructed the correspondence between `MC_Answer` and choices a\u2013d from `StudentExplanation`, modifying `QuestionText` to include options inline. LaTeX notation was stripped from `QuestionText` and `MC_Answer` for readability but had no score impact. A major technical choice was mapping target misconception labels to a curated list of special Unicode symbols, each corresponding to a single token in the Qwen tokenizer. This allowed the model to generate predictions as single tokens, streamlining the decoding process.\n\n## Training & Hyperparameters\nAll models were fine-tuned using LoRA with `r=16`, `alpha=16`, `dropout=0.05`, and target modules covering attention and MLP projections (`q_proj`, `k_proj`, `v_proj`, `o_proj`, `gate_proj`, `up_proj`, `down_proj`). Training ran for 3 epochs with AdamW (weight_decay=0.01), cosine scheduler (warmup_ratio=0.03), batch size 12, and learning rate 0.0002. The author emphasized that small changes to batch size and learning rate caused large CV score swings, necessitating careful joint tuning. LoRA outperformed full-parameter fine-tuning in their experiments, and varying `r` or `alpha` yielded no meaningful gains.\n\n## Synthetic Data & Ensembling\nDue to label imbalance and varying prediction difficulty, the author generated ~30,000 synthetic samples using GPT-5 and o3. They first trained a base model, computed out-of-fold MAP@3 predictions, and identified `(QuestionId, Category, Misconception)` pairs with low scores or few samples. These pairs were used as few-shot examples to prompt the generative AI to create up to 50 new samples per iteration. The final submission combined 50 models (10 experimental settings \u00d7 5 folds) across Qwen2.5-7B, Qwen2.5-14B-Instruct-AWQ, Qwen3-8B, and Qwen3-14B-AWQ. Models were weighted based on both CV and Public LB performance, with the LB-weighted ensemble ultimately securing the top private score.",
+  "rank": 8,
+  "competition_flow": "Raw question text, images, and student explanations were formatted into structured prompts with inline answer choices and single-token target labels, fine-tuned via LoRA on Qwen2.5/Qwen3 models, augmented with GPT-5/o3 synthetic data for rare categories, and combined into a weighted ensemble of 50 models accelerated by vLLM for inference.",
+  "data_reading": [],
+  "data_processing": [
+    "Stripped LaTeX notation from `QuestionText` and `MC_Answer` for readability",
+    "Reconstructed `MC_Answer` to choices a\u2013d from `StudentExplanation` and injected them into the prompt",
+    "Mapped target misconception labels to single special Unicode tokens aligned with the Qwen tokenizer",
+    "Generated ~30,000 synthetic training samples via GPT-5 and o3 for rare or low-performing `(QuestionId, Category, Misconception)` pairs identified via out-of-fold MAP@3 scores"
+  ],
+  "features_engineering": [],
+  "models": [
+    "Qwen/Qwen2.5-7B",
+    "Qwen/Qwen2.5-14B-Instruct-AWQ",
+    "Qwen/Qwen3-8B",
+    "Qwen/Qwen3-14B-AWQ"
+  ],
+  "frameworks_used": [
+    "vLLM"
+  ],
+  "loss_functions": [],
+  "cv_strategy": "5-fold cross-validation with out-of-fold MAP@3 aggregation to identify low-performing data pairs for synthetic data generation; ensembles selected based on both CV and Public LB performance.",
+  "ensembling": "Combined 50 models across different Qwen architectures and synthetic data configurations, applying weights based on both CV and Public LB results, with the LB-weighted ensemble ultimately selected for the final submission.",
+  "insights": [
+    "Explicitly including answer choices (a\u2013d) in the prompt significantly improved the model's ability to compare the student's answer against alternatives and identify the correct misconception.",
+    "Mapping target labels to single special Unicode tokens streamlined generation and aligned with the Qwen tokenizer's capabilities.",
+    "Careful joint tuning of learning rate and batch size is critical, as small changes can cause large swings in cross-validation scores.",
+    "LoRA fine-tuning outperformed full-parameter fine-tuning in this setup, likely due to better regularization or insufficient tuning for the latter."
+  ],
+  "critical_findings": [
+    "Stripping LaTeX notation from `QuestionText` and `MC_Answer` had absolutely no impact on the final score, despite being done for readability.",
+    "Varying LoRA `r` or `alpha` parameters yielded no meaningful improvement in scores, indicating the chosen configuration was already near-optimal for this task."
+  ],
+  "what_did_not_work": [
+    "Full-parameter fine-tuning yielded worse cross-validation scores compared to LoRA, likely due to insufficient tuning on the author's side."
+  ],
+  "github_repos": [],
+  "papers": [],
+  "other_solution_refs": [
+    {
+      "description": "Discussion thread on prompt reconstruction",
+      "url": "https://www.kaggle.com/competitions/map-charting-student-math-misunderstandings/discussion/589350"
+    },
+    {
+      "description": "Notebook referenced for special token mapping inspiration",
+      "url": "https://www.kaggle.com/code/aleaiest/lb-0-945-qwen2-5-32b-gptq"
+    }
+  ],
+  "source_url": "https://www.kaggle.com/competitions/map-charting-student-math-misunderstandings/discussion/612101"
+}

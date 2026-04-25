@@ -1,0 +1,71 @@
+{
+  "summary": "The author secured 3rd place by leveraging Test-Time Training (TTT) to adapt models to hidden test rules, constructing a custom dataset from rules, bodies, and targets. The solution splits into a slow ensemble of Qwen instruct LLMs pre-trained with LoRA and a fast ensemble of embedding models (bge-base, Qwen3-embedding, DeBERTa), all fine-tuned via TTT. Embeddings extracted from these models are fed into classic ML classifiers (LightGBM, XGBoost, SVC) to generate probabilities, which are then combined into a final ensemble validated against the Public LB.",
+  "extensive_summary": "## Approach Overview\nThe solution hinges on Test-Time Training (TTT) to adapt to hidden test rules, combined with a robust ensemble of large language models (LLMs) and embedding models. A custom dataset was constructed from all rules, example bodies, and known targets to drive both pretraining and TTT phases. The `subreddit` column was explicitly discarded as unhelpful.\n\n## Slow Ensemble\nThe slow ensemble consists of Qwen2.5-instruct-14b, Qwen2.5-instruct-7b, Qwen3-instruct-14b, and Qwen3-instruct-8b. These models underwent one epoch of zero-shot pretraining on the public dataset using a strict prompt format. LoRA weights from pretraining served as initialization for TTT, allowing the models to adapt during the 12-hour inference window. Unsloth was used for parallel training (one model per T4 GPU), and vLLM handled inference. To save time, LoRA weights for the two 7b models were merged to run as single models. Embeddings from the final \"Violation:\" token were extracted and used to train a cross-validated batch of LightGBM, XGBoost, and SVC models.\n\n## Fast Ensemble\nThe fast ensemble bypassed pretraining and relied solely on TTT. `bge-base-v1.5` was trained with Triplet Loss using both normal and flipped rules. A centroid-based embedding strategy was applied: `final_embedding = concat([body_embeddings - positive_examples_centroid_embedding, body_embeddings - negative_examples_centroid_embedding])`. `Qwen3-embedding-0.6b` used ArcFace loss with mean pooling on body-only inputs. `DeBERTa-v3-small` used cross-entropy loss on `{rule}[SEP]{body}` inputs, extracting the `[CLS]` token embedding. All embedding outputs were fed into secondary ML models to predict rule violations, with probabilities averaged or ensembled.\n\n## Validation & Ensembling\nAll models and the final ensemble were validated against the Public LB. The final submission combined probabilities from the slow and fast sub-ensembles, leveraging the complementary strengths of LLMs and lightweight embedding models adapted via TTT.",
+  "rank": 3,
+  "competition_flow": "Raw rules and bodies were compiled into a custom dataset, used to pretrain LLMs and embedding models with LoRA, then fine-tuned via Test-Time Training (TTT) on train/test sets; token embeddings were extracted and fed into classic ML models (LightGBM/XGBoost/SVC) to generate probabilities, which were ensembled and validated against the Public LB before submission.",
+  "data_reading": [],
+  "data_processing": [
+    "Constructed a custom dataset from rules, bodies, examples, and targets",
+    "Discarded the `subreddit` column as unhelpful",
+    "Formatted inputs into specific prompt templates (`{rule_str}`, `{example_body_str}`, `{answer_str}`)",
+    "Flipped rules for bge-base training (NormalRules vs FlippedRules)",
+    "Merged LoRA weights for two 7b models to reduce inference time"
+  ],
+  "features_engineering": [],
+  "models": [
+    "Qwen2.5-instruct-14b",
+    "Qwen2.5-instruct-7b",
+    "Qwen3-instruct-14b",
+    "Qwen3-instruct-8b",
+    "bge-base-v1.5",
+    "Qwen3-embedding-0.6b",
+    "DeBERTa-v3-small",
+    "LightGBM",
+    "XGBoost",
+    "SVC"
+  ],
+  "frameworks_used": [
+    "Unsloth",
+    "vLLM",
+    "LightGBM",
+    "XGBoost"
+  ],
+  "loss_functions": [
+    "Triplet Loss",
+    "ArcFace loss",
+    "Cross entropy loss"
+  ],
+  "cv_strategy": "Cross-validated batch of classic ML models; all models and the final ensemble were validated against the Public LB.",
+  "ensembling": "The final ensemble combined probabilities from two sub-ensembles (slow LLMs and fast embedding models), with LoRA weights for two 7b models merged to run as single models during inference to save time.",
+  "insights": [
+    "Test-Time Training is essential for adapting to hidden test rules.",
+    "Pretraining with LoRA provides a strong initialization that improves TTT performance.",
+    "The `subreddit` column provides no value for this task.",
+    "Merging LoRA weights preserves performance while significantly reducing inference time."
+  ],
+  "critical_findings": [
+    "Flipping rules during bge-base training and using centroid subtraction for embeddings yielded better results than standard triplet loss.",
+    "Using only the comment body (without the rule) for Qwen3-embedding input did not improve scores over rule+body inputs."
+  ],
+  "what_did_not_work": [
+    "Training Qwen3-embedding with more than two output classes (e.g., one class per rule) performed poorly.",
+    "Using `'{rule}: {body}'` as input for Qwen3-embedding did not improve the score compared to body-only inputs."
+  ],
+  "github_repos": [],
+  "papers": [],
+  "other_solution_refs": [
+    {
+      "description": "Author's top submission notebook",
+      "url": "https://www.kaggle.com/code/socom20/t73t74-ens-7b-9b-unsloth-qwen14bx4-qwen8bx1-qwen7"
+    },
+    {
+      "description": "Pretraining notebook referenced for methodology",
+      "url": "https://www.kaggle.com/code/socom20/jigsaw-pretraining-v82?scriptVersionId=271410187"
+    },
+    {
+      "description": "Triplet loss notebook referenced for bge-base training",
+      "url": "https://www.kaggle.com/code/datafan07/jigsaw-speed-run-10-min-triplet-and-faiss"
+    }
+  ],
+  "source_url": "https://www.kaggle.com/competitions/jigsaw-agile-community-rules/discussion/613324"
+}

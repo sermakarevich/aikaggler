@@ -1,0 +1,28 @@
+{
+  "summary": "The author presents a baseline solution utilizing a ConvNeXt architecture trained on full-resolution data. They provide a Kaggle notebook and pre-trained checkpoints to facilitate further customization and experimentation. The writeup primarily shares cross-validation scores across ten distinct seismic task variants, demonstrating the model's performance on CurveFault, CurveVel, FlatFault, FlatVel, and Style datasets. Detailed technical specifics regarding the training pipeline are intentionally left open for the community to adapt.",
+  "extensive_summary": "## Overview\nThis writeup introduces a baseline approach for a geophysical competition, leveraging a ConvNeXt backbone trained on full-resolution data. The author explicitly positions this as a starting point, providing both a Kaggle notebook and pre-trained model weights to encourage community customization.\n\n## Model & Training\nThe core architecture mentioned is ConvNeXt. The author notes that the model was trained on full-resolution data, though specific hyperparameters, training duration, or optimization details are not disclosed in this brief summary.\n\n## Results\nCross-validation scores are reported across multiple task configurations, including CurveFault, CurveVel, FlatFault, FlatVel, and Style variants (A and B for each). The scores vary significantly across tasks, ranging from 2.62 to 92.54, indicating task-specific performance characteristics. The writeup serves as a performance benchmark rather than a comprehensive technical guide.",
+  "rank": null,
+  "competition_flow": "The pipeline is not explicitly detailed in the writeup, but it involves training a ConvNeXt model on full-resolution data and submitting predictions for multiple seismic task variants.",
+  "data_reading": [],
+  "data_processing": [],
+  "features_engineering": [],
+  "models": [
+    "ConvNeXt"
+  ],
+  "frameworks_used": [],
+  "loss_functions": [],
+  "cv_strategy": "",
+  "ensembling": "",
+  "insights": [],
+  "critical_findings": [],
+  "what_did_not_work": [],
+  "github_repos": [],
+  "papers": [],
+  "other_solution_refs": [
+    {
+      "description": "Author's baseline notebook",
+      "url": "https://www.kaggle.com/code/brendanartley/convnext-baseline"
+    }
+  ],
+  "source_url": "https://www.kaggle.com/competitions/waveform-inversion/discussion/579841"
+}

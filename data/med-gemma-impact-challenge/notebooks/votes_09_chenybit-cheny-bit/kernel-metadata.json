@@ -1,0 +1,34 @@
+{
+  "id": "chenybit/cheny-bit",
+  "id_no": 107554297,
+  "title": "CHENY_BIT",
+  "code_file": "cheny-bit.ipynb",
+  "language": "python",
+  "kernel_type": "notebook",
+  "is_private": false,
+  "enable_gpu": true,
+  "enable_tpu": false,
+  "enable_internet": true,
+  "keywords": [
+    "gpu"
+  ],
+  "dataset_sources": [
+    "rhedsonesashika/amazon-triage-dataset-json"
+  ],
+  "kernel_sources": [
+    "abdelrhmannehab/medgemma",
+    "gallo33henrique/breast-segmentation-llm-medgemma",
+    "mpwolke/medgemma-hai-def"
+  ],
+  "competition_sources": [
+    "google-football",
+    "med-gemma-impact-challenge"
+  ],
+  "model_sources": [
+    "keras/gemma/Keras/gemma_2b_en/3",
+    "keras/gemma/Keras/gemma_1.1_instruct_2b_en/4",
+    "keras/gemma2/Keras/gemma2_instruct_2b_en/2"
+  ],
+  "docker_image": "gcr.io/kaggle-private-byod/python@sha256:58f63ed194fa7d5c55181f1e8ec0be141e9211efa23bc7501c1c865f7e00057d",
+  "machine_shape": "NvidiaTeslaT4"
+}

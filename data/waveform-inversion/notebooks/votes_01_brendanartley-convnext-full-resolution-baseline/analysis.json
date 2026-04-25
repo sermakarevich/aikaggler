@@ -1,0 +1,45 @@
+{
+  "summary": "This notebook provides a complete training recipe for seismic waveform inversion using a ConvNeXt-based UNet architecture. It demonstrates how to adapt a standard vision backbone for non-square seismic inputs by modifying the stem layer to preserve spatial detail, replacing batch normalization with instance normalization to stabilize training with small batches, and leveraging EMA for weight smoothing. The author emphasizes precision requirements (bfloat16/float32 over float16) and shows a full pipeline from distributed training to ensemble-based inference with test-time augmentation. Readers should take away practical techniques for handling irregular input shapes, stabilizing CNN training, and efficiently combining multiple checkpoints for robust predictions.",
+  "purpose": "training",
+  "competition_flow": "Loads preprocessed seismic data and velocity labels from NumPy files, trains a distributed ConvNeXt-UNet with L1 loss and EMA, validates on a held-out fold, and generates a submission by averaging predictions from an ensemble of two checkpoints with test-time augmentation.",
+  "data_reading": [
+    "Reads fold assignments from a CSV file (folds.csv).",
+    "Loads seismic traces and velocity targets from .npy files using np.load with mmap_mode='r', resolving paths via globbing."
+  ],
+  "data_processing": [
+    "Applies temporal flipping augmentation during training (50% probability).",
+    "Replaces all normalization layers with InstanceNorm2d and activations with GELU.",
+    "Modifies the ConvNeXt stem to handle non-square inputs via custom stride/padding and weight duplication to aggressively downsample height.",
+    "Uses horizontal flip test-time augmentation during inference and averages predictions."
+  ],
+  "features_engineering": [],
+  "models": [
+    "ConvNeXt-small.fb_in22k_ft_in1k (timm) wrapped in a custom UNet-like encoder-decoder architecture"
+  ],
+  "frameworks_used": [
+    "torch",
+    "timm",
+    "monai",
+    "numpy",
+    "pandas"
+  ],
+  "loss_functions": [
+    "L1Loss (MAE)"
+  ],
+  "cv_strategy": "Fixed split based on pre-defined folds in folds.csv (train: fold != 0, valid: fold == 0)",
+  "ensembling": "Averages outputs from two pretrained model checkpoints wrapped in an EnsembleModel, combined with horizontal flip test-time augmentation during inference.",
+  "insights": [
+    "ConvNeXt is numerically unstable on float16, requiring bfloat16 or float32 to prevent NaN losses.",
+    "Replacing BatchNorm with InstanceNorm stabilizes validation performance and enables smaller batch sizes without performance degradation.",
+    "Directly modifying the stem layer to downsample height preserves more spatial detail than interpolating non-square inputs.",
+    "Exponential Moving Average (EMA) of weights improves model stability and is used for both validation scoring and final inference."
+  ],
+  "critical_findings": [
+    "ConvNeXt's loss becomes NaN on float16 precision, making bfloat16 or float32 mandatory.",
+    "InstanceNorm decouples normalization from batch statistics, allowing batch sizes as small as 16 without validation performance drops.",
+    "Interpolating non-square inputs previously caused significant detail loss, which direct stem modification resolves."
+  ],
+  "what_did_not_work": [],
+  "source_url": "https://www.kaggle.com/code/brendanartley/convnext-full-resolution-baseline",
+  "votes": 772
+}

@@ -1,0 +1,123 @@
+{
+  "id": 91844,
+  "competitionName": "birdclef-2025",
+  "title": "BirdCLEF+ 2025",
+  "briefDescription": "Species identification from audio, focused on birds, amphibians, mammals and insects from the Middle Magdalena Valley of Colombia.",
+  "dateEnabled": "2025-03-10T17:08:06.810Z",
+  "deadline": "2025-06-05T23:59:00Z",
+  "hasLeaderboard": true,
+  "leaderboardPercentage": 34,
+  "maxDailySubmissions": 5,
+  "numScoredSubmissions": 2,
+  "hasSolution": true,
+  "numPrizes": 5,
+  "forumId": 6845874,
+  "finalLeaderboardHasBeenVerified": true,
+  "userRankMultiplier": 1,
+  "dateCreated": "2025-01-23T17:17:20.247063700Z",
+  "competitionHostSegmentId": 2,
+  "maxTeamSize": 5,
+  "medalsAllowed": true,
+  "enableTeamFiles": true,
+  "teamFileDeadline": "2025-06-28T00:00:00Z",
+  "teamMergerExplicitDeadline": "2025-05-29T23:59:00Z",
+  "prohibitNewEntrantsExplicitDeadline": "2025-05-29T23:59:00Z",
+  "kernelsPublishingDisabledDeadline": "2025-05-29T23:59:00Z",
+  "organizationId": 3747,
+  "hasCoverImageUrl": true,
+  "showPrivateLeaderboard": true,
+  "hasScripts": true,
+  "onlyAllowKernelSubmissions": true,
+  "totalTeams": 2031,
+  "totalCompetitors": 2575,
+  "totalSubmissions": 71548,
+  "rulesRequired": true,
+  "usesSynchronousReruns": true,
+  "maxCpuRuntimeMinutes": 90,
+  "maxGpuRuntimeMinutes": 1,
+  "rowIdColumnName": "row_id",
+  "requiredSubmissionFilename": "submission.csv",
+  "evaluationAlgorithm": {
+    "id": 1593,
+    "name": "Birdclef ROC AUC",
+    "isMax": true,
+    "environmentRenderType": "ENVIRONMENT_RENDER_TYPE_JSON",
+    "kernelId": 52665836,
+    "latestCompetitionMetricVersionId": 16622,
+    "state": "AVAILABLE"
+  },
+  "categories": [
+    {
+      "id": 7000,
+      "name": "earth and nature",
+      "fullPath": "subject > earth and nature",
+      "datasetCount": 79496,
+      "competitionCount": 24,
+      "scriptCount": 459,
+      "slug": "natural-and-physical-sciences",
+      "displayName": "Earth and Nature"
+    },
+    {
+      "id": 16685,
+      "name": "audio event classification",
+      "fullPath": "task > audio-event-classification",
+      "description": "",
+      "datasetCount": 57,
+      "competitionCount": 13,
+      "scriptCount": 28,
+      "slug": "audio-event-classification",
+      "displayName": "Audio Event Classification"
+    },
+    {
+      "id": 7301,
+      "name": "animals",
+      "fullPath": "subject > earth and nature > animals",
+      "description": "The animals tag is as diverse as a rainforest. Is there a correlation between animal bites and NYC rat sightings? We're not sure. But the data is here and the world needs to know.",
+      "datasetCount": 2932,
+      "competitionCount": 647,
+      "scriptCount": 1166,
+      "slug": "animals",
+      "displayName": "Animals"
+    },
+    {
+      "id": 16636,
+      "name": "multilabel classification",
+      "fullPath": "task > multilabel-classification",
+      "description": "",
+      "datasetCount": 349,
+      "competitionCount": 32,
+      "scriptCount": 736,
+      "slug": "multilabel-classification",
+      "displayName": "Multilabel Classification"
+    },
+    {
+      "name": "custom metric",
+      "description": "This competition's metric is defined under the 'Evaluation' tab",
+      "displayName": "Custom Metric"
+    }
+  ],
+  "organization": {
+    "slug": "cornelllabofornithology",
+    "name": "Cornell Lab of Ornithology",
+    "thumbnailImageUrl": "https://storage.googleapis.com/kaggle-organizations/3747/thumbnail.png?r=251",
+    "profileUrl": "/organizations/cornelllabofornithology"
+  },
+  "launched": true,
+  "createdByUserId": 1132983,
+  "license": {
+    "id": 3,
+    "name": "CC BY-NC-SA 4.0",
+    "url": "https://creativecommons.org/licenses/by-nc-sa/4.0/",
+    "agreementRequired": false
+  },
+  "hostName": "Cornell Lab of Ornithology",
+  "scoreTruncationNumDecimals": 3,
+  "locked": true,
+  "totalJoinedUsers": 9636,
+  "requiresIdentityVerification": true,
+  "submissionSizeLimitMb": 20480,
+  "reward": {
+    "id": "USD",
+    "quantity": 50000
+  }
+}

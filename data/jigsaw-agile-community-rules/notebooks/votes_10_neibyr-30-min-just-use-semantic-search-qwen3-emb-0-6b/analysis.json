@@ -1,0 +1,36 @@
+{
+  "summary": "This notebook demonstrates a training-free approach to a text classification task by leveraging semantic search. It constructs a corpus from labeled training comments and unlabeled test examples, embeds them using a lightweight Qwen3 embedding model, and predicts labels by aggregating similarity scores of nearest neighbors within the same rule category. The author shows that simple retrieval-based scoring, combined with rule-specific filtering and optional text cleaning, can yield highly competitive leaderboard results in under an hour. Readers should take away that pre-trained embeddings and semantic search can serve as a powerful, fast baseline or feature generator without requiring fine-tuning or complex model architectures.",
+  "purpose": "baseline",
+  "competition_flow": "Loads train and test CSVs, constructs a unified corpus with mapped labels, embeds all text using a pre-trained Qwen3 embedding model, retrieves top-K nearest neighbors per rule, computes a weighted similarity score, and outputs a submission CSV.",
+  "data_reading": [
+    "Reads train.csv and test.csv from a Kaggle input directory using pandas, then flattens train comments and test positive/negative example columns into a single DataFrame."
+  ],
+  "data_processing": [
+    "Constructs prompts in the format r/{subreddit}\\nComment: {body}, applies text cleaning via the cleantext library (removing URLs, emails, phone numbers, normalizing unicode/ascii), maps labels to 1/-1 for scoring, and normalizes embeddings during inference."
+  ],
+  "features_engineering": [],
+  "models": [
+    "Qwen3-Embedding-0.6B"
+  ],
+  "frameworks_used": [
+    "sentence_transformers",
+    "pandas",
+    "torch",
+    "cleantext",
+    "datasets",
+    "tqdm"
+  ],
+  "loss_functions": [],
+  "cv_strategy": "",
+  "ensembling": "",
+  "insights": [
+    "Pre-trained embedding models combined with semantic search can achieve strong competitive performance without any fine-tuning.",
+    "Filtering neighbors within the same rule category significantly reduces retrieval noise.",
+    "Squaring similarity scores emphasizes high-confidence matches and improves ranking quality.",
+    "Text normalization and cleaning enhance embedding consistency across noisy social media comments."
+  ],
+  "critical_findings": [],
+  "what_did_not_work": [],
+  "source_url": "https://www.kaggle.com/code/neibyr/30-min-just-use-semantic-search-qwen3-emb-0-6b",
+  "votes": 266
+}

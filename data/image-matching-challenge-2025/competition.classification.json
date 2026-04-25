@@ -1,0 +1,19 @@
+{
+  "description": "Participants tackle 3D scene reconstruction by establishing correspondences across large, unstructured collections of images. The task focuses on computer vision techniques to extract and match visual features, often relying on self-supervised representations and geometric consistency. Success is measured using a custom competition-specific metric that evaluates the accuracy and robustness of the predicted matches and resulting 3D structures.",
+  "data_modality": "image",
+  "task_type": "metric_learning",
+  "label_structure": "none",
+  "metric": "IMC 2025 Metric",
+  "test_split": "unknown",
+  "format": "standard",
+  "dataset_scale": "unknown",
+  "domain": "3d_reconstruction",
+  "data_challenges": [
+    "domain_shift",
+    "duplicate_images",
+    "unlabeled_data_abundance"
+  ],
+  "constraints": [
+    "submission_limits"
+  ]
+}

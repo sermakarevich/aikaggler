@@ -1,0 +1,18 @@
+{
+  "description": "Participants reconstruct continuous ECG waveform signals from scanned or photographed paper medical records. The task requires processing low-quality medical images to extract precise time-series traces, with performance evaluated using a custom PhysioNet signal extraction metric on a held-out test set.",
+  "data_modality": "image",
+  "task_type": "generation",
+  "label_structure": "unknown",
+  "metric": "Physionet ECG Signal Extraction Metric",
+  "test_split": "unknown",
+  "format": "standard",
+  "dataset_scale": "unknown",
+  "domain": "medical_imaging",
+  "data_challenges": [
+    "domain_shift",
+    "label_noise"
+  ],
+  "constraints": [
+    "limited_daily_submissions"
+  ]
+}

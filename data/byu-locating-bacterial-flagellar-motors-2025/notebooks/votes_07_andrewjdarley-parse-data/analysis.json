@@ -1,0 +1,37 @@
+{
+  "summary": "This notebook serves as the data preparation stage for a YOLO-based object detection pipeline targeting bacterial flagellar motors in tomographic data. It demonstrates a robust preprocessing workflow that extracts 2D slices around annotated motor centers, applies percentile-based intensity normalization, and structures the output into a YOLO-compatible format. A key takeaway is the importance of performing train/validation splits at the tomogram level rather than the slice level to prevent data leakage. The notebook also highlights practical considerations like arbitrary bounding box sizing and the need for a standardized dataset configuration file for downstream training.",
+  "purpose": "utility",
+  "competition_flow": "Loads tomographic slices and annotations \u2192 extracts and normalizes 2D slices around motor locations \u2192 splits data at the tomogram level \u2192 outputs a YOLO-compatible dataset with bounding boxes and configuration file.",
+  "data_reading": [
+    "Reads motor location annotations from train_labels.csv using pandas",
+    "Loads 2D tomographic slices as JPEG images using PIL from nested directory paths"
+  ],
+  "data_processing": [
+    "Extracts \u00b1TRUST slices around motor centers",
+    "Applies percentile-based contrast enhancement (clipping to 2nd/98th percentiles and scaling to [0, 255])",
+    "Performs a strict tomogram-level 80/20 train/validation split",
+    "Normalizes bounding box coordinates to [0, 1] for YOLO format",
+    "Generates a dataset.yaml configuration"
+  ],
+  "features_engineering": [],
+  "models": [],
+  "frameworks_used": [
+    "numpy",
+    "pandas",
+    "PIL",
+    "yaml",
+    "tqdm"
+  ],
+  "loss_functions": [],
+  "cv_strategy": "Tomogram-level holdout split (80/20) to prevent data leakage.",
+  "ensembling": "",
+  "insights": [
+    "Splitting data at the tomogram level rather than the slice level is critical to prevent data leakage in tomographic datasets.",
+    "Percentile-based contrast normalization effectively standardizes slice intensities across varying tomographic conditions.",
+    "YOLO training requires bounding boxes normalized to image dimensions and a standardized YAML configuration file."
+  ],
+  "critical_findings": [],
+  "what_did_not_work": [],
+  "source_url": "https://www.kaggle.com/code/andrewjdarley/parse-data",
+  "votes": 413
+}

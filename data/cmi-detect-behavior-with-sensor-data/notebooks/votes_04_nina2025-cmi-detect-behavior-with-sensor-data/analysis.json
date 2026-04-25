@@ -1,0 +1,42 @@
+{
+  "summary": "This notebook demonstrates a production-ready inference pipeline that combines three distinct deep learning architectures trained on multi-modal sensor data (IMU, TOF, and Thermal). It emphasizes robust temporal sequence handling by padding to the 95th percentile, applying gravity-invariant acceleration features, and extracting region-based statistics from depth sensors. The core contribution is a weighted horizontal blending strategy that optimally merges predictions from CNN-LSTM/GRU, CNN-BERT, and Gated-GRU models to maximize leaderboard performance. Readers should learn how to structure a reproducible ensemble workflow, handle quaternion-based sensor physics, and fine-tune blend weights for time-series gesture recognition.",
+  "purpose": "ensemble",
+  "competition_flow": "Loads pre-trained TensorFlow and PyTorch models from Kaggle datasets, processes raw IMU/TOF/Thermal sequences with physics-based feature engineering and scaling, generates predictions via model averaging, and applies optimized weighted blending for final submission.",
+  "data_reading": [
+    "Reads sequence data via polars and pandas, loading precomputed artifacts (feature columns, scalers, sequence lengths, gesture classes) from Kaggle datasets using np.load and joblib.load."
+  ],
+  "data_processing": [
+    "Fills missing values with forward/backward fill and zeros, pads sequences to a fixed length (95th percentile), scales features with StandardScaler, replaces invalid TOF values (-1) with NaN, and defines MixupGenerator for training augmentation."
+  ],
+  "features_engineering": [
+    "Gravity-invariant linear acceleration (via quaternion rotation), linear acceleration magnitude & jerk, angular velocity & angular distance from quaternions, TOF region statistics (mean, std, min, max across 2/4/8/16/32 regions), and magnitude/jerk derivatives for IMU."
+  ],
+  "models": [
+    "Two-branch CNN with SE blocks + BiLSTM + BiGRU + Attention (TensorFlow)",
+    "Three-branch CNN with SE blocks + BERT encoder + Classifier (PyTorch)",
+    "Gated GRU with ImuFeatureExtractor (PyTorch)"
+  ],
+  "frameworks_used": [
+    "tensorflow",
+    "torch",
+    "scikit-learn",
+    "polars",
+    "pandas",
+    "numpy",
+    "scipy",
+    "kagglehub"
+  ],
+  "loss_functions": [],
+  "cv_strategy": "StratifiedKFold(n_splits=5) and 10-fold splits (loaded from pre-trained artifacts)",
+  "ensembling": "Blends predictions from three external models using optimized weights (e.g., A:0.53, B:0.18, C:0.29) and applies a [70 x 30] directed random scheme for post-processing, using median averaging for Model 1 and mean averaging for Model 2.",
+  "insights": [
+    "Quaternion-based gravity removal is critical for accurate IMU acceleration features.",
+    "TOF depth data benefits from both raw pixel statistics and multi-resolution region aggregations.",
+    "Combining CNN spatial extraction with BERT/GRU temporal modeling captures complex gesture dynamics effectively.",
+    "Weighted horizontal blending of diverse architectures consistently outperforms single-model baselines."
+  ],
+  "critical_findings": [],
+  "what_did_not_work": [],
+  "source_url": "https://www.kaggle.com/code/nina2025/cmi-detect-behavior-with-sensor-data",
+  "votes": 485
+}

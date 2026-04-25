@@ -1,0 +1,35 @@
+{
+  "summary": "This notebook serves as an exploratory validation step for a bacterial flagellar motor detection pipeline. It loads preprocessed images and YOLO-format bounding box annotations, normalizes pixel intensities using percentile clipping to enhance contrast, and overlays ground truth boxes on random samples. The author demonstrates how to manually inspect annotation accuracy and dataset characteristics before proceeding to model training. Readers should take away the importance of verifying preprocessing outputs and understanding YOLO label scaling before training object detection models.",
+  "purpose": "eda",
+  "competition_flow": "Loads preprocessed YOLO-format images and labels, normalizes contrast, overlays bounding box annotations, and displays random samples to validate dataset preparation before training.",
+  "data_reading": [
+    "Reads image files via glob from /kaggle/input/parse-data/yolo_dataset/images/train/",
+    "Reads corresponding YOLO-format .txt label files from /kaggle/input/parse-data/yolo_dataset/labels/train/"
+  ],
+  "data_processing": [
+    "Normalizes image arrays using 2nd and 98th percentiles for contrast enhancement",
+    "Converts images to RGB",
+    "Creates transparent RGBA overlays to draw bounding boxes and class labels"
+  ],
+  "features_engineering": [],
+  "models": [],
+  "frameworks_used": [
+    "matplotlib",
+    "PIL",
+    "numpy",
+    "glob",
+    "os"
+  ],
+  "loss_functions": [],
+  "cv_strategy": "",
+  "ensembling": "",
+  "insights": [
+    "Visualizing random samples with ground truth bounding boxes is essential for validating preprocessing and annotation accuracy before training.",
+    "Percentile-based normalization (2nd to 98th) effectively enhances contrast for microscopy images with low dynamic range.",
+    "YOLO label format stores normalized center coordinates and dimensions, which must be scaled back to pixel space for visualization."
+  ],
+  "critical_findings": [],
+  "what_did_not_work": [],
+  "source_url": "https://www.kaggle.com/code/andrewjdarley/visualize-data",
+  "votes": 422
+}

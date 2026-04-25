@@ -1,0 +1,13 @@
+{
+  "description": "Participants analyze scientific papers to identify references to underlying research data and classify the nature of those mentions. The task involves processing textual content from academic publications to determine how data is cited or utilized. Success is measured using a global F1 score on a held-out test set.",
+  "data_modality": "text",
+  "task_type": "classification",
+  "label_structure": "unknown",
+  "metric": "Global F1",
+  "test_split": "unknown",
+  "format": "standard",
+  "dataset_scale": "unknown",
+  "domain": "academic_research",
+  "data_challenges": [],
+  "constraints": []
+}

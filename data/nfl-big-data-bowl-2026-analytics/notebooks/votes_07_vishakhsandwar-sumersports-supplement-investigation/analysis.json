@@ -1,0 +1,35 @@
+{
+  "summary": "This notebook demonstrates how to integrate and analyze a supplemental AI-generated coverage charting dataset for the NFL Big Data Bowl 2026. It loads frame-level and player-level parquet files, calculates how defensive coverage schemes evolve from the snap to the end of a play, and joins these predictions with official tracking data. The author provides code to generate interactive Plotly bar charts and frame-by-frame animations that visualize player alignments and coverage probabilities. Readers should learn how to merge external charting data into their workflow and explore temporal defensive disguises. The notebook serves as a practical guide for exploratory analysis and visualization rather than a predictive modeling pipeline.",
+  "purpose": "eda",
+  "competition_flow": "Loads supplemental frame-level and player-level coverage parquet files, analyzes coverage scheme evolution from snap to end of play, joins the data with official tracking data, and generates interactive Plotly visualizations and animations.",
+  "data_reading": [
+    "Reads parquet files using Polars (pl.read_parquet) for player-play and frame-level coverage data.",
+    "Reads CSV tracking data using Polars (pl.read_csv)."
+  ],
+  "data_processing": [
+    "Filters data by game_id and play_id to isolate specific plays.",
+    "Casts nfl_id to string for consistent joins across datasets.",
+    "Broadcasts frame-level predictions to player-level data via left joins.",
+    "Converts Polars DataFrames to Pandas for statistical aggregation and Plotly visualization."
+  ],
+  "features_engineering": [],
+  "models": [],
+  "frameworks_used": [
+    "polars",
+    "pandas",
+    "plotly.express",
+    "plotly.graph_objects"
+  ],
+  "loss_functions": [],
+  "cv_strategy": "",
+  "ensembling": "",
+  "insights": [
+    "AI-generated frame-level coverage data can effectively reveal how defensive schemes disguise and evolve from pre-snap to post-snap.",
+    "Joining supplemental charting data with official tracking data enables rich, frame-by-frame visualizations of player alignments and responsibilities.",
+    "Coverage distributions shift significantly during plays, with a notable trend toward 2-high shell coverages by the end of the play."
+  ],
+  "critical_findings": [],
+  "what_did_not_work": [],
+  "source_url": "https://www.kaggle.com/code/vishakhsandwar/sumersports-supplement-investigation",
+  "votes": 20
+}

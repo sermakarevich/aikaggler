@@ -1,0 +1,65 @@
+{
+  "summary": "The author achieved 4th place by blending heavily bagged CNN and BERT-based models trained on both full sensor data and IMU-only subsets. A central innovation was a constraint-aware post-processing step that enforces a hard rule (each target class occurs at most once per subject) via maximum log-likelihood optimization on accumulated prediction histories. The pipeline combined minimal feature engineering with targeted augmentations like phase-based record dropout and cross-record segment mixup. Final scores were selected from multiple resubmits due to high leaderboard variance caused by random data ordering during inference.",
+  "extensive_summary": "## Target Definition & Post-Processing\nThe solution targets a composite label combining gesture, orientation, and a hidden Relax&Move/Move state. Recognizing that each subject can only exhibit one sequence per target value, the author implemented a constraint-aware post-processing step. During inference, predicted probabilities are accumulated per subject. For new records, a maximum log-likelihood optimization enforces the \"at most one per class\" constraint. To handle early records with insufficient history, probabilities for previously seen classes are zeroed out before summing by gesture and taking the argmax. The author notes that random data ordering caused significant leaderboard variance, leading to a lottery-like selection of the final resubmit (0.876).\n\n## Model Architecture & Training\nTwo heavily bagged architectures were blended: a CNN-attention-pooling model with parallel branches for velocity, position, thm, thm diff, tof, and tof diff, and a BERT-based architecture adapted from a community kernel. Both were trained separately on full data and IMU-only variants, with the IMU-only models providing a notable performance boost when blended.\n\n## Feature Engineering & Augmentations\nFeature engineering was kept minimal, focusing on scaled thm/tof, gravity-free acceleration, rotation-derived angles, and handedness-based value flipping. Missing rotation vectors were approximated from acceleration, and moving averages were removed from acceleration vectors to better match the target distribution. Training augmentations included phase-specific record dropout (first \"Transition\" and last \"Gesture\" records), random noise, and mixing \"Transition\"/\"Gesture\" segments across records sharing the same target.",
+  "rank": 4,
+  "competition_flow": "Raw sensor data is processed with minimal feature engineering and phase-based augmentations, fed into heavily bagged CNN and BERT-based models trained on full and IMU-only subsets, then post-processed via constraint-aware maximum log-likelihood optimization on accumulated subject histories to produce the final submission.",
+  "data_reading": [],
+  "data_processing": [
+    "Drop out of first records with phase == \"Transition\"",
+    "Drop out of the last records with phase == \"Gesture\"",
+    "Random noise",
+    "Mixup of \"Transition\" and \"Gesture\" parts from different training records having the same target",
+    "Scaling of thm and tof",
+    "Removal of gravity components from acceleration",
+    "Approximation of missing rot vectors from acc",
+    "Removal of moving average from acc vectors",
+    "Flipping values for handedness == 0 subjects"
+  ],
+  "features_engineering": [
+    "Scaled thm and tof",
+    "Acceleration without gravity components",
+    "Angles derived from rot vectors",
+    "Rough estimates for missing rot vectors from acc",
+    "Removal of moving average from acc vectors to align distribution",
+    "Flipping values for handedness == 0 subjects"
+  ],
+  "models": [
+    "CNN - attention - pooling architecture",
+    "Bert-based architecture"
+  ],
+  "frameworks_used": [],
+  "loss_functions": [],
+  "cv_strategy": "",
+  "ensembling": "Blend of heavily bagged CNN and BERT-based models (separately trained on full data and IMU-only variants), with post-processing applying constraint-aware maximum log-likelihood optimization on accumulated per-subject prediction histories.",
+  "insights": [
+    "Enforcing the \"at most one sequence per target class per subject\" constraint during inference significantly impacts final scores.",
+    "Blending IMU-only models with full-data models provides a substantial performance boost.",
+    "Random data ordering during inference can cause high leaderboard variance, making resubmit selection somewhat stochastic."
+  ],
+  "critical_findings": [
+    "Some IMU-derived variables negatively impacted the cross-validation score and were dropped.",
+    "Removing the moving average from acceleration vectors helped align the feature distribution closer to the target."
+  ],
+  "what_did_not_work": [
+    "Some IMU-derived variables hurt the CV score and were dropped.",
+    "The author notes having \"repetitive and redundant code of my failed ideas\" but does not specify them."
+  ],
+  "github_repos": [
+    {
+      "url": "https://www.kaggle.com/code/dott1718/cmikn-ensemble3b-re5",
+      "role": "solution"
+    },
+    {
+      "url": "https://www.kaggle.com/code/wasupandceacar/lb-0-82-5fold-single-bert-model",
+      "role": "reference"
+    }
+  ],
+  "papers": [],
+  "other_solution_refs": [
+    {
+      "description": "BERT-based architecture and derived features",
+      "url": "https://www.kaggle.com/code/wasupandceacar/lb-0-82-5fold-single-bert-model"
+    }
+  ],
+  "source_url": "https://www.kaggle.com/competitions/cmi-detect-behavior-with-sensor-data/discussion/603601"
+}

@@ -1,0 +1,30 @@
+{
+  "id": "michau96/kaggling-as-superman-batman-robin-or-avengers",
+  "id_no": 15307447,
+  "title": "Kaggling as Superman, Batman&Robin or Avengers? \ud83e\uddb8",
+  "code_file": "kaggling-as-superman-batman-robin-or-avengers.irnb",
+  "language": "r",
+  "kernel_type": "notebook",
+  "is_private": false,
+  "enable_gpu": false,
+  "enable_tpu": false,
+  "enable_internet": true,
+  "keywords": [
+    "exploratory data analysis",
+    "data visualization",
+    "popular culture",
+    "data storytelling",
+    "tabular"
+  ],
+  "dataset_sources": [
+    "",
+    "yasirabdaali/arxivorg-ai-research-papers-dataset"
+  ],
+  "kernel_sources": [],
+  "competition_sources": [
+    "meta-kaggle-hackathon"
+  ],
+  "model_sources": [],
+  "docker_image": "gcr.io/kaggle-images/rstats@sha256:476457eafa79a5d3b7a7421b1d956ebe3ae0f701f36fef07485632a465d3d0fe",
+  "machine_shape": "None"
+}

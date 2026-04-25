@@ -1,0 +1,13 @@
+{
+  "description": "Participants develop AI models using Google BigQuery, working with a combination of tabular, text, and potentially multimodal datasets. The competition focuses on building predictive or generative solutions, as evidenced by a leading submission designed as an Airbnb consultation assistant. Performance is evaluated on a held-out dataset, with participants submitting code within a strict daily submission limit.",
+  "data_modality": "multimodal",
+  "task_type": "classification",
+  "label_structure": "unknown",
+  "metric": "unknown",
+  "test_split": "unknown",
+  "format": "code_comp",
+  "dataset_scale": "unknown",
+  "domain": "real_estate_hospitality",
+  "data_challenges": [],
+  "constraints": []
+}

@@ -1,0 +1,156 @@
+# waveform-inversion: top public notebooks
+
+The community's top-voted notebooks focus on full-resolution seismic waveform inversion, heavily favoring U-Net and vision backbone architectures (ConvNeXt, CAFormer, HGNet-V2) paired with custom decoders. Practitioners prioritize memory-efficient data pipelines (mmap, float16 conversion, WebDataset sharding), training stability tricks (InstanceNorm, EMA, AMP), and robust inference strategies (TTA, multi-checkpoint ensembling). A notable subset also addresses infrastructure challenges, providing utilities for large-scale CSV ensembling and distributed GPU training.
+
+## Common purposes
+- training
+- baseline
+- tutorial
+- utility
+
+## Competition flows
+- Loads preprocessed seismic data/labels, trains distributed ConvNeXt-UNet with L1/EMA, validates, and ensembles two checkpoints with TTA
+- Loads seismic data/labels, trains InversionNet with L1, evaluates with visualization and transfer learning
+- Loads preprocessed data, processes through CAFormer-based UNet, generates CSV submission
+- Loads data from CSV/mmap, trains modified CAFormer/ConvNeXt U-Net with EMA/scheduler, ensembles checkpoints
+- Loads seismic data, trains HGNet-V2 U-Net with 2-GPU DDP/EMA, validates, ensembles three models with TTA
+- Reads multiple submission CSVs, aligns to master index, computes weighted mean/median ensembles via memmap, saves CSVs
+- Loads float16 seismic data, trains residual U-Net with L1/early stopping, generates CSV submission
+- Loads seismic traces, trains residual U-Net with L1/mixed precision, exports CSV submission
+- Loads seismic .npy files, splits deterministically, trains DumbNet MLP with L1 for 50 epochs, writes CSV
+- Loads paired seismic/velocity .npy files, shards to WebDataset, trains residual U-Net with L1/AMP, generates CSV
+
+## Data reading
+- Reads fold assignments from folds.csv; loads seismic traces/velocity targets from .npy via np.load with mmap_mode='r' and glob
+- Loads data/labels from train_samples/FlatVel_A/data/ and model/ .npy files; notes velocity shape (120,1,70,70) and seismic shape (120,5,70,1000)
+- Reads .npy files via np.load with mmap_mode='r', resolves paths via glob, maps seismic to velocity targets
+- Loads metadata from folds.csv, resolves paths via glob, reads float16 seismic/target arrays with mmap_mode='r'
+- Loads preprocessed .npy via mmap_mode='r' for training, standard load for validation; reads folds.csv; loads test .npy via glob
+- Loads submission CSVs via pd.read_csv with index_col='oid_ypos'; uses first file to establish master index/column structure
+- Loads .npy via np.load with mmap_mode='r' through custom SeismicDataset/TestDataset; manages paths via pathlib/YAML/env vars
+- Custom SeismicDataset/TestDataset load .npy via np.load with mmap_mode='r', extracting traces and targets
+- Loads .npy from Kaggle inputs via pathlib, filters 'seis'/'data' patterns, reads with mmap_mode='r'
+- Loads paired seis*.npy/vel*.npy from Kaggle, pairs by directory, writes to .tar shards via webdataset.ShardWriter; loads test via custom Dataset
+
+## Data processing
+- Temporal/horizontal flip augmentation during training (50% probability)
+- InstanceNorm2d normalization and GELU activations
+- Custom stem modification for non-square inputs via stride/padding/weight duplication
+- Horizontal flip test-time augmentation (TTA) with prediction averaging
+- Output scaling (* 1500 + 3000 or * 1000.0 + 1500.0) to match physical velocity range
+- Input resizing/padding to 70x70 or 72x72 (area interpolation, replicate padding)
+- Memory-mapped file loading (mmap_mode='r')
+- External float32 to float16 conversion for I/O acceleration
+- Mixed precision training (torch.autocast/AMP)
+- Deterministic file-level train/valid splits
+- WebDataset sharding (.tar archives)
+- Gaussian noise augmentation (std=0.01)
+- Streaming accumulation and np.memmap for ensemble aggregation
+- Explicit garbage collection (del/gc.collect())
+
+## Models
+- ConvNeXt-small.fb_in22k_ft_in1k (timm) in custom UNet architecture
+- InversionNet
+- CAFormer (caformer_b36.sail_in22k_ft_in1k)
+- Custom UNet decoder with PixelShuffle, SCSE blocks, and intermediate convolutions
+- Custom U-Net with HGNet-V2 backbone (hgnetv2_b2/b4)
+- Monai upsampling blocks (UpSample/SubpixelUpsample)
+- SCSE attention modules
+- Intermediate convolutions in skip connections
+- UNet with ResidualDoubleConv blocks (depth=5, init_features=32)
+- DumbNet (custom PyTorch MLP with AvgPool2d, two Linear layers, ReLU, Dropout(0.25), and output scaling)
+- U-Net with Residual Blocks (depth=5)
+
+## Frameworks used
+- PyTorch
+- timm
+- Monai
+- NumPy
+- Pandas
+- Matplotlib
+- scikit-learn
+- torchvision
+- pathlib
+- tqdm
+- csv
+- yaml
+- webdataset
+
+## Loss functions
+- L1Loss (MAE)
+
+## CV strategies
+- Fixed split based on pre-defined folds in folds.csv
+- Holdout split using precomputed folds (folds 1–4 train, fold 0 valid)
+- Fold-based split with DDP training and early stopping (patience=3)
+- Fixed holdout split using fold 0 for validation
+- Holdout split via file indexing (every 16th file for validation)
+- Holdout split via file indexing (valid_frac=36, train_frac=5)
+- Deterministic file-level split (every other file for training)
+- Holdout split on shards using train_test_split(test_size=0.1)
+
+## Ensembling
+- Averages outputs from two pretrained model checkpoints with horizontal flip TTA
+- Averages predictions from multiple pretrained model checkpoints via custom EnsembleModel
+- Weighted averaging of multiple checkpoints (e.g., 0.8/0.1) with TTA
+- Averages raw outputs of three pretrained models via custom ensemble class
+- Computes weighted mean and median ensembles across multiple submission CSVs using streaming accumulation and disk-backed np.memmap
+
+## Insights
+- ConvNeXt is numerically unstable on float16, requiring bfloat16 or float32 to prevent NaN losses.
+- Replacing BatchNorm with InstanceNorm stabilizes validation performance and enables smaller batch sizes without performance degradation.
+- Directly modifying the stem layer to downsample height preserves more spatial detail than interpolating non-square inputs.
+- Exponential Moving Average (EMA) of weights improves model stability and is used for both validation scoring and final inference.
+- PixelShuffle upsampling preserves fine details better than standard methods despite higher compute costs.
+- SCSE blocks and intermediate convolutions effectively increase decoder capacity with minimal runtime overhead.
+- A constant learning rate followed by cosine annealing stabilizes training and lowers validation MAE.
+- Inference-time flip augmentation can be efficiently applied by averaging flipped and original predictions.
+- The encoder's nn.ReflectionPad2d step applies excessive padding that may degrade shallow feature detail.
+- Distributing training across two GPUs with DDP enables larger batch sizes and faster convergence while maximizing Kaggle's GPU quota.
+- Removing BatchNorm2d layers and adding intermediate convolutions in U-Net skip connections accelerates convergence and improves prediction quality.
+- Temporal flip augmentation must reverse both spatial dimensions of inputs and labels to preserve physical consistency in waveform data.
+- Streaming accumulation and numpy.memmap can effectively bypass RAM limitations when ensembling dozens or hundreds of large prediction files.
+- Aligning predictions to a shared master index before aggregation is critical for correct ensemble calculation across differently ordered submissions.
+- Explicit garbage collection after each file iteration prevents memory fragmentation and OOM crashes in long-running ensemble scripts.
+- Converting large seismic datasets from float32 to float16 effectively doubles disk I/O speed, allowing more data to be processed per epoch without increasing runtime.
+- Memory-mapped file reading prevents out-of-memory errors when handling large .npy files.
+- Combining early stopping with ReduceLROnPlateau provides a robust training schedule for this inversion task.
+- Memory mapping large numpy arrays prevents GPU OOM errors during dataset iteration.
+- Residual connections in U-Net encoder/decoder blocks improve gradient flow for deeper architectures.
+- Applying a fixed linear scaling to logits aligns the model's output range with the physical velocity domain.
+- Memory mapping and fixed sampling per file enable efficient training on large datasets without RAM exhaustion.
+- A minimal MLP with initial average pooling can effectively serve as a baseline for waveform inversion regression.
+- Output scaling is handled directly in the forward pass rather than through data normalization.
+- WebDataset sharding enables efficient memory management and scalable data loading for large seismic datasets.
+- Automatic Mixed Precision (AMP) significantly accelerates training on GPU without sacrificing convergence.
+- Output scaling is necessary to map raw network logits to the physical velocity range (1500-2500 m/s).
+
+## Critical findings
+- ConvNeXt's loss becomes NaN on float16 precision, making bfloat16 or float32 mandatory.
+- InstanceNorm decouples normalization from batch statistics, allowing batch sizes as small as 16 without validation performance drops.
+- Interpolating non-square inputs previously caused significant detail loss, which direct stem modification resolves.
+- The encoder's nn.ReflectionPad2d step applies excessive padding that may degrade shallow feature detail, indicating a potential area for architectural improvement.
+- The previous approach of loading all submission files into memory at once quickly leads to Out-Of-Memory errors when handling more than a few large files.
+
+## What did not work
+- The previous approach of loading all submission files into memory at once quickly leads to Out-Of-Memory errors when handling more than a few large files.
+
+## Notable individual insights
+- 772 (ConvNeXt - Full Resolution Baseline): ConvNeXt is numerically unstable on float16, requiring bfloat16 or float32 to prevent NaN losses.
+- 772 (ConvNeXt - Full Resolution Baseline): Replacing BatchNorm with InstanceNorm stabilizes validation performance and enables smaller batch sizes without performance degradation.
+- 616 (CAFormer - Full Resolution Improved): PixelShuffle upsampling preserves fine details better than standard methods despite higher compute costs.
+- 460 (HGNet-V2 - Starter): Distributing training across two GPUs with DDP enables larger batch sizes and faster convergence while maximizing Kaggle's GPU quota.
+- 283 (ensemble csv for more files): Streaming accumulation and numpy.memmap can effectively bypass RAM limitations when ensembling dozens or hundreds of large prediction files.
+- 226 ([GWI] UNet with float16 dataset): Converting large seismic datasets from float32 to float16 effectively doubles disk I/O speed, allowing more data to be processed per epoch without increasing runtime.
+
+## Notebooks indexed
+- #772 votes [[notebooks/votes_01_brendanartley-convnext-full-resolution-baseline/notebook|ConvNeXt - Full Resolution Baseline]] ([kaggle](https://www.kaggle.com/code/brendanartley/convnext-full-resolution-baseline))
+- #716 votes [[notebooks/votes_02_hanchenwang114-waveform-inversion-kaggle-competition-tutorial/notebook|waveform-inversion Kaggle competition tutorial]] ([kaggle](https://www.kaggle.com/code/hanchenwang114/waveform-inversion-kaggle-competition-tutorial))
+- #616 votes [[notebooks/votes_03_brendanartley-caformer-full-resolution-improved/notebook|CAFormer - Full Resolution Improved]] ([kaggle](https://www.kaggle.com/code/brendanartley/caformer-full-resolution-improved))
+- #611 votes [[notebooks/votes_04_overvalueawareness-caformer-full-resolution-improved/notebook|CAFormer - Full Resolution Improved]] ([kaggle](https://www.kaggle.com/code/overvalueawareness/caformer-full-resolution-improved))
+- #460 votes [[notebooks/votes_05_brendanartley-hgnet-v2-starter/notebook|HGNet-V2 - Starter]] ([kaggle](https://www.kaggle.com/code/brendanartley/hgnet-v2-starter))
+- #283 votes [[notebooks/votes_06_atom1231-ensemble-csv-for-more-files/notebook|ensemble csv for more files]] ([kaggle](https://www.kaggle.com/code/atom1231/ensemble-csv-for-more-files))
+- #226 votes [[notebooks/votes_07_egortrushin-gwi-unet-with-float16-dataset/notebook|[GWI] UNet with float16 dataset]] ([kaggle](https://www.kaggle.com/code/egortrushin/gwi-unet-with-float16-dataset))
+- #222 votes [[notebooks/votes_08_egortrushin-gwi-improved-unet-pipepline-with-larger-dataset/notebook|[GWI] Improved UNet pipepline with larger dataset]] ([kaggle](https://www.kaggle.com/code/egortrushin/gwi-improved-unet-pipepline-with-larger-dataset))
+- #198 votes [[notebooks/votes_09_bguberfain-dumbnet/notebook|DumbNet]] ([kaggle](https://www.kaggle.com/code/bguberfain/dumbnet))
+- #177 votes [[notebooks/votes_10_adhok93-5-depth-u-net-with-residual/notebook|5 depth U net with residual]] ([kaggle](https://www.kaggle.com/code/adhok93/5-depth-u-net-with-residual))

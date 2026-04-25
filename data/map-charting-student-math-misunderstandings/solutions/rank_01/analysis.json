@@ -1,0 +1,67 @@
+{
+  "summary": "The author solved a suffix classification task for student math misconceptions by framing the problem as predicting correct answer suffixes from a set of candidates given a shared context prefix. They leveraged custom attention masks with FlexAttention to efficiently process prefix-shared inputs and trained large language models (Qwen3 and GLM-Z1 series) using full-parameter training enabled by offload_adam. A key methodological insight was replacing unstable single-seed validation with multi-seed ensembles to reliably track progress, ultimately selecting the best models via validation loss rather than MAP@3. Final submissions combined models of different architectures trained on the full dataset with slight data format variations across multiple seeds.",
+  "extensive_summary": "## Problem Formulation & Data\nThe competition was framed as a suffix classification task where models predict the correct answer suffix from a set of candidates given a shared context prefix. The author removed duplicate samples, resulting in 35,960 training instances. Inputs were structured with question text, multiple-choice options, correct answers, misconception candidates, student answers, and student explanations.\n\n## Modeling & Training Strategy\nInstead of standard sequence generation, the author extracted last-token features from concatenated `[prefix ++ suffix0, prefix ++ suffix1, ...]` sequences and passed them through a `nn.Linear(hidden_size, 1)` layer to compute logits. To handle the variable number of suffix candidates per question, a custom attention mask was implemented using FlexAttention. Training was conducted with full-parameter updates on a single GPU (A100 80G or RTX Pro 6000 Blackwell) using the offload_adam library to manage memory. Hyperparameters were kept consistent across experiments: 1 epoch, batch size 32, and learning rate 1e-5.\n\n## Validation & Ensembling\nA critical discovery was that validation scores fluctuated significantly across different random seeds due to label noise (particularly in the Neither category). To stabilize validation, the author adopted a multi-seed ensemble approach (3 seeds per model) instead of relying on single-seed metrics or multi-fold ensembles. Model selection was guided by validation loss rather than MAP@3. The final submission combined Qwen3-32B and GLM-Z1-32B-0414, each trained on the full dataset with 3 different seeds and slightly varied data formatting. An auxiliary SFT loss experiment using generated justifications from Qwen3-235B-A22B-Thinking-2507-FP8 was attempted but yielded marginal gains.\n\n## Inference Optimization\nInference faced compute and memory bottlenecks. For compute, the author used LMDeploy's W8A8 INT8 kernel, quantizing models with SmoothQuant (alpha=0.75) to achieve stable 40+ TFLOPS on T4 GPUs. For memory, layer-wise inference was implemented: only 2 transformer layers were kept on the GPU at a time, with execution of the current layer overlapping with disk loading of the next layer. This allowed 32B models to run on a single T4, processing 640 samples per forward pass.",
+  "rank": 1,
+  "competition_flow": "Raw text data was deduplicated and split into 5 stratified folds, then formatted into prefix-shared sequences with custom attention masks to train large language models via full-parameter updates, followed by multi-seed ensembling, W8A8 INT8 quantization, and layer-wise inference to generate the final submission.",
+  "data_reading": [],
+  "data_processing": [
+    "Dropped duplicate samples to yield 35,960 instances.",
+    "Formatted inputs into a structured prompt template containing question text, choices, correct answer, misconception candidates, student answer, and student explanation.",
+    "Slightly varied data formatting across training runs."
+  ],
+  "features_engineering": [],
+  "models": [
+    "Qwen3-8B",
+    "Qwen3-14B",
+    "Qwen3-32B",
+    "DeepSeek-R1-Distill-Qwen-7B",
+    "DeepSeek-R1-Distill-Qwen-14B",
+    "GLM-Z1-9B-0414",
+    "GLM-Z1-32B-0414",
+    "Qwen3-235B-A22B-Thinking-2507-FP8"
+  ],
+  "frameworks_used": [
+    "offload_adam",
+    "LMDeploy",
+    "FlexAttention",
+    "SmoothQuant"
+  ],
+  "loss_functions": [
+    "cross-entropy loss",
+    "auxiliary SFT loss"
+  ],
+  "cv_strategy": "5-fold cross-validation stratified by \"Category\", combined with multi-seed ensembles for validation stability.",
+  "ensembling": "Final submission combined Qwen3-32B and GLM-Z1-32B-0414, each trained on the full dataset with 3 different random seeds and slightly varied data formats, with validation stability achieved through multi-seed averaging.",
+  "insights": [
+    "Single-seed validation scores are highly unstable due to label noise and should not be trusted for model selection.",
+    "Multi-seed ensembles provide significantly more stable and reliable validation metrics than multi-fold ensembles.",
+    "Larger model sizes consistently yield better performance.",
+    "Validation loss is a more trustworthy metric for model selection than MAP@3."
+  ],
+  "critical_findings": [
+    "Label noise, particularly in the Neither category, causes validation scores to fluctuate wildly across different random seeds.",
+    "Multi-seed ensembling outperforms multi-fold ensembling for validation stability.",
+    "Storing layer checkpoints in Kaggle's /tmp directory causes crashes due to copy-on-write capacity limits."
+  ],
+  "what_did_not_work": [
+    "Storing model layer checkpoints in Kaggle's /tmp directory caused a crash due to storage capacity limits, forcing a rushed submission with fewer models than intended."
+  ],
+  "github_repos": [
+    {
+      "url": "https://github.com/tascj/offload_adam",
+      "role": "library"
+    },
+    {
+      "url": "https://github.com/tascj/kaggle-map-charting-student-math-misunderstandings",
+      "role": "solution"
+    }
+  ],
+  "papers": [],
+  "other_solution_refs": [
+    {
+      "description": "1st place solution in Feedback Prize - Predicting Effective Arguments",
+      "url": "https://www.kaggle.com/competitions/feedback-prize-effectiveness/writeups/team-hydrogen-team-hydrogen-1st-place-solution"
+    }
+  ],
+  "source_url": "https://www.kaggle.com/competitions/map-charting-student-math-misunderstandings/discussion/612268"
+}

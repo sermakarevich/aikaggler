@@ -1,0 +1,64 @@
+{
+  "summary": "The author achieved 6th place in a math misconception classification competition by fine-tuning Qwen family LLMs (8B and 14B) using Q-LoRA. Key strategies included deduplicating training data, pseudo-labeling duplicates, generating synthetic data for rare labels via ChatGPT 4o, and applying targeted text augmentations. The final submission relied on an ensemble of multiple Qwen models, where even lower-performing individual models contributed positively to the collective score.",
+  "extensive_summary": "## Problem Formulation & Data Handling\nThe competition required predicting answer correctness, explanation correctness/misconception status, and specific misconception types from student math responses. The author reframed the task as a 37-class misconception classification problem by stripping `True_`/`False_` prefixes from the original labels. A strict prompt template was constructed, explicitly appending a task instruction line (\"Task: Classify the misconception in the explanation.\") which was found to consistently improve both cross-validation and leaderboard scores.\n\n## Data Processing & Augmentation\nInitial data cleaning involved dropping exact duplicates (same answer and explanation but conflicting labels). In later stages, these duplicates were pseudo-labeled using an ensemble of models and reintroduced to the training set. To address class imbalance, the author generated ~50 targeted augmentations per category (punctuation replacement, word-to-number conversion, typo injection) based on fuzzy-searched near-duplicates. For the 10 rarest categories, synthetic data was generated using ChatGPT 4o, yielding 100-120 samples per class. Sequences were dynamically padded to a maximum length of 160 tokens to optimize training and inference speed.\n\n## Model Training & Architecture\nThe core approach leveraged Q-LoRA fine-tuning (rank=128, alpha=32-128) on Qwen family models, specifically `Qwen3-Embedding-8B`, `Qwen3 14B`, and `Qwen2.5 14B IT`. The `sequence classification` head on `Qwen3-Embedding-8B` emerged as the strongest single model. Training was conducted on A5000/A100 GPUs via Jarvis Labs. The author systematically tested various data combinations (deduplicated, augmented, pseudo-labeled, synthetic) across different model sizes and random seeds.\n\n## Ensembling & Final Submission\nThe final solution utilized an ensemble method adapted from a community notebook. The ensemble of the first four models crossed 0.95 on the public LB and was subsequently used to pseudo-label the previously dropped duplicates. Adding a model trained on augmented data, despite its weaker individual performance, consistently boosted the ensemble score. The final submission combined six models, including a Qwen3 14B run with a different random seed that individually scored poorly but provided crucial diversity to the ensemble, ultimately securing the 6th place rank.",
+  "rank": 6,
+  "competition_flow": "Raw student math Q&A data was cleaned and deduplicated, then enriched with targeted augmentations and ChatGPT-generated synthetic samples for rare classes, before being formatted into a fixed prompt template and fine-tuned via Q-LoRA on Qwen LLMs, with final predictions aggregated through a multi-model ensemble.",
+  "data_reading": [],
+  "data_processing": [
+    "Dropped exact duplicates (same answer/explanation, different label)",
+    "Pseudo-labeled duplicates and added them back to training data",
+    "Generated ~50 targeted augmentations per category (punctuation replacement, word-to-number conversion, typo injection) based on fuzzy-searched near-duplicates",
+    "Generated 100-120 synthetic samples per category for the 10 rarest classes using ChatGPT 4o",
+    "Formatted inputs into a fixed prompt template with an explicit task instruction line",
+    "Dynamically padded sequences to max length 160"
+  ],
+  "features_engineering": [],
+  "models": [
+    "Qwen3-Embedding-8B",
+    "Qwen3 14B",
+    "Qwen2.5 14B IT",
+    "GTE",
+    "Ettin"
+  ],
+  "frameworks_used": [],
+  "loss_functions": [
+    "focal-loss"
+  ],
+  "cv_strategy": "20% train/test split for local validation",
+  "ensembling": "The final submission combined six Qwen models via a community-sourced ensemble method, where even lower-performing individual models contributed positively to the collective score, and the ensemble outputs were used to pseudo-label previously dropped duplicate samples.",
+  "insights": [
+    "Appending an explicit task instruction line to the prompt consistently improved both CV and LB scores.",
+    "Models with weaker individual scores can still significantly boost ensemble performance if they provide complementary diversity.",
+    "Targeted augmentations based on fuzzy-searched near-duplicates are more effective than blindly generating large volumes of synthetic data.",
+    "Fine-tuning with a different random seed can yield a model that performs poorly alone but adds crucial value to an ensemble."
+  ],
+  "critical_findings": [
+    "Adding a model trained on augmented data consistently improved the ensemble score despite its poor individual leaderboard performance.",
+    "Dropping duplicates initially was necessary, but pseudo-labeling and reintroducing them later provided a significant score boost.",
+    "Creating ~10k augmented samples based on multiple patterns yielded no public LB improvement, highlighting the importance of targeted over brute-force augmentation."
+  ],
+  "what_did_not_work": [
+    "Using multiple pre-trained models without fine-tuning.",
+    "Testing several different prompt templates.",
+    "Generating ~10k augmented samples across multiple patterns without targeted selection.",
+    "Using all original 65 labels instead of the consolidated 37.",
+    "A 2-stage classification approach (correctness then misconception type).",
+    "Text generation and textual entailment prompting strategies.",
+    "Using an MoE-style NN for the classification head instead of LoRA adapters.",
+    "Experimenting with focal-loss."
+  ],
+  "github_repos": [
+    {
+      "url": "https://github.com/mananjhaveri/MAP-Charting-Student-Math-Misunderstandings-6th-place-solution",
+      "role": "solution"
+    }
+  ],
+  "papers": [],
+  "other_solution_refs": [
+    {
+      "description": "Ensemble method reference",
+      "url": "https://www.kaggle.com/code/kishanvavdara/ensemble-gemma-qwen-deepseek"
+    }
+  ],
+  "source_url": "https://www.kaggle.com/competitions/map-charting-student-math-misunderstandings/discussion/612099"
+}

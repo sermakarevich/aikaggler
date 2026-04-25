@@ -1,0 +1,37 @@
+{
+  "summary": "The author achieved a silver medal by combining top public Kaggle notebooks into a Retrieval-Augmented Generation (RAG) and re-ranking pipeline. They augmented the test set with semantically similar positive and negative examples to guide an LLM's predictions. To manage inference costs, they applied 4x test-time augmentation (TTA) and selectively re-ranked only the 20% of rows where the initial model was most uncertain. Finally, they adapted the competition's AUC metric by ranking predictions within each rule before averaging across models.",
+  "extensive_summary": "The solution leverages a RAG + ReRanker architecture built on top of existing public Kaggle notebooks. The core idea is to augment the test set with highly relevant examples to improve the LLM's ability to detect rule violations.\n\n## Retriever\nThe author generates a new `test_with_retrieved_examples.csv` by finding the top 2 positive and top 2 negative examples most semantically similar to each row's `body` column. This retrieval step is designed to provide the LLM with contextual examples that closely match the input, aiding its decision-making process.\n\n## LLM with 4x TTA\nThe augmented test set is passed through existing public notebooks for Llama3.2-3B-Instruct, DeBERTa-v3-base, and DistilRoBERTa-base. To maximize performance without excessive compute, the author implements a 4x TTA strategy. For each row, they randomly sample 1 positive and 1 negative example, then infer the complementary combinations. This is combined with 2x inference on the original `test.csv`.\n\n## ReRanker\nRecognizing that full inference of the expensive Qwen2.5-32B model is impractical, the author targets only the 20% of rows where the initial LLM predictions are most confused. These uncertain predictions are re-processed by Qwen2.5-32B to correct the majority of the model's errors.\n\n## Metric Adaptation\nSince the competition evaluates AUC within each rule before averaging, standard model averaging is suboptimal. The author implements a custom ranking function that ranks predictions within each rule group and normalizes them, then averages the ranks across models to align with the official scoring metric.",
+  "rank": 120,
+  "competition_flow": "The pipeline loads the test set, retrieves semantically similar positive/negative examples to create an augmented CSV, runs inference with Llama3.2-3B-Instruct, DeBERTa-v3-base, and DistilRoBERTa-base using 4x TTA, re-ranks the top 20% of uncertain predictions with Qwen2.5-32B, and finally aggregates predictions by ranking within each rule before averaging across models.",
+  "data_reading": [],
+  "data_processing": [
+    "Augmented test set with top 2 positive and top 2 negative semantically similar examples per row.",
+    "Applied 4x TTA by randomly sampling positive/negative example combinations and running 2x inference on the original test set."
+  ],
+  "features_engineering": [],
+  "models": [
+    "Llama3.2-3B-Instruct",
+    "DeBERTa-v3-base",
+    "DistilRoBERTa-base",
+    "Qwen2.5-32B"
+  ],
+  "frameworks_used": [
+    "pandas"
+  ],
+  "loss_functions": [],
+  "cv_strategy": "",
+  "ensembling": "Averages predictions across models after ranking them within each rule using a custom normalization function, combined with 4x TTA during inference.",
+  "insights": [
+    "Retrieving semantically similar positive and negative examples significantly improves the LLM's ability to detect rule violations.",
+    "Targeting only the 20% of most uncertain predictions for expensive re-ranking efficiently corrects the majority of errors.",
+    "The competition's AUC metric requires ranking predictions within each rule before averaging across models to be effective."
+  ],
+  "critical_findings": [
+    "The 20% of rows where the initial LLM is most confused contain the majority of its mistakes, making them the optimal and most cost-effective target for re-ranking."
+  ],
+  "what_did_not_work": [],
+  "github_repos": [],
+  "papers": [],
+  "other_solution_refs": [],
+  "source_url": "https://www.kaggle.com/competitions/jigsaw-agile-community-rules/discussion/613168"
+}

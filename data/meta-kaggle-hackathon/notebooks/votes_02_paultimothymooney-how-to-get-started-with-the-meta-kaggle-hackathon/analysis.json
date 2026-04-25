@@ -1,0 +1,38 @@
+{
+  "summary": "This notebook serves as a practical starter guide for the Meta Kaggle Hackathon, demonstrating how to access and navigate the Meta Kaggle and Meta Kaggle Code datasets. It walks through downloading the data via kagglehub, parsing the hierarchical file structure to locate code files, and extracting source code from both .ipynb and .py formats. The author shows how to cross-reference kernel metadata with version IDs to link notebook content to site activity records. Readers should take away a clear understanding of the dataset schema, file organization, and the programmatic steps needed to begin exploring Kaggle's historical code and competition data.",
+  "purpose": "tutorial",
+  "competition_flow": "Downloads the Meta Kaggle and Meta Kaggle Code datasets, parses their directory structures to extract notebook source code, and links code files to kernel/version metadata for hackathon exploration.",
+  "data_reading": [
+    "Uses kagglehub.dataset_download to fetch datasets.",
+    "Loads CSV metadata tables (Kernels.csv, KernelVersions.csv) with pd.read_csv and sets Id as the index.",
+    "Reads .ipynb files via codecs.open and parses them as JSON to extract cell contents.",
+    "Reads .py files via Path.read_text().splitlines()."
+  ],
+  "data_processing": [
+    "Filters .ipynb JSON structures to isolate only code cells.",
+    "Maps kernel/version IDs to file paths using zero-padded string formatting and glob pattern matching.",
+    "Extracts file extensions and suppresses pandas RuntimeWarnings."
+  ],
+  "features_engineering": [],
+  "models": [],
+  "frameworks_used": [
+    "kagglehub",
+    "pandas",
+    "codecs",
+    "glob",
+    "json",
+    "pathlib"
+  ],
+  "loss_functions": [],
+  "cv_strategy": "",
+  "ensembling": "",
+  "insights": [
+    "The Meta Kaggle Code dataset organizes files in a hierarchical directory structure based on zero-padded kernel version IDs.",
+    "Kaggle notebooks can be programmatically parsed by treating .ipynb files as JSON and filtering for code cells.",
+    "Kernel metadata and version history are stored in separate CSV tables that can be joined via ScriptId and Id fields."
+  ],
+  "critical_findings": [],
+  "what_did_not_work": [],
+  "source_url": "https://www.kaggle.com/code/paultimothymooney/how-to-get-started-with-the-meta-kaggle-hackathon",
+  "votes": 121
+}

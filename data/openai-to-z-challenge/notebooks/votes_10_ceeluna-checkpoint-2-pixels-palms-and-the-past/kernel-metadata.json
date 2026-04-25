@@ -1,0 +1,26 @@
+{
+  "id": "ceeluna/checkpoint-2-pixels-palms-and-the-past",
+  "id_no": 84818415,
+  "title": " Checkpoint 2: Pixels, Palms, and the Past",
+  "code_file": "checkpoint-2-pixels-palms-and-the-past.ipynb",
+  "language": "python",
+  "kernel_type": "notebook",
+  "is_private": false,
+  "enable_gpu": false,
+  "enable_tpu": false,
+  "enable_internet": false,
+  "keywords": [],
+  "dataset_sources": [
+    "fafa92/amazon-geoglyphs-sites",
+    "fafa92/archaeological-survey-data",
+    "ceeluna/gedi-cluster0-2019-2021",
+    "ceeluna/hydrorivers-dataset"
+  ],
+  "kernel_sources": [],
+  "competition_sources": [
+    "openai-to-z-challenge"
+  ],
+  "model_sources": [],
+  "docker_image": "gcr.io/kaggle-images/python@sha256:3223337db7786b068bfeac3a1b741bf0d572a4bf309735b45692de873b7758db",
+  "machine_shape": "None"
+}

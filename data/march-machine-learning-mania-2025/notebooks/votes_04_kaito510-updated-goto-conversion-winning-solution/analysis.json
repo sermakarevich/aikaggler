@@ -1,0 +1,30 @@
+{
+  "summary": "This notebook demonstrates a mathematically derived optimal strategy for minimizing Brier Score in tournament prediction competitions. It shows how to load precomputed probability matrices generated from betting odds and apply a deterministic risk-taking rule to a base submission file. The author proves that assuming a team with a 33.3% win probability will win maximizes expected reward under the Brier Score metric. Readers should take away that strategic submission manipulation can outperform complex model training, and that precomputed odds-based probabilities serve as a highly effective baseline ingredient for medal-winning solutions.",
+  "purpose": "other",
+  "competition_flow": "Loads precomputed probability matrices and tournament seed data \u2192 applies a mathematically derived optimal risk strategy to a base submission CSV \u2192 outputs a modified submission file optimized for Brier Score.",
+  "data_reading": [
+    "pd.read_csv loads probability tables, tournament seed CSVs, and the base submission file from Kaggle input directories."
+  ],
+  "data_processing": [
+    "Drops the Elo_Rating column from probability matrices; parses team IDs and seed strings to map teams to tournament regions and rounds."
+  ],
+  "features_engineering": [],
+  "models": [],
+  "frameworks_used": [
+    "pandas"
+  ],
+  "loss_functions": [
+    "Brier Score"
+  ],
+  "cv_strategy": "",
+  "ensembling": "",
+  "insights": [
+    "Predicting a win for a team with exactly a 33.3% probability of winning maximizes expected reward under the Brier Score metric.",
+    "Precomputed probability matrices derived from betting odds can serve as a highly effective, model-free baseline for tournament predictions.",
+    "Tournament progression and round determination can be accurately reconstructed using only seed positions and region mappings."
+  ],
+  "critical_findings": [],
+  "what_did_not_work": [],
+  "source_url": "https://www.kaggle.com/code/kaito510/updated-goto-conversion-winning-solution",
+  "votes": 288
+}

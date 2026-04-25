@@ -1,0 +1,27 @@
+{
+  "id": "yekahaaagayeham/guide-gemma-3-fine-tuning-with-tunix",
+  "id_no": 103536804,
+  "title": "Guide : Gemma 3 fine tuning with Tunix",
+  "code_file": "guide-gemma-3-fine-tuning-with-tunix.ipynb",
+  "language": "python",
+  "kernel_type": "notebook",
+  "is_private": false,
+  "enable_gpu": false,
+  "enable_tpu": false,
+  "enable_internet": false,
+  "keywords": [],
+  "dataset_sources": [
+    "yekahaaagayeham/maths-sft-training-dataset"
+  ],
+  "kernel_sources": [],
+  "competition_sources": [
+    "google-tunix-hackathon"
+  ],
+  "model_sources": [
+    "keras/gemma/Keras/gemma_2b_en/3",
+    "google/gemma/Transformers/2b-it/3",
+    "google/gemma-3/Transformers/gemma-3-1b-it/1"
+  ],
+  "docker_image": "gcr.io/kaggle-images/python@sha256:bf0b407a5ed73626191ae2259063a0090ae36666c8f00ffdfae3fb543eae750d",
+  "machine_shape": "None"
+}

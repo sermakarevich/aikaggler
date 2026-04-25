@@ -1,0 +1,40 @@
+{
+  "summary": "This notebook implements a test-time training (pseudo-labeling) pipeline for the Jigsaw Agile Community Rules competition using a 3B parameter LLM. It constructs a structured prompt for binary violation classification, samples 5% of the hidden test set to generate pseudo-labels, and fine-tunes the base model via LoRA for a single epoch. The updated weights are then deployed with vLLM for efficient inference on the full test set to produce a submission. Readers should understand how self-training on test data can bypass validation splits, how to efficiently implement LoRA fine-tuning with DeepSpeed, and how to leverage logits processors for fast binary classification inference.",
+  "purpose": "training",
+  "competition_flow": "Loads train and test CSVs, samples 5% of the test set to create pseudo-labeled data, fine-tunes Llama-3.2-3B with LoRA for one epoch using DeepSpeed, and runs inference on the full test set with vLLM to produce a submission CSV.",
+  "data_reading": [
+    "Reads train.csv and test.csv from /kaggle/input/jigsaw-agile-community-rules/ using pandas.read_csv."
+  ],
+  "data_processing": [
+    "Samples 5% of the test set to create pseudo-training data; randomly selects one positive and one negative example per row to construct prompts; drops duplicate example columns; constructs structured prompts with system instructions, subreddit, rule, examples, and comment body; uses completion_only_loss during training."
+  ],
+  "features_engineering": [],
+  "models": [
+    "llama-3.2-3b-instruct"
+  ],
+  "frameworks_used": [
+    "transformers",
+    "trl",
+    "peft",
+    "bitsandbytes",
+    "vllm",
+    "deepspeed",
+    "accelerate",
+    "datasets",
+    "logits-processor-zoo"
+  ],
+  "loss_functions": [
+    "Cross-entropy on completion tokens only (completion_only_loss=True)"
+  ],
+  "cv_strategy": "",
+  "ensembling": "",
+  "insights": [
+    "Pseudo-labeling a small fraction of the hidden test set can effectively fine-tune a base LLM without requiring a validation split.",
+    "Using completion_only_loss ensures the model only learns from the target Yes/No tokens during supervised fine-tuning.",
+    "vLLM with MultipleChoiceLogitsProcessor enables efficient, log-probability-based inference for binary classification tasks."
+  ],
+  "critical_findings": [],
+  "what_did_not_work": [],
+  "source_url": "https://www.kaggle.com/code/wasupandceacar/jigsaw-pseudo-training-llama-3-2-3b-instruct",
+  "votes": 382
+}

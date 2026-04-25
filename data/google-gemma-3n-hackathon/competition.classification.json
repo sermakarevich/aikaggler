@@ -1,0 +1,15 @@
+{
+  "description": "Participants leverage Google DeepMind's Gemma 3n language model to develop innovative applications and products aimed at social impact. The competition provides tabular and text datasets alongside the model, requiring competitors to design, train, or deploy solutions that demonstrate practical utility. Success is evaluated based on the creativity, technical execution, and real-world applicability of the submitted projects.",
+  "data_modality": "multimodal",
+  "task_type": "generation",
+  "label_structure": "unknown",
+  "metric": "unknown",
+  "test_split": "unknown",
+  "format": "standard",
+  "dataset_scale": "unknown",
+  "domain": "ai_application",
+  "data_challenges": [],
+  "constraints": [
+    "limited_daily_submissions"
+  ]
+}

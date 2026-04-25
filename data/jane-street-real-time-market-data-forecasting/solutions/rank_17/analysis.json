@@ -1,0 +1,45 @@
+{
+  "summary": "The author developed a 50/50 ensemble of two 3-layer transformer encoders, one attending over symbol_id and the other over time_id with learnable positional encodings. They applied global StandardScaler normalization, zero-filled missing values, and used signed log transformations to stabilize training and capture multiplicative relationships. A key innovation was an online learning strategy that fine-tunes the model on the last 7 days of data daily (7 epochs per day) with a reduced learning rate of 1e-4, which significantly boosted validation scores. Post-competition analysis revealed that extending the training window to 56 days and updating every 8 days yielded further improvements.",
+  "extensive_summary": "## Model Architecture & Training Setup\nThe solution relies on a 50/50 ensemble of two 3-layer transformer encoders. The first encoder applies attention over all `symbol_id` tokens, while the second applies attention over all `time_id` tokens using learnable positional encodings. To maintain training stability and prevent dead neurons, GELU activations were chosen over ReLU, SiLU, and PReLU. The model was trained to predict all 9 responders simultaneously, which improved both training stability and generalization. Optimization used AdamW with gradient clipping and model EMA.\n\n## Feature Engineering & Preprocessing\nThe feature set consists of 79 numeric features (`feature_00` to `feature_78`), `time_id`, and `weight`. To stabilize training and better capture multiplicative relationships, the author applied signed log transformations to the features. Missing values were simply filled with 0. Global normalization was performed using sklearn's `StandardScaler`.\n\n## Online Learning Strategy\nThe primary score driver was a carefully tuned online learning (OL) pipeline. Initial attempts at single-step updates on the latest day yielded minimal gains. Through validation experiments on the last 20-30 days, the author discovered that fine-tuning on a recent window of data significantly improved CV scores for future days. The final OL strategy involved training on the last 7 days of data every day, effectively applying 7 epochs per new day. The learning rate was reduced to 1e-4 (from the original 1e-3) while keeping other hyperparameters identical. Post-competition analysis revealed that extending the training window (e.g., last 56 days) and reducing update frequency (e.g., every 8 days) provided an additional ~0.0012 score improvement, highlighting the importance of window size and update cadence in OL.",
+  "rank": 17,
+  "competition_flow": "Raw tabular time-series data is normalized with StandardScaler, missing values are filled with zeros, and fed into a 50/50 ensemble of two 3-layer transformer encoders that are continuously fine-tuned daily on the most recent 7 days of data using a reduced learning rate to produce predictions for 9 responders.",
+  "data_reading": [],
+  "data_processing": [
+    "Global normalization using sklearn StandardScaler",
+    "Missing values filled with 0",
+    "Signed log transformations applied to features for training stability and to better learn multiplicative relationships in log space"
+  ],
+  "features_engineering": [
+    "feature_00 through feature_78",
+    "time_id",
+    "weight",
+    "signed log transformations applied to features"
+  ],
+  "models": [
+    "3 layers transformer encoder with attention over symbol_id",
+    "3 layers transformer encoder with attention over time_id with learnable positional encoding"
+  ],
+  "frameworks_used": [
+    "sklearn"
+  ],
+  "loss_functions": [],
+  "cv_strategy": "",
+  "ensembling": "The final submission uses a 50/50 ensemble of the two transformer encoder variants, with online learning applied daily via fine-tuning on the most recent 7 days of data at a learning rate of 1e-4.",
+  "insights": [
+    "Using GELU activations prevents dead neurons and maintains parameter utility during online learning compared to ReLU, SiLU, or PReLU.",
+    "Predicting all 9 responders simultaneously improves training stability and generalization.",
+    "Fine-tuning on a recent window of validation data significantly boosts future-day scores, establishing a foundation for the online learning strategy."
+  ],
+  "critical_findings": [
+    "Single-step online updates on the latest day of data barely improve the score, whereas fine-tuning on a multi-day window yields significant gains.",
+    "Reducing the learning rate to 1e-4 during online learning is critical for stability and performance compared to the original 1e-3.",
+    "Retraining on a longer historical window (e.g., last 56 days) less frequently (e.g., every 8 days) provides a more substantial score boost than daily updates on a shorter window (last 7 days)."
+  ],
+  "what_did_not_work": [
+    "Single update step on the latest day of data given by the API barely helped."
+  ],
+  "github_repos": [],
+  "papers": [],
+  "other_solution_refs": [],
+  "source_url": "https://www.kaggle.com/competitions/jane-street-real-time-market-data-forecasting/discussion/556541"
+}

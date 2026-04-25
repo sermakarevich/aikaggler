@@ -1,0 +1,40 @@
+{
+  "summary": "This notebook provides a complete end-to-end training pipeline for a Full Waveform Inversion competition using a custom 5-depth U-Net with residual blocks. It demonstrates efficient large-scale data handling via WebDataset sharding, applies on-the-fly augmentations (horizontal flips and Gaussian noise), and trains the model with L1 loss and an AdamW optimizer. The author highlights the use of Automatic Mixed Precision for GPU acceleration and implements a custom output scaling layer to map raw logits to the physical velocity range. Readers should take away a robust baseline recipe for seismic image-to-image regression, emphasizing scalable data loading, residual architecture design, and practical training loop management.",
+  "purpose": "training",
+  "competition_flow": "Loads paired seismic and velocity .npy files from Kaggle, shards them into WebDataset archives, trains a residual U-Net with L1 loss and AMP, and generates a CSV submission by predicting velocity models for the test set.",
+  "data_reading": [
+    "Loads paired seis*.npy (input) and vel*.npy (target) files from Kaggle directories, pairs them by directory, and writes them into .tar shards using webdataset.ShardWriter.",
+    "Test data is loaded directly via a custom Dataset class that iterates over .npy files in the test directory."
+  ],
+  "data_processing": [
+    "Shards data into .tar files for memory-efficient loading.",
+    "Applies horizontal flips (50% probability) and Gaussian noise (std=0.01) to seismic inputs during training.",
+    "Converts data to float16 during sharding and float32 during dataset mapping.",
+    "Pads or crops inputs to a fixed 70x70 resolution inside the model forward pass.",
+    "Applies output scaling (logits * 1000.0 + 1500.0) to map predictions to the physical velocity range."
+  ],
+  "features_engineering": [],
+  "models": [
+    "U-Net with Residual Blocks (depth=5)"
+  ],
+  "frameworks_used": [
+    "pytorch",
+    "webdataset",
+    "scikit-learn"
+  ],
+  "loss_functions": [
+    "L1Loss (Mean Absolute Error)"
+  ],
+  "cv_strategy": "Holdout split on shards using train_test_split(test_size=0.1)",
+  "ensembling": "",
+  "insights": [
+    "WebDataset sharding enables efficient memory management and scalable data loading for large seismic datasets.",
+    "Residual connections in U-Net encoder/decoder blocks improve gradient flow and training stability.",
+    "Automatic Mixed Precision (AMP) significantly accelerates training on GPU without sacrificing convergence.",
+    "Output scaling is necessary to map raw network logits to the physical velocity range (1500-2500 m/s)."
+  ],
+  "critical_findings": [],
+  "what_did_not_work": [],
+  "source_url": "https://www.kaggle.com/code/adhok93/5-depth-u-net-with-residual",
+  "votes": 177
+}

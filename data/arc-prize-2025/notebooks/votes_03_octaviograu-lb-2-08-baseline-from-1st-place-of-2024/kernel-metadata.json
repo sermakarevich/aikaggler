@@ -1,0 +1,27 @@
+{
+  "id": "octaviograu/lb-2-08-baseline-from-1st-place-of-2024",
+  "id_no": 79586244,
+  "title": "[LB 2.08] baseline from 1st place of 2024",
+  "code_file": "lb-2-08-baseline-from-1st-place-of-2024.ipynb",
+  "language": "python",
+  "kernel_type": "notebook",
+  "is_private": false,
+  "enable_gpu": true,
+  "enable_tpu": false,
+  "enable_internet": false,
+  "keywords": [
+    "gpu"
+  ],
+  "dataset_sources": [
+    "dfranzen/unsloth-2024-9-post4"
+  ],
+  "kernel_sources": [],
+  "competition_sources": [
+    "arc-prize-2025"
+  ],
+  "model_sources": [
+    "dfranzen/wb55l_nemomini_fulleval/Transformers/default/1"
+  ],
+  "docker_image": "gcr.io/kaggle-private-byod/python@sha256:d5f66652dfa098a9521987ed589d1c7791b33008c97533fe0ddfc3182d7daad0",
+  "machine_shape": "NvidiaL4"
+}

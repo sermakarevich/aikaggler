@@ -1,0 +1,47 @@
+{
+  "summary": "This notebook provides a reproducible baseline for fine-tuning the Qwen2.5-7B-Instruct model using LoRA on a Reddit comment classification task. It demonstrates how to adapt a causal language model for binary classification by framing the problem as a text completion task with a structured system prompt and few-shot examples. The author highlights memory-efficient training techniques, including GPTQ-Int4 quantization, 8-bit optimizers, gradient checkpointing, and mixed precision. Readers should learn how to structure instruction-tuning data for LLMs, apply PEFT/LoRA correctly, and configure the Hugging Face Trainer for stable, resource-conscious fine-tuning.",
+  "purpose": "baseline",
+  "competition_flow": "Loads the Jigsaw train CSV, formats comments into a few-shot completion prompt, fine-tunes a quantized Qwen2.5-7B model with LoRA via KFold cross-validation, and saves the trained adapter weights.",
+  "data_reading": [
+    "pd.read_csv(\"/kaggle/input/jigsaw-agile-community-rules/train.csv\")"
+  ],
+  "data_processing": [
+    "Formats raw text into a structured chat template with a system prompt and few-shot examples",
+    "Tokenizes using apply_chat_template with left padding",
+    "Appends the ground truth label (\"Yes\"/\"No\") for completion-based training",
+    "Uses DataCollatorForCompletionOnlyLM to mask prompt tokens during loss calculation"
+  ],
+  "features_engineering": [
+    ""
+  ],
+  "models": [
+    "Qwen2.5-7B-Instruct-GPTQ-Int4"
+  ],
+  "frameworks_used": [
+    "transformers",
+    "peft",
+    "trl",
+    "accelerate",
+    "bitsandbytes",
+    "optimum",
+    "auto-gptq",
+    "torch",
+    "pandas",
+    "sklearn",
+    "wandb"
+  ],
+  "loss_functions": [
+    ""
+  ],
+  "cv_strategy": "KFold(n_splits=5, shuffle=True, random_state=42)",
+  "ensembling": "",
+  "insights": [
+    "Framing classification as a text completion task with explicit few-shot examples improves instruction-following for causal LLMs.",
+    "Using GPTQ-Int4 quantization combined with 8-bit optimizers and gradient checkpointing enables fine-tuning large models on consumer GPUs.",
+    "LoRA should target both attention and MLP projection layers for effective adaptation."
+  ],
+  "critical_findings": [],
+  "what_did_not_work": [],
+  "source_url": "https://www.kaggle.com/code/fuumin621/qwen2-5-lora-finetune-baseline-training",
+  "votes": 402
+}

@@ -1,0 +1,39 @@
+{
+  "summary": "The notebook demonstrates fine-tuning RibonanzaNet, a pre-trained RNA structure prediction model, to regress C1' atom coordinates directly from nucleotide sequences. It implements a custom PyTorch dataset pipeline, applies a temporal train/test split to mimic structural biology blind testing protocols, and filters sequences based on coordinate completeness and length. The training loop combines a distance-based MAE loss with an SVD-based Procrustes alignment loss to optimize 3D geometry while mitigating rotation and translation invariance. Readers should understand how to adapt a sequence-based RNA model for direct 3D coordinate regression, handle structural data filtering, and leverage rotation-invariant losses for molecular geometry tasks.",
+  "purpose": "training",
+  "competition_flow": "Loads RNA sequence and coordinate data, filters and temporally splits it, fine-tunes a pre-trained RibonanzaNet model with a custom coordinate regression head using SVD-aligned MAE loss, and saves the best checkpoint.",
+  "data_reading": [
+    "Reads train_sequences.csv and train_labels.csv via pandas, extracts pdb_id from the ID column, parses x_1, y_1, z_1 columns into float32 numpy arrays, and replaces -1e18 masked values with NaN."
+  ],
+  "data_processing": [
+    "Filters sequences with >50% NaN coordinates or length outside [10, 9999999]; crops sequences to a maximum length of 384 during dataset iteration; maps nucleotides (A, C, G, U) to integer tokens; and applies a temporal cutoff split for validation."
+  ],
+  "features_engineering": [],
+  "models": [
+    "RibonanzaNet"
+  ],
+  "frameworks_used": [
+    "pytorch",
+    "pandas",
+    "numpy",
+    "plotly",
+    "yaml"
+  ],
+  "loss_functions": [
+    "dRMAE",
+    "align_svd_mae"
+  ],
+  "cv_strategy": "temporal holdout split based on publication dates",
+  "ensembling": "",
+  "insights": [
+    "Temporal data splitting better reflects real-world structural biology blind testing than random k-fold splits.",
+    "Distance-based and SVD-aligned losses help mitigate rotation/translation invariance issues in 3D coordinate regression.",
+    "Filtering sequences by coordinate completeness prevents training on heavily masked or incomplete structures."
+  ],
+  "critical_findings": [
+    "The author explicitly notes that dRMSD loss cannot distinguish chiral structures due to reflection invariance, implying potential limitations in predicting correct stereochemistry."
+  ],
+  "what_did_not_work": [],
+  "source_url": "https://www.kaggle.com/code/shujun717/ribonanzanet-3d-finetune",
+  "votes": 429
+}

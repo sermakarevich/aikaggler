@@ -1,0 +1,37 @@
+{
+  "summary": "This notebook implements an end-to-end inference pipeline for the MABe mouse behavior detection challenge. It efficiently processes test tracking data using Polars, generates custom self and pair behavioral features via modular scripts, and loads pre-trained XGBoost models from multiple cross-validation folds. By applying fold-specific thresholds and selecting the highest-scoring behavior per frame, it converts frame-level probabilities into continuous action events. The workflow highlights a robust, production-ready approach to multi-class behavior prediction, emphasizing modular feature generation, threshold-based post-processing, and event merging for submission formatting.",
+  "purpose": "inference",
+  "competition_flow": "Loads test tracking data, generates custom self/pair features, loads pre-trained XGBoost models and thresholds from multiple folds, applies thresholded predictions, selects the highest-scoring behavior per frame, merges consecutive frames into events, and formats the final submission CSV.",
+  "data_reading": [
+    "Reads test.csv with Polars, parses a string column of labeled behaviors into a list, explodes it, and splits it into agent, target, and behavior columns.",
+    "Loads tracking data as Parquet files per video."
+  ],
+  "data_processing": [
+    "Splits behavior labels from strings, filters self vs pair behaviors, generates features via external Python scripts, applies thresholding to predictions, merges consecutive identical predictions into start/stop frame events, and applies a custom robustify function for post-processing."
+  ],
+  "features_engineering": [
+    "Custom self and pair behavioral features generated via make_self_features and make_pair_features scripts, which process raw tracking coordinates to derive behavioral metrics for individual mice and interacting pairs."
+  ],
+  "models": [
+    "XGBoost"
+  ],
+  "frameworks_used": [
+    "xgboost",
+    "polars",
+    "numpy",
+    "pandas"
+  ],
+  "loss_functions": [],
+  "cv_strategy": "",
+  "ensembling": "Combines predictions from multiple XGBoost folds by applying fold-specific thresholds, summing the thresholded probabilities, and selecting the behavior with the highest aggregated score per frame.",
+  "insights": [
+    "Uses Polars for efficient data manipulation and feature generation.",
+    "Demonstrates a modular approach by separating feature generation, model inference, and post-processing into distinct steps.",
+    "Shows how to handle multi-class behavior prediction by selecting the maximum probability per frame.",
+    "Illustrates event-based post-processing to convert frame-level predictions into continuous action segments."
+  ],
+  "critical_findings": [],
+  "what_did_not_work": [],
+  "source_url": "https://www.kaggle.com/code/hutch1221/mabe-starter-inference-ja",
+  "votes": 170
+}

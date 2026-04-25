@@ -1,0 +1,35 @@
+{
+  "summary": "This notebook demonstrates an end-to-end pipeline for semantic analysis of COVID-19 data using BigQuery and Google's generative AI. It converts tabular health records into text, generates 768-dimensional vector embeddings via Vertex AI, and performs manual cosine similarity search directly in BigQuery SQL. The pipeline then feeds the top semantic matches into BigQuery ML to generate natural language summaries using the Gemini Pro model. Readers should understand how to bridge traditional tabular data with modern vector search and LLMs in a serverless cloud environment, and how semantic similarity can overcome the limitations of keyword-based search for public health intelligence.",
+  "purpose": "tutorial",
+  "competition_flow": "Queries COVID-19 tabular data from BigQuery, generates semantic embeddings via Vertex AI, computes manual cosine similarity in SQL to find contextually similar records, and generates natural language summaries using BigQuery ML with Gemini Pro.",
+  "data_reading": [
+    "Queries the covid_data table from BigQuery using the google.cloud.bigquery client, converts results to a pandas DataFrame, and limits the sample to 100 rows."
+  ],
+  "data_processing": [
+    "Formats each row into a single text string using CONCAT and TO_JSON_STRING, batches the text for Vertex AI embedding generation (batch size 5, 10s delay), pads failed embeddings with None, and exports the results to JSONL for BigQuery import."
+  ],
+  "features_engineering": [
+    "Constructs a unified text representation for each record by concatenating geographic identifiers (Country_Region, Continent, WHO_Region) with the full JSON serialization of the row."
+  ],
+  "models": [
+    "text-embedding-004",
+    "gemini_pro_model"
+  ],
+  "frameworks_used": [
+    "vertexai",
+    "google-cloud-bigquery",
+    "pandas"
+  ],
+  "loss_functions": [],
+  "cv_strategy": "",
+  "ensembling": "",
+  "insights": [
+    "Semantic search effectively captures contextual relationships that keyword matching misses.",
+    "BigQuery ML allows for fully serverless, scalable AI pipelines without managing external infrastructure.",
+    "Combining vector embeddings with generative AI transforms complex tabular data into actionable, human-readable insights."
+  ],
+  "critical_findings": [],
+  "what_did_not_work": [],
+  "source_url": "https://www.kaggle.com/code/kavindhiranc/semantic-covid-19-intelligence-with-bigquery-ai",
+  "votes": 27
+}

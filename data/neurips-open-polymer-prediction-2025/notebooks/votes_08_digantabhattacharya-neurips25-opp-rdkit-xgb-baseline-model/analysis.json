@@ -1,0 +1,41 @@
+{
+  "summary": "This notebook provides a baseline pipeline for the NeurIPS 2025 Open Polymer Prediction competition using RDKit molecular features and XGBoost. It demonstrates how to load competition data alongside supplementary public datasets, extract physicochemical descriptors and Morgan fingerprints, and train separate regression models for five target polymer properties. The author leverages Optuna for automated hyperparameter tuning and StandardScaler for feature normalization. Readers should learn how to structure a multi-target molecular machine learning workflow, handle missing data across merged datasets, and implement early stopping with XGBoost. The notebook serves as an educational starting point rather than a competitive solution.",
+  "purpose": "baseline",
+  "competition_flow": "Loads competition and supplementary SMILES datasets, extracts RDKit molecular descriptors and fingerprints, optimizes XGBoost hyperparameters via Optuna per target property, trains separate regression models, and outputs a CSV submission.",
+  "data_reading": [
+    "Reads train.csv and test.csv from Kaggle inputs, loads two supplementary CSV files (Tg_SMILES_class_pid_polyinfo_median.csv, Tc_SMILES.csv), concatenates them into a unified training DataFrame, and extracts SMILES strings alongside target columns (Tg, FFV, Tc, Density, Rg)."
+  ],
+  "data_processing": [
+    "Handles missing values by explicitly setting columns to float('nan') for supplementary data, replaces invalid SMILES with zero vectors, and applies StandardScaler to the extracted feature matrix before training."
+  ],
+  "features_engineering": [
+    "Extracts 10 physicochemical descriptors (e.g., MolWt, NumRotatableBonds, TPSA, MolLogP, ring counts) and a 1024-bit Morgan fingerprint (ECFP4, radius=2), concatenates them, and pads/truncates the result to a fixed 200-dimensional vector."
+  ],
+  "models": [
+    "XGBRegressor"
+  ],
+  "frameworks_used": [
+    "xgboost",
+    "rdkit",
+    "optuna",
+    "scikit-learn",
+    "pandas",
+    "numpy",
+    "joblib"
+  ],
+  "loss_functions": [
+    "reg:absoluteerror"
+  ],
+  "cv_strategy": "train_test_split with test_size=0.2 used internally during Optuna trials, with early_stopping_rounds=20 for validation monitoring.",
+  "ensembling": "",
+  "insights": [
+    "Training individual XGBoost models per target property accommodates differing data distributions and ranges.",
+    "Optuna enables efficient, automated hyperparameter tuning tailored to each property.",
+    "Combining RDKit molecular descriptors with Morgan fingerprints creates a compact yet informative feature space for polymer regression.",
+    "Feature scaling is necessary to normalize the mixed-scale RDKit output before tree-based modeling."
+  ],
+  "critical_findings": [],
+  "what_did_not_work": [],
+  "source_url": "https://www.kaggle.com/code/digantabhattacharya/neurips25-opp-rdkit-xgb-baseline-model",
+  "votes": 241
+}

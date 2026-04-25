@@ -1,0 +1,28 @@
+{
+  "id": "digantabhattacharya/neurips25-opp-rdkit-xgb-baseline-model",
+  "id_no": 85235830,
+  "title": "NeurIPS25(OPP): RDKit+XGB [Baseline Model]",
+  "code_file": "neurips25-opp-rdkit-xgb-baseline-model.ipynb",
+  "language": "python",
+  "kernel_type": "notebook",
+  "is_private": false,
+  "enable_gpu": false,
+  "enable_tpu": false,
+  "enable_internet": false,
+  "keywords": [
+    "beginner",
+    "gpu"
+  ],
+  "dataset_sources": [
+    "",
+    "senkin13/rdkit-2025-3-3-cp311",
+    "minatoyukinaxlisa/tc-smiles"
+  ],
+  "kernel_sources": [],
+  "competition_sources": [
+    "neurips-open-polymer-prediction-2025"
+  ],
+  "model_sources": [],
+  "docker_image": "gcr.io/kaggle-images/python@sha256:3223337db7786b068bfeac3a1b741bf0d572a4bf309735b45692de873b7758db",
+  "machine_shape": "None"
+}

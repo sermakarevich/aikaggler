@@ -1,0 +1,38 @@
+{
+  "summary": "The notebook demonstrates a from-scratch implementation of Group Relative Policy Optimization (GRPO) to fine-tune a causal language model for mathematical reasoning. It loads the GSM8K dataset, formats prompts with a strict `<reasoning>...</reasoning><answer>...</answer>` template, and applies a custom reward system combining answer accuracy and structural formatting. The training loop manually computes log probabilities, advantage normalization, and a clipped policy loss with KL divergence penalties relative to a frozen reference model. Readers learn how to implement RLHF-style alignment without high-level libraries like `trl`, including reward shaping, gradient scaling, and memory management during generation-based policy updates.",
+  "purpose": "tutorial",
+  "competition_flow": "Loads GSM8K math problems, formats them with a strict reasoning template, fine-tunes Qwen2.5-1.5B via a custom GRPO training loop with accuracy and format rewards, and saves the resulting model for inference.",
+  "data_reading": [
+    "Loaded via `datasets.load_dataset('openai/gsm8k', 'main')` and converted to pandas; answers extracted by splitting on `####` and stripping whitespace."
+  ],
+  "data_processing": [
+    "Applied a custom system prompt template to all questions, stripped and parsed final answers, shuffled training data, and enforced strict XML-like output formatting via regex during reward computation."
+  ],
+  "features_engineering": [],
+  "models": [
+    "Qwen2.5-1.5B"
+  ],
+  "frameworks_used": [
+    "torch",
+    "transformers",
+    "peft",
+    "datasets",
+    "sklearn",
+    "numpy",
+    "matplotlib"
+  ],
+  "loss_functions": [
+    "Clipped policy loss with KL divergence penalty: `(-clipped_ratio * advantages - beta * kl).mean()`"
+  ],
+  "cv_strategy": "",
+  "ensembling": "",
+  "insights": [
+    "Implementing GRPO from scratch requires manually managing log-probability ratios, advantage normalization, and KL penalties relative to a frozen reference model.",
+    "Group sampling (multiple completions per prompt) enables advantage estimation without a separate value network.",
+    "Strict formatting rewards can guide a model's output structure even when accuracy rewards are sparse."
+  ],
+  "critical_findings": [],
+  "what_did_not_work": [],
+  "source_url": "https://www.kaggle.com/code/ducnh279/grpo-train-reasoning-model",
+  "votes": 121
+}

@@ -1,0 +1,171 @@
+# med-gemma-impact-challenge: top public notebooks
+
+The top-voted notebooks primarily focus on prototyping and deploying medical AI workflows using Google's MedGemma and HeAR foundation models, with a strong emphasis on multimodal fusion, safety filtering, and clinical decision support. Authors demonstrate a mix of zero-shot inference, lightweight fine-tuning via QLoRA, and hybrid rule-based ML systems to address healthcare-specific challenges like hallucination mitigation and calibration blindness. The community heavily leverages simulation, prompt engineering, and explainability tools to bridge the gap between raw model outputs and actionable clinical insights.
+
+## Common purposes
+- tutorial
+- utility
+- baseline
+- other
+
+## Competition flows
+- The notebook attempts to install dependencies and call the HeAR API for audio embedding generation but fails due to missing packages and authentication issues, serving as a failed demo walkthrough.
+- Processes dummy patient dialogue and audio samples through a simulated medical LLM and patched acoustic analyzer to generate structured clinical outputs, projected impact metrics, and technical benchmarks.
+- Simulates text, audio, and image inputs through custom engines to compute a weighted cognitive health score, maps it to an MMSE equivalent, and generates clinical reports, visualizations, and validation charts.
+- Loads the SLAKE dataset via FiftyOne, explores data distributions and embeddings, runs zero-shot inference with MedGemma for VQA and detection, evaluates performance using sliced metrics and an LLM judge, and fine-tunes the model for localization using QLoRA and TRL before outlining how to iterate on the results.
+- The notebook installs dependencies, defines a mock MedGemma class with hardcoded clinical responses, builds a Gradio interface with tabs for image analysis and medical Q&A, and launches the web app for demonstration.
+- Loads patient metadata and optional medical images, routes them through a two-agent MedGemma pipeline to generate structured SOAP notes and clinical recommendations, then exports the results as JSON visualizations and PDFs.
+- Constructs a synthetic medical text dataset, extracts 15+ linguistic and domain-specific features, trains a class-weighted Random Forest classifier, applies a hybrid expert-logic filter, evaluates performance, and serializes the model for deployment.
+- Loads RSNA abdominal trauma CT slices, applies abdominal windowing and volumetric sampling, feeds them into a quantized MedGemma-1.5-4B model with clinical prompts to generate diagnostic reports, and compares outputs against ground truth labels.
+- Downloads a competition dataset via CLI, auto-detects CSV files, runs inference on patient text using a downloaded Gemma 2B model, applies a safety filter, and exports results as JSON and audio files.
+- Loads the MedGemma 1.5 4B model via Hugging Face, wraps it in a conversational chatbot class with system prompts and history tracking, and runs five structured inference scenarios to validate multi-turn, multi-modal, and safety capabilities.
+
+## Data processing
+- No explicit preprocessing or cleaning is shown; raw text prompts are passed directly to the simulator and dummy numpy arrays are used for acoustic analysis.
+- FiftyOne dataset slicing/filtering with ViewField expressions
+- 80/20 random train/val split via fiftyone.utils.random.random_split
+- Flattening multi-detection samples into individual patches using to_patches("detections")
+- Custom GetItem class to convert bounding box format from [x, y, w, h] (normalized [0,1]) to [y0, x0, y1, y1] (scaled [0, 1000])
+- Conversion to PyTorch datasets via to_torch()
+- Model outputs are stripped of markdown code fences and parsed with json.loads
+- Output keys are normalized via custom mapping functions to handle inconsistent model formatting
+- Robust fallback handling is implemented for JSON decode errors to prevent pipeline crashes
+- Text is processed through a custom feature extraction function that computes linguistic, readability, sentiment, and domain-specific metrics
+- Applies abdominal windowing (WC: 40, WW: 400) to DICOM pixel arrays
+- Normalizes pixel values to 0-255 and converts to RGB PIL images
+- Samples volumetric slices by selecting the middle 40%-70% of the stack or a fixed gap around the mid-index to avoid lungs and pelvis
+- Auto-detects text columns by dtype
+- Strips the original prompt from model outputs and isolates the first response line
+- Applies a simple keyword-based safety filter to flag high-risk outputs
+
+## Features engineering
+- Computes derived metrics such as (1.0 - pause_frequency) for acoustic scoring, uses hardcoded semantic_density_score and vision_score, and calculates a weighted composite score (0.4 linguistic, 0.3 acoustic, 0.3 vision). Maps the composite score to an MMSE scale (0-30) and categorical dementia stages for clinical translation.
+- 15+ hand-crafted features including word count, average word length, syllable count, punctuation count, uppercase ratio, Flesch reading ease, Flesch-Kincaid grade level, difficult words count, lexical diversity, sentiment compound score, urgency flag, medical keyword count, danger trigger count, toxic advice flag, and disclaimer presence.
+
+## Models
+- HeAR
+- CXR Foundation
+- Path Foundation
+- Derm Foundation
+- CT Foundation
+- MedGemma
+- google/medgemma-2b
+- MedGemma 1.5-4b-it
+- MedSigLIP-448
+- Gemma 3 270m-it
+- MedGemma (mocked/simulated)
+- google/medgemma-1.5-4b-it
+- Random Forest Classifier
+- GemmaCausalLM (2B parameters)
+- MedGemma 1.5 4B
+
+## Frameworks used
+- tensorflow
+- scikit-learn
+- numpy
+- pandas
+- matplotlib
+- seaborn
+- plotly
+- requests
+- google.auth
+- scipy.stats
+- wordcloud
+- fiftyone
+- transformers
+- peft
+- trl
+- torch
+- torchvision
+- umap-learn
+- bitsandbytes
+- accelerate
+- sentencepiece
+- protobuf
+- huggingface_hub
+- gradio
+- PIL
+- textstat
+- nltk
+- joblib
+- pydicom
+- ultralytics
+- keras_nlp
+- keras
+- kagglehub
+- gtts
+- kaggle_secrets
+
+## CV strategies
+- 80/20 random train/val split via fiftyone.utils.random.random_split
+
+## Ensembling
+- Fuses three simulated modalities using a fixed weighted average (linguistic 0.4, acoustic 0.3, vision 0.3) to produce a single composite cognitive score.
+- Combines a Random Forest classifier with a deterministic expert-logic filter that overrides predictions when specific medical keywords (e.g., 'doctor', 'consult') are present without toxic triggers.
+
+## Insights
+- Pre-trained medical foundation models can significantly reduce data and compute requirements for healthcare AI tasks.
+- Official model demos often rely on specific API utilities and authentication that may not be readily available in standard notebook environments.
+- Audio-based health representations can effectively capture clinical acoustic signals like coughs and breathing patterns for downstream tasks.
+- Simulating LLM responses is an effective prototyping strategy for clinical AI workflows before deploying resource-intensive models.
+- Local-first, offline-capable architectures are essential for maintaining HIPAA/GDPR compliance in healthcare AI deployments.
+- Proactively patching upstream dependency vulnerabilities ensures secure and reliable community deployments of medical AI tools.
+- Multi-modal fusion of linguistic, acoustic, and visual-spatial features provides a more robust cognitive assessment than single-modality approaches.
+- Threshold-based alerting and MMSE mapping bridge AI outputs with clinical decision-making.
+- Explainability tools like risk-highlighted text and radar charts improve interpretability for medical stakeholders.
+- Longitudinal tracking and population distribution plots contextualize individual patient scores within broader clinical cohorts.
+- Visualizing high-dimensional embeddings in 2D before modeling quickly diagnoses whether a dataset's classes are fundamentally separable.
+- Slicing evaluation metrics by modality, anatomical location, and question type reveals actionable failure patterns that aggregate accuracy hides.
+- Using a smaller LLM as a semantic judge is more reliable than exact string matching for evaluating open-ended medical VQA outputs.
+- Flattening multi-detection samples into individual patches enables straightforward instance-level fine-tuning for localization tasks.
+- QLoRA with 4-bit quantization and LoRA adapters makes fine-tuning 4B+ parameter VLMs feasible on consumer GPUs.
+- Gradio enables rapid prototyping and sharing of AI application interfaces without requiring complex backend infrastructure.
+- Simulating model outputs with predefined responses is an effective way to demonstrate application architecture and user flow in competition submissions.
+- Designing privacy-focused, edge-compatible interfaces can make medical AI tools more accessible to frontline healthcare workers.
+- Separating documentation and reasoning into distinct agents improves clinical safety and output structure.
+- Strict system prompts and JSON schema enforcement reduce hallucination risks in medical contexts.
+- Human-in-the-loop oversight remains critical for final clinical decision-making.
+- Post-processing and fallback parsing ensure robustness against model formatting errors.
+- Hand-crafted linguistic and domain-specific features effectively separate safe medical advice from dangerous misinformation.
+- Class weighting is essential in safety-critical NLP tasks to prioritize recall for high-risk cases.
+- Hybrid systems that combine probabilistic ML with deterministic rule-based filters improve reliability in healthcare applications.
+- Multimodal LLMs can generate explainable clinical reports for trauma CTs without task-specific training.
+- Volumetric slice sampling (middle 40-70%) effectively isolates abdominal organs while excluding lungs and pelvis.
+- 4-bit quantization with bitsandbytes enables running large medical VLMs on limited Kaggle GPU resources.
+- Standard discriminative classifiers often fail to detect rare injuries like extravasation due to calibration issues.
+- Demonstrates efficient memory management on Kaggle GPUs using TF_GPU_ALLOCATOR and garbage collection.
+- Shows how to build robust fallback mechanisms that gracefully switch to simulation mode when datasets or models fail to load.
+- Illustrates practical prompt engineering and output parsing techniques for causal language models in a constrained environment.
+- System prompts are critical for enforcing medical focus, conciseness, and safety guardrails in healthcare LLM deployments.
+- Maintaining conversation history as a structured list of role/content dictionaries enables reliable multi-turn context retention.
+- Multi-modal medical queries require explicit content formatting (image + text) to work correctly with Hugging Face's image-text-to-text pipelines.
+- Boundary handling and off-topic redirection can be effectively managed through explicit prompt instructions rather than post-hoc filtering.
+
+## Critical findings
+- The official Google Health HeAR repository contains a critical supply chain/dependency confusion vulnerability that could expose users to malicious packages.
+- Standard deep learning classifiers for this dataset exhibited 0.0 Recall on critical categories like active extravasation.
+- Pure score-based AI models suffer from Calibration Blindness, providing probabilities without anatomical justification.
+
+## What did not work
+- Installing external packages like lifelines, loss, network, cluster_utils, and api_utils failed or caused import errors, and the expected api_utils.make_prediction_with_exponential_backoff function was missing, preventing successful API calls.
+- The original HeAR demo fails with an AttributeError due to a missing api_utils module, which the author patched by rewriting the authentication and prediction logic.
+
+## Notable individual insights
+- 106 (MedGemma - HAI-DEF): Highlights the real-world friction of integrating pre-trained medical foundation models due to missing API utilities and authentication errors.
+- 78 (MedGemma Nexus: AI-Powered Clinical System): Discovers a critical supply chain vulnerability in the official HeAR repository and provides a patched community fix.
+- 45 (Starter NB: Fine Tune MedGemma 1.5 for Detection): Demonstrates that visualizing high-dimensional embeddings in 2D quickly diagnoses class separability before modeling.
+- 35 (MedGuard AI 🛡️⚕️): Shows that combining probabilistic ML with deterministic rule-based filters significantly improves reliability for safety-critical medical NLP.
+- 30 (MedGemma-RSNA-Trauma-Reasoning-Baseline): Reveals that standard discriminative classifiers suffer from calibration blindness and 0.0 recall on rare trauma categories, whereas multimodal LLMs provide explainable zero-shot reasoning.
+- 26 (MedGemma Medical AI Chatbot + 5 Test Scenarios): Proves that explicit prompt instructions for boundary handling are more effective than post-hoc filtering for off-topic medical queries.
+
+## Notebooks indexed
+- #106 votes [[notebooks/votes_01_mpwolke-medgemma-hai-def/notebook|MedGemma - HAI-DEF]] ([kaggle](https://www.kaggle.com/code/mpwolke/medgemma-hai-def))
+- #78 votes [[notebooks/votes_02_ashujoshi23-medgemma-nexus-ai-powered-clinical-system/notebook|MedGemma Nexus: AI-Powered Clinical System]] ([kaggle](https://www.kaggle.com/code/ashujoshi23/medgemma-nexus-ai-powered-clinical-system))
+- #66 votes [[notebooks/votes_03_datasciencegrad-medgemma-neurovox-cognitive-health-monitor-v6/notebook|MedGemma - NeuroVox: Cognitive Health Monitor | v6]] ([kaggle](https://www.kaggle.com/code/datasciencegrad/medgemma-neurovox-cognitive-health-monitor-v6))
+- #45 votes [[notebooks/votes_04_harpdeci-starter-nb-fine-tune-medgemma-1-5-for-detection/notebook|Starter NB: Fine Tune MedGemma 1.5 for Detection]] ([kaggle](https://www.kaggle.com/code/harpdeci/starter-nb-fine-tune-medgemma-1-5-for-detection))
+- #38 votes [[notebooks/votes_05_barkataliarbab-mediscan-ai-clinical-insights-with-medgemma/notebook|MediScan AI: Clinical Insights with MedGemma]] ([kaggle](https://www.kaggle.com/code/barkataliarbab/mediscan-ai-clinical-insights-with-medgemma))
+- #37 votes [[notebooks/votes_06_mirfan899-medflow-ai/notebook|MedFlow AI]] ([kaggle](https://www.kaggle.com/code/mirfan899/medflow-ai))
+- #35 votes [[notebooks/votes_07_mah20050-medguard-ai/notebook|MedGuard AI 🛡️⚕️]] ([kaggle](https://www.kaggle.com/code/mah20050/medguard-ai))
+- #30 votes [[notebooks/votes_08_dedquoc-medgemma-rsna-trauma-reasoning-baseline/notebook|MedGemma-RSNA-Trauma-Reasoning-Baseline]] ([kaggle](https://www.kaggle.com/code/dedquoc/medgemma-rsna-trauma-reasoning-baseline))
+- #29 votes [[notebooks/votes_09_chenybit-cheny-bit/notebook|CHENY_BIT]] ([kaggle](https://www.kaggle.com/code/chenybit/cheny-bit))
+- #26 votes [[notebooks/votes_10_iamsdt-medgemma-medical-ai-chatbot-5-test-scenarios/notebook|MedGemma Medical AI Chatbot + 5 Test Scenarios]] ([kaggle](https://www.kaggle.com/code/iamsdt/medgemma-medical-ai-chatbot-5-test-scenarios))

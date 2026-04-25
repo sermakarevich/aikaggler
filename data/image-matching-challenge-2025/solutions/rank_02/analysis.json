@@ -1,0 +1,35 @@
+{
+  "summary": "The author secured 2nd place by implementing a multi-stage pipeline for robust image matching and 3D reconstruction. The approach combines multiple feature detectors (SuperPoint, ALIKE, SIFT) with descriptor matchers (LightGlue, Nearest Neighbor) across both full-resolution images and targeted crops. Matches are concatenated, filtered via RANSAC with a strict threshold, and fed into COLMAP to generate the final reconstruction and clusters.",
+  "extensive_summary": "## Feature Extraction\nAll input images are resized so that the longest side is 1280 pixels. The pipeline begins by extracting features using SuperPoint (utilizing a GIM checkpoint) and filtering initial pairs with a minimum of 30 matches. These pairs are then processed with ALIKE and LightGlue, alongside a parallel branch using SIFT with Nearest Neighbor matching.\n\n## Crop Generation and Matching\nCrops for the target object are generated based on the ensemble of matches from the initial full-image extraction. The pipeline applies ALIKE + LightGlue and SuperPoint + LightGlue to these crops to capture finer-grained correspondences that may be missed at the full-image scale.\n\n## Final Matching and Reconstruction\nMatches from all stages (full-image and crop-based pipelines) are concatenated. A RANSAC filter is applied, retaining only pairs with a minimum of 150 matches to ensure geometric consistency. The filtered matches are passed to COLMAP with default parameters to reconstruct the scene and generate clusters, following the methodology of a public reference notebook.",
+  "rank": 2,
+  "competition_flow": "Images are resized to a 1280px longest side, processed through an ensemble of SuperPoint, ALIKE, and SIFT feature extractors with LightGlue/NN matchers on full images and crops, filtered via RANSAC, and reconstructed using COLMAP.",
+  "data_reading": [],
+  "data_processing": [
+    "All images resized to longest side of 1280 pixels",
+    "Crops generated for target object based on ensemble of matches"
+  ],
+  "features_engineering": [],
+  "models": [
+    "SuperPoint",
+    "ALIKE",
+    "SIFT",
+    "LightGlue",
+    "RANSAC",
+    "COLMAP"
+  ],
+  "frameworks_used": [],
+  "loss_functions": [],
+  "cv_strategy": "",
+  "ensembling": "Matches from multiple feature extraction pipelines (SuperPoint, ALIKE, SIFT) on both full images and generated crops are concatenated and filtered via RANSAC with a minimum of 150 matches before reconstruction.",
+  "insights": [
+    "Combining multiple feature detectors across different scales significantly improves match coverage.",
+    "Processing targeted crops alongside full images captures fine-grained details critical for accurate reconstruction.",
+    "Applying a strict RANSAC match threshold (150) is essential for filtering out geometric outliers before COLMAP processing."
+  ],
+  "critical_findings": [],
+  "what_did_not_work": [],
+  "github_repos": [],
+  "papers": [],
+  "other_solution_refs": [],
+  "source_url": "https://www.kaggle.com/competitions/image-matching-challenge-2025/discussion/583683"
+}

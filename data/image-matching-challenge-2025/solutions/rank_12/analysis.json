@@ -1,0 +1,55 @@
+{
+  "summary": "The authors developed two distinct submission pipelines for an image matching challenge to maximize scene reconstruction quality. The first pipeline relied entirely on COLMAP for reconstruction, leveraging ALIKED/LightGlue and DISK for feature matching with specific thresholds and multi-GPU acceleration. The second pipeline pre-clustered images using global feature descriptors (specifically MegaLoc) before running COLMAP, which significantly reduced processing time while maintaining competitive scores. Key technical drivers included caching keypoints, using multi-scale matching ensembles, and adopting graph-based clustering over density-based methods to handle bridging images.",
+  "extensive_summary": "## Overview\nThe authors submitted two parallel pipelines for the competition, both built upon their previous IMC2024 winner solution. The first approach abandoned external image retrieval entirely, relying on COLMAP's native clustering capabilities for scene reconstruction. The second approach introduced a pre-clustering stage using global feature descriptors to partition the dataset before reconstruction, trading a marginal score difference for substantial time savings.\n\n## Pipeline 1: COLMAP-Only Reconstruction\nThis pipeline bypassed traditional image retrieval by directly matching all image pairs using ALIKED/LightGlue (at 1280 and 2048 resolutions) and DISK (at 1536 resolution). To ensure geometric consistency, images were rotated to their natural orientation before matching. Two-view geometry was computed via RANSAC rather than COLMAP's internal solver. The authors tuned COLMAP's incremental mapper with `min_model_size: 3` and `max_num_models: 10` to allow the software to generate multiple reconstruction models representing distinct scene clusters. Performance was heavily optimized through caching keypoints and descriptors, multi-GPU acceleration with mixed precision on T4x2 hardware, and gradually filtering unique image pairs based on match counts.\n\n## Pipeline 2: Pre-Clustering with Global Features\nTo reduce processing time, the authors experimented with clustering images in advance using global descriptors. The pipeline constructed a rotation-robust similarity matrix by extracting embeddings for four rotated versions of each image (0\u00b0, 90\u00b0, 180\u00b0, 270\u00b0) and keeping the highest pairwise similarity score. Coarse clustering was performed by connecting pairs exceeding a similarity threshold and extracting connected components. Small clusters were consolidated by counting matched pairs with other clusters and merging them using ALIKED+LG matching. Remaining tiny clusters were discarded as outliers. While DINOv2 and SigLIP-v2 were tested, MegaLoc yielded the best private leaderboard performance.\n\n## Key Technical Insights\nGraph-based clustering proved superior to density-based methods like HDBSCAN, as the authors hypothesized that \"chain-like\" or \"bridging\" images within the same scene disrupt high-density regions. Multi-scale matching ensembles across resolutions (1280, 1536, 2048) on both original and cropped images consistently delivered the best leaderboard results. Ultimately, the authors concluded that a solely COLMAP-based approach remains highly competitive and can approach gold-medal performance without complex pre-clustering.",
+  "rank": 12,
+  "competition_flow": "The pipeline extracts features and descriptors using ALIKED, LightGlue, and DISK at multiple resolutions, optionally pre-clusters images via global descriptors and graph-based methods, computes two-view geometry with RANSAC, and runs COLMAP's incremental mapping with multi-model generation to produce final scene reconstructions.",
+  "data_reading": [],
+  "data_processing": [
+    "Rotation of images to natural orientation",
+    "Multi-scale matching ensemble (TTA) at resolutions 1280, 1536, and 2048 on original and cropped images",
+    "Caching keypoints and descriptors",
+    "Multi-GPU acceleration with mixed precision"
+  ],
+  "features_engineering": [],
+  "models": [
+    "ALIKED",
+    "LightGlue",
+    "DISK",
+    "DINOv2",
+    "SigLIP-v2",
+    "MegaLoc"
+  ],
+  "frameworks_used": [
+    "COLMAP"
+  ],
+  "loss_functions": [],
+  "cv_strategy": "",
+  "ensembling": "The authors ensemble matches extracted from high-resolution images at multiple scales (1280, 1536, and 2048) on both original and cropped images, and combine results from multiple feature detectors (ALIKED/LightGlue and DISK) to form the final submission.",
+  "insights": [
+    "Gradually filtering unique image pairs based on match count improves scene coherence.",
+    "Caching keypoints and descriptors significantly reduces processing time.",
+    "Graph-based clustering outperforms density-based methods like HDBSCAN because bridging images in the same scene disrupt high-density regions.",
+    "Multi-scale matching ensembles across different resolutions and crops yield the best leaderboard results."
+  ],
+  "critical_findings": [
+    "Using the newest COLMAP version (3.11.1) actually dropped the score compared to version 0.6.1.",
+    "GLOMAP raised a timeout exception unexpectedly, despite being a modern alternative.",
+    "Pre-clustering with global features (MegaLoc) achieves nearly the same score as COLMAP-based clustering but in significantly less processing time."
+  ],
+  "what_did_not_work": [
+    "TTA multi-crop for image pair filtering",
+    "Alternative detectors/matchers (SP/SG, LoFTR, OmniGlue, GIM)",
+    "VGGT (ran out of memory)",
+    "COLMAP version 3.11.1 (score dropped compared to 0.6.1)",
+    "GLOMAP (raised a timeout exception)"
+  ],
+  "github_repos": [],
+  "papers": [],
+  "other_solution_refs": [
+    {
+      "description": "Previous IMC2024 winner solution referenced as a foundation for the pipelines",
+      "url": "https://www.kaggle.com/competitions/image-matching-challenge-2024/discussion/510084"
+    }
+  ],
+  "source_url": "https://www.kaggle.com/competitions/image-matching-challenge-2025/discussion/583185"
+}

@@ -1,0 +1,64 @@
+{
+  "summary": "The author achieved 5th place by constructing a deliberately diverse ensemble of models spanning retrieval-based classifiers, NLI framing, and large language models. Key technical choices included per-rule specialists, test-time training (TTT) for LLMs and DeBERTa, asymmetric few-shot example selection for a 32B model, and rank-normalized hierarchical blending to stabilize calibration across paradigms. The pipeline emphasized deduplication, de-biasing near-duplicates, and consistent instruction-only prompting with constrained Yes/No decoding.",
+  "extensive_summary": "## Overview & Core Strategy\nThe solution centers on a deliberately diverse ensemble that combines per-rule specialists, inference-only large models, and test-time-trained (TTT) components. Rather than relying on a single architecture, the author blended retrieval-based classifiers, NLI-framed models, and LLMs using per-rule rank-normalized weighting to mitigate calibration drift across different model families.\n\n## Data Preprocessing & Handling\nRaw data was cleaned by dropping the `subreddit` field, which was treated as a noisy and unstable signal. Exact duplicates were removed, shrinking the training set to under 10k examples without negatively impacting leaderboard performance. For the embedding pipeline, near-duplicates within each rule were clustered (cosine similarity > 0.95\u20130.97) and down-weighted to prevent overfitting to repeated patterns.\n\n## Model Architectures & Training Details\nThe ensemble included several distinct components:\n- **LLM TTT:** LLaMA-3.1 8B Instruct and Qwen-3 8B were fine-tuned using LoRA (r=256, alpha=32) with paged_adamw_8bit optimizer and cosine LR scheduling. Training used DDP, fp16, gradient checkpointing, and a 512-sequence length. Inference leveraged vLLM with constrained Yes/No decoding.\n- **Embedding Models:** Six families (E5, Qwen3-Embedding, BGE, GTE) were used to train two light heads per rule: Logistic Regression (grid over 31 C values) and distance-weighted KNN (K=10\u201315). Outputs were blended (0.7 LR + 0.3 KNN) and further ensemble-searched across models via GPU-accelerated simplex optimization.\n- **DeBERTa NLI:** A rule-aware zero-shot approach framed the task as NLI (Premise: comment, Hypothesis: violation statement + 8 paraphrases). During TTT, only biases, classifier heads, and LayerNorms were updated on a dynamically balanced rule-specific test set.\n- **Qwen-32B Asymmetric Few-Shot:** Contextual examples were selected via cosine similarity to canonical positives/negatives before inference, tightening the decision boundary.\n\n## Ensemble & Calibration\nModels were stacked incrementally using a hierarchical blending schedule with geometric decay to prevent dominance by any single model. All scores were rank-normalized per rule to align calibration across retrieval, NLI, and LLM outputs. Final probabilities were clipped to [1e-6, 1\u22121e-6] to stabilize predictions.",
+  "rank": 5,
+  "competition_flow": "Raw text data was cleaned and deduplicated, then processed through a diverse ensemble of embedding-based classifiers, NLI-framed DeBERTa, and LoRA-finetuned LLMs with test-time training and asymmetric few-shot prompting, with outputs rank-normalized per rule and hierarchically blended before final probability clipping.",
+  "data_reading": [],
+  "data_processing": [
+    "Dropped `subreddit` field as noisy signal",
+    "Removed exact duplicates reducing train size to <10k",
+    "Clustered and down-weighted near-duplicates per rule (cosine > 0.95\u20130.97)",
+    "Applied dynamic positive/negative balancing (~50/50, capped at 32\u00d7) during TTT",
+    "Used constrained Yes/No decoding",
+    "Applied per-rule rank-normalization and probability clipping to [1e-6, 1\u22121e-6]"
+  ],
+  "features_engineering": [],
+  "models": [
+    "DeBERTa-v3-large-zeroshot-v2.0",
+    "Qwen-3 8B",
+    "Qwen-32B",
+    "LLaMA-3.1 8B Instruct",
+    "E5",
+    "Qwen3-Embedding",
+    "BGE",
+    "GTE",
+    "Logistic Regression",
+    "k-NN",
+    "FAISS",
+    "Triplet"
+  ],
+  "frameworks_used": [],
+  "loss_functions": [],
+  "cv_strategy": "6-fold cross-validation for embedding head hyperparameter tuning; public leaderboard used for final model selection and ensemble weighting.",
+  "ensembling": "Models were stacked incrementally using a hierarchical blending schedule with geometric decay, with all scores rank-normalized per rule to align calibration across paradigms before final probability clipping to [1e-6, 1\u22121e-6].",
+  "insights": [
+    "Dropping the `subreddit` field removed noisy signal and improved prediction consistency.",
+    "Exact deduplication reduced training size to under 10k examples without measurable LB drop, significantly speeding up training.",
+    "Asymmetric few-shot example selection using cosine similarity to canonical positives and negatives noticeably tightens the classification decision boundary.",
+    "Per-rule rank-normalization effectively removes calibration drift when blending models from different paradigms like retrieval, NLI, and LLMs.",
+    "Hierarchical blending with geometric decay naturally regularizes the ensemble and prevents single-model dominance."
+  ],
+  "critical_findings": [
+    "Removing exact duplicates shrank the training set to under 10k examples without any measurable drop on the leaderboard, proving redundancy was harming efficiency rather than performance.",
+    "Asymmetric few-shot prompting (selecting the most similar positives and least similar negatives) yielded a +0.006 gain over vanilla few-shot by tightening the decision boundary.",
+    "Clustering and down-weighting near-duplicates within each rule prevented embedding classifiers from overfitting to repeated textual patterns."
+  ],
+  "what_did_not_work": [],
+  "github_repos": [],
+  "papers": [],
+  "other_solution_refs": [
+    {
+      "description": "Train on test data with Qwen2.5-0.5B",
+      "url": "https://www.kaggle.com/code/neibyr/lb-0-878-train-on-test-data-qwen2-5-0-5b"
+    },
+    {
+      "description": "DeBERTa-v3-base 3-epochs solution",
+      "url": "https://www.kaggle.com/code/nahidhossainredom/deberta-v3-base-3-epochs-lb-0-906"
+    },
+    {
+      "description": "Jigsaw speed run with triplet and FAISS",
+      "url": "https://www.kaggle.com/code/datafan07/jigsaw-speed-run-10-min-triplet-and-faiss"
+    }
+  ],
+  "source_url": "https://www.kaggle.com/competitions/jigsaw-agile-community-rules/discussion/613421"
+}

@@ -1,0 +1,36 @@
+{
+  "summary": "The notebook demonstrates a zero-shot classification approach for the MAP Charting competition using a quantized 32B parameter LLM (Qwen2.5-32B-GPTQ) via vLLM. Instead of fine-tuning, it constructs a structured prompt containing the math question, student answer, correctness flag, and explanation, then maps each of the 65 target classes to a unique special character. By masking logits to only allow these characters and sampling with temperature 0, it forces single-token predictions. The author extracts the top-3 most likely tokens per sample based on logprobs, maps them back to class names, and combines them into the final submission. Readers should learn how to leverage large quantized models for direct classification tasks using prompt engineering and logits masking, bypassing traditional fine-tuning pipelines.",
+  "purpose": "inference",
+  "competition_flow": "Loads train and test CSVs, engineers a correctness feature, formats inputs into structured prompts, maps 65 classes to unique special characters, runs inference on a quantized Qwen2.5-32B model via vLLM with logits masking, extracts top-3 predictions per sample, and generates a submission CSV.",
+  "data_reading": [
+    "pd.read_csv from Kaggle input paths for train and test datasets; fills NaN values in the Misconception column with 'NA'."
+  ],
+  "data_processing": [
+    "Fills missing misconceptions with 'NA'; creates a synthetic is_correct feature by identifying the most frequent MC_Answer per QuestionId; formats inputs into structured multi-line prompts; maps 65 target classes to unique special characters to force single-token output."
+  ],
+  "features_engineering": [
+    "Synthetic is_correct flag derived from the mode of MC_Answer per QuestionId in the training set."
+  ],
+  "models": [
+    "Qwen2.5-32B-GPTQ"
+  ],
+  "frameworks_used": [
+    "vllm",
+    "pandas",
+    "numpy",
+    "scikit-learn",
+    "torch"
+  ],
+  "loss_functions": [],
+  "cv_strategy": "",
+  "ensembling": "Extracts the top-3 predicted tokens per sample based on logprobs, maps them back to class names, and joins them with spaces to form the final prediction.",
+  "insights": [
+    "Mapping each target class to a unique special character forces the LLM to output exactly one token, simplifying decoding and preventing format errors.",
+    "Masking logits to only allow specific token IDs prevents the model from generating invalid characters during inference.",
+    "Leveraging a quantized 32B model with vLLM enables fast, memory-efficient zero-shot classification without requiring fine-tuning or custom training loops."
+  ],
+  "critical_findings": [],
+  "what_did_not_work": [],
+  "source_url": "https://www.kaggle.com/code/aleaiest/lb-0-945-qwen2-5-32b-gptq",
+  "votes": 300
+}

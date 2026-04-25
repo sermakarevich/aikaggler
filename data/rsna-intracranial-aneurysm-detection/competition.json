@@ -1,0 +1,113 @@
+{
+  "id": 99552,
+  "competitionName": "rsna-intracranial-aneurysm-detection",
+  "title": "RSNA Intracranial Aneurysm Detection",
+  "briefDescription": "Detect the presence and location of intracranial aneurysms in multimodal imaging data",
+  "dateEnabled": "2025-07-28T20:36:04.027Z",
+  "deadline": "2025-10-14T23:59:00Z",
+  "hasLeaderboard": true,
+  "leaderboardPercentage": 32,
+  "maxDailySubmissions": 5,
+  "numScoredSubmissions": 2,
+  "hasSolution": true,
+  "numPrizes": 9,
+  "forumId": 7574502,
+  "finalLeaderboardHasBeenVerified": true,
+  "userRankMultiplier": 1,
+  "dateCreated": "2025-04-17T23:13:08.466234500Z",
+  "competitionHostSegmentId": 1,
+  "maxTeamSize": 5,
+  "medalsAllowed": true,
+  "enableTeamFiles": true,
+  "teamFileDeadline": "2025-12-06T00:00:00Z",
+  "teamMergerExplicitDeadline": "2025-10-07T23:59:00Z",
+  "prohibitNewEntrantsExplicitDeadline": "2025-10-07T23:59:00Z",
+  "kernelsPublishingDisabledDeadline": "2025-10-07T23:59:00Z",
+  "organizationId": 1817,
+  "hasCoverImageUrl": true,
+  "showPrivateLeaderboard": true,
+  "hasScripts": true,
+  "onlyAllowKernelSubmissions": true,
+  "totalTeams": 1147,
+  "totalCompetitors": 1454,
+  "totalSubmissions": 16298,
+  "rulesRequired": true,
+  "usesSynchronousReruns": true,
+  "maxCpuRuntimeMinutes": 720,
+  "maxGpuRuntimeMinutes": 720,
+  "rowIdColumnName": "SeriesInstanceUID",
+  "requiredSubmissionFilename": "submission.parquet",
+  "evaluationAlgorithm": {
+    "id": 4359,
+    "name": "Mean Weighted Columnwise AUCROC",
+    "isMax": true,
+    "environmentRenderType": "ENVIRONMENT_RENDER_TYPE_JSON",
+    "kernelId": 86873747,
+    "latestCompetitionMetricVersionId": 42385,
+    "state": "AVAILABLE"
+  },
+  "categories": [
+    {
+      "id": 16686,
+      "name": "image classification",
+      "fullPath": "task > image-classification",
+      "description": "",
+      "datasetCount": 2624,
+      "competitionCount": 77,
+      "scriptCount": 2202,
+      "slug": "image-classification",
+      "displayName": "Image Classification"
+    },
+    {
+      "id": 12028,
+      "name": "medicine",
+      "fullPath": "subject > health and fitness > health > medicine",
+      "description": "Medicine is the science and practice of the diagnosis, treatment, and prevention of disease. We recommend you take two datasets and analyze them in the morning. If that doesn't work, analyze one dataset every four hours.",
+      "datasetCount": 1379,
+      "competitionCount": 26,
+      "scriptCount": 1204,
+      "slug": "medicine",
+      "displayName": "Medicine"
+    },
+    {
+      "id": 16636,
+      "name": "multilabel classification",
+      "fullPath": "task > multilabel-classification",
+      "description": "",
+      "datasetCount": 349,
+      "competitionCount": 32,
+      "scriptCount": 736,
+      "slug": "multilabel-classification",
+      "displayName": "Multilabel Classification"
+    },
+    {
+      "name": "custom metric",
+      "description": "This competition's metric is defined under the 'Evaluation' tab",
+      "displayName": "Custom Metric"
+    }
+  ],
+  "organization": {
+    "slug": "RSNA",
+    "name": "Radiological Society of North America",
+    "thumbnailImageUrl": "https://storage.googleapis.com/kaggle-organizations/1817/thumbnail.png",
+    "profileUrl": "/organizations/RSNA"
+  },
+  "launched": true,
+  "createdByUserId": 995397,
+  "license": {
+    "id": 42,
+    "name": "Subject to Competition Rules",
+    "agreementRequired": false
+  },
+  "hostName": "Radiological Society of North America",
+  "scoreTruncationNumDecimals": 5,
+  "locked": true,
+  "totalJoinedUsers": 8262,
+  "requiresIdentityVerification": true,
+  "submissionSizeLimitMb": 20480,
+  "reward": {
+    "id": "USD",
+    "quantity": 50000
+  },
+  "usesHearth": true
+}

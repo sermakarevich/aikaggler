@@ -1,0 +1,40 @@
+{
+  "summary": "This notebook demonstrates a prompt-engineering-driven baseline for extracting and classifying research data references from academic PDFs. It parses PDF documents into raw text, uses regex to locate candidate DOI and accession ID mentions, and leverages a quantized Qwen2.5-32B model via vLLM to classify these references as primary or secondary research data. The approach highlights how structured system prompts and logits processors can guide large language models to perform precise information extraction and multi-class classification without fine-tuning. Readers should understand how to combine regex-based candidate generation with LLM-based verification to build efficient, zero-shot baselines for scientific text mining tasks.",
+  "purpose": "baseline",
+  "competition_flow": "The notebook extracts text from academic PDFs, uses regex to identify candidate DOI and accession IDs, queries a quantized Qwen2.5-32B LLM via vLLM to classify them as primary or secondary research data, and formats the results into a competition submission CSV.",
+  "data_reading": [
+    "PDFs are loaded from a local directory using PyMuPDF (`fitz`), converted to raw text page-by-page, and article IDs are parsed directly from the filenames."
+  ],
+  "data_processing": [
+    "The references section is algorithmically removed using backward scanning and pattern matching. Candidate DOIs and accession IDs are extracted via regex, and surrounding text is chunked with a 200-character span. Invalid classifications and duplicates are filtered out before formatting the final submission."
+  ],
+  "features_engineering": [
+    ""
+  ],
+  "models": [
+    "Qwen2.5-32B-Instruct (AWQ quantized)"
+  ],
+  "frameworks_used": [
+    "vllm",
+    "torch",
+    "fitz (PyMuPDF)",
+    "pandas",
+    "numpy",
+    "re",
+    "logits_processor_zoo"
+  ],
+  "loss_functions": [
+    ""
+  ],
+  "cv_strategy": "",
+  "ensembling": "",
+  "insights": [
+    "Structured system prompts combined with logits processors can effectively constrain LLM outputs to specific multi-class choices without requiring model fine-tuning.",
+    "Regex-based candidate generation significantly reduces the context window needed for LLM inference, improving efficiency and accuracy.",
+    "Filtering out the references section before LLM prompting prevents the model from misclassifying citation metadata as primary data."
+  ],
+  "critical_findings": [],
+  "what_did_not_work": [],
+  "source_url": "https://www.kaggle.com/code/kawchar85/lb-0-289-improved-basline-prompt-engineering",
+  "votes": 248
+}

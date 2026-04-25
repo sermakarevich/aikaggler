@@ -1,0 +1,47 @@
+{
+  "summary": "This notebook serves as the first part of a series for the RSNA 2025 intracranial aneurysm detection challenge, focusing on exploratory data analysis and foundational data understanding. It demonstrates how to parse complex DICOM and NIfTI metadata, reconstruct 3D volumes, and visualize key imaging attributes across different modalities and anatomical planes. The author emphasizes the structural heterogeneity of the dataset, including variations in slice thickness, pixel spacing, and window/center settings. Readers should take away the importance of rigorous metadata extraction, coordinate normalization, and modality-aware visualization before attempting any modeling pipeline. The notebook establishes a reproducible foundation for handling multi-modal neuroimaging data in medical AI competitions.",
+  "purpose": "eda",
+  "competition_flow": "Loads raw DICOM and NIfTI imaging data alongside CSV labels, extracts and parses extensive DICOM header metadata, normalizes localization coordinates, and visualizes distributions across modalities, planes, and anatomical locations to prepare the dataset for downstream preprocessing and modeling.",
+  "data_reading": [
+    "pydicom.dcmread for DICOM files (handling both single-frame and multi-frame series)",
+    "nibabel.load for NIfTI files",
+    "pandas.read_csv for train/label CSVs",
+    "Parses specific DICOM tags including ImagePositionPatient, ImageOrientationPatient, PixelSpacing, SliceThickness, WindowWidth, WindowCenter, and RescaleSlope/Intercept"
+  ],
+  "data_processing": [
+    "Resizes all DICOM slices to a fixed 512x512 target shape using cv2.resize",
+    "Normalizes aneurysm localization coordinates by dividing pixel values by image dimensions",
+    "Converts NIfTI volumes to canonical orientation and resamples to 1.0mm isotropic spacing using scipy.ndimage.zoom",
+    "Sorts slices by ImagePositionPatient to ensure correct 3D volume reconstruction"
+  ],
+  "features_engineering": [
+    "Normalized localization coordinates (x_norm, y_norm) derived from raw pixel coordinates and image dimensions",
+    "Derived imaging plane (axial, coronal, sagittal) by computing the cross product of ImageOrientationPatient direction cosines",
+    "Extracted and aggregated per-series DICOM metadata (spacing, thickness, window/center, rescale factors) into structured DataFrames"
+  ],
+  "models": [],
+  "frameworks_used": [
+    "pydicom",
+    "nibabel",
+    "cv2",
+    "pandas",
+    "numpy",
+    "matplotlib",
+    "seaborn",
+    "plotly",
+    "scipy"
+  ],
+  "loss_functions": [],
+  "cv_strategy": "",
+  "ensembling": "",
+  "insights": [
+    "DICOM metadata attributes like IOP, IPP, and PixelSpacing are critical for accurate 3D reconstruction and cross-modality alignment.",
+    "The dataset exhibits significant heterogeneity in imaging modalities (CTA, MRA, MRI) and acquisition planes, necessitating modality-aware preprocessing strategies.",
+    "Aneurysm localization coordinates are provided in raw pixel space and must be normalized relative to image dimensions for consistent model input.",
+    "Multi-frame DICOMs consolidate all slices into a single file with shared metadata, whereas single-frame DICOMs use separate files, directly impacting I/O and parsing efficiency."
+  ],
+  "critical_findings": [],
+  "what_did_not_work": [],
+  "source_url": "https://www.kaggle.com/code/amirmmahdavikia/rsna2025-explore-and-gain-insights",
+  "votes": 109
+}

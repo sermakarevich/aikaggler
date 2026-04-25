@@ -1,0 +1,46 @@
+{
+  "summary": "This notebook demonstrates a complete pipeline for detecting flagellar motors in bacterial tomograms, starting with exploratory analysis of label distributions and 3D coordinate correlations. It then details a custom preprocessing workflow that extracts 2D slices around motor centers, applies percentile-based contrast normalization, and converts the data into a YOLO-compatible format. The core of the recipe involves training a YOLOv8 model with transfer learning, monitoring DFL loss, and implementing an optimized inference loop with 3D non-maximum suppression. Readers should learn how to adapt volumetric biological imaging data into a 2D object detection task and efficiently handle slice-level leakage during validation.",
+  "purpose": "baseline",
+  "competition_flow": "Loads training labels and tomogram slices, performs EDA and percentile-based normalization to create a YOLO-format dataset, trains a YOLOv8 model with transfer learning, and runs an optimized inference pipeline with 3D NMS to generate a CSV submission of motor coordinates.",
+  "data_reading": [
+    "Loads train_labels.csv into a pandas DataFrame.",
+    "Reads tomogram slices as JPEG files from nested directories using glob and cv2.imread/PIL.Image.open."
+  ],
+  "data_processing": [
+    "Extracts 2D slices around each motor's Z-axis coordinate (\u00b14 slices).",
+    "Applies percentile-based contrast enhancement (clipping to 2nd and 98th percentiles, scaling to 0-255).",
+    "Splits data by tomogram ID (80% train, 20% val) to prevent slice-level leakage.",
+    "Generates YOLO-format bounding box annotations with a fixed 24x24 pixel box size.",
+    "Normalizes bounding box coordinates to image dimensions."
+  ],
+  "features_engineering": [],
+  "models": [
+    "YOLOv8 (yolov8m.pt)"
+  ],
+  "frameworks_used": [
+    "ultralytics",
+    "pytorch",
+    "numpy",
+    "pandas",
+    "matplotlib",
+    "seaborn",
+    "plotly",
+    "opencv",
+    "PIL",
+    "scikit-learn"
+  ],
+  "loss_functions": [
+    "DFL (Distribution Focal Loss)"
+  ],
+  "cv_strategy": "Holdout split by tomogram ID (80% train, 20% val)",
+  "ensembling": "",
+  "insights": [
+    "Splitting data by tomogram ID rather than by slice prevents data leakage during validation.",
+    "Percentile-based contrast enhancement (2nd/98th) effectively normalizes varying tomogram slice intensities.",
+    "3D Non-Maximum Suppression is necessary to merge redundant detections across adjacent slices into a single 3D motor coordinate."
+  ],
+  "critical_findings": [],
+  "what_did_not_work": [],
+  "source_url": "https://www.kaggle.com/code/sharifi76/eda-visualization-yolov8",
+  "votes": 502
+}

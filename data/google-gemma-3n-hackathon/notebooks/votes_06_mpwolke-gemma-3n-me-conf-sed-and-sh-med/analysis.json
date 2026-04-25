@@ -1,0 +1,39 @@
+{
+  "summary": "This notebook demonstrates how to set up and run Google's Gemma 3n multimodal model on Kaggle's free CPU environment. It walks through installing compatible dependencies, downloading the model via Kaggle Hub, and executing both text-only and image-text generation tasks. The author highlights practical setup hurdles, including strict version requirements for `transformers` and `timm`, and the necessity of bypassing the HuggingFace pipeline API. Readers gain a working code template for loading Gemma 3n and learn realistic performance expectations when running it without GPU acceleration.",
+  "purpose": "tutorial",
+  "competition_flow": "Downloads the Gemma 3n model via Kaggle Hub, loads it with Hugging Face Transformers, and runs text and multimodal generation tasks on a CPU environment.",
+  "data_reading": [
+    "Uses `kagglehub.model_download` to fetch model weights and embeds a base64-encoded image directly via `IPython.display.Image`."
+  ],
+  "data_processing": [],
+  "features_engineering": [],
+  "models": [
+    "Gemma 3n (google/gemma-3n-e2b-it)"
+  ],
+  "frameworks_used": [
+    "transformers",
+    "kagglehub",
+    "torch",
+    "IPython"
+  ],
+  "loss_functions": [],
+  "cv_strategy": "",
+  "ensembling": "",
+  "insights": [
+    "Gemma 3n requires `transformers >= 4.53.0` and `timm >= 1.0.16` to avoid runtime errors.",
+    "The HuggingFace `pipeline` API is incompatible with Kaggle's environment due to login requirements, necessitating direct `AutoProcessor` and `AutoModelForImageTextToText` usage.",
+    "Running the model on a free CPU tier is functional but extremely slow, taking over an hour for generation.",
+    "The model natively supports multimodal chat templates for combining text and image inputs."
+  ],
+  "critical_findings": [
+    "Using `timm` version 1.0.15 or older `transformers` triggers a `RuntimeError: Unknown model (mobilenetv5_300m_enc)`.",
+    "The author notes that while model shards load completely on CPU, the generation process remains unacceptably slow without GPU acceleration."
+  ],
+  "what_did_not_work": [
+    "The HuggingFace `pipeline` API failed due to required HuggingFace account login.",
+    "Older package versions (`timm` 1.0.15 and outdated `transformers`) caused model loading errors.",
+    "CPU-only execution resulted in draft session timeouts and excessive runtime (>1 hour)."
+  ],
+  "source_url": "https://www.kaggle.com/code/mpwolke/gemma-3n-me-conf-sed-and-sh-med",
+  "votes": 59
+}

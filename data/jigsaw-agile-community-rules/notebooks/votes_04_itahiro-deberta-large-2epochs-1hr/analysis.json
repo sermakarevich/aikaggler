@@ -1,0 +1,54 @@
+{
+  "summary": "This notebook demonstrates a multi-model baseline for a community rule violation detection task by combining fine-tuned transformers, semantic search, and large language model inference. It flattens positive and negative example columns to expand the training set, extracts URL semantics via regex, and leverages round-trip translation to augment rule variants. The pipeline trains DeBERTa-v3 and DistilRoBERTa on flattened examples, scores predictions using a LoRA-finetuned Qwen3 embedding model, and runs few-shot classification with a Qwen2.5-14B instruct model via vLLM. Final predictions are combined through rank-based weighted blending to mitigate model-specific biases. Readers should learn how to effectively augment sparse example data, integrate URL context, use semantic search for scoring, and apply rank-based ensembling for robust baselines.",
+  "purpose": "ensemble",
+  "competition_flow": "Loads train/test CSVs, flattens example columns into a unified dataset, extracts URL semantics, trains/fines-tunes DeBERTa-v3, DistilRoBERTa, and Qwen3 embeddings, runs inference with Qwen2.5-14B via vLLM, and combines all five prediction files using rank-based weighted averaging to produce a final submission.",
+  "data_reading": [
+    "pd.read_csv() for train.csv and test.csv",
+    "Flattens positive_example_1/2 and negative_example_1/2 columns into a single body column with corresponding rule_violation labels (1 or 0)"
+  ],
+  "data_processing": [
+    "Flattens example columns, drops duplicates on body/rule/subreddit, shuffles data",
+    "Extracts URL domain/path keywords via regex and appends to text",
+    "Cleans text with cleantext (fix_unicode, to_ascii, remove URLs/emails/phones)",
+    "Maps labels to 1/-1 for semantic search",
+    "Constructs prompts in r/{subreddit}\\nComment: {body} format"
+  ],
+  "features_engineering": [
+    "Round-trip translation of rules (en -> fr/de/es -> en) to create synthetic rule variants",
+    "URL semantics extraction (domain and path keywords)",
+    "Prompt construction with subreddit context"
+  ],
+  "models": [
+    "deberta-v3-base",
+    "distilroberta-base",
+    "Qwen3-Embedding-0.6B",
+    "Qwen2.5-14B-Instruct-GPTQ-Int4"
+  ],
+  "frameworks_used": [
+    "transformers",
+    "torch",
+    "vllm",
+    "sentence_transformers",
+    "peft",
+    "cleantext",
+    "googletrans-py",
+    "scipy"
+  ],
+  "loss_functions": [
+    "CrossEntropyLoss (implicit via Trainer)",
+    "dot product similarity (semantic search)"
+  ],
+  "cv_strategy": "None (commented out; uses full training data)",
+  "ensembling": "Rank-based weighted blending of five model submissions (0.5 DeBERTa, 0.1 Qwen3-Embedding, 0.1 DistilRoBERTa, 0.1 Qwen2.5-14B, 0.2 DeBERTa-AUC) to produce the final submission.",
+  "insights": [
+    "Flattening positive and negative example columns into a unified training set effectively augments the dataset without manual feature engineering.",
+    "Extracting URL domain and path keywords via regex provides valuable contextual signals for rule violation detection.",
+    "Rank-based weighted blending is a robust strategy for combining heterogeneous model predictions compared to direct probability averaging.",
+    "Fine-tuning a lightweight embedding model with LoRA enables efficient semantic search-based scoring as a strong baseline.",
+    "Using vLLM with a logits processor allows efficient few-shot classification with large instruct models without full fine-tuning."
+  ],
+  "critical_findings": [],
+  "what_did_not_work": [],
+  "source_url": "https://www.kaggle.com/code/itahiro/deberta-large-2epochs-1hr",
+  "votes": 434
+}

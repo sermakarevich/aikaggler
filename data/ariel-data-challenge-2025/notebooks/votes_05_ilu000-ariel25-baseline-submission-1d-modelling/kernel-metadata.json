@@ -1,0 +1,27 @@
+{
+  "id": "ilu000/ariel25-baseline-submission-1d-modelling",
+  "id_no": 86628719,
+  "title": "ARIEL25 \u26a1 Baseline Submission 1D modelling",
+  "code_file": "ariel25-baseline-submission-1d-modelling.ipynb",
+  "language": "python",
+  "kernel_type": "notebook",
+  "is_private": false,
+  "enable_gpu": true,
+  "enable_tpu": false,
+  "enable_internet": false,
+  "keywords": [
+    "gpu"
+  ],
+  "dataset_sources": [
+    "ilu000/ariel24-models"
+  ],
+  "kernel_sources": [
+    "ilu000/ariel24-pip-installs"
+  ],
+  "competition_sources": [
+    "ariel-data-challenge-2025"
+  ],
+  "model_sources": [],
+  "docker_image": "gcr.io/kaggle-private-byod/python@sha256:e3f9bf91d1b7b36bf77554565d27c5733585fbe5e2b7f0832e068824e7accc3c",
+  "machine_shape": "NvidiaTeslaT4"
+}

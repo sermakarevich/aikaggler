@@ -1,0 +1,30 @@
+{
+  "summary": "This notebook demonstrates a real-time, low-latency conversational AI application built with React and the Gemini 3 Live API. It showcases how to manage bidirectional WebSocket connections, handle dual audio contexts for microphone input and playback, and implement chunked audio scheduling to minimize latency. The author emphasizes using tailored system instructions to transform a generic model into a specialized language tutor. Readers should learn how to structure a React app for real-time audio streaming, manage transcription buffering, and optimize audio playback for natural conversational flow.",
+  "purpose": "tutorial",
+  "competition_flow": "The notebook walks through building a React-based real-time voice tutoring application that connects to the Gemini 3 Live API via WebSockets, processes bidirectional audio streams, and renders a conversational UI with low-latency playback.",
+  "data_reading": [
+    "Raw audio is captured from the user's microphone via the Web Audio API at 16000Hz, converted to a PCM Blob format, and streamed as Base64-encoded chunks to the Gemini Live API."
+  ],
+  "data_processing": [
+    "Audio streams are split into two separate AudioContext instances for input and output, with incoming Base64 audio chunks decoded into AudioBuffer objects and sequentially scheduled for playback to minimize latency."
+  ],
+  "features_engineering": [],
+  "models": [
+    "Gemini 3 native audio model"
+  ],
+  "frameworks_used": [
+    "@google/genai"
+  ],
+  "loss_functions": [],
+  "cv_strategy": "",
+  "ensembling": "",
+  "insights": [
+    "Using dual AudioContext instances prevents interference between microphone input and AI audio playback.",
+    "Chunked audio decoding and precise scheduling significantly reduce conversational latency compared to waiting for full responses.",
+    "Tailored system instructions are critical for adapting a general-purpose model into a specialized, domain-specific application."
+  ],
+  "critical_findings": [],
+  "what_did_not_work": [],
+  "source_url": "https://www.kaggle.com/code/rasikaekanayakadevlk/lingualive-the-ai-conversational-partner",
+  "votes": 19
+}

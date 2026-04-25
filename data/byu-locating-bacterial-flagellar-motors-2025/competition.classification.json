@@ -1,0 +1,13 @@
+{
+  "description": "Participants locate bacterial flagellar motors within three-dimensional volumetric reconstructions of bacteria. The task is structured as an object detection problem where competitors predict the spatial coordinates of these structures in microscopy-derived volumes. Success is measured using a custom competition-specific scoring function. Winning approaches primarily utilize 3D U-Net architectures, heatmap regression, and YOLO-based detectors to handle the volumetric data.",
+  "data_modality": "image",
+  "task_type": "detection",
+  "label_structure": "multi_label",
+  "metric": "BYU_BioPhysics_91249",
+  "test_split": "unknown",
+  "format": "two_stage",
+  "dataset_scale": "unknown",
+  "domain": "biology",
+  "data_challenges": [],
+  "constraints": []
+}

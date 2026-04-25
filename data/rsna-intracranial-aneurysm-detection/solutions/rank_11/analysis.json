@@ -1,0 +1,78 @@
+{
+  "summary": "The author developed a multi-stage pipeline for aneurysm detection and Circle of Willis (CoW) segmentation in medical imaging. Instead of relying on a 3D model for segmentation, they used a 2.5D approach to extract positional features, which were then fed into RNNs across the depth direction. Key techniques included negative sampling, heuristic cropping, focal loss, self-distillation, and EMA to handle label noise and focus on vessel areas. The final ensemble of RNN models achieved strong AUC scores, highlighting the value of feature extraction over direct 3D segmentation for this task.",
+  "extensive_summary": "## Pipeline Overview\nThe solution follows a four-stage architecture designed to extract and model spatial features for aneurysm detection. Stage 1 generates brain masks using TotalSegmentator and refines them with a custom 3D U-Net trained on preprocessed CT/MRI data from Zenodo. Stage 2 trains a 2.5D CoW segmentation model with a classification head to extract positional features, deliberately avoiding a full 3D segmentation approach due to performance limitations. Stage 3 focuses on a 2.5D aneurysm detection model that combines classification and keypoint heads, utilizing aggressive negative sampling and heuristic cropping to isolate vessel regions. Stage 4 concatenates features from the previous stages and processes them across the depth direction using multiple RNN architectures.\n\n## Key Technical Choices\nThe author emphasizes that positional features extracted from a 2.5D CoW model significantly boosted cross-validation performance, even when segmentation metrics (Dice=0.56) were suboptimal. For the aneurysm model, success hinged on three rounds of negative sampling (using OOF logits from both the CoW and aneurysm models), heuristic cropping aligned with coordinate data, focal loss (alpha=0.75), self-distillation with OOF logits to mitigate label noise, and EMA. Backbones included `tf_efficientnetv2_b0.in1k`, `coatnet_rmlp_2_rw_384`, and `tf_efficientnetv2_s.in21k_ft_in1k` at 384px resolution.\n\n## RNN Modeling and Ensembling\nFour RNN variants (Residual LSTM, Residual GRU, BiLSTM, Bert) were trained on concatenated features from the CoW and aneurysm models across different backbone folds. Heavy mixup (ratio=0.5) and EMA were applied to prevent rapid overfitting. The final ensemble of RNNs achieved a CV AUC of 0.8909, which improved to 0.9035 after self-distillation with OOF logits. The author notes a significant public-private score gap and highlights GPU utilization strategies using MONAI for preprocessing and parallel inference across T4 GPUs to manage timeout constraints.",
+  "rank": 11,
+  "competition_flow": "DICOM files are converted to NIfTI, brain masks are generated and used to crop a Circle of Willis ROI, 2.5D models extract positional and aneurysm features across slices, and these features are fed into an ensemble of RNNs for final aneurysm prediction.",
+  "data_reading": [
+    "DICOM files converted to NIfTI using dicom2nifti",
+    "Coordinates and frame indexes transformed from train_localizers.csv to align with NIfTI files"
+  ],
+  "data_processing": [
+    "Brain mask generation with TotalSegmentator (CT and MRI variants)",
+    "Filtering masks with <1M pixels",
+    "3D U-Net brain segmentation for ROI cropping",
+    "Heuristic cropping aligned with coordinate data",
+    "GPU-based preprocessing with MONAI",
+    "Heavy mixup (ratio=0.5) during RNN training",
+    "EMA for model stabilization",
+    "Self-distillation with OOF logits to handle label noise"
+  ],
+  "features_engineering": [],
+  "models": [
+    "TotalSegmentator",
+    "3D U-Net",
+    "2.5D CoW Segmentation model",
+    "2.5D Aneurysm model",
+    "Residual LSTM",
+    "Residual GRU",
+    "BiLSTM",
+    "Bert",
+    "tf_efficientnetv2_b0.in1k",
+    "coatnet_rmlp_2_rw_384",
+    "tf_efficientnetv2_s.in21k_ft_in1k"
+  ],
+  "frameworks_used": [
+    "MONAI",
+    "TotalSegmentator",
+    "dicom2nifti"
+  ],
+  "loss_functions": [
+    "classification loss",
+    "segmentation loss",
+    "focal loss (alpha=0.75)",
+    "keypoint loss"
+  ],
+  "cv_strategy": "5-fold cross-validation; OOF classification logits used for negative sampling, slice filtering, and self-distillation.",
+  "ensembling": "The final submission is an ensemble of multiple RNN models trained on different backbone folds and feature combinations, with a secondary submission generated via self-distillation using OOF logits to improve the CV AUC.",
+  "insights": [
+    "Positional features extracted from a 2.5D model significantly boosted CV performance even when segmentation metrics were poor.",
+    "Self-distillation with OOF logits effectively mitigated label noise and improved final scores.",
+    "Heuristic cropping and targeted negative sampling were critical for focusing the aneurysm model on relevant vessel regions."
+  ],
+  "critical_findings": [
+    "TotalSegmentator generated better brain masks from MRI data than CT data for some scans, requiring a dual-mask selection strategy.",
+    "The 2.5D CoW segmentation model achieved a low Dice score (0.56) but still provided highly valuable positional features for downstream tasks.",
+    "There was a large, unexplained gap between public and private leaderboard scores."
+  ],
+  "what_did_not_work": [
+    "Attempting to train a 3D CoW segmentation model failed to produce a good model, leading to a pivot to a 2.5D approach."
+  ],
+  "github_repos": [
+    {
+      "url": "https://github.com/icometrix/dicom2nifti",
+      "role": "library"
+    }
+  ],
+  "papers": [],
+  "other_solution_refs": [
+    {
+      "description": "RSNA2022 1st place solution (Stage 1 reimplementation reference)",
+      "url": "https://www.kaggle.com/code/haqishen/rsna-2022-1st-place-solution-train-stage1"
+    },
+    {
+      "description": "UWMGI 2.5D training notebook (CoW Seg model reimplementation reference)",
+      "url": "https://www.kaggle.com/code/awsaf49/uwmgi-2-5d-train-pytorch"
+    }
+  ],
+  "source_url": "https://www.kaggle.com/competitions/rsna-intracranial-aneurysm-detection/discussion/612186"
+}

@@ -1,0 +1,45 @@
+{
+  "summary": "This notebook provides a GPU-accelerated baseline pipeline for the Image Matching Challenge 2025, demonstrating how to combine modern learned feature extractors with classical structure-from-motion tools. It uses DINOv2 global descriptors to efficiently shortlist candidate image pairs, ALIKED to detect and describe keypoints, and LightGlue to match them. The matched keypoints are imported into COLMAP for incremental reconstruction, which yields camera poses (rotation and translation) for each image. The pipeline outputs a formatted CSV submission file and includes a built-in scoring function for training data evaluation. Readers learn how to rapidly prototype a competitive baseline by leveraging pre-trained models and off-the-shelf SfM libraries without manual feature engineering or training.",
+  "purpose": "baseline",
+  "competition_flow": "Reads image paths from a CSV, uses DINOv2 to shortlist pairs via cosine similarity, extracts ALIKED keypoints and descriptors, matches them with LightGlue, imports results into COLMAP for incremental SfM reconstruction, and exports camera poses to a submission CSV.",
+  "data_reading": [
+    "Loads image paths and metadata from a CSV using pandas, iterates through rows to construct Prediction objects, and loads images using Kornia's load_image (RGB32 format) or LightGlue's load_image utility."
+  ],
+  "data_processing": [
+    "Resizes images to 1024 pixels for ALIKED, computes and L2-normalizes DINOv2 global descriptors, calculates pairwise cosine distances to filter pairs by a similarity threshold (0.3) and minimum pair count (20), saves keypoints/descriptors/matches to HDF5 files, and formats rotation/translation matrices as semicolon-separated strings for CSV submission."
+  ],
+  "features_engineering": [],
+  "models": [
+    "DINOv2",
+    "ALIKED",
+    "LightGlue",
+    "COLMAP IncrementalPipeline"
+  ],
+  "frameworks_used": [
+    "torch",
+    "kornia",
+    "transformers",
+    "lightglue",
+    "pycolmap",
+    "numpy",
+    "pandas",
+    "h5py",
+    "cv2",
+    "PIL"
+  ],
+  "loss_functions": [],
+  "cv_strategy": "",
+  "ensembling": "",
+  "insights": [
+    "Using learned global descriptors (DINOv2) for pair shortlisting drastically reduces computational overhead compared to exhaustive matching on large datasets.",
+    "Lowering COLMAP's min_model_size to 3 ensures successful reconstruction even for scenes with very few registered images.",
+    "The pipeline demonstrates a practical hybrid approach: leveraging GPU-accelerated deep learning for feature extraction/matching while relying on classical optimization (COLMAP) for robust pose estimation."
+  ],
+  "critical_findings": [
+    "COLMAP defaults to requiring at least 10 registered images to generate a reconstruction, so the mapper options must be explicitly adjusted to min_model_size=3 to avoid empty outputs.",
+    "ALIKED has known precision issues with float16, requiring explicit casting to float32 for stable feature extraction."
+  ],
+  "what_did_not_work": [],
+  "source_url": "https://www.kaggle.com/code/itahiro/baseline-dino-aliked-lightglue",
+  "votes": 412
+}

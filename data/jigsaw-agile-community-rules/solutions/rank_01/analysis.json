@@ -1,0 +1,61 @@
+{
+  "summary": "The author achieved 1st place by fine-tuning multiple open-weight LLMs on a binary classification task (Yes/No) using a novel data processing pipeline that leverages test set labels as training data. Key technical choices include excluding the subreddit column during deduplication, upsampling test examples, and manually masking irrelevant tokens in the loss computation to focus only on the target tokens. Inference was optimized by constructing candidate token sets for Yes/No variants, computing log-odds probabilities, and normalizing scores per rule before ensembling.",
+  "extensive_summary": "## Validation Strategy\nThe author prioritized the Public Leaderboard (LB) as the primary validation metric, citing the host's statement that the public/private split is random and the public LB represents ~30% of the test set, ensuring low variance. All models were fine-tuned online and validated against the Public LB.\n\n## Data Processing\nThe pipeline repurposes positive and negative examples from `test.csv` as training data. The author modified a baseline notebook by:\n- Using the LLM's built-in chat templates.\n- Excluding the `subreddit` column before deduplication, which significantly improved performance by preventing unnecessary cross-subreddit duplicates.\n- Upsampling test examples once prior to fine-tuning, effectively giving them double the weight (equivalent to 1 epoch on `train.csv` and 2 epochs on `test.csv`).\n\n## Fine-tuning & Loss Masking\nInitially trained with vanilla `transformers` + `pytorch`, the author switched to `Unsloth` for memory efficiency, enabling 14B models on 16GB VRAM. A critical insight was that chat templates introduce extra tokens (e.g., `<think>\n</think>\n\n`) before/after the target \"Yes\"/\"No\" tokens. By default, the loss would be computed over these, slowing convergence. The author manually masked these tokens so only the target token contributes to the loss. This standardized training behavior across models, allowing a single hyperparameter set.\n\n## Inference & Scoring\nTo handle vocabulary leakage, the author constructed candidate token sets for Yes/No variants (e.g., `[\"Yes\",\"YES\",\"Y\",\"yes\",\"True\"]` and space-prefixed forms) via local top-K experiments. Probabilities were computed as the sigmoid of log-odds between Yes and No candidate sets. Inference was accelerated by sorting test data by length and using `forward()` to bypass generation overhead.\n\n## Postprocessing & Ensembling\nPer-rule rankings were computed, scores normalized to [0, 1], and then ensembled. This postprocessing consistently improved scores (e.g., 0.929 to 0.931). The final submission was a weighted average of six models, with larger models (especially Qwen3) performing best.",
+  "rank": 1,
+  "competition_flow": "Raw train/test CSVs are processed by deduplicating without subreddit, upsampling test labels, and formatting with chat templates; models are fine-tuned with masked loss on a single GPU via Unsloth; inference computes log-odds over candidate Yes/No tokens, normalizes per-rule scores, and ensembles them for the final submission.",
+  "data_reading": [
+    "CSV files (train.csv, test.csv) loaded and parsed",
+    "Positive/negative examples from test.csv repurposed as training data"
+  ],
+  "data_processing": [
+    "Excluded subreddit column before deduplication to prevent cross-subreddit duplicates",
+    "Upsampled test.csv examples once before fine-tuning (equivalent to 2 epochs on test data)",
+    "Used LLM built-in chat templates",
+    "Manually masked extra tokens in loss computation to focus only on target \"Yes\"/\"No\" tokens",
+    "Sorted test data by length for inference",
+    "Per-rule ranking normalization to [0, 1] before ensembling"
+  ],
+  "features_engineering": [],
+  "models": [
+    "Qwen3-14b",
+    "Qwen2.5-14b",
+    "Qwen3-8b",
+    "Qwen3-4b-instruct-2507",
+    "llama3.1-8b",
+    "Ettin-400M"
+  ],
+  "frameworks_used": [
+    "transformers",
+    "pytorch",
+    "Unsloth"
+  ],
+  "loss_functions": [
+    "Cross-entropy loss with manual token masking (only target \"Yes\"/\"No\" tokens contribute)"
+  ],
+  "cv_strategy": "Public Leaderboard used as validation metric; models fine-tuned online and validated against Public LB.",
+  "ensembling": "Weighted average of six fine-tuned models; per-rule scores were normalized to [0, 1] before ensembling to improve consistency.",
+  "insights": [
+    "Excluding the subreddit column during deduplication significantly improves performance by removing cross-subreddit duplicates.",
+    "Upsampling test examples once effectively doubles their training weight, boosting performance.",
+    "Masking irrelevant tokens in the loss computation standardizes convergence across different LLM architectures.",
+    "Larger models generally perform better, with Qwen3 outperforming other common LLMs.",
+    "Normalizing scores per rule before ensembling provides consistent score improvements."
+  ],
+  "critical_findings": [
+    "Chat templates introduce extra tokens (e.g., `<think>\n</think>\n\n`) that, if included in loss computation, slow training and cause inconsistent convergence across models.",
+    "The Public LB is a reliable validation metric because the host confirmed the public/private split is random and the public set is large enough (~30% of test) to ensure low variance.",
+    "Even after fine-tuning on Yes/No tokens, the model's output probabilities can scatter across the vocabulary, necessitating candidate token sets for robust scoring."
+  ],
+  "what_did_not_work": [
+    "Vanilla transformers + pytorch fine-tuning could not scale beyond 7B models due to memory limitations."
+  ],
+  "github_repos": [],
+  "papers": [],
+  "other_solution_refs": [
+    {
+      "description": "Baseline notebook for data processing and fine-tuning",
+      "url": "https://www.kaggle.com/code/neibyr/lb-0-878-train-on-test-data-qwen2-5-0-5b"
+    }
+  ],
+  "source_url": "https://www.kaggle.com/competitions/jigsaw-agile-community-rules/discussion/613305"
+}

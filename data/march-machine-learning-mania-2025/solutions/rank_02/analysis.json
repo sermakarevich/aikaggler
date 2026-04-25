@@ -1,0 +1,48 @@
+{
+  "summary": "The author placed second by submitting a manually curated \"gambling\" pick for Florida, overriding a starter notebook's predictions based on extensive basketball analytics research and game observation. Their primary machine learning approach was abandoned due to a finger injury and a shortened deadline, leaving the final submission reliant on domain knowledge rather than complex modeling. Key factors driving the Florida pick included the program's analytics-driven coaching culture, strategic use of the transfer portal, and a high roster continuity rate (70% returning minutes). Ultimately, the intuition-based override outperformed the author's original ML work, highlighting the value of domain expertise when time is constrained.",
+  "extensive_summary": "## Background and Approach Shift\nThe author initially planned a data-driven machine learning approach but was forced to pivot due to a finger injury and a compressed deadline. Instead of deploying their primary model, they submitted a \"gambling approach\" heavily informed by basketball analytics literature, game tape, and expert analysis. This submission relied on a starter notebook as a baseline, with manual overrides applied to select Florida as the championship team.\n\n## Key Analytical Factors\nThe decision to back Florida was driven by several non-obvious, domain-specific insights:\n- **Analytics Culture:** Florida's program under Coach Golden featured a dedicated analytics director (Jonathan Safir), influencing everything from recruiting to in-game strategy (e.g., intentional fouling, workload management).\n- **Roster Construction:** Rather than relying on top high school recruits, the team leveraged the transfer portal to find undervalued players (e.g., zero-star recruits Walter Clayton Jr. and Alijah Martin).\n- **Roster Continuity:** A critical metric was the percentage of minutes played by returning players. Florida's 70% continuity rate aligned with historical championship trends (e.g., Kansas 2022, UConn), contrasting sharply with Duke's 22% and suggesting superior cohesion and experience.\n\n## Outcome and Reflections\nThe manual override proved highly effective, leapfrogging the author's abandoned ML submission and securing second place. The author reflects on the irony of a domain-knowledge gamble outperforming months of ML preparation, while also noting the physical and mental resilience Florida demonstrated throughout the tournament. They conclude by suggesting future competitions might benefit from a single-submission format and the adoption of a logistic Brier score.",
+  "rank": 2,
+  "competition_flow": "The author used a starter notebook's predictions as a baseline and manually overrode them with a Florida championship pick based on basketball analytics research and game observation.",
+  "data_reading": [],
+  "data_processing": [],
+  "features_engineering": [],
+  "models": [],
+  "frameworks_used": [],
+  "loss_functions": [],
+  "cv_strategy": "",
+  "ensembling": "",
+  "insights": [
+    "Roster continuity (high percentage of returning players) is a strong predictor of tournament success and team cohesion.",
+    "Analytics-driven coaching and program culture directly translate to tangible on-court advantages like late-game decision-making and workload management.",
+    "Manual domain-knowledge overrides can outperform complex ML models when time is limited and the competition format allows flexible submissions."
+  ],
+  "critical_findings": [
+    "Florida's roster lacked top high school recruits but succeeded via the transfer portal and analytics, proving traditional recruiting rankings are less predictive than roster continuity and coaching philosophy.",
+    "Intentional fouling and strategic workload management are measurable outcomes of a data-first coaching approach that directly influence tournament outcomes."
+  ],
+  "what_did_not_work": [
+    "The author's primary ML approach was abandoned due to an injury and deadline, and a roster continuity feature they developed was outperformed by a simpler gambling-based override."
+  ],
+  "github_repos": [
+    {
+      "url": "https://github.com/gotoConversion/goto_conversion",
+      "role": "library"
+    }
+  ],
+  "papers": [
+    {
+      "title": "Basketball Analytics: Objective and Efficient Strategies for Understanding How Teams Win",
+      "url": ""
+    },
+    {
+      "title": "Basketball on Paper: Rules and Tools for Performance Analysis",
+      "url": ""
+    },
+    {
+      "title": "Mathletics: How Gamblers, Managers, and Sports Enthusiasts Use Mathematics in Baseball, Basketball, and Football",
+      "url": ""
+    }
+  ],
+  "other_solution_refs": [],
+  "source_url": "https://www.kaggle.com/competitions/march-machine-learning-mania-2025/discussion/572528"
+}

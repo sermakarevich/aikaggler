@@ -1,0 +1,75 @@
+{
+  "summary": "The author achieved 10th place in the Image Matching Challenge 2025 by prioritizing a dynamic top-k image pair selection strategy before feature matching. Instead of relying on global descriptors, they used a custom similarity score based on KeyNet-AdaLAM to identify true neighboring pairs, adjusting the top-k value dynamically based on scene visual similarity. After pair selection, they applied ALIKED and LightGlue for feature extraction and matching, followed by MAGSAC++ outlier removal and pycolmap for camera pose estimation. This pipeline prioritized precision in pair selection over complex post-processing, which proved crucial for scenes with high visual confusion.",
+  "extensive_summary": "## Dynamic Top-k Image Pair Selection\nThe core innovation of this solution lies in dynamically adjusting the number of top image pairs (`top-k`) selected for each dataset based on visual complexity. In scenes with high visual similarity like `fbk_vineyard`, the author set a very small `top-k` (e.g., 3) to strictly select neighboring pairs, preventing the model from mixing data from different clusters. Conversely, for datasets like `amy_gardens` with varying cameras or times, a larger `top-k` was used to maintain recall. The similarity score for ranking pairs was heuristically designed using the average descriptor distance of inliers and the number of inliers from KeyNet-AdaLAM.\n\n## Feature Matching and Geometric Verification\nAfter pair selection, the pipeline uses ALIKED for feature extraction and LightGlue for matching, with parameters set to `resize_to: 1024` and `max_num_keypoints: 10000`. To improve matching accuracy, the author incorporated a DBSCAN-based cropping method inspired by previous winning solutions. The final step involves geometric verification using MAGSAC++ to remove outliers and low-confidence pairs, followed by camera pose estimation via pycolmap. The author notes that keeping `ba_local_max_num_iterations` higher in pycolmap provided minor but consistent gains.\n\n## Limitations and Alternative Approaches\nThe pipeline struggled significantly with the `stairs` dataset, achieving only 5.26% ETs and 2.78% mAA. The author explored VGGT (Visual Geometry Grounded Transformer) for this scene and others with sparse coverage or opposite-view pairs, finding it could estimate poses relatively well but lacking absolute accuracy for the leaderboard. Several other approaches were explicitly tested and discarded, including alternative extractors (DISK, SIFT), explicit rotation handling, and post-estimation refiners, as they either failed on the private leaderboard or conflicted with the pipeline's design.",
+  "rank": 10,
+  "competition_flow": "The pipeline dynamically selects top-k image pairs using a KeyNet-AdaLAM-based similarity score, extracts and matches features with ALIKED and LightGlue (including DBSCAN cropping), and estimates camera poses via MAGSAC++ outlier removal and pycolmap.",
+  "data_reading": [],
+  "data_processing": [
+    "Dynamic top-k pair selection based on scene visual similarity",
+    "ALIKED/LightGlue resizing to 1024",
+    "DBSCAN-based image cropping",
+    "MAGSAC++ outlier removal"
+  ],
+  "features_engineering": [],
+  "models": [
+    "KeyNet-AdaLAM",
+    "ALIKED",
+    "LightGlue",
+    "DINOv2",
+    "VGGT"
+  ],
+  "frameworks_used": [
+    "pycolmap"
+  ],
+  "loss_functions": [],
+  "cv_strategy": "",
+  "ensembling": "",
+  "insights": [
+    "Dynamic top-k selection is crucial for handling scenes with varying visual similarity.",
+    "Keypoint-based matching outperforms global descriptors for identifying true neighboring pairs in visually confusing scenes.",
+    "DBSCAN-based cropping provides positive gains even in walkthrough-type scenes.",
+    "Increasing ba_local_max_num_iterations in pycolmap yields minor but consistent pose estimation improvements."
+  ],
+  "critical_findings": [
+    "Using a very small top-k risks breaking clusters incorrectly, but is accepted as a necessary trade-off for precision in high-similarity scenes.",
+    "Global descriptors fail to distinguish visually similar scenes, whereas keypoint matching successfully identifies adjacent views like puzzle pieces.",
+    "The stairs dataset is exceptionally difficult for the standard pipeline, highlighting a limitation in handling certain scene types."
+  ],
+  "what_did_not_work": [
+    "Alternative extractors like DISK and SIFT performed well in CV but failed on the LB",
+    "Explicit rotation handling did not improve results in this pipeline",
+    "Post-estimation refiners conflicted with the pipeline design"
+  ],
+  "github_repos": [
+    {
+      "url": "https://github.com/facebookresearch/vggt",
+      "role": "reference"
+    }
+  ],
+  "papers": [
+    {
+      "title": "VGGT: Visual Geometry Grounded Transformer",
+      "url": "https://github.com/facebookresearch/vggt",
+      "arxiv_id": null
+    }
+  ],
+  "other_solution_refs": [
+    {
+      "description": "tmyok1984 VGGT experiments",
+      "url": "https://www.kaggle.com/competitions/image-matching-challenge-2025/discussion/582968"
+    },
+    {
+      "description": "jooott and sugupoko pipeline",
+      "url": "https://www.kaggle.com/competitions/image-matching-challenge-2024/discussion/510295"
+    },
+    {
+      "description": "5th-place team IMC2023",
+      "url": "https://www.kaggle.com/competitions/image-matching-challenge-2023/discussion/417045"
+    },
+    {
+      "description": "1st-place team IMC2024",
+      "url": "https://www.kaggle.com/competitions/image-matching-challenge-2024/discussion/510084"
+    }
+  ],
+  "source_url": "https://www.kaggle.com/competitions/image-matching-challenge-2025/discussion/582898"
+}

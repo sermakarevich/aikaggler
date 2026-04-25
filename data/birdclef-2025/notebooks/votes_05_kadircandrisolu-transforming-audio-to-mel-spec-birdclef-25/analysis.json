@@ -1,0 +1,38 @@
+{
+  "summary": "This notebook provides a preprocessing pipeline that converts raw BirdCLEF 2025 audio recordings into fixed-size mel-spectrograms suitable for 2D CNN training. It handles variable-length audio by centering and padding or concatenating segments to a 5-second duration, then extracts spectral features using specific FFT and mel-band parameters. The resulting spectrograms are normalized, resized to 256x256, and saved as image-like tensors. Readers should understand how to standardize audio inputs for deep learning and how specific hyperparameters (sample rate, FFT size, mel bands) shape the feature space. The notebook also demonstrates efficient batch processing and visualization of the transformed data.",
+  "purpose": "utility",
+  "competition_flow": "Loads raw audio and metadata from Kaggle -> extracts 5-second centered audio segments -> computes mel-spectrograms -> resizes to 256x256 -> outputs image-like tensors ready for CNN training.",
+  "data_reading": [
+    "Reads taxonomy.csv and train.csv via pandas.read_csv.",
+    "Loads raw audio files using librosa.load with a sample rate of 32000 Hz."
+  ],
+  "data_processing": [
+    "Replaces NaN audio samples with the mean signal.",
+    "Centers and pads or concatenates audio to a fixed 5-second duration.",
+    "Computes mel-spectrograms (32kHz SR, 1024 FFT, 512 hop, 128 mel bands, 50-14kHz range).",
+    "Applies power-to-dB conversion and min-max normalization.",
+    "Resizes spectrograms to 256x256 using OpenCV."
+  ],
+  "features_engineering": [],
+  "models": [],
+  "frameworks_used": [
+    "librosa",
+    "numpy",
+    "pandas",
+    "opencv-python",
+    "matplotlib",
+    "torch"
+  ],
+  "loss_functions": [],
+  "cv_strategy": "",
+  "ensembling": "",
+  "insights": [
+    "Converting 1D audio to 2D mel-spectrograms enables the use of standard 2D CNN architectures for audio classification.",
+    "Fixed-length 5-second centering and resizing standardizes variable-length audio inputs for efficient batch processing.",
+    "Min-max normalization and dB scaling prepare the spectrograms for stable neural network training."
+  ],
+  "critical_findings": [],
+  "what_did_not_work": [],
+  "source_url": "https://www.kaggle.com/code/kadircandrisolu/transforming-audio-to-mel-spec-birdclef-25",
+  "votes": 455
+}

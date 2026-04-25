@@ -1,0 +1,39 @@
+{
+  "summary": "This notebook delivers a comprehensive exploratory data analysis (EDA) of the NFL Big Data Bowl 2026 tracking dataset, focusing specifically on pass plays. It loads and merges pre-throw and in-air player tracking frames with supplementary metadata, then performs statistical profiling, distribution analysis, and spatial-temporal visualization. Key techniques include calculating receiver-defender separation metrics, validating tracking data against human physics limits, and generating interactive animations and 3D scatter plots to illustrate player movement patterns. Readers should understand how to structure frame-by-frame tracking data, identify spatial-temporal features relevant to pass prediction, and recognize data quality constraints like speed and acceleration bounds.",
+  "purpose": "eda",
+  "competition_flow": "Loads weekly tracking CSVs and supplementary metadata, merges them by game/play/player, computes spatial-temporal metrics like separation and speed distributions, and visualizes the data through interactive charts and animations to understand pass play dynamics.",
+  "data_reading": [
+    "Reads weekly `input_2023_w{week:02}.csv` and `output_2023_w{week:02}.csv` files via `pandas.read_csv`, concatenates them across weeks, and merges with `supplementary_data.csv` on `game_id` and `play_id`."
+  ],
+  "data_processing": [
+    "Sorts merged frames by game/play/frame, filters by player position/role, and applies physics-based validation checks for speed and acceleration bounds."
+  ],
+  "features_engineering": [
+    "Computes receiver-defender separation metrics (nearest distance, defenders within 3 yards, average distance), derives throw time from frame counts, estimates pass distance from ball landing coordinates, and calculates displacement/speed/acceleration statistics by role."
+  ],
+  "models": [],
+  "frameworks_used": [
+    "pandas",
+    "numpy",
+    "matplotlib",
+    "seaborn",
+    "plotly",
+    "scipy"
+  ],
+  "loss_functions": [],
+  "cv_strategy": "",
+  "ensembling": "",
+  "insights": [
+    "Receiver separation and spatial positioning during the in-air phase are primary drivers of pass play outcomes.",
+    "Frame-by-frame tracking data can be effectively structured and visualized using spatial-temporal plots to reveal strategic movement patterns.",
+    "Player roles and positions fundamentally dictate speed distributions, acceleration profiles, and separation dynamics.",
+    "Merging pre-throw and in-air tracking data with supplementary metadata enables comprehensive play-level context for feature derivation."
+  ],
+  "critical_findings": [
+    "Tracking data strictly adheres to human physics limits, with speed and acceleration violations being negligible.",
+    "Inside linebackers exhibit late-air acceleration bursts that close separation gaps, impacting receiver targeting windows."
+  ],
+  "what_did_not_work": [],
+  "source_url": "https://www.kaggle.com/code/ajaysamp/nfl-big-data-bowl-2026-eda-upgraded",
+  "votes": 59
+}

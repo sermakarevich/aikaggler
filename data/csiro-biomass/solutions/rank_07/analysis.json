@@ -1,0 +1,49 @@
+{
+  "summary": "The author joined the competition midway and built a two-stage pipeline on top of a teammate baseline. Stage 1 trains single-stream and dual-stream DINOv3-Large models with R\u00b2 loss, leveraging a shared feature extractor and task-specific heads, along with a carefully engineered StratifiedGroupKFold split. Stage 2 implements Test-Time Training (TTT) using post-processed Stage 1 predictions as pseudo-labels on the combined train/test set. The final submission blends Stage 1 and TTT outputs, with extensive ablations revealing that TTT and careful CV splitting were more impactful than architectural changes or external data.",
+  "extensive_summary": "## Stage 1: Architecture & Training\nThe core approach relies on DINOv3-Large configured in two variants: a single-stream model that predicts all five regression targets simultaneously, and a dual-stream model that predicts three targets directly while deriving the remaining two via post-calculation. Both variants use a shared feature extractor with task-specific regression heads activated by Softplus. To balance parameter efficiency and inductive bias sharing, the first 80% of parameters are frozen during training. Training employs R\u00b2 loss, AdamW (lr: 2e-4, wd: 1e-2), and Albumentations augmentations including Resize (1024\u00d72048 for single-stream, 1024\u00b2 for dual-stream), HorizontalFlip, VerticalFlip, RandomBrightnessContrast, and ColorJitter. SWA is applied to the top 3 loss and top 3 CV checkpoints per fold.\n\n## Validation Strategy\nA StratifiedGroupKFold split is used with 'sampling date' as the grouping key and 'stat' as labels. Because the original three dates were insufficient for a robust 5-fold split, the WA data was subdivided into seven virtual dates. A multi-threaded brute-force search across 10 million seeds was executed to find the split with the most balanced distribution across all folds.\n\n## Stage 2: Test-Time Training & Pseudo-Labeling\nTo address limited model heterogeneity and utilize remaining inference headroom, the author implements TTT. Stage 1 predictions undergo post-processing (multiplying clover by 0.8 and zeroing components below 0.2) to generate pseudo-labels. These are used to fine-tune the best single-stream fold on the combined full training and test sets for 12 epochs. SWA is applied during the final 4 epochs to stabilize training and prevent overfitting. Parallel TTT across separate GPUs was tested but yielded no performance gains.\n\n## Ensembling & Post-Processing\nStage 1 results are combined via a simple average of single-stream and dual-stream outputs, with horizontal flip TTA applied during inference. The final submission uses a weighted blend of 0.2 * Stage 1 + 0.8 * Stage 2.\n\n## Failed Attempts\nExtensive experimentation ruled out several common competition strategies. Architectures like SigLIP-2, Mixup/Cutmix variants, auxiliary tasks/losses, DINO embeddings paired with ML models, and external datasets all failed to provide meaningful gains.",
+  "rank": 7,
+  "competition_flow": "Raw imagery is processed and fed into a two-stage pipeline: Stage 1 trains single-stream and dual-stream DINOv3-Large models with R\u00b2 loss and StratifiedGroupKFold, followed by inference with TTA and post-processing; Stage 2 uses these predictions as pseudo-labels for Test-Time Training on the combined train/test set, with the final submission blending both stages.",
+  "data_reading": [],
+  "data_processing": [
+    "Resize (1024\u00d72048 for single-stream, 1024\u00d71024 for dual-stream)",
+    "HorizontalFlip, VerticalFlip, RandomBrightnessContrast, ColorJitter",
+    "Post-processing: multiplying clover by 0.8 and zeroing component values below 0.2",
+    "Horizontal flip TTA during inference"
+  ],
+  "features_engineering": [],
+  "models": [
+    "DINOv3-Large"
+  ],
+  "frameworks_used": [],
+  "loss_functions": [
+    "r^2 loss"
+  ],
+  "cv_strategy": "StratifiedGroupKFold with 'sampling date' as groups and 'stat' as labels, subdividing the original three dates into seven virtual dates and conducting a multi-threaded brute-force search across 10 million seeds to find the most balanced 5-fold split.",
+  "ensembling": "Stage 1 combines single-stream and dual-stream models via simple averaging, while the final submission uses a weighted blend of 0.2 * Stage 1 + 0.8 * Stage 2.",
+  "insights": [
+    "A shared feature extractor with task-specific heads enables parameter efficiency and inductive bias sharing across related regression tasks.",
+    "Test-Time Training with pseudo-labels is a highly effective strategy when model heterogeneity for traditional ensembling is limited.",
+    "Applying SWA during the final epochs of TTT prevents overfitting and improves generalization on the combined train/test set."
+  ],
+  "critical_findings": [
+    "Subdividing the original three dates into seven virtual dates and brute-forcing 10 million seeds was essential for achieving a balanced CV split.",
+    "Post-processing predictions (scaling clover by 0.8 and thresholding values below 0.2) was a necessary step before using them as pseudo-labels for TTT.",
+    "Parallel TTT across separate GPUs did not yield performance gains despite the inference time headroom."
+  ],
+  "what_did_not_work": [
+    "Model architectures other than DINOv3, such as SigLIP-2.",
+    "Mixup, Cutmix, and their modified variants.",
+    "Auxiliary tasks and auxiliary losses.",
+    "DINO embeddings combined with ML models.",
+    "External datasets."
+  ],
+  "github_repos": [
+    {
+      "url": "https://www.kaggle.com/code/cudacoding/speedup-ttt-fold2-w-o-pp-lb-0-77-0-65",
+      "role": "solution"
+    }
+  ],
+  "papers": [],
+  "other_solution_refs": [],
+  "source_url": "https://www.kaggle.com/competitions/csiro-biomass/discussion/670654"
+}

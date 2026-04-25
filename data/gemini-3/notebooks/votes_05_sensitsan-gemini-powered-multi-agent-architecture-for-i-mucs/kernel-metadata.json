@@ -1,0 +1,29 @@
+{
+  "id": "sensitsan/gemini-powered-multi-agent-architecture-for-i-mucs",
+  "id_no": 104276740,
+  "title": "Gemini-Powered Multi-Agent Architecture for I-MUCS",
+  "code_file": "gemini-powered-multi-agent-architecture-for-i-mucs.ipynb",
+  "language": "python",
+  "kernel_type": "notebook",
+  "is_private": false,
+  "enable_gpu": false,
+  "enable_tpu": false,
+  "enable_internet": true,
+  "keywords": [
+    "scheduled"
+  ],
+  "dataset_sources": [
+    "sensitsan/devtriage-collaborative-chat-i-mucs"
+  ],
+  "kernel_sources": [
+    "sensitsan/gemini-powered-multi-agent-architecture-for-i-mucs"
+  ],
+  "competition_sources": [
+    "gemini-3"
+  ],
+  "model_sources": [
+    "google/gemini-2.5-flash-api/Api/gemini-2.5-flash/1"
+  ],
+  "docker_image": "gcr.io/kaggle-images/python@sha256:bf0b407a5ed73626191ae2259063a0090ae36666c8f00ffdfae3fb543eae750d",
+  "machine_shape": "None"
+}

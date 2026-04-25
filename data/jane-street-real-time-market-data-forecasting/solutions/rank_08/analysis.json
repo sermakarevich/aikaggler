@@ -1,0 +1,65 @@
+{
+  "summary": "The author achieved an 8th place finish on a Jane Street real-time market data forecasting competition by applying deep learning to tabular time-series data. They used a time-series GRU architecture with simple standardization and zero-imputation, augmented with market averages, rolling statistics, and auxiliary responder targets. A key innovation was online learning during inference, updating model weights with a single forward pass per date, which significantly boosted performance. The solution also prioritized inference speed optimization and used a simple unweighted ensemble of multiple seeds.",
+  "extensive_summary": "## Cross-Validation & Data Preparation\nThe author employed a time-series cross-validation scheme with two folds, using a validation size of 200 dates to mirror the public leaderboard setup. To better simulate the private dataset scenario, the first fold's model was tested on the last 200 dates with a 200-day gap. Data preparation involved starting from `date_id = 700` (where `time_id` count stabilizes) and applying simple standardization with zero imputation for NaNs, as more complex methods yielded no gains.\n\n## Feature Engineering & Model Architecture\nAll original features were used except three categorical ones (09\u201311). The author engineered additional features including market averages per `date_id` and `time_id`, rolling statistics (averages and standard deviations over the last 1000 `time_id`s per symbol), and explicitly added `time_id` as a feature. The core architecture consisted of two slightly different time-series GRU models: a 3-layer GRU and a 1-layer GRU followed by two linear layers with ReLU and dropout. The latter performed slightly better on CV but both were kept for ensembling.\n\n## Auxiliary Targets & Training Strategy\nA crucial component was the use of four auxiliary \"responder\" targets (`responder_7`, `responder_8`, and two calculated ones approximating 8-day and 60-day rolling averages of the base target). Separate base models were trained for each auxiliary target, with their predictions passed through a linear layer to produce the final `responder_6` output. The sum of weighted zero-mean R\u00b2 losses across all responders was used for training. Models were trained with a batch size of one day and a learning rate of 0.0005.\n\n## Online Learning & Inference Optimization\nDuring inference, the author implemented online learning by performing a single forward pass per `date_id` to update model weights with a learning rate of 0.0003, using only the `responder_6` loss. This dramatically improved CV scores (+0.008) and proved highly effective over the year-long gap between training and private data. Inference speed was heavily optimized, achieving 0.06 seconds per step, with PyTorch chosen over TensorFlow after benchmarking. The final submission used a simple unweighted average of predictions from 6 models (2 architectures \u00d7 3 seeds).",
+  "rank": 8,
+  "competition_flow": "Raw tabular time-series data was standardized and zero-imputed, augmented with rolling statistics and market averages, fed into multiple GRU architectures trained with auxiliary responder targets and weighted R\u00b2 loss, then optimized for inference speed and updated via single-pass online learning during the competition period before being ensembled via unweighted averaging.",
+  "data_reading": [],
+  "data_processing": [
+    "Simple standardization",
+    "NaN imputation with zero",
+    "Data filtering to start from `date_id = 700`"
+  ],
+  "features_engineering": [
+    "Market averages per `date_id` and `time_id`",
+    "Rolling averages and standard deviations over the last 1000 `time_id`s per symbol",
+    "Explicit `time_id` feature",
+    "Auxiliary responder targets (`responder_9`, `responder_10`) calculated via shifted `responder_6` and `responder_8` columns"
+  ],
+  "models": [
+    "Time-series GRU (3-layer variant)",
+    "1-layer GRU followed by 2 linear layers with ReLU and dropout"
+  ],
+  "frameworks_used": [
+    "PyTorch",
+    "TensorFlow"
+  ],
+  "loss_functions": [
+    "weighted zero-mean R\u00b2"
+  ],
+  "cv_strategy": "Time-series cross-validation with two folds (200 dates each), plus a 200-day gap holdout on the final 200 dates to simulate the private leaderboard scenario.",
+  "ensembling": "Simple unweighted average of predictions from 6 models (2 GRU architectures \u00d7 3 random seeds).",
+  "insights": [
+    "Starting from `date_id = 700` stabilizes the data without hurting performance.",
+    "Simple standardization and zero imputation are sufficient; complex preprocessing yields no gains.",
+    "Auxiliary rolling-average targets significantly improve both CV and LB scores.",
+    "Online learning via single-pass weight updates during inference is highly effective for bridging training-to-inference distribution shifts.",
+    "Inference speed optimization is critical for real-time tabular forecasting competitions."
+  ],
+  "critical_findings": [
+    "For an MLP model, the score without online learning was higher than for the GRU, but lower with online learning, indicating GRUs adapt better to incremental updates.",
+    "Performing one-day online updates for almost a year is enough to maintain strong performance, making full retraining unnecessary despite the large data gap."
+  ],
+  "what_did_not_work": [
+    "MLP, time-series transformers, cross-symbol attention, and embeddings",
+    "Alternative NaN imputation methods",
+    "Using the entire dataset instead of filtering from `date_id = 700`"
+  ],
+  "github_repos": [
+    {
+      "url": "https://github.com/evgeniavolkova/kagglejanestreet",
+      "role": "solution"
+    }
+  ],
+  "papers": [],
+  "other_solution_refs": [
+    {
+      "description": "Discussion on responder target calculations by @johnpayne0",
+      "url": "https://www.kaggle.com/competitions/jane-street-real-time-market-data-forecasting/discussion/555562"
+    },
+    {
+      "description": "Synthetic dataset for submission API debugging by @shiyili",
+      "url": "https://www.kaggle.com/code/shiyili/js24-rmf-submission-api-debug-with-synthetic-test"
+    }
+  ],
+  "source_url": "https://www.kaggle.com/competitions/jane-street-real-time-market-data-forecasting/discussion/556542"
+}

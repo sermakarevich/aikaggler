@@ -1,0 +1,27 @@
+{
+  "id": "mattiaangeli/dinov3-baseline-lb-0-70",
+  "id_no": 106635495,
+  "title": "dinov3-baseline | LB 0.70",
+  "code_file": "dinov3-baseline-lb-0-70.ipynb",
+  "language": "python",
+  "kernel_type": "notebook",
+  "is_private": false,
+  "enable_gpu": true,
+  "enable_tpu": false,
+  "enable_internet": false,
+  "keywords": [
+    "gpu"
+  ],
+  "dataset_sources": [],
+  "kernel_sources": [
+    "packagemanager/pm-106635495-at-01-10-2026-11-30-36"
+  ],
+  "competition_sources": [
+    "csiro-biomass"
+  ],
+  "model_sources": [
+    ""
+  ],
+  "docker_image": "gcr.io/kaggle-private-byod/python@sha256:536e3d9752ddf933ae83b0a0c3ea67d38e6236db11a1cd47d84927a0b8d2c440",
+  "machine_shape": "NvidiaTeslaT4"
+}

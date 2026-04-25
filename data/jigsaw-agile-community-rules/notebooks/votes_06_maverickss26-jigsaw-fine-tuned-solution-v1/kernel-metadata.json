@@ -1,0 +1,41 @@
+{
+  "id": "maverickss26/jigsaw-fine-tuned-solution-v1",
+  "id_no": 87981984,
+  "title": "Jigsaw Fine-tuned solution v1",
+  "code_file": "jigsaw-fine-tuned-solution-v1.ipynb",
+  "language": "python",
+  "kernel_type": "notebook",
+  "is_private": false,
+  "enable_gpu": true,
+  "enable_tpu": false,
+  "enable_internet": false,
+  "keywords": [
+    "gpu"
+  ],
+  "dataset_sources": [
+    "fuumin621/jigsaw-exp003-fold0",
+    "maverickss26/libraries",
+    "bibanh/qwen2-5-32b-awq",
+    "bibanh/qwen2-5-32b-gptq-int4-batch4-full",
+    "bibanh/qwen3-0-6b-embedding-finetune-epoch2",
+    "bibanh/qwen3-8b-embedding"
+  ],
+  "kernel_sources": [
+    "",
+    "mks2192/jigsaw-llama3-1-8b-instruct-training-one-epoch",
+    "fuumin621/qwen2-5-32b-instruct-gptq-int4",
+    "packagemanager/pm-87981984-at-09-28-2025-03-19-00"
+  ],
+  "competition_sources": [
+    "jigsaw-agile-community-rules"
+  ],
+  "model_sources": [
+    "yangjiahua/lora_14b_gptq_1epoch_r32/Keras/default/1",
+    "qwen-lm/qwen-3-embedding/Transformers/0.6b/1",
+    "qwen-lm/qwen2.5/Transformers/14b-instruct-gptq-int4/1",
+    "qwen-lm/qwen2.5/Transformers/0.5b-instruct-gptq-int4/1",
+    "qwen-lm/qwen2.5/Transformers/32b-instruct-awq/1"
+  ],
+  "docker_image": "gcr.io/kaggle-private-byod/python@sha256:320043e14c68293f1c946585b9257123385205a58af4b94b17d31868cae4e868",
+  "machine_shape": "NvidiaTeslaT4"
+}

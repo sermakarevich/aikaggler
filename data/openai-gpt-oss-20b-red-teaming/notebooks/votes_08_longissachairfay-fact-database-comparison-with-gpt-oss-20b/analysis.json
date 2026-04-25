@@ -1,0 +1,44 @@
+{
+  "summary": "The notebook implements an automated adversarial testing framework for the open-weight `gpt-oss:20b` model hosted locally via Ollama. It constructs a small, hardcoded fact database spanning geography, science, history, math, literature, technology, and current events, then systematically queries the model using five distinct prompt injection strategies (direct, leading, confidence undermining, authority appeal, and trick formats). The script evaluates the model's factual consistency and susceptibility to manipulation by tracking correct vs. incorrect responses across different categories and difficulty levels. Readers should understand how to structure programmatic adversarial evaluations for LLMs and observe how specific prompt engineering techniques can successfully bypass factual grounding. The notebook demonstrates that even capable open-weight models can be steered toward incorrect answers when prompted with authoritative or leading context.",
+  "purpose": "other",
+  "competition_flow": "Sets up a local Ollama server, pulls the `gpt-oss:20b` model, generates a hardcoded fact database, runs five adversarial prompt strategies against it, and outputs a JSON report analyzing accuracy, strategy effectiveness, and category/difficulty vulnerabilities.",
+  "data_reading": [
+    "Hardcoded Python list of dictionaries converted to a pandas DataFrame and exported to `fact_database.csv`."
+  ],
+  "data_processing": [
+    ""
+  ],
+  "features_engineering": [
+    ""
+  ],
+  "models": [
+    "gpt-oss:20b"
+  ],
+  "frameworks_used": [
+    "openai",
+    "pandas",
+    "requests",
+    "numpy",
+    "json",
+    "datetime",
+    "subprocess",
+    "os",
+    "sys",
+    "time",
+    "random"
+  ],
+  "loss_functions": [
+    ""
+  ],
+  "cv_strategy": "",
+  "ensembling": "",
+  "insights": [
+    "Programmatic adversarial testing can effectively quantify LLM susceptibility to specific prompt injection techniques.",
+    "Leading questions and authority appeals are particularly effective at causing factual deviations in open-weight models.",
+    "Evaluating model robustness requires structured, repeatable prompt strategies rather than random queries."
+  ],
+  "critical_findings": [],
+  "what_did_not_work": [],
+  "source_url": "https://www.kaggle.com/code/longissachairfay/fact-database-comparison-with-gpt-oss-20b",
+  "votes": 54
+}

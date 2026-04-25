@@ -1,0 +1,17 @@
+{
+  "description": "Participants fine-tune large language models to improve their step-by-step reasoning capabilities using Tunix, a JAX-native library for post-training. The competition focuses on developing efficient training techniques and loss functions to enhance model performance on text prompts. Success is evaluated based on the quality and accuracy of the generated reasoning outputs on a held-out test set.",
+  "data_modality": "text",
+  "task_type": "generation",
+  "label_structure": "unknown",
+  "metric": "unknown",
+  "test_split": "unknown",
+  "format": "code_comp",
+  "dataset_scale": "unknown",
+  "domain": "llm_reasoning",
+  "data_challenges": [],
+  "constraints": [
+    "tpu_only",
+    "kernels_only",
+    "limited_daily_submissions"
+  ]
+}

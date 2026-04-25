@@ -1,0 +1,25 @@
+{
+  "id": "ichigoe/train-224x224-dicom-pngs-efficientnetv2s",
+  "id_no": 88371241,
+  "title": "Train 224x224 DICOM->PNGs EfficientNetV2S",
+  "code_file": "train-224x224-dicom-pngs-efficientnetv2s.ipynb",
+  "language": "python",
+  "kernel_type": "notebook",
+  "is_private": false,
+  "enable_gpu": true,
+  "enable_tpu": false,
+  "enable_internet": true,
+  "keywords": [
+    "gpu"
+  ],
+  "dataset_sources": [
+    "dennisfong/rsna-2025-intracranial-aneurysm-png-224x224"
+  ],
+  "kernel_sources": [],
+  "competition_sources": [
+    "rsna-intracranial-aneurysm-detection"
+  ],
+  "model_sources": [],
+  "docker_image": "gcr.io/kaggle-private-byod/python@sha256:320043e14c68293f1c946585b9257123385205a58af4b94b17d31868cae4e868",
+  "machine_shape": "NvidiaTeslaT4"
+}

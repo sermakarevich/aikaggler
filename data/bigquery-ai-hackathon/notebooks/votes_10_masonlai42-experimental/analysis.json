@@ -1,0 +1,38 @@
+{
+  "summary": "This notebook implements an automated market intelligence pipeline for the insurance industry by aggregating Google Trends search data and RSS news feeds. It processes external web data to calculate search interest trends, geographic hotspots, and article sentiment using VADER and TextBlob. The pipeline generates both static matplotlib dashboards and interactive Plotly charts to visualize findings, ultimately exporting structured results to JSON. Readers should understand how to build a robust, self-contained web scraping and sentiment analysis workflow that handles API rate limits, compatibility issues, and dynamic package installation.",
+  "purpose": "utility",
+  "competition_flow": "Fetches Google Trends and RSS news data for insurance-related keywords, performs sentiment and trend analysis, generates visualizations, and exports structured results to JSON.",
+  "data_reading": [
+    "Retrieves data dynamically via the pytrends API for Google Trends and feedparser for RSS feeds from insurance news websites; no local competition datasets are loaded."
+  ],
+  "data_processing": [
+    "Filters news articles to the last 30 days, strips HTML tags from summaries, combines VADER and TextBlob sentiment scores, calculates recent vs. historical trend percentages, handles missing data and API errors gracefully, and batches keyword requests to respect rate limits."
+  ],
+  "features_engineering": [],
+  "models": [],
+  "frameworks_used": [
+    "pandas",
+    "numpy",
+    "matplotlib",
+    "seaborn",
+    "plotly",
+    "pytrends",
+    "feedparser",
+    "beautifulsoup4",
+    "textblob",
+    "vaderSentiment"
+  ],
+  "loss_functions": [],
+  "cv_strategy": "",
+  "ensembling": "",
+  "insights": [
+    "Combining search volume trends with news sentiment provides a more comprehensive view of market interest than either metric alone.",
+    "Dynamic package installation and compatibility patches are necessary for maintaining external API integrations in restricted Kaggle environments.",
+    "Batching API requests and adding sleep intervals prevents rate-limiting errors when fetching large keyword sets.",
+    "Sentiment analysis can be effectively simplified by averaging compound scores from VADER and TextBlob for robust classification."
+  ],
+  "critical_findings": [],
+  "what_did_not_work": [],
+  "source_url": "https://www.kaggle.com/code/masonlai42/experimental",
+  "votes": 21
+}

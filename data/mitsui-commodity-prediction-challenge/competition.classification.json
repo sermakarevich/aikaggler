@@ -1,0 +1,18 @@
+{
+  "description": "Participants forecast future commodity prices using historical financial market data. The objective is to build a robust model that captures directional trends while remaining stable under high market volatility. Success is evaluated using a custom proprietary metric that balances prediction accuracy with forecast stability.",
+  "data_modality": "tabular",
+  "task_type": "forecasting",
+  "label_structure": "single_label",
+  "metric": "MITSUI&CO. Commodity Prediction Metric",
+  "test_split": "temporal",
+  "format": "code_comp",
+  "dataset_scale": "unknown",
+  "domain": "finance",
+  "data_challenges": [
+    "noisy_targets",
+    "private_test_shift"
+  ],
+  "constraints": [
+    "limited_daily_submissions"
+  ]
+}

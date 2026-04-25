@@ -1,0 +1,45 @@
+{
+  "summary": "The author fine-tuned three Qwen-family LLMs for a Reddit rule violation classification task using Deep Mutual Learning (DML) to overcome strict GPU constraints. Instead of relying on a larger teacher model or offline distillation, they trained peer models simultaneously, leveraging KL divergence loss alongside cross-entropy to share soft predictions and improve generalization. To address error correlation in co-training, they expanded the peer cohort to three diverse models and applied weighted ensembling, which boosted both public and private scores.",
+  "extensive_summary": "## Problem & Constraints\nThe author tackled a Reddit rule violation classification competition under strict hardware constraints, utilizing only two T4 GPUs. Rather than attempting offline distillation\u2014which proved insufficient as it only covered two of the six known rules\u2014or relying on a larger teacher model, they implemented **Deep Mutual Learning (DML)**.\n\n## Core Technique: Deep Mutual Learning\nThis online distillation technique trains multiple peer models simultaneously, allowing them to learn from each other's soft predictions rather than hard labels. By adding a **Kullback-Leibler (KL) divergence loss** to the standard classification cross-entropy, the models enriched their supervision and implicitly regularized their optimization, leading to smoother decision boundaries and better generalization. Classic logits-based distillation was ruled out because teacher softmax outputs were too sharp, making temperature scaling ineffective.\n\n## Model Selection & Ensemble Strategy\nInitial experiments showed that training **Qwen3-14B** and **Qwen2.5-14B-Instruct** as peer students via DML consistently outperformed independently trained models on both public and private leaderboards. However, the author noted that DML's co-training process can introduce correlations in the models' errors. To address this and enhance ensemble diversity, they expanded the peer cohort to three models: **Qwen3-14B**, **Qwen3-8B**, and **Qwen3Guard-Gen-4B**. This three-peer ensemble, combined with weighted ensembling, yielded the final submission score.\n\n## Inference Pipeline\nFor inference, the test data was split in half to balance sequence length distributions across two GPUs. Each half was sorted by length to enable efficient batch processing, and the models were run sequentially to generate predictions. The entire training process took approximately five hours, while inference also required around five hours, demonstrating a practical and hardware-efficient pipeline for LLM competitions.",
+  "rank": 6,
+  "competition_flow": "Raw Reddit comments and subreddit rules were formatted into a prompt template, used to fine-tune peer LLMs via Deep Mutual Learning, and their predictions were ensembled to produce the final submission.",
+  "data_reading": [],
+  "data_processing": [],
+  "features_engineering": [],
+  "models": [
+    "Qwen3-14B",
+    "Qwen2.5-14B-Instruct",
+    "Qwen3-8B",
+    "Qwen3Guard-Gen-4B"
+  ],
+  "frameworks_used": [],
+  "loss_functions": [
+    "cross-entropy",
+    "Kullback-Leibler (KL) divergence loss"
+  ],
+  "cv_strategy": "",
+  "ensembling": "Weighted ensembling of three peer models trained via DML was used to improve robustness and mitigate correlated errors.",
+  "insights": [
+    "DML enables effective knowledge transfer without a larger teacher by allowing models to learn from each other's soft predictions.",
+    "Expanding the peer cohort to three diverse models helps mitigate error correlation and boosts ensemble performance.",
+    "Sorting test data by sequence length and splitting it balances GPU workloads for efficient parallel inference."
+  ],
+  "critical_findings": [
+    "Classic logits-based knowledge distillation fails here because teacher softmax outputs are too sharp, making temperature scaling ineffective.",
+    "Co-training in DML can introduce correlated errors, necessitating diverse peer models for a strong ensemble."
+  ],
+  "what_did_not_work": [
+    "Offline distillation only covered 2 out of 6 known rules.",
+    "Classic logits-based knowledge distillation with temperature scaling was ineffective due to sharp softmax outputs."
+  ],
+  "github_repos": [],
+  "papers": [
+    {
+      "title": "Deep Mutual Learning",
+      "url": "https://arxiv.org/abs/1706.00384",
+      "arxiv_id": "1706.00384"
+    }
+  ],
+  "other_solution_refs": [],
+  "source_url": "https://www.kaggle.com/competitions/jigsaw-agile-community-rules/discussion/613150"
+}

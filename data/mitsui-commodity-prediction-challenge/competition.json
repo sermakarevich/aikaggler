@@ -1,0 +1,102 @@
+{
+  "id": 94771,
+  "competitionName": "mitsui-commodity-prediction-challenge",
+  "title": "MITSUI&CO. Commodity Prediction Challenge",
+  "briefDescription": "Develop a robust model for accurate and stable prediction of commodity prices",
+  "dateEnabled": "2025-07-24T16:14:52.173Z",
+  "deadline": "2026-01-16T23:59:00Z",
+  "hasLeaderboard": true,
+  "maxDailySubmissions": 5,
+  "numScoredSubmissions": 2,
+  "hasSolution": true,
+  "numPrizes": 15,
+  "forumId": 7104699,
+  "finalLeaderboardHasBeenVerified": true,
+  "disableSubmissions": true,
+  "userRankMultiplier": 1,
+  "publicLeaderboardDisclaimerMessage": "As the public leaderboard is based on publicly available data, the ranks are not meaningful.",
+  "dateCreated": "2025-02-28T21:23:28.642029200Z",
+  "competitionHostSegmentId": 1,
+  "maxTeamSize": 5,
+  "medalsAllowed": true,
+  "enableTeamFiles": true,
+  "teamFileDeadline": "2026-02-21T00:00:00Z",
+  "teamMergerExplicitDeadline": "2025-09-29T23:59:00Z",
+  "prohibitNewEntrantsExplicitDeadline": "2025-09-29T23:59:00Z",
+  "organizationId": 5126,
+  "hasCoverImageUrl": true,
+  "showPrivateLeaderboard": true,
+  "isTeamCountOverridden": true,
+  "hasScripts": true,
+  "onlyAllowKernelSubmissions": true,
+  "totalTeams": 1711,
+  "totalCompetitors": 1319,
+  "totalSubmissions": 1730,
+  "rulesRequired": true,
+  "usesSynchronousReruns": true,
+  "maxCpuRuntimeMinutes": 540,
+  "maxGpuRuntimeMinutes": 540,
+  "rowIdColumnName": "date_id",
+  "requiredSubmissionFilename": "submission.parquet",
+  "evaluationAlgorithm": {
+    "id": 4404,
+    "name": "MITSUI&CO. Commodity Prediction Metric",
+    "isMax": true,
+    "environmentRenderType": "ENVIRONMENT_RENDER_TYPE_JSON",
+    "kernelId": 87233352,
+    "latestCompetitionMetricVersionId": 42569,
+    "state": "AVAILABLE"
+  },
+  "categories": [
+    {
+      "id": 16371,
+      "name": "investing",
+      "fullPath": "subject > people and society > business > finance > investing",
+      "datasetCount": 12375,
+      "competitionCount": 6,
+      "scriptCount": 18604,
+      "slug": "investing",
+      "displayName": "Investing"
+    },
+    {
+      "id": 11108,
+      "name": "finance",
+      "fullPath": "subject > people and society > business > finance",
+      "description": "The finance tag covers datasets and kernels about money and investing. If you need to test some new cryptocurrency investment strategies or ward off those pesky credit card fraud enthusiasts, then you've come to the right place.",
+      "datasetCount": 13899,
+      "competitionCount": 121,
+      "scriptCount": 4915,
+      "slug": "finance",
+      "displayName": "Finance"
+    },
+    {
+      "name": "custom metric",
+      "description": "This competition's metric is defined under the 'Evaluation' tab",
+      "displayName": "Custom Metric"
+    }
+  ],
+  "organization": {
+    "slug": "mitsui-and-co",
+    "name": "MITSUI & CO., LTD.",
+    "thumbnailImageUrl": "https://storage.googleapis.com/kaggle-organizations/5126/thumbnail.jpg?t=2025-07-16-04-25-32",
+    "profileUrl": "/organizations/mitsui-and-co"
+  },
+  "launched": true,
+  "createdByUserId": 995397,
+  "license": {
+    "id": 42,
+    "name": "Subject to Competition Rules",
+    "agreementRequired": false
+  },
+  "hostName": "MITSUI & CO., LTD.",
+  "scoreTruncationNumDecimals": 3,
+  "locked": true,
+  "totalJoinedUsers": 11387,
+  "requiresIdentityVerification": true,
+  "submissionSizeLimitMb": 10480,
+  "reward": {
+    "id": "USD",
+    "quantity": 100000
+  },
+  "usesHearth": true
+}

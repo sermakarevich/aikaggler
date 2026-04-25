@@ -1,0 +1,96 @@
+{
+  "summary": "The author achieved 10th place by treating the competition as a direct multi-class classification problem and ensembling 15 QLoRA-finetuned models across three Qwen backbones. Key technical choices included a mixed Focal and Cross-Entropy loss with label smoothing and a 33% weight warmup to stabilize training on long-tail classes, alongside rigorous data hygiene to manage label noise and near-duplicates. Inference was heavily optimized using GPTQ-4bit quantization and vLLM to split and run the 32B model efficiently, followed by a weighted logit blend with Top-3 selection for the final submission.",
+  "extensive_summary": "## Overview & Data Strategy\nThe solution frames the competition as a direct multi-class classification task. The author emphasizes rigorous data hygiene, including auto-fixing True/False inconsistencies and ensuring near-duplicate samples remain within the same validation fold to prevent data leakage. Target construction involved concatenating `Category` and `Misconception` columns, with missing values filled as 'NA'.\n\n## Models & Training\nThree backbone architectures were utilized via `AutoModelForSequenceClassification`: Qwen3-Reranker-8B, Qwen3-Embedding-8B, and Qwen2.5-32B-Instruct. Each was trained with 5-fold QLoRA, yielding 15 models total. Training employed a mixed loss of Focal loss (computed on unsmoothed CE) and Cross-Entropy with label smoothing (0.1). To stabilize training on long-tail classes, per-class weights were applied after a `weight_warmup_ratio` of ~0.33. The 8B models used bitsandbytes 4-bit NF4 quantization with gradient checkpointing, while the 32B model was trained on an A800-40GB.\n\n## Inference Engineering\nInference was optimized for memory efficiency. The 8B models kept LoRA adapters unmerged and loaded a 4-bit quantized base. For the 32B model, the author merged LoRA weights, split the base model from the classifier head, and applied GPTQ-4bit quantization (group_size=64, symmetric, GAR, true_sequential=True) to the base while keeping the head in FP16. The quantized base was run through vLLM in `embed` mode with `override_pooler_config={\"pooling_type\": \"LAST\", \"normalize\": False}` to extract embeddings, which were then passed through the external FP16 classifier head to produce logits.\n\n## Ensembling & Results\nFinal predictions used a weighted logit blend (weight 2 for 32B folds, weight 1 for 8B folds) followed by Top-3 selection, which proved more stable than probability averaging for the MAP@3 objective. The ensemble of 15 models achieved a private MAP@3 of 0.948.",
+  "rank": 10,
+  "competition_flow": "Raw CSV data is cleaned and split into 5 folds with near-duplicates grouped together, then fed into three Qwen backbones fine-tuned via QLoRA with a mixed Focal/CE loss, followed by GPTQ-4bit quantization and vLLM embedding for inference, and finally combined via weighted logit blending and Top-3 selection for submission.",
+  "data_reading": [
+    "pandas read_csv for training data",
+    "LabelEncoder for target mapping",
+    "NaN filling for the Misconception column"
+  ],
+  "data_processing": [
+    "Auto-fixing True/False inconsistencies",
+    "Keeping near-duplicates in the same fold",
+    "Filling NaNs with 'NA'",
+    "Constructing target as Category + Misconception",
+    "Applying per-class weights with 33% warmup for long-tail classes"
+  ],
+  "features_engineering": [],
+  "models": [
+    "Qwen3-Reranker-8B",
+    "Qwen3-Embedding-8B",
+    "Qwen2.5-32B-Instruct"
+  ],
+  "frameworks_used": [
+    "bitsandbytes",
+    "vLLM",
+    "torch",
+    "pandas"
+  ],
+  "loss_functions": [
+    "Focal loss",
+    "Cross-Entropy with label smoothing (0.1)",
+    "per-class weights"
+  ],
+  "cv_strategy": "5-fold cross-validation with near-duplicates kept in the same fold",
+  "ensembling": "Weighted logit blend (weight 2 for each 32B fold, weight 1 for each 8B fold) followed by Top-3 selection for MAP@3, which proved more stable than probability averaging.",
+  "insights": [
+    "Clean data splits and balanced training with many modest models outperform heavier pipelines for tasks with label noise, long-tail distributions, and MAP@3 objectives."
+  ],
+  "critical_findings": [
+    "Using a weighted logit blend with Top-3 selection is more stable than probability averaging for MAP@3.",
+    "A 33% weight warmup is critical to stabilize early training updates on long-tail classes.",
+    "Keeping near-duplicates in the same validation fold prevents data leakage and improves generalization."
+  ],
+  "what_did_not_work": [
+    "Hierarchical multi-task classifier with hard logic constraints",
+    "32B model as pointwise reranker",
+    "32B model as listwise reranker",
+    "TTA"
+  ],
+  "github_repos": [],
+  "papers": [],
+  "other_solution_refs": [
+    {
+      "description": "brendanartley discussion",
+      "url": "https://www.kaggle.com/brendanartley"
+    },
+    {
+      "description": "map-charting-student-math-misunderstandings discussion",
+      "url": "https://www.kaggle.com/competitions/map-charting-student-math-misunderstandings/discussion/596778#3271298"
+    },
+    {
+      "description": "kishanvavdara notebook: Ensemble Gemma/Qwen/DeepSeek",
+      "url": "https://www.kaggle.com/code/kishanvavdara/ensemble-gemma-qwen-deepseek"
+    },
+    {
+      "description": "cdeotte notebook: Gemma2-9B-IT CV 0.945",
+      "url": "https://www.kaggle.com/code/cdeotte/gemma2-9b-it-cv-0-945"
+    },
+    {
+      "description": "jaytonde notebook: DeepSeekMath-7B LB 0.944",
+      "url": "https://www.kaggle.com/code/jaytonde/deepseekmath-7b-lb-0-944"
+    },
+    {
+      "description": "ebinan92 5th-place solution write-up",
+      "url": "https://www.kaggle.com/competitions/eedi-mining-misconceptions-in-mathematics/writeups/ebi-ktr-5th-place-solution"
+    },
+    {
+      "description": "yannan90 8th-place solution write-up",
+      "url": "https://www.kaggle.com/competitions/eedi-mining-misconceptions-in-mathematics/writeups/yannan-chen-8th-place-solution"
+    },
+    {
+      "description": "sayoulala discussion",
+      "url": "https://www.kaggle.com/competitions/eedi-mining-misconceptions-in-mathematics/discussion/543519"
+    },
+    {
+      "description": "nikitababich 6th-place solution write-up",
+      "url": "https://www.kaggle.com/competitions/eedi-mining-misconceptions-in-mathematics/writeups/nikita-babich-6th-place-solution"
+    },
+    {
+      "description": "conjuring92 1st-place detailed solution",
+      "url": "https://www.kaggle.com/competitions/eedi-mining-misconceptions-in-mathematics/writeups/mth-101-1st-place-detailed-solution"
+    }
+  ],
+  "source_url": "https://www.kaggle.com/competitions/map-charting-student-math-misunderstandings/discussion/612038"
+}

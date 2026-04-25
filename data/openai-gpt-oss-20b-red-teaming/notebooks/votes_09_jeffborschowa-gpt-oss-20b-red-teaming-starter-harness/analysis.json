@@ -1,0 +1,37 @@
+{
+  "summary": "This notebook provides a structured, reproducible harness for systematically probing safety vulnerabilities and refusal behaviors in the open-weight GPT-OSS-20B model. It demonstrates how to construct adversarial prompts across multiple harm categories (e.g., instruction hierarchy overrides, chain-of-utterances, role confusion, obfuscation), implement automated output sanitization and hashing for policy compliance, and apply heuristic regex classifiers to label model responses. The author also illustrates practical inference workflows using Hugging Face Transformers, including GPU acceleration, CPU fallbacks for memory constraints, and a lightweight proxy model for rapid local iteration. Readers should take away a methodical approach to AI red-teaming that emphasizes deterministic prompt generation, safe evidence capture, and systematic evasion rate calculation.",
+  "purpose": "utility",
+  "competition_flow": "Generates structured adversarial prompts programmatically, runs them through GPT-OSS-20B (or a proxy) via Hugging Face Transformers, applies heuristic refusal detection and output sanitization, and exports categorized evasion metrics to CSV for safety evaluation.",
+  "data_reading": [
+    "No external datasets are loaded; prompts are constructed programmatically via Python dictionaries and string templates, with results saved directly to the working directory as CSVs."
+  ],
+  "data_processing": [
+    "Applies Hugging Face chat templates (Harmony format) for prompt formatting, implements SHA256 hashing for output anonymization, uses regex-based heuristic classifiers to label outputs as 'refusal' or 'potentially_noncompliant', and redacts unsafe content before saving."
+  ],
+  "features_engineering": [],
+  "models": [
+    "openai/gpt-oss-20b",
+    "Qwen/Qwen2.5-3B-Instruct"
+  ],
+  "frameworks_used": [
+    "transformers",
+    "torch",
+    "pandas",
+    "numpy",
+    "tqdm",
+    "hashlib"
+  ],
+  "loss_functions": [],
+  "cv_strategy": "",
+  "ensembling": "",
+  "insights": [
+    "Using the model's native chat template (Harmony format) is critical for correct behavior and reliable safety probing.",
+    "Proxy models like Qwen2.5-3B enable fast, low-resource iteration before scaling to larger, compute-heavy models.",
+    "Heuristic regex patterns can effectively approximate refusal detection for initial safety audits without requiring external evaluators.",
+    "Systematic categorization of jailbreak patterns yields measurable evasion rates that highlight specific vulnerability surfaces."
+  ],
+  "critical_findings": [],
+  "what_did_not_work": [],
+  "source_url": "https://www.kaggle.com/code/jeffborschowa/gpt-oss-20b-red-teaming-starter-harness",
+  "votes": 50
+}

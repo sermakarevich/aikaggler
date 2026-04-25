@@ -1,0 +1,68 @@
+{
+  "summary": "The author optimized a YOLO-based object detection pipeline for localizing bacterial flagellar motors in cryo-ET data. They combined competition and external datasets, carefully tuned training hyperparameters (image size, batch size, learning rate), and implemented a custom depth-first search (DFS) algorithm to aggregate 2D slice detections into 3D coordinates. Inference was heavily optimized through multi-processing, FP16 precision, and a slice-skipping strategy that drastically reduced submission time while maintaining a strong LB score of 0.840. Key insights included the stability of DFL loss epochs over standard checkpoints and the counterintuitive outperformance of yolov8l over yolo11l.",
+  "extensive_summary": "## Model Selection & Dataset Construction\nThe author focused on YOLO architectures, specifically `yolov8l` and `yolo11l`, ultimately finding that `yolov8l` yielded a better LB score. The dataset was constructed by merging competition data with an external Kaggle dataset. Custom rules were applied during YOLO dataset creation: `TRUST=8` for competition training data, `TRUST=2` for external data, and `TRUST=4` for validation (competition only). Slices were uniformly resized to 960x960, and `BOX_SIZE` was dynamically calculated as `int(1000 / voxel_spacing)` for competition data and fixed at 35 for external data. Augmentations (vertical, horizontal, and horizontal-vertical flipping) were applied exclusively to competition data.\n\n## Training Configuration\nTraining was adapted from a baseline notebook with several hyperparameter adjustments. The author increased the image size from 640 to 960 and batch size from 16 to 32, which progressively improved LB scores. Learning rates were set to `1e-4` for `yolov8l` and `0.001` for `yolo11l`, with cosine learning rate scheduling enabled. The model checkpoint was saved based on the best DFL loss epoch rather than the standard best.pt, which proved more stable during evaluation.\n\n## Inference & Optimization\nA major focus was accelerating inference, which originally took 6.5 hours per model. The author implemented a multi-process pipeline where `tomo_id` was split across 4 processes, with 2 processes sharing a single T4 GPU. JPG files were read in a separate thread from YOLO predictions, and predictions were run in FP16. For 3D coordinate calculation, the author adapted a DFS-based grouping strategy from a previous competition, averaging x,y coordinates across slices grouped by DFS. To further reduce ensemble time, a slice-skipping strategy was introduced: for every 4 slices, one random slice was selected and assigned to each of the 4 folds. This cut the 8-model ensemble time to ~3 hours while preserving the PB score of LB 0.840.\n\n## Score Transition & Lessons\nThe author documented a clear score progression driven by architectural and data choices. Moving to larger image sizes, higher batch sizes, targeted augmentations, and external data each yielded measurable LB gains. The switch to `best_dfl_epoch.pt` resolved score instability, and the slice-skipping technique proved highly effective for inference scaling. Conversely, TTA and WBF were explicitly tested and abandoned as they failed to improve results.",
+  "rank": 369,
+  "competition_flow": "Raw cryo-ET slice images were parsed into a YOLO dataset with custom trust/box-size rules, trained on yolov8l/yolo11l with targeted augmentations, and inferred via multi-process FP16 prediction with DFS coordinate aggregation and slice-skipping to produce the final submission.",
+  "data_reading": [],
+  "data_processing": [
+    "External data from Kaggle dataset",
+    "YOLO dataset creation with TRUST=8 (train) / TRUST=2 (external) / TRUST=4 (val)",
+    "Slices resized to 960x960",
+    "Vertical, horizontal, and horizontal-vertical flipping augmentations on competition data only",
+    "BOX_SIZE set to int(1000 / voxel_spacing) for competition data and 35 for external data",
+    "4-fold split"
+  ],
+  "features_engineering": [],
+  "models": [
+    "yolov8l",
+    "yolo11l"
+  ],
+  "frameworks_used": [],
+  "loss_functions": [],
+  "cv_strategy": "4-fold datasets and hold-out (8:2) dataset",
+  "ensembling": "The ensemble aggregates per-slice detection coordinates across all 8 models (yolov8l and yolo11l 4-folds) for joint DFS processing, accelerated by a slice-skipping strategy that randomly selects one slice out of every four per fold to cut inference time.",
+  "insights": [
+    "Increasing image size to 960 and batch size to 32 significantly improved LB scores.",
+    "Incorporating external cryo-ET data and targeted augmentations boosted performance.",
+    "Using the best DFL loss epoch model provided more stable scores than the standard best.pt checkpoint.",
+    "DFS-based coordinate aggregation effectively resolves 3D motor locations from 2D slice detections."
+  ],
+  "critical_findings": [
+    "yolov8l achieved a better LB score than yolo11l despite yolo11l being newer.",
+    "Slice-skipping strategy drastically cut inference time from 6+ hours to ~3 hours with minimal score impact.",
+    "TTA and WBF failed to improve results and were explicitly abandoned."
+  ],
+  "what_did_not_work": [
+    "TTA",
+    "WBF"
+  ],
+  "github_repos": [],
+  "papers": [],
+  "other_solution_refs": [
+    {
+      "description": "Parse Data notebook",
+      "url": "https://www.kaggle.com/code/andrewjdarley/parse-data"
+    },
+    {
+      "description": "Train Yolo notebook",
+      "url": "https://www.kaggle.com/code/andrewjdarley/train-yolo"
+    },
+    {
+      "description": "CZII YOLO11 submission baseline",
+      "url": "https://www.kaggle.com/code/itsuki9180/czii-yolo11-submission-baseline"
+    },
+    {
+      "description": "Discussion on slice-skipping strategy",
+      "url": "https://www.kaggle.com/competitions/byu-locating-bacterial-flagellar-motors-2025/discussion/578461"
+    },
+    {
+      "description": "Inference notebook with slice-skipping",
+      "url": "https://www.kaggle.com/code/minfuka/byu-yolo-960-inference-fold4-slice-skip-random-v8l"
+    },
+    {
+      "description": "Discussion on LB score recalculation",
+      "url": "https://www.kaggle.com/competitions/byu-locating-bacterial-flagellar-motors-2025/discussion/574729"
+    }
+  ],
+  "source_url": "https://www.kaggle.com/competitions/byu-locating-bacterial-flagellar-motors-2025/discussion/583133"
+}

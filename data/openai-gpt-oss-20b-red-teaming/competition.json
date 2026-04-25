@@ -1,0 +1,74 @@
+{
+  "id": 106949,
+  "competitionName": "openai-gpt-oss-20b-red-teaming",
+  "title": "Red\u2011Teaming Challenge - OpenAI gpt-oss-20b",
+  "briefDescription": "Find any flaws and vulnerabilities in gpt-oss-20b that have not been previously discovered or reported.",
+  "dateEnabled": "2025-08-05T16:54:59.713Z",
+  "deadline": "2025-08-26T23:59:00Z",
+  "leaderboardPercentage": 30,
+  "maxDailySubmissions": 1,
+  "numScoredSubmissions": 1,
+  "numPrizes": 1,
+  "forumId": 8312112,
+  "finalLeaderboardHasBeenVerified": true,
+  "dateCreated": "2025-07-07T18:45:14.359503200Z",
+  "competitionHostSegmentId": 1,
+  "maxTeamSize": 5,
+  "organizationId": 5089,
+  "hasCoverImageUrl": true,
+  "showPrivateLeaderboard": true,
+  "hasScripts": true,
+  "totalTeams": 604,
+  "totalCompetitors": 781,
+  "totalSubmissions": 604,
+  "rulesRequired": true,
+  "clonedFromCompetitionId": 101597,
+  "categories": [
+    {
+      "id": 14211,
+      "name": "adversarial learning",
+      "fullPath": "technique > adversarial learning",
+      "datasetCount": 150,
+      "competitionCount": 19,
+      "scriptCount": 198,
+      "slug": "adversarial-learning",
+      "displayName": "Adversarial Learning"
+    },
+    {
+      "id": 13204,
+      "name": "nlp",
+      "fullPath": "analysis > nlp",
+      "description": "Natural Language Processing gives a computer program the ability to extract meaning human language. Applications include sentiment analysis, translation, and speech recognition.",
+      "datasetCount": 6739,
+      "competitionCount": 130,
+      "scriptCount": 9654,
+      "slug": "nlp",
+      "displayName": "NLP"
+    }
+  ],
+  "organization": {
+    "slug": "openai",
+    "name": "OpenAI",
+    "thumbnailImageUrl": "https://storage.googleapis.com/kaggle-organizations/5089/thumbnail.png?t=2025-08-14-19-21-59",
+    "profileUrl": "/organizations/openai"
+  },
+  "launched": true,
+  "createdByUserId": 1095143,
+  "license": {
+    "id": 13,
+    "name": "Attribution 4.0 International (CC BY 4.0)",
+    "url": "https://creativecommons.org/licenses/by/4.0/",
+    "agreementRequired": false
+  },
+  "hostName": "OpenAI",
+  "scoreTruncationNumDecimals": 5,
+  "locked": true,
+  "totalJoinedUsers": 5911,
+  "requiresIdentityVerification": true,
+  "submissionSizeLimitMb": 20480,
+  "reward": {
+    "id": "USD",
+    "quantity": 500000
+  },
+  "hackathon": true
+}

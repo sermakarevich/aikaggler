@@ -1,0 +1,46 @@
+{
+  "summary": "This notebook demonstrates a pipeline for converting text descriptions into SVG illustrations optimized for a specific competition metric. It leverages Stable Diffusion to generate initial bitmaps, then applies a custom contour extraction and adaptive simplification algorithm to convert them into vector graphics. By strategically injecting an OCR decoy and evaluating outputs against a composite metric of VQA fidelity, aesthetic quality, and OCR detection, the author shows that post-processing generation outputs can significantly boost metric scores. Readers should learn how to bridge generative image models with vector graphics for metric-specific optimization and understand the trade-offs between SVG byte limits and visual fidelity.",
+  "purpose": "inference",
+  "competition_flow": "Loads text descriptions from CSV/Parquet, generates bitmaps via Stable Diffusion, converts them to SVGs using contour extraction and adaptive simplification, adds OCR decoys, evaluates with a custom metric, and outputs the highest-scoring SVG per description.",
+  "data_reading": [
+    "Downloads competition data via kagglehub",
+    "Reads train.csv and questions.parquet",
+    "Parses nested JSON fields into lists/dicts",
+    "Merges parsed question data with train_df on id"
+  ],
+  "data_processing": [
+    "Resizes images to 384x384",
+    "Quantizes colors via k-means",
+    "Extracts contours with OpenCV",
+    "Simplifies polygon coordinates",
+    "Compresses hex colors",
+    "Applies JPEG compression (quality=90) during metric evaluation"
+  ],
+  "features_engineering": [],
+  "models": [
+    "Stable Diffusion v2"
+  ],
+  "frameworks_used": [
+    "torch",
+    "diffusers",
+    "transformers",
+    "opencv-python",
+    "numpy",
+    "pandas",
+    "kagglehub",
+    "PIL",
+    "matplotlib"
+  ],
+  "loss_functions": [],
+  "cv_strategy": "",
+  "ensembling": "Generates 3 candidate bitmaps per description, converts each to SVG, evaluates all against the custom metric, and selects the highest-scoring output.",
+  "insights": [
+    "Converting SD-generated bitmaps to SVGs with contour-based extraction preserves metric-relevant structure better than raw raster outputs.",
+    "Injecting a strategically placed OCR decoy reliably boosts OCR scores without harming aesthetic or VQA metrics.",
+    "Adaptive polygon simplification and color quantization are critical for staying within SVG byte limits while maintaining visual fidelity."
+  ],
+  "critical_findings": [],
+  "what_did_not_work": [],
+  "source_url": "https://www.kaggle.com/code/kaiyoo88/new-metric-lb-0-632-sd-svg-ocr-decoy-vqascore",
+  "votes": 431
+}

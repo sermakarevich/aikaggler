@@ -1,0 +1,38 @@
+{
+  "summary": "This notebook provides a minimal baseline for the Konwinski Prize by fine-tuning the Gemma-2B language model to generate code patches for GitHub issues. It demonstrates how to load SWE-bench metadata, format raw problem statements and patches into a consistent Q&A template, and apply parameter-efficient fine-tuning using LoRA via Keras 3 and JAX. The author trains the model for a single epoch with a small batch size to quickly establish a reproducible starting point. Readers should take away the practical workflow for adapting open-weight causal LLMs to code generation tasks, including proper data templating, optimizer configuration, and integration with Kaggle's official inference server. The notebook emphasizes setup and pipeline correctness over complex training tricks, making it a clear educational starting point for the competition.",
+  "purpose": "baseline",
+  "competition_flow": "Loads SWE-bench metadata and problem statements, formats them into question-answer pairs, fine-tunes a Gemma-2B model with LoRA for one epoch, and implements a custom inference function to generate code patches for GitHub issues via the competition's evaluation server.",
+  "data_reading": [
+    "Extracts data.a_zip and reads data/data.parquet with pandas.",
+    "Loads the princeton-nlp/SWE-bench dataset from HuggingFace datasets and converts it to a pandas DataFrame."
+  ],
+  "data_processing": [
+    "Formats raw problem_statement and patch fields into a fixed template string (Question:\\n{q}\\n\\nAnswer:\\n{a}).",
+    "Sets model sequence length to 512 and uses batch_size=1 during training."
+  ],
+  "features_engineering": [],
+  "models": [
+    "Gemma-2B (gemma_2b_en preset)"
+  ],
+  "frameworks_used": [
+    "keras",
+    "keras-nlp",
+    "jax",
+    "pandas",
+    "datasets"
+  ],
+  "loss_functions": [
+    "SparseCategoricalCrossentropy(from_logits=True)"
+  ],
+  "cv_strategy": "",
+  "ensembling": "",
+  "insights": [
+    "Parameter-efficient fine-tuning with LoRA (rank=64) and a learning rate of 5e-5 provides a stable baseline for code generation tasks.",
+    "Formatting code patches as explicit Question/Answer templates aligns well with causal language modeling objectives.",
+    "The official Kaggle inference server wrapper automatically handles repository unpacking and instance routing, simplifying submission generation."
+  ],
+  "critical_findings": [],
+  "what_did_not_work": [],
+  "source_url": "https://www.kaggle.com/code/akhiljethwa/konwinski-prize-gemma-llm",
+  "votes": 81
+}

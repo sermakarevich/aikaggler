@@ -1,0 +1,51 @@
+{
+  "summary": "The author developed a trajectory prediction model for NFL defenders by treating the ball landing position as a separate node in a graph-like input rather than a static feature. This design leverages Transformer attention to let defenders dynamically focus on or ignore the ball based on relevance. The pipeline combines GRU and Transformer blocks with Entmax pooling to enforce sparse attention, predicting position deltas over a 34-frame horizon. Training used coordinate flip augmentations and an ensemble of models optimized with TemporalHuber and GaussianNLLLoss.",
+  "extensive_summary": "### Key Strategy & Intuition\nThe author prioritized predicting defender trajectories, noting that receivers' routes are often pre-planned while defenders must react dynamically. A major insight was that defenders in man coverage focus on their marked offensive player rather than the ball. Consequently, treating the provided `ball_land_x` and `ball_land_y` coordinates as uniform numeric features introduces noise for defenders marking unrelated players.\n\n### Data & Preprocessing\nThe solution uses the NFL Big Data Bowl 2026 dataset. Training data was expanded 4x via coordinate flips (original, horizontal, vertical, and both). The exact same four flip patterns were applied during inference for Test Time Augmentation (TTA), with predictions ensembled.\n\n### Feature Engineering\nInstead of appending ball landing coordinates to every player, the author treated the ball landing position as a distinct \"Player\" node. Key features included basic metrics (x, y, s, a, dir, player_position, player_side), velocity decomposition (s * sin(dir), s * cos(dir)), deltas in speed and acceleration from the previous timestamp, and relative differences between the target player and others.\n\n### Model Architecture & Output\nThe model follows a single-target prediction approach, inputting all players but outputting the trajectory for one target at a time. The architecture stacks four blocks of [GRU (time axis) -> Transformer (player axis)]. After the stack, Entmax pooling replaces standard Softmax or average pooling to enforce sparse attention, allowing the model to suppress weights for irrelevant players. The pooled representation passes to a Linear head. The model predicts delta x, delta y, and second-order position differences (acceleration), which are cumulatively summed. The sequence length is clamped to 34 frames, as predicting beyond this horizon degraded performance.\n\n### Loss & Ensembling\nModels were trained using an ensemble of TemporalHuber and GaussianNLLLoss. Final submissions combined model outputs with TTA predictions across the four flip patterns.",
+  "rank": 4,
+  "competition_flow": "Raw NFL play data is augmented via coordinate flips, processed into relative and decomposed features with the ball landing position treated as a distinct node, fed into a GRU-Transformer stack with Entmax pooling to predict 34-frame position deltas, and ensembled via TTA for final submission.",
+  "data_reading": [],
+  "data_processing": [
+    "Coordinate flips (horizontal, vertical, both) for 4x training augmentation",
+    "Same 4 flip patterns applied for Test Time Augmentation (TTA)"
+  ],
+  "features_engineering": [
+    "Treated ball landing position as a distinct 'Player' node",
+    "Basic features: x, y, s, a, dir, player_position, player_side",
+    "Velocity decomposition: s * sin(dir), s * cos(dir)",
+    "Deltas in s and a from previous timestamp",
+    "Relative differences (x, y, s, a) between target player and others"
+  ],
+  "models": [
+    "GRU",
+    "Transformer",
+    "Linear head"
+  ],
+  "frameworks_used": [],
+  "loss_functions": [
+    "TemporalHuber",
+    "GaussianNLLLoss"
+  ],
+  "cv_strategy": "",
+  "ensembling": "Predictions from models trained with TemporalHuber and GaussianNLLLoss were ensembled, and test-time augmentation (TTA) using four coordinate flip patterns was applied to the ensemble.",
+  "insights": [
+    "Defenders react dynamically to marked players rather than the ball, making ball landing coordinates noisy if applied uniformly.",
+    "Treating the ball landing position as a separate node allows the Transformer's attention mechanism to dynamically weight its relevance per defender.",
+    "Sparse attention via Entmax pooling effectively filters out irrelevant players, improving focus on key interactions."
+  ],
+  "critical_findings": [
+    "Adding ball_land coordinates as uniform numeric features to all players introduces significant noise for defenders marking unrelated offensive players.",
+    "Predicting beyond a 34-frame horizon hurt the score, so the output was clamped to the 34th frame's result."
+  ],
+  "what_did_not_work": [
+    "Predicting beyond a 34-frame horizon hurt the score."
+  ],
+  "github_repos": [],
+  "papers": [],
+  "other_solution_refs": [
+    {
+      "description": "Reference to HMS Harmful Brain Activity 1st place solution for Entmax pooling inspiration",
+      "url": "https://www.kaggle.com/competitions/hms-harmful-brain-activity-classification/writeups/team-sony-1st-place-solution-team-sony"
+    }
+  ],
+  "source_url": "https://www.kaggle.com/competitions/nfl-big-data-bowl-2026-prediction/discussion/651814"
+}

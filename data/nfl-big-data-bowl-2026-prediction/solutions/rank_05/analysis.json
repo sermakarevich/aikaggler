@@ -1,0 +1,26 @@
+{
+  "summary": "The author achieved 5th place by predicting the positional delta (x, y) from the previous frame for each player. A key architectural choice involved using Rotary Positional Embeddings (RoPE) to encode the target future frame index within the model's embeddings. Training was conducted in two stages: an initial phase on labeled data from both the 2023 NFL competition and the current challenge, followed by a second phase incorporating pseudo-labeled data for all players. The pipeline utilized HuberLoss with the Muon optimizer and applied an exponential moving average (EMA) with a decay of 0.995 to stabilize training.",
+  "extensive_summary": "## Solution Overview\nThe author focused heavily on refining the model architecture to predict player movement deltas (delta x, delta y) relative to the previous frame. A central innovation was the integration of Rotary Positional Embeddings (RoPE) to explicitly encode the temporal offset of the target future frame within the model's embeddings, enabling the network to distinguish between different prediction horizons.\n\n## Training Strategy\nThe training pipeline employed a two-stage approach to leverage both historical and current competition data. In the first stage, the model was trained on all players from the 2023 NFL competition dataset combined with the current competition's data, restricted only to players marked as `player_to_predict = true`. The second stage expanded the scope by incorporating pseudo-labeled data for all players in the current competition, while retaining the full 2023 dataset. Optimization was handled using the Muon optimizer paired with HuberLoss, and model weights were stabilized throughout training using an EMA with a decay rate of 0.995.\n\n## Architecture & Implementation\nWhile the writeup highlights significant time spent on architectural improvements, the specific network layers or backbone names are not detailed in the text, with the author instead pointing to a diagram for the full architecture. The solution relies on temporal delta prediction rather than absolute coordinate regression, emphasizing relative movement forecasting across frames.",
+  "rank": 5,
+  "competition_flow": "The pipeline predicts relative player movement deltas (delta x, y) from the previous frame using a RoPE-encoded temporal embedding, trained in two stages with pseudo-labeling and optimized via Muon with HuberLoss.",
+  "data_reading": [],
+  "data_processing": [],
+  "features_engineering": [],
+  "models": [],
+  "frameworks_used": [],
+  "loss_functions": [
+    "HuberLoss"
+  ],
+  "cv_strategy": "",
+  "ensembling": "",
+  "insights": [
+    "Encoding the target future frame index using RoPE is critical for accurate temporal prediction.",
+    "A two-stage training strategy that transitions from labeled data to pseudo-labeled data effectively leverages historical and current competition datasets."
+  ],
+  "critical_findings": [],
+  "what_did_not_work": [],
+  "github_repos": [],
+  "papers": [],
+  "other_solution_refs": [],
+  "source_url": "https://www.kaggle.com/competitions/nfl-big-data-bowl-2026-prediction/discussion/666799"
+}

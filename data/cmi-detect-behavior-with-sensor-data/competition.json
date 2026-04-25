@@ -1,0 +1,102 @@
+{
+  "id": 102335,
+  "competitionName": "cmi-detect-behavior-with-sensor-data",
+  "title": "CMI - Detect Behavior with Sensor Data",
+  "briefDescription": "Predicting Body Focused Repetitive Behaviors from a Wrist-Worn Device",
+  "dateEnabled": "2025-05-30T04:08:39.650Z",
+  "deadline": "2025-09-02T23:59:00Z",
+  "hasLeaderboard": true,
+  "leaderboardPercentage": 42,
+  "maxDailySubmissions": 5,
+  "numScoredSubmissions": 2,
+  "hasSolution": true,
+  "numPrizes": 6,
+  "forumId": 7865241,
+  "finalLeaderboardHasBeenVerified": true,
+  "userRankMultiplier": 1,
+  "dateCreated": "2025-05-15T16:26:47.948559Z",
+  "competitionHostSegmentId": 1,
+  "maxTeamSize": 5,
+  "medalsAllowed": true,
+  "enableTeamFiles": true,
+  "teamFileDeadline": "2025-09-20T00:00:00Z",
+  "teamMergerExplicitDeadline": "2025-08-26T23:59:00Z",
+  "prohibitNewEntrantsExplicitDeadline": "2025-08-26T23:59:00Z",
+  "kernelsPublishingDisabledDeadline": "2025-08-26T23:59:00Z",
+  "organizationId": 3842,
+  "hasCoverImageUrl": true,
+  "showPrivateLeaderboard": true,
+  "hasScripts": true,
+  "onlyAllowKernelSubmissions": true,
+  "totalTeams": 2657,
+  "totalCompetitors": 3178,
+  "totalSubmissions": 75777,
+  "rulesRequired": true,
+  "usesSynchronousReruns": true,
+  "maxCpuRuntimeMinutes": 540,
+  "maxGpuRuntimeMinutes": 540,
+  "rowIdColumnName": "sequence_id",
+  "requiredSubmissionFilename": "submission.parquet",
+  "evaluationAlgorithm": {
+    "id": 4087,
+    "name": "CMI_2025",
+    "isMax": true,
+    "environmentRenderType": "ENVIRONMENT_RENDER_TYPE_JSON",
+    "kernelId": 83896558,
+    "latestCompetitionMetricVersionId": 39961,
+    "state": "AVAILABLE"
+  },
+  "categories": [
+    {
+      "id": 11111,
+      "name": "health",
+      "fullPath": "subject > health and fitness > health",
+      "description": "Consider the health tag your data science gym. Get in there and work out those data science muscles on health analytics. Analyze heart disease until you sweat. Then recover with with a nice candy production dataset.",
+      "datasetCount": 23645,
+      "competitionCount": 540,
+      "scriptCount": 8392,
+      "slug": "health",
+      "displayName": "Health"
+    },
+    {
+      "id": 13209,
+      "name": "time series analysis",
+      "fullPath": "technique > time series analysis",
+      "datasetCount": 4032,
+      "competitionCount": 837,
+      "scriptCount": 4295,
+      "slug": "time-series-analysis",
+      "displayName": "Time Series Analysis"
+    },
+    {
+      "name": "custom metric",
+      "description": "This competition's metric is defined under the 'Evaluation' tab",
+      "displayName": "Custom Metric"
+    }
+  ],
+  "organization": {
+    "slug": "childmindinstitute",
+    "name": "Child Mind Institute",
+    "thumbnailImageUrl": "https://storage.googleapis.com/kaggle-organizations/3842/thumbnail.jpg?t=2025-07-07-16-46-43",
+    "profileUrl": "/organizations/childmindinstitute"
+  },
+  "launched": true,
+  "createdByUserId": 995397,
+  "license": {
+    "id": 3,
+    "name": "CC BY-NC-SA 4.0",
+    "url": "https://creativecommons.org/licenses/by-nc-sa/4.0/",
+    "agreementRequired": false
+  },
+  "hostName": "Child Mind Institute",
+  "scoreTruncationNumDecimals": 6,
+  "locked": true,
+  "totalJoinedUsers": 11922,
+  "requiresIdentityVerification": true,
+  "submissionSizeLimitMb": 20480,
+  "reward": {
+    "id": "USD",
+    "quantity": 50000
+  },
+  "usesHearth": true
+}

@@ -1,0 +1,29 @@
+{
+  "summary": "The notebook demonstrates a production-ready medical AI chatbot built on Google's MedGemma 1.5 4B model using the Hugging Face `pipeline` API. It implements a reusable `MedicalChatbot` class that manages conversation history, enforces a strict system prompt for medical focus and safety, and supports both text-only and multi-modal (image + text) inputs. Through five comprehensive test scenarios, it validates the model's ability to handle multi-turn dialogues, symptom-to-treatment workflows, rare disease consultations, structured clinical reasoning, and off-topic boundary detection. Readers should take away practical patterns for deploying conversational LLMs in healthcare, including context management, prompt engineering for safety, and multi-modal integration.",
+  "purpose": "tutorial",
+  "competition_flow": "Loads the MedGemma 1.5 4B model via Hugging Face, wraps it in a conversational chatbot class with system prompts and history tracking, and runs five structured inference scenarios to validate multi-turn, multi-modal, and safety capabilities.",
+  "data_reading": [],
+  "data_processing": [],
+  "features_engineering": [],
+  "models": [
+    "MedGemma 1.5 4B"
+  ],
+  "frameworks_used": [
+    "transformers",
+    "torch",
+    "PIL"
+  ],
+  "loss_functions": [],
+  "cv_strategy": "",
+  "ensembling": "",
+  "insights": [
+    "System prompts are critical for enforcing medical focus, conciseness, and safety guardrails in healthcare LLM deployments.",
+    "Maintaining conversation history as a structured list of role/content dictionaries enables reliable multi-turn context retention.",
+    "Multi-modal medical queries require explicit content formatting (image + text) to work correctly with Hugging Face's image-text-to-text pipelines.",
+    "Boundary handling and off-topic redirection can be effectively managed through explicit prompt instructions rather than post-hoc filtering."
+  ],
+  "critical_findings": [],
+  "what_did_not_work": [],
+  "source_url": "https://www.kaggle.com/code/iamsdt/medgemma-medical-ai-chatbot-5-test-scenarios",
+  "votes": 26
+}

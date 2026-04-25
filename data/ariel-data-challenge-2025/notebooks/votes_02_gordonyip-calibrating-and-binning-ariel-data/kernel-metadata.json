@@ -1,0 +1,21 @@
+{
+  "id": "gordonyip/calibrating-and-binning-ariel-data",
+  "id_no": 85945382,
+  "title": "Calibrating and Binning Ariel Data ",
+  "code_file": "calibrating-and-binning-ariel-data.ipynb",
+  "language": "python",
+  "kernel_type": "notebook",
+  "is_private": false,
+  "enable_gpu": false,
+  "enable_tpu": false,
+  "enable_internet": true,
+  "keywords": [],
+  "dataset_sources": [],
+  "kernel_sources": [],
+  "competition_sources": [
+    "ariel-data-challenge-2025"
+  ],
+  "model_sources": [],
+  "docker_image": "gcr.io/kaggle-images/python@sha256:3223337db7786b068bfeac3a1b741bf0d572a4bf309735b45692de873b7758db",
+  "machine_shape": "None"
+}

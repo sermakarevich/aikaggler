@@ -1,0 +1,47 @@
+{
+  "summary": "This notebook demonstrates a complete pipeline for predicting NCAA basketball tournament outcomes using historical box score data. It combines raw game statistics with hand-crafted features like season averages, Elo ratings, and GLM-derived team quality scores. The author trains a leave-one-season-out XGBoost model to predict point differentials, then calibrates these predictions into win probabilities using a spline function. Key takeaways include the effectiveness of combining statistical team quality with traditional seeding, the importance of overtime adjustment, and how post-processing calibration significantly improves probabilistic accuracy.",
+  "purpose": "training",
+  "competition_flow": "Loads and merges men's and women's regular season and tournament CSVs, engineers statistical and rating-based features, trains season-specific XGBoost models via leave-one-season-out validation, calibrates point differential predictions into win probabilities, and generates a final submission with manual overrides.",
+  "data_reading": [
+    "Reads M/W regular season results, tournament results, and tournament seeds CSVs using pd.read_csv, concatenates genders, and filters by season >= 2003."
+  ],
+  "data_processing": [
+    "Doubles the dataset by swapping team perspectives, adjusts box score statistics for overtime duration using (40 + 5 * NumOT) / 40, computes point differential and win labels, and clips predictions to [-30, 30] during calibration."
+  ],
+  "features_engineering": [
+    "Extracts seed numbers and seed differences; computes regular season averages for both teams and their opponents; implements a custom Elo rating system per season; derives team quality scores using statsmodels.GLM with team fixed effects; merges all features and calculates differences (seed, Elo, quality)."
+  ],
+  "models": [
+    "XGBoost"
+  ],
+  "frameworks_used": [
+    "numpy",
+    "pandas",
+    "matplotlib",
+    "seaborn",
+    "statsmodels",
+    "xgboost",
+    "scipy",
+    "scikit-learn"
+  ],
+  "loss_functions": [
+    "reg:squarederror"
+  ],
+  "cv_strategy": "Leave-one-season-out cross-validation (train on all seasons except one, predict the held-out season)",
+  "ensembling": "Trains a separate XGBoost model per season and averages their predictions; applies a UnivariateSpline calibration to map point differentials to win probabilities, followed by manual overrides and confidence boosting for specific matches.",
+  "insights": [
+    "Team quality derived from GLM fixed effects aligns closely with tournament seeds, validating statistical modeling over raw seeding.",
+    "Calibrating raw point differential predictions with splines significantly improves probabilistic accuracy (Brier score).",
+    "Overtime accumulation skews raw stats, necessitating a duration-based adjustment factor."
+  ],
+  "critical_findings": [
+    "Raw box score stats accumulate during overtimes, requiring a (40 + 5 * NumOT) / 40 adjustment to normalize performance metrics.",
+    "GLM-derived team quality ranks match tournament seeds almost perfectly, showing strong predictive alignment.",
+    "Manual overrides in early rounds can correct model underconfidence against top seeds."
+  ],
+  "what_did_not_work": [
+    ""
+  ],
+  "source_url": "https://www.kaggle.com/code/modeh7/final-solution-ncaa-2025",
+  "votes": 213
+}

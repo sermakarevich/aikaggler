@@ -1,0 +1,55 @@
+{
+  "summary": "The team achieved 5th place by training a hill-climb ensemble of six models on heavily augmented seismic velocity data. Key ideas included generating 15x synthetic training data by solving the forward wave equation, applying physics-grounded augmentations like CutMix and velocity-time scaling, and using a differentiable forward simulator for family-wise post-processing. Increasing feature map resolution and choosing Convformer over Caformer were critical architectural decisions that drove validation and leaderboard gains.",
+  "extensive_summary": "## Data Augmentation & Synthetic Data Generation\nThe team extended the official dataset by solving the forward wave equation to generate synthetic `seis-images` from `vel-images`. After restoring the host's simulator, they applied complex augmentations including CutMix, MixUp, vertical/horizontal stretches, wave deformations, smooth multiplications, and artificial faults. They discovered that synthetic seismic data (SA) closely resembles Perlin noise, enabling them to generate blob-like structures with Gaussian smoothing and linear gradients to boost validation scores for specific families. Physics-based runtime augmentations were explored (scaling velocity by `a` compresses the time axis by `a`) but excluded from the final pipeline.\n\n## Model Architecture & Training Strategy\nAll six models follow a `caformer/convformer + unet_{pubic/modified}` structure. The authors found that increasing feature map resolution significantly improved both CV and LB performance, with Convformer outperforming Caformer. The final ensemble consisted of three Convformers (144 resolution) and three Caformers (144, 160, 256 resolutions), with the 144-resolution Convformer yielding the best results. Training employed a progressive strategy: starting with smaller resolutions and fine-tuning on larger ones, combined with staged training on 15x synthetic data. Learning rate decay was applied gradually (1e-4 down to 1e-6) as scores plateaued, and challenging classes like CFB were upweighted in later training stages.\n\n## Post-Processing & Ensembling\nPredictions were refined family-wise using a differentiable version of the forward simulator implemented in PyTorch. For each test sample, `vel_pred` was passed through the simulator to get `seis_pred`, and gradients were used to optimize `vel_pred` pixels to minimize the difference with `seis_true`. Strategies varied by family: Style families used pixel-wise learning rates proportional to velocity values; \"Discrete\" families used Total Variation loss with p < 1 for sharp edges and max-pooled learning rates near boundaries; FlatVel_B used stripe color optimization. A classifier was trained to split the test set into families for tailored post-processing. The final ensemble used a hill-climb optimization method, which outperformed mean/median approaches on most families.",
+  "rank": 5,
+  "competition_flow": "Raw velocity images were augmented and combined with 15x synthetic seismic data generated via a forward wave equation simulator; six Convformer/Caformer UNet models were trained progressively with staged learning rate decay; predictions were refined family-wise using gradient-based optimization through a differentiable simulator and combined via hill-climb ensembling.",
+  "data_reading": [],
+  "data_processing": [
+    "Synthetic data generation via forward wave equation solver",
+    "CutMix",
+    "MixUp",
+    "vertical/horizontal stretches",
+    "wave deformations",
+    "smooth multiplications",
+    "artificial faults",
+    "Perlin noise blob generation with Gaussian smoothing and linear gradients",
+    "velocity-time scaling physics augmentation",
+    "upweighting challenging classes (CFB, CVB, FFB, SA, SB) in synthetic data",
+    "combining synthetic with official dataset"
+  ],
+  "features_engineering": [],
+  "models": [
+    "Convformer",
+    "Caformer",
+    "modified Unet",
+    "public Unet"
+  ],
+  "frameworks_used": [
+    "PyTorch"
+  ],
+  "loss_functions": [
+    "Total Variation loss (p < 1)",
+    "MAE (referenced for LR scaling)",
+    "simulation error minimization (seis_pred vs seis_true)"
+  ],
+  "cv_strategy": "",
+  "ensembling": "The six models were combined using a hill-climb optimization method that iteratively selects local changes for maximum performance gain, with family-wise post-processing applied via gradient-based refinement through a differentiable forward simulator tailored to each geological family's characteristics.",
+  "insights": [
+    "Increasing feature map resolution significantly improves both validation and leaderboard performance.",
+    "Convformer architectures outperform Caformer for this specific seismic velocity inversion task.",
+    "Synthetic data generated via forward wave equation simulation is highly effective when combined with official data and upweighted for challenging classes.",
+    "A differentiable forward simulator can be leveraged for post-processing by optimizing predictions to minimize the discrepancy between simulated and ground-truth seismic outputs.",
+    "Hill-climb ensembling provides a measurable validation improvement over standard mean/median averaging."
+  ],
+  "critical_findings": [
+    "Synthetic seismic data (SA) closely resembles Perlin noise, enabling targeted data generation that significantly boosts validation scores for specific families.",
+    "Using a p-norm with p < 1 in Total Variation loss successfully encourages sharp layer boundaries in discrete geological families.",
+    "Scaling velocity by a factor a compresses the seismic time axis by a, providing a physics-grounded runtime augmentation strategy.",
+    "The median ensemble method outperforms hill-climb specifically for the CFB family, highlighting family-specific ensemble dynamics."
+  ],
+  "what_did_not_work": [],
+  "github_repos": [],
+  "papers": [],
+  "other_solution_refs": [],
+  "source_url": "https://www.kaggle.com/competitions/waveform-inversion/discussion/587443"
+}

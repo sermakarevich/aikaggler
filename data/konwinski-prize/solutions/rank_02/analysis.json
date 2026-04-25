@@ -1,0 +1,80 @@
+{
+  "summary": "The author developed a 2nd place solution for the SWE-Bench competition by implementing a multi-stage Agentless-based pipeline that automates issue resolution. The workflow sequentially evaluates issues, localizes relevant files, generates reproduction tests, creates patches via function-calling, and verifies them against strict safety checks. Key technical decisions included using Qwen2.5-Coder-32B hosted via vLLM with JSON schema constraints, employing few-shot examples for test generation, and tracking granular pipeline metrics to guide iterative improvements. The approach prioritizes stability and speed over deep reasoning, leveraging prompt engineering across multiple LLMs to refine each pipeline stage.",
+  "extensive_summary": "## Pipeline Architecture\nThe solution follows an Agentless-based pipeline consisting of seven sequential stages: Issue Evaluation, File Localization, File Selection, Test Generation, Repair Generation, Repair Verification, and Time Management. Each stage is designed to filter out unsolvable or low-confidence issues early, preserving compute for viable candidates. The pipeline enforces a 25-minute timeout per instance to prevent infinite loops or excessive test execution.\n\n## LLM Selection & Inference\nQwen2.5-Coder-32B was selected as the primary model after benchmarking against Qwen2.5 72B, QwQ-32B, and Deepseek-R1. The author found that a strong base model mattered more than deep reasoning capabilities, as the pipeline's skip mechanisms handled tough cases. To ensure stable, structured outputs, the model was hosted locally on two RTX 3090s using vLLM with a custom JSON schema, bypassing the lack of public API support for 130k context windows with structured output.\n\n## Prompt Engineering & Test Generation\nPrompt engineering followed a consortium approach, comparing outputs from ChatGPT, Grok, Gemini, and DeepSeek to curate the best instructions for each pipeline stage. A total of 44 prompts were developed across the stages, with the best-performing version adopted for each. Test generation proved critical; the system creates reproduction tests that first fail, then pass after patch application. Few-shot examples significantly boosted performance, but diminishing returns set in quickly. The author tracked `good_test_rate` to monitor test quality without over-constraining the system.\n\n## Verification & Metrics\nRepair verification checks three conditions: test logic verification, issue resolution, and regression prevention. The author notes that overly strict verification causes valid patches to be rejected, so a balanced threshold was maintained. Evaluation relied on granular metrics like `file_recall`, `selected_line_recall`, `reproduced_rate`, and `replacement_success_rate`. The author emphasizes that optimizing individual metrics does not linearly improve the final score, requiring careful trade-offs between candidate counts, test strictness, and patch retry limits.",
+  "rank": 2,
+  "competition_flow": "Raw GitHub issues and repository code are processed through a seven-stage Agentless-based pipeline (evaluation, localization, selection, test generation, patch generation, verification, and timeout management) to produce and submit code patches.",
+  "data_reading": [],
+  "data_processing": [],
+  "features_engineering": [],
+  "models": [
+    "Qwen2.5-Coder-32B",
+    "Qwen2.5 72B",
+    "QwQ-32B",
+    "Deepseek-R1",
+    "ChatGPT",
+    "Grok",
+    "Gemini",
+    "Claude"
+  ],
+  "frameworks_used": [
+    "vLLM"
+  ],
+  "loss_functions": [],
+  "cv_strategy": "",
+  "ensembling": "",
+  "insights": [
+    "Prompt phrasing significantly impacts LLM confidence and overall pipeline performance.",
+    "Generating reproduction tests that first fail and then pass after patching is crucial for reliable verification.",
+    "Tracking granular pipeline metrics like good_test_rate and file_recall is more effective than optimizing individual metrics in isolation.",
+    "Overly strict verification or excessive test generation can degrade performance by filtering out valid patches or introducing failures."
+  ],
+  "critical_findings": [
+    "Increasing candidate files from 5 to 10, using embeddings for localization, or providing ground truth files yielded minimal score improvements.",
+    "A higher good_test_rate or more candidate files did not linearly translate to better final scores and could introduce unintended changes.",
+    "Running all unit tests before and after patch application was too slow and risky, making it counterproductive for this pipeline."
+  ],
+  "what_did_not_work": [
+    "Running all unit tests before and after applying patches (too slow and risky).",
+    "Generating extra tests after patch generation to filter bad patches (hard to control, did more harm than good)."
+  ],
+  "github_repos": [],
+  "papers": [
+    {
+      "title": "SWE-bench: Can Language Models Resolve Real-World GitHub Issues?",
+      "url": "https://arxiv.org/abs/2310.06770",
+      "arxiv_id": "2310.06770"
+    },
+    {
+      "title": "Agentless: Demystifying LLM-based Software Engineering Agents",
+      "url": "https://arxiv.org/abs/2407.01489",
+      "arxiv_id": "2407.01489"
+    },
+    {
+      "title": "Qwen2.5: Efficient and Robust Code Generation with Improved Contextual Understanding",
+      "url": "https://arxiv.org/abs/2412.15115",
+      "arxiv_id": "2412.15115"
+    },
+    {
+      "title": "QWQ-32B: A New Frontier in Code Generation",
+      "url": "https://qwenlm.github.io/blog/qwq-32b/",
+      "arxiv_id": null
+    },
+    {
+      "title": "R1: A Robust and Efficient Approach for [Task Description]",
+      "url": "https://arxiv.org/abs/2501.12948",
+      "arxiv_id": "2501.12948"
+    },
+    {
+      "title": "Efficient Memory Management for Large Language Model Serving with PagedAttention",
+      "url": "https://arxiv.org/abs/2309.06180",
+      "arxiv_id": "2309.06180"
+    },
+    {
+      "title": "Introducing SWE-bench Verified",
+      "url": "https://openai.com/index/introducing-swe-bench-verified/",
+      "arxiv_id": null
+    }
+  ],
+  "other_solution_refs": [],
+  "source_url": "https://www.kaggle.com/competitions/konwinski-prize/discussion/568888"
+}

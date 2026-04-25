@@ -1,0 +1,41 @@
+{
+  "summary": "This notebook outlines a complete inference pipeline for the CSIRO Pasture Biomass Prediction competition. It demonstrates a two-stream CNN architecture that processes left and right halves of high-resolution images separately to preserve fine-grained details. The author explains how to leverage linear dependencies among the five biomass targets to predict only three directly, calculating the rest via subtraction during inference. The code implements a robust 5-fold GroupKFold cross-validation strategy, two-stage fine-tuning, and test-time augmentation (TTA) to maximize prediction stability. Readers should learn how to handle high-resolution imagery, manage target redundancy, and structure an ensemble inference workflow with post-processing constraints.",
+  "purpose": "inference",
+  "competition_flow": "Loads test images, splits them into left/right patches, runs a 5-fold ensemble with 3-view TTA to predict three biomass targets, calculates the remaining two via constrained subtraction, and formats the results into a competition submission file.",
+  "data_reading": [
+    "Reads test images using cv2.imread from paths listed in test.csv, converts BGR color space to RGB, and handles missing images by returning zero-filled arrays."
+  ],
+  "data_processing": [
+    "Crops each 2000x1000 image into two 1000x1000 patches (left and right), resizes patches to 768x768, applies independent augmentations during training (HFlip, VFlip, Rotate90, ColorJitter), and applies TTA transforms (original, HFlip, VFlip) with ImageNet normalization during inference."
+  ],
+  "features_engineering": [],
+  "models": [
+    "convnext_tiny (timm)",
+    "custom two-stream multi-head MLP architecture"
+  ],
+  "frameworks_used": [
+    "pytorch",
+    "timm",
+    "albumentations",
+    "opencv",
+    "pandas",
+    "numpy"
+  ],
+  "loss_functions": [
+    "Weighted nn.SmoothL1Loss (0.5 for Dry_Total_g, 0.2 for GDM_g, 0.1 for Dry_Green_g)"
+  ],
+  "cv_strategy": "GroupKFold(n_splits=5) grouped by Sampling_Date",
+  "ensembling": "Averages predictions across 5 cross-validation folds and 3 TTA views (original, horizontal flip, vertical flip), then calculates the remaining two targets using np.maximum(0, pred_GDM - pred_Green) and np.maximum(0, pred_Total - pred_GDM) to enforce non-negative constraints.",
+  "insights": [
+    "Splitting high-resolution images into patches preserves fine-grained features like clover leaves that would be lost during direct resizing.",
+    "Independent augmentation on left/right patches effectively multiplies training data diversity.",
+    "Freezing the backbone initially stabilizes training on small datasets, and monitoring validation R^2 rather than loss prevents overfitting from capturing peak performance."
+  ],
+  "critical_findings": [
+    "Strong linear dependencies exist between the five biomass targets, allowing the model to predict only three directly and derive the others mathematically to avoid redundancy.",
+    "Grouping folds by Sampling_Date is critical to prevent data leakage, as images from the same day are highly similar."
+  ],
+  "what_did_not_work": [],
+  "source_url": "https://www.kaggle.com/code/none00000/lb-0-57-infer-model-code",
+  "votes": 245
+}

@@ -1,0 +1,54 @@
+{
+  "summary": "The author achieved 7th place by adopting a train-on-test strategy for a text classification task, completely ignoring the subreddit feature after host confirmation that it was excluded from annotations. Data was cleaned by deduplicating on rule-body-label, resolving label inconsistencies via majority voting, and discarding ties to improve training stability. The core pipeline involved fine-tuning several 8B-14B parameter models using QLoRA on T4 GPUs via Unsloth, combined with a vLLM configuration workaround to enable fp16 inference for Gemma2. An ensemble of these models, particularly ShieldGemma-9b, drove the final high score.",
+  "extensive_summary": "## Overview & Data Strategy\nThe solution leverages a **train-on-test** approach, capitalizing on the large test set to drive performance. A key insight was completely ignoring the `subreddit` feature, as the host confirmed it wasn't part of the annotation process; this alone improved scores by +0.007. Data cleaning involved deduplicating entries using `rule-body-label` as the unique key, which drastically cut training time. Label inconsistencies were resolved by replacing them with the most frequent label per group, discarding ties to maintain training stability. This preprocessing was applied to the combined train and test data.\n\n## Validation & Model Selection\nCross-validation was constructed using unique `rule-body-label` combinations from the training set, but it showed no correlation with the leaderboard (LB). Consequently, the author placed complete trust in the LB due to the massive test set size. Model selection focused on architectures between 8B and 14B parameters that could fit on a T4 GPU (16GB VRAM) via QLoRA. Only a handful of models surpassed the 0.920 threshold. The final ensemble combined Qwen3-14B, phi-4, gemma-2-9b-it, shieldgemma-9b, and Qwen3-8B-Guard. ShieldGemma emerged as the single best performer, outperforming Qwen3-14B, while the guard-tuned Qwen3-8B-Guard also beat its vanilla counterpart.\n\n## Training & Inference Optimizations\nModels were fine-tuned using the **Unsloth** framework, with two models trained simultaneously by assigning different GPU IDs. The total training and inference time was roughly 10 hours for the main ensemble. A notable technical workaround involved **vLLM** (v0.10.0), which natively blocks Gemma2 inference in fp16 due to reported numerical instability. The author bypassed this by using `sed` to clear the `_FLOAT16_NOT_SUPPORTED_MODELS` dictionary in `vllm/config.py`, successfully enabling fp16 inference for Gemma2 without score degradation (likely due to the single-token inference requirement).\n\n## Failed Attempts & Lessons\nSeveral strategies were explicitly tested and discarded. Attempting to infer only public rules using a Qwen3-32B model trained on train data yielded significantly worse results, likely due to distribution shifts compared to the train-on-test paradigm. Additionally, incorporating synthetic data during training caused the loss to approach zero but ultimately worsened the final score, suggesting the synthetic data failed to emulate the true test distribution.",
+  "rank": 7,
+  "competition_flow": "Raw text data was cleaned by removing duplicates and resolving label inconsistencies, then combined with test data for a train-on-test fine-tuning pipeline using QLoRA on 8B-14B models via Unsloth and vLLM, followed by an ensemble of the best-performing models to generate final predictions.",
+  "data_reading": [],
+  "data_processing": [
+    "Ignored subreddit feature entirely",
+    "Removed duplicates using rule-body-label as unique key",
+    "Replaced inconsistent labels with most frequent ones per group",
+    "Discarded ties where majority voting was not possible",
+    "Applied preprocessing to combined train and test data"
+  ],
+  "features_engineering": [],
+  "models": [
+    "Qwen3-14B",
+    "phi-4",
+    "gemma-2-9b-it",
+    "shieldgemma-9b",
+    "Qwen3-8B-Guard",
+    "Qwen3-32B"
+  ],
+  "frameworks_used": [
+    "Unsloth",
+    "vLLM"
+  ],
+  "loss_functions": [],
+  "cv_strategy": "CV built using train set with unique rule-body-label combinations; showed no correlation with LB, so the author trusted the LB entirely due to the large test set size.",
+  "ensembling": "The final submission was an ensemble of five fine-tuned models (Qwen3-14B, phi-4, gemma-2-9b-it, shieldgemma-9b, and Qwen3-8B-Guard), with ShieldGemma providing the strongest individual performance and the ensemble collectively boosting the score.",
+  "insights": [
+    "Ignoring the subreddit feature improved scores by +0.007 because it was not part of the annotation process.",
+    "Deduplicating data by rule-body-label significantly reduced training time without harming performance.",
+    "Resolving label inconsistencies via majority voting and discarding ties improved training stability and final scores.",
+    "Trusting the leaderboard over cross-validation is justified when the test set is sufficiently large and CV shows no correlation."
+  ],
+  "critical_findings": [
+    "ShieldGemma-9b outperformed larger models like Qwen3-14B, demonstrating that safety-tuned variants can be highly effective for this task.",
+    "vLLM's hardcoded fp16 restriction for Gemma2 can be safely bypassed via config patching without numerical instability, likely due to the single-token inference requirement.",
+    "Synthetic data caused training loss to approach zero but ultimately degraded the final score, indicating a failure to emulate the test distribution."
+  ],
+  "what_did_not_work": [
+    "Inferring only public rules with a Qwen3-32B model trained on train data yielded significantly worse scores, likely due to distribution shifts from the train-on-test approach.",
+    "Adding synthetic data to the training set worsened the score and was discarded early."
+  ],
+  "github_repos": [],
+  "papers": [],
+  "other_solution_refs": [
+    {
+      "description": "Host discussion confirming subreddit was not involved in annotation",
+      "url": "https://www.kaggle.com/competitions/jigsaw-agile-community-rules/discussion/591160#3254380"
+    }
+  ],
+  "source_url": "https://www.kaggle.com/competitions/jigsaw-agile-community-rules/discussion/613215"
+}

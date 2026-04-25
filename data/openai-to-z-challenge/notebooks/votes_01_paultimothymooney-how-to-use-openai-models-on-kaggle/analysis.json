@@ -1,0 +1,27 @@
+{
+  "summary": "This notebook serves as a practical tutorial on integrating the OpenAI API within Kaggle notebooks. It walks readers through generating an API key, securely storing it using Kaggle's built-in secrets manager, and writing a cross-platform helper function to retrieve it. The code demonstrates initializing the OpenAI client and sending a text prompt to the gpt-4o-mini model to generate a completion. Readers should learn how to safely handle credentials in Kaggle environments and make basic API calls without exposing sensitive data.",
+  "purpose": "tutorial",
+  "competition_flow": "Demonstrates how to securely store and retrieve an OpenAI API key on Kaggle, initialize the OpenAI client, and send a text prompt to generate a model completion.",
+  "data_reading": [],
+  "data_processing": [],
+  "features_engineering": [],
+  "models": [
+    "gpt-4o-mini"
+  ],
+  "frameworks_used": [
+    "openai",
+    "kaggle_secrets"
+  ],
+  "loss_functions": [],
+  "cv_strategy": "",
+  "ensembling": "",
+  "insights": [
+    "Kaggle provides a native secrets manager that can be accessed programmatically via the kaggle_secrets package.",
+    "A single helper function can be written to abstract secret retrieval across both Kaggle and Google Colab environments.",
+    "The OpenAI Python SDK supports direct integration with Kaggle secrets for secure, production-like API usage."
+  ],
+  "critical_findings": [],
+  "what_did_not_work": [],
+  "source_url": "https://www.kaggle.com/code/paultimothymooney/how-to-use-openai-models-on-kaggle",
+  "votes": 264
+}

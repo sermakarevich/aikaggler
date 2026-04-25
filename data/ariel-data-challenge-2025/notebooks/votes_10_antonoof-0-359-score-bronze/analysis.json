@@ -1,0 +1,45 @@
+{
+  "summary": "The notebook demonstrates a hybrid baseline for the Ariel Data Challenge 2025 that merges a physics-inspired analytical estimator with a pre-trained PyTorch residual network. It details a complete signal processing pipeline for two sensors, including calibration, correlated double sampling, binning, and variance weighting. The analytical component uses gradient-based phase detection and polynomial fitting to estimate transit depth, while the neural network refines predictions using stellar radius and inclination. The author emphasizes computational efficiency through parallel processing and shares this as a fast, optimized recipe that achieves a bronze score. Readers should take away practical techniques for handling astronomical sensor data, robust noise estimation, and leveraging pre-trained lightweight models for rapid inference.",
+  "purpose": "baseline",
+  "competition_flow": "Loads raw sensor data, applies calibration and signal processing, estimates transit depth via an analytical polynomial-fitting model and a pre-trained PyTorch ResNetMLP, estimates sensor-specific noise, and generates a final submission CSV with mean predictions and uncertainties.",
+  "data_reading": [
+    "Loads ADC calibration info and planet/star metadata from CSVs.",
+    "Reads raw sensor signals and calibration files (dark, dead, flat, linear_corr) from Parquet files per planet/sensor."
+  ],
+  "data_processing": [
+    "Applies gain/offset correction, dark subtraction (alternating even/odd rows), flat-fielding, linear correction, and ROI cropping.",
+    "Performs correlated double sampling (CDS) by subtracting even/odd row means, bins the signal, applies variance-based weighting for AIRS-CH0, clips outliers, and smooths signals with Savitzky-Golay filter."
+  ],
+  "features_engineering": [
+    "Hand-crafted tabular features: transit_depth (analytical estimate), Rs (stellar radius), and i (inclination) from star metadata.",
+    "Sensor-specific relative noise estimates (sigma_fgs, sigma_air) computed from out-of-transit/in-transit variance ratios with median normalization and clipping."
+  ],
+  "models": [
+    "ResNetMLP (input_dim=3, hidden_dim=32, output_dim=1, 80 residual blocks)",
+    "ResNetMLP2 (input_dim=3, hidden_dim=128, output_dim=282, 80 residual blocks)",
+    "Analytical polynomial-fitting model (degree 3) with Nelder-Mead optimization"
+  ],
+  "frameworks_used": [
+    "pytorch",
+    "numpy",
+    "pandas",
+    "scipy",
+    "astropy",
+    "pqdm",
+    "tqdm",
+    "sklearn"
+  ],
+  "loss_functions": [],
+  "cv_strategy": "",
+  "ensembling": "Combines predictions from an analytical polynomial-fitting model, a pre-trained PyTorch ResNetMLP for transit depth, and another pre-trained ResNetMLP for 282 spectral bins, then merges them with estimated noise values into a single submission.",
+  "insights": [
+    "Efficient parallel processing with pqdm significantly speeds up sensor calibration.",
+    "Variance-based weighting and median normalization prevent noise estimation from being skewed by outliers.",
+    "Combining physics-based phase detection with polynomial fitting provides a robust initial transit depth estimate.",
+    "Pre-trained lightweight residual networks can effectively refine predictions using minimal stellar parameters."
+  ],
+  "critical_findings": [],
+  "what_did_not_work": [],
+  "source_url": "https://www.kaggle.com/code/antonoof/0-359-score-bronze",
+  "votes": 137
+}

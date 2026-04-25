@@ -1,0 +1,95 @@
+{
+  "summary": "The authors developed a multi-stage synthetic data generation pipeline to create high-quality ARC puzzles, which were used to fine-tune Qwen3 models. They improved the ARChitects approach by implementing a compact dialog-style template, LoRA test-time fine-tuning, and a batch Depth First Search decoding strategy with augmentation-based rescoring. They also explored Tiny Recursive Models (TRM), tuning them for Kaggle's compute constraints and ensembling them with Qwen3. The key insight was that scaling pretraining with carefully filtered synthetic data and optimizing test-time decoding were critical for success.",
+  "extensive_summary": "## Synthetic Data Generation Pipeline\nThe solution centers on a four-stage Synthetic Data Generation (SDG) pipeline powered by `gpt-oss-120b` via the NeMo-Skills framework. The pipeline collects human-written puzzle descriptions from H-ARC and BARC, mixes them via LLM prompts to create more complex summaries, and then generates Python code for input grid logic and output grid transformation rules. Validation involved unit tests for input logic and consistency checks across multiple LLM generations for output logic, ultimately yielding over 100k valid puzzles.\n\n## ARChitects Approach & Model Training\nThe core approach builds on ARChitects, using a Qwen3 model fine-tuned on 3.2M augmented samples from multiple sources (MINI-ARC, ConceptARC, RE-ARC, ARC-AGI-2, NVARC). Puzzles are formatted into a compact 16-token dialog-style template. Training utilized the NeMo RL framework with a Megatron backend for efficient multi-node H100 scaling. The authors implemented LoRA test-time fine-tuning (r=256, alpha=32) with bfloat16 precision, disabling gradient checkpointing and 4-bit quantization, and leveraged Flash Attention 2 with Unsloth.\n\n## Decoding & Rescoring Optimizations\nA major optimization was a batch implementation of Depth First Search (DFS) for decoding. This introduced nondeterminism, which was resolved using batch-invariant operations from Thinking Machines Lab. For rescoring candidates, the authors applied exactly the same augmentations across all candidates to ensure comparable scores, later refining this with a geometric mean ensemble of log-probabilities.\n\n## Tiny Recursive Models (TRM) Exploration\nIn the final days, the authors integrated TRM, pretraining it on synthetic data and fine-tuning it during submission. Due to Kaggle's 2-hour time limit, they adjusted hyperparameters (4 H cycles, 10 max halt steps, 2000 epochs, 200 warmup steps) to fit the constraint. TRM attempts were generated and scored alongside Qwen3 candidates. While TRM solved a few unique puzzles, ensembling it with Qwen3 4B yielded no score improvement, suggesting limited synergy under compute constraints.",
+  "rank": null,
+  "competition_flow": "LLM-generated synthetic puzzles and external ARC datasets are formatted into dialog templates, used to fine-tune Qwen3 models with LoRA, decoded via batch DFS with augmentation-based rescoring, and optionally ensembled with Tiny Recursive Models before final submission.",
+  "data_reading": [
+    "Synthetic data generation pipeline producing Python code and grid representations",
+    "External datasets loaded from GitHub repositories (H-ARC, BARC, MINI-ARC, ConceptARC, RE-ARC, ARC-AGI-2, NVARC)",
+    "Grids formatted into compact 16-token dialog-style templates"
+  ],
+  "data_processing": [
+    "Filtering and combining human puzzle descriptions",
+    "LLM prompting to mix summaries and generate input/output Python programs",
+    "Validation via unit tests and consistency checks",
+    "Dataset augmentation (up to 256 samples per puzzle)",
+    "Formatting into 16-token dialog templates",
+    "LoRA test-time fine-tuning",
+    "Flash Attention 2 optimization",
+    "Unsloth framework integration"
+  ],
+  "features_engineering": [],
+  "models": [
+    "Qwen3-2B",
+    "Qwen3-4B",
+    "Tiny Recursive Models (TRM)"
+  ],
+  "frameworks_used": [
+    "NeMo-Skills",
+    "NeMo RL",
+    "Megatron",
+    "Unsloth Framework",
+    "Flash Attention 2"
+  ],
+  "loss_functions": [],
+  "cv_strategy": "Local validation on an augmented subset of 120 evaluation puzzles, correlated with public leaderboard scores.",
+  "ensembling": "Candidates from DFS decoding are rescored using a geometric mean ensemble of log-probabilities across augmentations; TRM attempts are combined with Qwen3 candidates and scored by the Qwen3 model; final submission ensembles Qwen3 2B with TRM.",
+  "insights": [
+    "Scaling pretraining with high-quality synthetic data was the most critical factor for success.",
+    "Test-time fine-tuning with LoRA and optimized decoding significantly boosted performance.",
+    "Using identical augmentations across candidates ensures fair and comparable rescoring.",
+    "TRM shows potential but requires substantial compute to match LLM capabilities in this domain."
+  ],
+  "critical_findings": [
+    "Batch DFS decoding introduced nondeterminism that degraded precision until batch-invariant operations were applied.",
+    "Applying the exact same augmentations to all candidates made rescoring scores more reliable.",
+    "Training TRM on evaluation data caused a score drop (7.5% vs 9.44%), highlighting overfitting risks.",
+    "Ensembling TRM with Qwen3 4B yielded no improvement, indicating limited synergy under strict time limits."
+  ],
+  "what_did_not_work": [
+    "The batch DFS decoding ran ~17% slower in the Kaggle environment and was excluded from the final submission.",
+    "Initial TRM submission with default parameters only achieved 2.08%.",
+    "Ensembling TRM with Qwen3 4B produced no score gain (27.22% vs 27.22%)."
+  ],
+  "github_repos": [
+    {
+      "url": "https://github.com/Le-Gris/h-arc",
+      "role": "reference"
+    },
+    {
+      "url": "https://github.com/xu3kev/BARC",
+      "role": "reference"
+    },
+    {
+      "url": "https://github.com/KSB21ST/MINI-ARC",
+      "role": "reference"
+    },
+    {
+      "url": "https://github.com/victorvikram/ConceptARC",
+      "role": "reference"
+    },
+    {
+      "url": "https://github.com/michaelhodel/re-arc",
+      "role": "reference"
+    },
+    {
+      "url": "https://github.com/NVIDIA-NeMo/RL",
+      "role": "library"
+    },
+    {
+      "url": "https://github.com/1ytic/NVARC",
+      "role": "solution"
+    },
+    {
+      "url": "https://github.com/thinking-machines-lab/batch_invariant_ops",
+      "role": "library"
+    },
+    {
+      "url": "https://github.com/SamsungSAILMontreal/TinyRecursiveModels",
+      "role": "library"
+    }
+  ],
+  "papers": [],
+  "other_solution_refs": [],
+  "source_url": "https://www.kaggle.com/competitions/arc-prize-2025/discussion/651671"
+}

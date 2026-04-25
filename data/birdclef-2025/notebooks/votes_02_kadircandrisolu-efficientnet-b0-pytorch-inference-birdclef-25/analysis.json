@@ -1,0 +1,31 @@
+{
+  "summary": "This notebook provides a complete inference pipeline for the BirdCLEF 2025 competition, converting raw audio soundscapes into mel spectrograms and passing them through pre-trained EfficientNet-B0 models. It demonstrates how to handle multi-class audio classification by segmenting audio into 5-second windows, applying test-time augmentation, and averaging predictions across multiple model checkpoints. The code emphasizes practical deployment considerations like handling missing species columns, padding short audio clips, and managing CPU inference efficiently. Readers should understand how to structure a production-ready inference script that bridges audio preprocessing, model loading, and submission formatting.",
+  "purpose": "inference",
+  "competition_flow": "Loads test soundscapes, converts 5-second audio segments into normalized mel spectrograms, runs them through one or more pre-trained EfficientNet-B0 models with optional TTA, averages the sigmoid probabilities, and formats the results into a competition submission CSV.",
+  "data_reading": [
+    "Reads test audio files (.ogg) from the competition input directory using librosa at a 32kHz sampling rate, and loads taxonomy and sample submission CSVs with pandas."
+  ],
+  "data_processing": [
+    "Pads audio segments to 5 seconds if shorter, computes mel spectrograms using librosa (1024 FFT, 512 hop, 128 mels, 50-14kHz range), converts to decibel scale, min-max normalizes, and resizes to 256x256 using OpenCV. Applies TTA via horizontal (time) and vertical (frequency) flips of the spectrogram."
+  ],
+  "features_engineering": [],
+  "models": [
+    "EfficientNet-B0"
+  ],
+  "frameworks_used": [
+    "pytorch",
+    "timm",
+    "librosa",
+    "opencv",
+    "pandas",
+    "numpy"
+  ],
+  "loss_functions": [],
+  "cv_strategy": "",
+  "ensembling": "Averages predicted probabilities across multiple loaded model checkpoints and across TTA variations (original, time-flip, frequency-flip) before applying a 0.5 threshold.",
+  "insights": [],
+  "critical_findings": [],
+  "what_did_not_work": [],
+  "source_url": "https://www.kaggle.com/code/kadircandrisolu/efficientnet-b0-pytorch-inference-birdclef-25",
+  "votes": 713
+}

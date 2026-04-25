@@ -1,0 +1,13 @@
+{
+  "description": "Participants analyze multimodal instrument data from the Ariel space telescope to detect and characterize exoplanet signals. The task is framed as a regression problem, requiring models to predict continuous physical or atmospheric parameters from the observational data. Success is measured using a custom 'Ariel Gaussian Log Likelihood' metric, where higher scores indicate better model performance.",
+  "data_modality": "multimodal",
+  "task_type": "regression",
+  "label_structure": "unknown",
+  "metric": "Ariel Gaussian Log Likelihood",
+  "test_split": "unknown",
+  "format": "standard",
+  "dataset_scale": "unknown",
+  "domain": "astronomy",
+  "data_challenges": [],
+  "constraints": []
+}

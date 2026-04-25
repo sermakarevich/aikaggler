@@ -1,0 +1,76 @@
+{
+  "summary": "The authors secured 2nd place in BirdCLEF 2025 by building a semi-supervised learning pipeline centered on iterative pseudo-labeling. They leveraged pretraining on a massive, filtered Xeno-Canto snapshot to initialize their CNN backbones, which significantly boosted performance. The core innovation involved generating confident pseudo-labels from train soundscapes, filtering them with soft probabilities, and iteratively resampling them to augment the training distribution. Careful validation strategies for undersampled species and a novel probability-scaling post-processing step further solidified their final ensemble.",
+  "extensive_summary": "## Data & Segmentation\nThe pipeline processes audio into 5-second random segments. Initially, the authors experimented with extracting segments from the first or last 7 seconds to avoid false positives, but found that skipping non-vocalization periods actually hurt generalization. They ultimately used whole audio or manually/automatically removed \"alien speech\" (non-vocalization narration) to prevent the model from overfitting to sparse audios.\n\n## Validation Strategy\nValidation was stratified by `primary_label` and grouped by `author`. To handle undersampled species, they tested adding samples to folds, removing them from train, or adding them only to train folds. They settled on adding at least one sample per class to each fold and scoring them, or adding all undersampled species to train folds while removing them from validation. They noted that validation scores poorly correlate with Public LB scores when tweaking within ~1% AUC, and correlation completely broke down after breaking the 0.9 milestone.\n\n## Modeling & Pretraining\nThey used a Spec-to-2D CNN approach. After testing ConvNeXt and ResNeXt, they settled on `tf_efficientnetv2_s` and `eca_nfnet_l0`. Training used Focal + BCE loss with 0.005 label smoothing, cosine scheduler, and class balancing strategies (Balanced, Squared, or Upsampling). A major breakthrough came from pretraining backbones on a massive, filtered Xeno-Canto snapshot (excluding this year's species and undersampled classes), which jumped scores from ~0.84 to ~0.87. They fine-tuned without differential learning rates.\n\n## Pseudo-Labeling Pipeline\nThe semi-supervised core involved predicting train soundscapes in 5s windows, keeping segments with max probability > 0.5, and applying soft labels (trimming probs < 0.1 to zero). They sampled pseudo-labels with a 40% replacement probability. Iteration 1 boosted scores to ~0.895, and iteration 2-3 pushed them to 0.90-0.91. A third iteration used OOF predictions on split soundscapes to avoid leakage, creating a mixed pseudo-label set.\n\n## Post-Processing & Ensemble\nFinal post-processing scaled chunk predictions by the top probability of each file to boost strong predictions and suppress weak ones. The final submission combined 3 models (two `tf_efficientnetv2_s`, one `eca_nfnet_l0`) trained on different splits and pseudo-iterations, submitted without TTA.",
+  "rank": 2,
+  "competition_flow": "Audio files are split into 5-second segments, processed through pre-trained CNN backbones, fine-tuned with class balancing, augmented with iterative pseudo-labels from train soundscapes, and combined into a 3-model ensemble with probability-scaling post-processing for final submission.",
+  "data_reading": [],
+  "data_processing": [
+    "5s random segment extraction",
+    "manual/automatic removal of non-vocalization \"alien speech\"",
+    "filtering undersampled species during pretraining",
+    "soft pseudo-label generation (trimming probabilities < 0.1 to zero)",
+    "40% probability replacement sampling for pseudo-data",
+    "post-processing scaling of chunk predictions by file-level top probability"
+  ],
+  "features_engineering": [],
+  "models": [
+    "tf_efficientnetv2_s",
+    "eca_nfnet_l0",
+    "ConvNeXt",
+    "ResNeXt",
+    "SED head",
+    "multi-layer perceptron"
+  ],
+  "frameworks_used": [],
+  "loss_functions": [
+    "Focal loss",
+    "BCE",
+    "Label smoothing (0.005)"
+  ],
+  "cv_strategy": "Stratification by primary_label and grouping by author. Tested strategies for undersampled species including adding samples to folds, removing them from train, or adding them only to train folds. Used validation splits #1 and #3.",
+  "ensembling": "Final submission combined 3 models (two tf_efficientnetv2_s and one eca_nfnet_l0) trained on different validation splits with varying pseudo-iterations and sampling strategies, combined without TTA and applied with probability-scaling post-processing.",
+  "insights": [
+    "Pseudo-labeling is a critical driver of performance in semi-supervised audio classification.",
+    "Validation scores do not strongly correlate with Public LB scores when making small tweaks (~1% AUC).",
+    "Pretraining on a massive, filtered Xeno-Canto snapshot is a highly effective initialization strategy.",
+    "Models benefit from some noise; strictly avoiding false positives can hurt generalization."
+  ],
+  "critical_findings": [
+    "Skipping random 5s periods without vocalization actually reduced LB score, suggesting models use those segments for generalization.",
+    "Validation correlation with Public LB broke down completely after breaking the 0.9 milestone.",
+    "Selecting checkpoints based on best validation ROC AUC outperformed using the last or averaged checkpoints.",
+    "Using the last Xeno-Canto snippet for pretraining performed worse than using older 2024 pretrains."
+  ],
+  "what_did_not_work": [
+    "Training on soft labels of the main training data",
+    "Using pretrained weights from the latest Xeno Canto snippet",
+    "Using additional iNaturalist or XC data",
+    "Additional augmentations like Time Flip"
+  ],
+  "github_repos": [
+    {
+      "url": "https://github.com/VSydorskyy/BirdCLEF_2025_2nd_place",
+      "role": "solution"
+    }
+  ],
+  "papers": [],
+  "other_solution_refs": [
+    {
+      "description": "2023 competition write-up referenced for augmentation setup",
+      "url": "https://www.kaggle.com/competitions/birdclef-2023/discussion/412808"
+    },
+    {
+      "description": "TOP 4 team TTA approach referenced",
+      "url": "https://www.kaggle.com/competitions/birdclef-2024/discussion/511845"
+    },
+    {
+      "description": "Inference kernel",
+      "url": "https://www.kaggle.com/code/vladimirsydor/bird-clef-2025-ensemble-v2-final-final?scriptVersionId=244942051"
+    },
+    {
+      "description": "Short inference kernel",
+      "url": "https://www.kaggle.com/code/vladimirsydor/bird-clef-2025-minimul-inference?scriptVersionId=2450754"
+    }
+  ],
+  "source_url": "https://www.kaggle.com/competitions/birdclef-2025/discussion/583699"
+}

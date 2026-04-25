@@ -1,0 +1,36 @@
+{
+  "summary": "The notebook demonstrates a BigQuery-based pipeline for building a semantic ticket similarity system using Stack Overflow's public dataset as a proxy for customer support tickets. It constructs a historical repository of tickets and solutions, extracts categorical and lexical features via SQL, and implements a custom similarity scoring function that combines word overlap, key term matching, and category bonuses. The author runs live demos to show how the system matches semantically similar issues despite varying phrasing, and concludes with a business impact analysis estimating time and cost savings. Readers learn how to leverage BigQuery's native SQL capabilities for text analysis and semantic search without traditional ML frameworks.",
+  "purpose": "tutorial",
+  "competition_flow": "Queries Stack Overflow public data via BigQuery, extracts and categorizes tickets/solutions using SQL, implements a custom word/category overlap similarity function, and outputs live matching demos with business impact metrics.",
+  "data_reading": [
+    "Queries `bigquery-public-data.stackoverflow.posts_questions` and `posts_answers` directly via the `google-cloud-bigquery` Python client, converting results to pandas DataFrames."
+  ],
+  "data_processing": [
+    "Filters data by `accepted_answer_id IS NOT NULL`, `LENGTH(title) > 10`, `score >= 1`, and `creation_date >= '2020-01-01'`.",
+    "Cleans text by lowercasing, removing non-alphanumeric characters via regex, and splitting into words.",
+    "Filters stop words and short words during tokenization."
+  ],
+  "features_engineering": [
+    "Extracts `issue_category` via regex-based CASE statements (error, database, authentication, api, payment, frontend, backend, general).",
+    "Extracts `key_terms` by filtering words longer than 3 characters and excluding common stop words.",
+    "Computes word overlap and key term overlap scores dynamically during query time."
+  ],
+  "models": [],
+  "frameworks_used": [
+    "google-cloud-bigquery",
+    "pandas",
+    "db-dtypes"
+  ],
+  "loss_functions": [],
+  "cv_strategy": "",
+  "ensembling": "",
+  "insights": [
+    "Traditional keyword search fails on paraphrased customer issues, but combining lexical overlap with categorical matching improves semantic retrieval.",
+    "BigQuery's native SQL capabilities can handle text processing and similarity scoring without external ML libraries.",
+    "Filtering by community validation metrics (score, accepted_answer_id) ensures high-quality training data."
+  ],
+  "critical_findings": [],
+  "what_did_not_work": [],
+  "source_url": "https://www.kaggle.com/code/annastasy/ticket-iq",
+  "votes": 62
+}

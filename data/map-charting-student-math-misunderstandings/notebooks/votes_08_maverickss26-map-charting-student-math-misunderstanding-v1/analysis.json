@@ -1,0 +1,46 @@
+{
+  "summary": "This notebook demonstrates a multi-model baseline for the MAP competition, focusing on classifying student math misconceptions from text. It begins by training a Gemma-2-9B sequence classifier on a custom prompt format that combines question text, answer choices, correctness labels, and student explanations. After training, it runs inference using two additional pre-trained models (DeepSeek-Math-7B and Qwen3-8B) loaded from Kaggle datasets. The predictions are then combined using a custom rank-based ensemble scoring method to generate the final submission. Readers should learn how to structure text prompts for misconception classification, fine-tune LLMs with PEFT, and implement a simple yet effective rank-based ensemble strategy.",
+  "purpose": "ensemble",
+  "competition_flow": "Loads CSV data, formats prompts with correctness flags and explanations, fine-tunes Gemma-2-9B, runs inference with DeepSeek-Math-7B and Qwen3-8B, and merges predictions via a weighted rank-based scoring function to produce a final submission CSV.",
+  "data_reading": [
+    "pd.read_csv for train and test datasets"
+  ],
+  "data_processing": [
+    "Fills missing misconceptions with 'NA'",
+    "Concatenates Category and Misconception columns to create unified target labels",
+    "Derives an 'is_correct' flag by counting MC_Answer occurrences per QuestionId",
+    "Formats text prompts with specific templates including question, answer, correctness, and explanation",
+    "Tokenizes inputs with a max length of 256",
+    "Splits data into an 80/20 train/validation holdout"
+  ],
+  "features_engineering": [
+    "Derived 'is_correct' boolean flag based on groupby counts of QuestionId and MC_Answer"
+  ],
+  "models": [
+    "Gemma-2-9B",
+    "DeepSeek-Math-7B",
+    "Qwen3-8B"
+  ],
+  "frameworks_used": [
+    "pandas",
+    "numpy",
+    "scikit-learn",
+    "torch",
+    "transformers",
+    "peft",
+    "datasets",
+    "matplotlib"
+  ],
+  "loss_functions": [],
+  "cv_strategy": "Holdout split (80% train, 20% validation via train_test_split)",
+  "ensembling": "Combines top-3 predictions from three models using a custom weighted rank-based scoring function that accumulates scores by prediction rank and model weight, then selects the top-3 ranked items for the final submission.",
+  "insights": [
+    "Structuring prompts with explicit correctness labels and student explanations provides clear contextual signals for misconception classification.",
+    "Fine-tuning LLMs with PEFT and a holdout split offers a fast, reproducible baseline.",
+    "Rank-based ensemble scoring effectively aggregates diverse model predictions without requiring probability calibration or complex voting logic."
+  ],
+  "critical_findings": [],
+  "what_did_not_work": [],
+  "source_url": "https://www.kaggle.com/code/maverickss26/map-charting-student-math-misunderstanding-v1",
+  "votes": 263
+}

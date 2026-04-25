@@ -1,0 +1,53 @@
+{
+  "summary": "The author secured 2nd place by training a model that directly predicts the positional delta (difference from the previous frame) rather than absolute coordinates or velocity. They simplified the input pipeline by using raw tracking data with minimal feature engineering to accelerate iteration speed, and employed a custom `TemporalHuber` loss with exponential time decay paired with the Muon optimizer. Key technical choices included using an RNN-based encoder, horizontal/vertical flip augmentations, Batch Normalization and Dropout, and Exponential Moving Average (EMA) for training stability. The final submission relied on sequentially adding more models to the ensemble, as each additional model consistently improved the leaderboard score.",
+  "extensive_summary": "## Solution Overview\nThe author focused on streamlining the input pipeline to accelerate training iterations, opting to feed raw tracking inputs (`s`, `a`, `dir`, `o`, `x`, `y`, and static information) directly into the model rather than relying on complex public features. A pivotal insight was predicting the positional delta (`delta x, delta y`) from the previous frame instead of absolute coordinates or direction/velocity, which yielded significantly better results. The training pipeline utilized a custom `TemporalHuber` loss function with exponential time decay, paired with the Muon optimizer.\n\n## Training & Architecture\nModel training leveraged data from the 2021 and 2023 seasons, with the author noting that pretraining provided no advantage over training directly on the target data. To stabilize training and reduce validation volatility, Exponential Moving Average (EMA) was applied. The architecture closely followed a known 5th place solution, consisting of a raw input layer, minimal PyTorch-based feature engineering, an RNN encoder (noting that transformer encoders and 1D CNNs were ineffective), a spatial temperal encoder, and a decoder head that outputs movement differences before applying cumulative sum for final predictions. Simple normalization techniques like Batch Normalization and Dropout were sufficient, while advanced methods like R-Drop offered no benefit.\n\n## Validation & Ensembling\nValidation was handled using the last 5 weeks of data as out-of-fold (OOF) samples, avoiding k-fold cross-validation to maintain faster iteration cycles. Horizontal and vertical flip augmentations proved highly beneficial. The author consistently observed that adding more models to the ensemble improved the leaderboard score, leading to extensive model training in the final days. The writeup also notes that the competition hosts' plans to change private test dataset sampling introduced distribution shifts, making final performance harder to predict despite improved test data quality.",
+  "rank": 2,
+  "competition_flow": "Raw tracking data and static features are fed into a PyTorch model with an RNN encoder and custom temporal Huber loss to predict positional deltas, which are then cumsummed for final coordinates and ensembled across multiple trained models.",
+  "data_reading": [],
+  "data_processing": [
+    "Horizontal and vertical flip augmentations",
+    "Simple normalization via Batch Normalization and Dropout",
+    "Minimal PyTorch-based feature engineering on raw inputs"
+  ],
+  "features_engineering": [],
+  "models": [
+    "RNN encoder",
+    "spatial temperal encoder",
+    "decoder head"
+  ],
+  "frameworks_used": [
+    "pytorch"
+  ],
+  "loss_functions": [
+    "TemporalHuber"
+  ],
+  "cv_strategy": "Last 5 weeks of data used as out-of-fold validation; k-fold cross-validation was avoided to maintain faster iteration cycles.",
+  "ensembling": "The author consistently added more models to the ensemble throughout the competition, noting that each additional model reliably improved the leaderboard score.",
+  "insights": [
+    "Predicting positional deltas from the previous frame yields significantly better results than predicting absolute coordinates or velocity.",
+    "Using raw tracking inputs with minimal feature engineering accelerates the training pipeline without sacrificing performance.",
+    "An RNN encoder outperforms both transformer encoders and 1D CNNs for this spatial-temporal task.",
+    "Simple normalization techniques like Batch Normalization and Dropout are sufficient, while advanced methods like R-Drop provide no benefit."
+  ],
+  "critical_findings": [
+    "Predicting positional deltas rather than absolute coordinates or velocity proved unexpectedly beneficial.",
+    "Pretraining on historical data provided no advantage over training directly on the target seasons.",
+    "Changes to the private test dataset sampling strategy introduced distribution shifts that made final performance harder to predict despite improved data quality."
+  ],
+  "what_did_not_work": [
+    "Transformer encoders, 1D CNNs, R-Drop, and pretraining all failed to improve results compared to the baseline RNN and direct training approaches."
+  ],
+  "github_repos": [],
+  "papers": [],
+  "other_solution_refs": [
+    {
+      "description": "Kaggle notebook referenced for useful settings and feature inspiration",
+      "url": "https://www.kaggle.com/code/ryanadamsai/nfl-big-data-bowl-geometric-gnn-lb-586"
+    },
+    {
+      "description": "5th place solution writeup used as architectural reference",
+      "url": "https://www.kaggle.com/competitions/nfl-big-data-bowl-2026-prediction/writeups/5th-place-solution"
+    }
+  ],
+  "source_url": "https://www.kaggle.com/competitions/nfl-big-data-bowl-2026-prediction/discussion/668572"
+}

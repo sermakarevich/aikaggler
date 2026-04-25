@@ -1,0 +1,22 @@
+{
+  "id": "stpeteishii/nfl-2026-track-animator",
+  "id_no": 93243919,
+  "title": "NFL 2026 Track Animator",
+  "code_file": "nfl-2026-track-animator.ipynb",
+  "language": "python",
+  "kernel_type": "notebook",
+  "is_private": false,
+  "enable_gpu": true,
+  "enable_tpu": false,
+  "enable_internet": true,
+  "keywords": [],
+  "dataset_sources": [],
+  "kernel_sources": [],
+  "competition_sources": [
+    "nfl-big-data-bowl-2026-analytics",
+    "nfl-big-data-bowl-2026-prediction"
+  ],
+  "model_sources": [],
+  "docker_image": "gcr.io/kaggle-private-byod/python@sha256:141219e230dab548ccc19aa4e62bcf805ed9de0b4d5112227e28f5f1a25991f8",
+  "machine_shape": "Gpu"
+}

@@ -1,0 +1,27 @@
+{
+  "id": "amirmmahdavikia/rsna2025-explore-and-gain-insights",
+  "id_no": 88896427,
+  "title": "RSNA2025 - Explore and Gain Insights",
+  "code_file": "rsna2025-explore-and-gain-insights.ipynb",
+  "language": "python",
+  "kernel_type": "notebook",
+  "is_private": false,
+  "enable_gpu": false,
+  "enable_tpu": false,
+  "enable_internet": true,
+  "keywords": [
+    "health",
+    "medicine",
+    "image"
+  ],
+  "dataset_sources": [
+    "amirmmahdavikia/rsna2025-iad-metadata"
+  ],
+  "kernel_sources": [],
+  "competition_sources": [
+    "rsna-intracranial-aneurysm-detection"
+  ],
+  "model_sources": [],
+  "docker_image": "gcr.io/kaggle-images/python@sha256:20d75b6c2a67c98a3a9f199ea97d51168548b4eb54898f30849e11d68ee06ea1",
+  "machine_shape": "None"
+}

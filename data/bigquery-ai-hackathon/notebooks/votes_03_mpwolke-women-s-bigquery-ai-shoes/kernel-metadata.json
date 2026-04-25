@@ -1,0 +1,23 @@
+{
+  "id": "mpwolke/women-s-bigquery-ai-shoes",
+  "id_no": 89272837,
+  "title": "Women's BigQuery AI? Shoes!!",
+  "code_file": "women-s-bigquery-ai-shoes.ipynb",
+  "language": "python",
+  "kernel_type": "notebook",
+  "is_private": false,
+  "enable_gpu": false,
+  "enable_tpu": false,
+  "enable_internet": false,
+  "keywords": [],
+  "dataset_sources": [
+    "bigquery/geo-openstreetmap"
+  ],
+  "kernel_sources": [],
+  "competition_sources": [
+    "bigquery-ai-hackathon"
+  ],
+  "model_sources": [],
+  "docker_image": "gcr.io/kaggle-images/python@sha256:20d75b6c2a67c98a3a9f199ea97d51168548b4eb54898f30849e11d68ee06ea1",
+  "machine_shape": "None"
+}

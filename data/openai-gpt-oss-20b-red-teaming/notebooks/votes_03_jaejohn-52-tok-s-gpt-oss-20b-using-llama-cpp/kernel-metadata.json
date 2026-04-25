@@ -1,0 +1,27 @@
+{
+  "id": "jaejohn/52-tok-s-gpt-oss-20b-using-llama-cpp",
+  "id_no": 88878734,
+  "title": "[52 tok/s] gpt-oss-20b using llama.cpp",
+  "code_file": "52-tok-s-gpt-oss-20b-using-llama-cpp.ipynb",
+  "language": "python",
+  "kernel_type": "notebook",
+  "is_private": false,
+  "enable_gpu": true,
+  "enable_tpu": false,
+  "enable_internet": true,
+  "keywords": [
+    "gpu"
+  ],
+  "dataset_sources": [
+    "",
+    "jaejohn/llama-cpp-cmake-pre-build",
+    "jaejohn/llama-cpp-01"
+  ],
+  "kernel_sources": [],
+  "competition_sources": [
+    "openai-gpt-oss-20b-red-teaming"
+  ],
+  "model_sources": [],
+  "docker_image": "gcr.io/kaggle-private-byod/python@sha256:320043e14c68293f1c946585b9257123385205a58af4b94b17d31868cae4e868",
+  "machine_shape": "NvidiaTeslaT4"
+}

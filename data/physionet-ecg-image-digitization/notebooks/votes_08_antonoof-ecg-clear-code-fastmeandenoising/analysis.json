@@ -1,0 +1,48 @@
+{
+  "summary": "This notebook demonstrates two approaches for digitizing ECG signals from clinical images. The first part implements a custom CNN that directly regresses a 1D signal from an ECG image, utilizing a novel SNR-based loss function and extensive image augmentations to simulate real-world photo distortions. The second part imports an external multi-stage pipeline that performs geometric rectification (rotation and grid alignment) before extracting signals via a ResNet-based decoder, followed by Savitzky-Golay filtering. The author combines both outputs into a final submission, highlighting how combining a direct regression baseline with a structured geometric correction pipeline can improve robustness.",
+  "purpose": "baseline",
+  "competition_flow": "Loads ECG images and metadata, processes them through a custom CNN regression model and an external multi-stage geometric correction pipeline, applies signal filtering, and generates a weighted submission CSV.",
+  "data_reading": [
+    "pd.read_csv for train/test metadata and ground truth signals",
+    "cv2.imread for loading PNG images"
+  ],
+  "data_processing": [
+    "CLAHE contrast enhancement",
+    "Otsu thresholding",
+    "morphological opening",
+    "dark-pixel tracking for lead extraction",
+    "normalization",
+    "resampling to 5000 points",
+    "Albumentations augmentations (horizontal flip, shift/scale/rotate, grid distortion, Gaussian noise, brightness/contrast, motion blur)",
+    "Butterworth bandpass filtering",
+    "Savitzky-Golay filtering"
+  ],
+  "features_engineering": [],
+  "models": [
+    "ECGNet (custom CNN)",
+    "Stage0Net",
+    "Stage1Net",
+    "Net3 (ResNet34 encoder with CoordUnetDecoder)"
+  ],
+  "frameworks_used": [
+    "pytorch",
+    "opencv",
+    "scipy",
+    "albumentations",
+    "timm"
+  ],
+  "loss_functions": [
+    "Custom SNR loss (-log(signal_power / noise_power)) combined with a smoothness regularizer (mean squared second derivative)"
+  ],
+  "cv_strategy": "",
+  "ensembling": "Combines two submissions using a weighted average where the second model's output is heavily favored (weight ~1.0) over the first model's output (weight ~0.0).",
+  "insights": [
+    "Direct CNN regression can effectively extract signals when paired with a domain-aware loss function like SNR.",
+    "Multi-stage geometric correction (rotation and grid alignment) significantly improves ECG image readability before signal extraction.",
+    "Simple post-processing filters like Butterworth and Savitzky-Golay are highly effective for cleaning noisy regression outputs."
+  ],
+  "critical_findings": [],
+  "what_did_not_work": [],
+  "source_url": "https://www.kaggle.com/code/antonoof/ecg-clear-code-fastmeandenoising",
+  "votes": 216
+}

@@ -1,0 +1,33 @@
+{
+  "summary": "The author achieved 8th place in a combinatorial tree-packing competition by combining hand-designed tile patterns with an external solver (`spyrrow`) and custom geometric tools. They developed a web interface to visualize and manipulate configurations, then used a custom profile evaluator to accurately define arbitrary shapes for the solver. The pipeline concludes with simulated annealing to refine placements, leveraging high-variance solver outputs to find optimal outliers.",
+  "extensive_summary": "The solution tackles a combinatorial tree-packing problem through a multi-stage geometric pipeline rather than traditional machine learning. The author invested significant effort designing diverse tile patterns with varying density, aspect ratios, angles, and base shapes to serve as robust starting configurations for large N cases. For small N and gap-filling, they integrated `spyrrow` (used unmodified), noting that its outputs exhibit high variance, which necessitates running many simulations to occasionally capture high-scoring outliers.\n\nA key technical contribution is a custom tool for computing the exact outline of arbitrarily shaped regions. While `alphashape` was initially explored, it was abandoned due to insufficient precision. The custom evaluator allows the solver to treat selected tree subsets as single geometric shapes defined by vertices, enabling hybrid configurations that combine a dense tiling core with isolated trees at the periphery.\n\nThe final refinement step employs simulated annealing (SA) across two separate queues with different parameter settings, dynamically routing solutions based on specific criteria. The entire workflow is orchestrated via a custom web interface that enables real-time visualization, tree selection, rotation, deletion, and candidate subset management, all coordinated across multiple machines with varying thread counts.",
+  "rank": 8,
+  "competition_flow": "Raw geometric constraints are initialized with hand-designed tile patterns, processed through `spyrrow` for initial placement, refined via a custom profile evaluator and simulated annealing, and exported as the final submission.",
+  "data_reading": [],
+  "data_processing": [],
+  "features_engineering": [],
+  "models": [],
+  "frameworks_used": [
+    "spyrrow",
+    "alphashape"
+  ],
+  "loss_functions": [],
+  "cv_strategy": "",
+  "ensembling": "",
+  "insights": [
+    "Running `spyrrow` many times is necessary because its solutions have high variance, occasionally yielding high-scoring outliers.",
+    "Designing tile patterns with varied density, aspect ratio, angles, and base shapes provides critical starting points for large N cases.",
+    "A custom profile evaluator for arbitrary shapes is more effective than `alphashape` for defining precise geometric boundaries in this packing problem."
+  ],
+  "critical_findings": [
+    "Combining a dense tiling core with isolated trees around the periphery outperforms uniform tiling strategies.",
+    "`alphashape` was initially used but proved inadequate for the required profile accuracy, prompting the development of a custom geometric evaluator."
+  ],
+  "what_did_not_work": [
+    "`alphashape` was initially used to define outlines but was abandoned due to unsatisfactory results."
+  ],
+  "github_repos": [],
+  "papers": [],
+  "other_solution_refs": [],
+  "source_url": "https://www.kaggle.com/competitions/santa-2025/discussion/671139"
+}

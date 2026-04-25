@@ -1,0 +1,29 @@
+{
+  "summary": "This notebook serves as a technical demo and migration guide for an AI tutoring application called EchoLearn, translating TypeScript service logic into Python. It defines strict JSON schemas to validate structured outputs from a generative AI model across multiple educational features like quizzes, flashcards, and speech analysis. The core `generate_study_help()` function dynamically constructs system instructions and prompts based on feature flags, modes, and languages. Mocked responses are provided to allow offline testing and demonstration without requiring active API calls or internet access. Readers should understand how to structure LLM prompts for consistent, parseable outputs and how to safely manage API keys in public notebooks.",
+  "purpose": "utility",
+  "competition_flow": "Constructs dynamic prompts and system instructions for an AI tutoring app, passes them to a Gemini model (or mocked function), and returns structured JSON outputs for offline validation.",
+  "data_reading": [],
+  "data_processing": [],
+  "features_engineering": [],
+  "models": [
+    "Gemini"
+  ],
+  "frameworks_used": [
+    "google-generativeai",
+    "json",
+    "base64",
+    "typing"
+  ],
+  "loss_functions": [],
+  "cv_strategy": "",
+  "ensembling": "",
+  "insights": [
+    "Structured JSON schemas are essential for reliably parsing and validating LLM outputs in production applications.",
+    "Mocked responses enable offline development, testing, and demonstration without incurring API costs or requiring internet access.",
+    "Dynamic prompt construction based on feature flags, user mode, and language allows a single function to support multiple educational use cases."
+  ],
+  "critical_findings": [],
+  "what_did_not_work": [],
+  "source_url": "https://www.kaggle.com/code/kirtisharma555sudo/echolearn-kagglenotebook",
+  "votes": 20
+}

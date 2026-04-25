@@ -1,0 +1,37 @@
+{
+  "summary": "This notebook demonstrates a complete LLM-based pipeline for extracting and classifying research dataset references within academic PDFs. It combines efficient PDF text extraction with multiprocessing, strict regex-based chunking around identifiers, and prompt caching to optimize inference speed. The core technique relies on querying a quantized Qwen2.5 model and leveraging logit probabilities via a custom logits processor to classify dataset types (Primary, Secondary, or None) without fine-tuning. Readers should learn how to structure multi-step prompt workflows, implement caching for repeated queries, and use logit-based decoding for reliable multiple-choice classification in LLM pipelines. The approach proves that careful prompt engineering and inference optimization can yield a strong baseline without model training.",
+  "purpose": "baseline",
+  "competition_flow": "Loads academic PDFs, extracts text chunks around DOIs and accession IDs, queries a quantized Qwen2.5 LLM via vLLM with custom prompts and logit processing to classify dataset types, and generates a deduplicated submission CSV.",
+  "data_reading": [
+    "PDFs loaded via `fitz` (PyMuPDF) page-by-page, filtered by directory path based on competition rerun flag."
+  ],
+  "data_processing": [
+    "Multiprocessing for parallel PDF reading, regex-based removal of references/bibliography sections, context window extraction (\u00b1200 chars) around matched identifiers, MD5-based prompt caching to deduplicate queries, and strict regex patterns for DOI/accession matching."
+  ],
+  "features_engineering": [],
+  "models": [
+    "Qwen2.5 32B Instruct (AWQ quantized)"
+  ],
+  "frameworks_used": [
+    "vllm",
+    "torch",
+    "pandas",
+    "numpy",
+    "fitz",
+    "multiprocessing",
+    "logits_processor_zoo"
+  ],
+  "loss_functions": [],
+  "cv_strategy": "Holdout evaluation on training labels using exact match on article_id, dataset_id, and type to compute TP/FP/FN and F1 score.",
+  "ensembling": "",
+  "insights": [
+    "Logit-based classification with a custom processor provides reliable multiple-choice outputs without fine-tuning.",
+    "Prompt caching via MD5 hashing significantly reduces redundant LLM calls and speeds up inference.",
+    "Strict regex and context windowing improve identifier extraction precision and reduce noise.",
+    "Multi-step prompting (extraction \u2192 classification) separates concerns and improves pipeline robustness."
+  ],
+  "critical_findings": [],
+  "what_did_not_work": [],
+  "source_url": "https://www.kaggle.com/code/kurisew/fdr25-llm-baseline",
+  "votes": 181
+}

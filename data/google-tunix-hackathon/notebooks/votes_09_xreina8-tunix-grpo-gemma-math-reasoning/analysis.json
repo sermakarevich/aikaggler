@@ -1,0 +1,36 @@
+{
+  "summary": "This notebook demonstrates how to fine-tune a 2B parameter language model (Gemma 2) for step-by-step mathematical reasoning using Group Relative Policy Optimization (GRPO) via the `tunix` library. It implements a custom multi-component reward function that weights answer correctness, reasoning length/quality, and XML format compliance. The author walks through data preparation, model loading with Flax/JAX, a manual GRPO training loop, and evaluation on a held-out GSM8K split. Readers should take away that lightweight RL can effectively steer LLMs toward structured reasoning without heavy supervised fine-tuning or complex RL frameworks.",
+  "purpose": "tutorial",
+  "competition_flow": "Loads GSM8K data, defines a weighted multi-component reward function, fine-tunes Gemma 2 2B IT using a custom GRPO training loop via the `tunix` library, and evaluates accuracy and format compliance on a fixed test split.",
+  "data_reading": [
+    "Loads GSM8K via `datasets.load_dataset(\"gsm8k\", \"main\", split=split)`.",
+    "Extracts final answers using regex (`####\\s*(.+)`) and formats prompts with a custom XML-style template."
+  ],
+  "data_processing": [
+    "Normalizes numerical answers by stripping `$`, `,`, and `%` symbols.",
+    "Extracts `<reasoning>` and `<answer>` tags via regex for reward calculation.",
+    "Applies strict XML boundaries to prompts and responses to ensure format compliance."
+  ],
+  "features_engineering": [],
+  "models": [
+    "Gemma 2 2B IT"
+  ],
+  "frameworks_used": [
+    "jax",
+    "transformers",
+    "datasets",
+    "tunix"
+  ],
+  "loss_functions": [],
+  "cv_strategy": "",
+  "ensembling": "",
+  "insights": [
+    "Multi-component rewards (answer correctness, reasoning length, format compliance) effectively guide LLMs toward structured mathematical reasoning.",
+    "GRPO can be implemented with a lightweight custom training loop using `tunix` and Flax/JAX without heavy RL frameworks.",
+    "XML-tagged prompts and responses improve reward signal clarity and format compliance in math tasks."
+  ],
+  "critical_findings": [],
+  "what_did_not_work": [],
+  "source_url": "https://www.kaggle.com/code/xreina8/tunix-grpo-gemma-math-reasoning",
+  "votes": 57
+}

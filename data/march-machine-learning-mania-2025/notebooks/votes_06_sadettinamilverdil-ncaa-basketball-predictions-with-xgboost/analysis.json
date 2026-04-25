@@ -1,0 +1,39 @@
+{
+  "summary": "This notebook provides a beginner-friendly baseline for the March Machine Learning Mania competition by combining exploratory data analysis with a gradient boosting model. It demonstrates how to merge men's and women's tournament data, engineer matchup-specific features like seed differences and historical team score aggregates, and train an XGBoost regressor to predict game outcomes. The author emphasizes visualizing seed-based win rates and upset trends to contextualize the modeling process. Readers should learn how to structure tabular sports data for pairwise predictions and apply standard preprocessing pipelines to tree-based models.",
+  "purpose": "baseline",
+  "competition_flow": "Loads and merges historical men's and women's NCAA basketball game and team data, engineers pairwise matchup features and historical score aggregates, trains an XGBoost regressor on tournament games, and generates a probability submission file.",
+  "data_reading": [
+    "Uses glob to load multiple CSV files from the competition input directory, concatenating men's and women's datasets for teams, spellings, regular season results, tournament results, seeds, and game cities."
+  ],
+  "data_processing": [
+    "Maps categorical win locations to numeric values, fills missing values with -1 during feature creation, applies SimpleImputer with mean strategy and StandardScaler for numerical features, and clips predicted probabilities to [0.001, 0.999]."
+  ],
+  "features_engineering": [
+    "Creates pairwise game identifiers, maps team seeds to numeric values, calculates score differences and seed differences, and aggregates historical team performance statistics (e.g., FG%, rebounds, assists, turnovers) using sum, mean, median, max, min, std, skew, and nunique grouped by team pairings."
+  ],
+  "models": [
+    "XGBRegressor"
+  ],
+  "frameworks_used": [
+    "xgboost",
+    "scikit-learn",
+    "pandas",
+    "numpy",
+    "matplotlib",
+    "seaborn"
+  ],
+  "loss_functions": [
+    "Default regression loss (squared error) for training; log_loss, mean_absolute_error, brier_score_loss used for evaluation."
+  ],
+  "cv_strategy": "5-fold cross-validation via scikit-learn cross_val_score with neg_mean_squared_error scoring.",
+  "ensembling": "",
+  "insights": [
+    "Seed matchups are a strong predictor of game outcomes, with higher seeds dominating lower seeds.",
+    "Historical team performance aggregates provide valuable context for predicting future tournament games.",
+    "Upset rates and score margins show consistent trends across tournament seasons."
+  ],
+  "critical_findings": [],
+  "what_did_not_work": [],
+  "source_url": "https://www.kaggle.com/code/sadettinamilverdil/ncaa-basketball-predictions-with-xgboost",
+  "votes": 179
+}

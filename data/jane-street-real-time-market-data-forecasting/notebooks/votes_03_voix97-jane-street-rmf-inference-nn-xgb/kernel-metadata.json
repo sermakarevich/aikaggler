@@ -1,0 +1,32 @@
+{
+  "id": "voix97/jane-street-rmf-inference-nn-xgb",
+  "id_no": 69725013,
+  "title": "Jane Street RMF: Inference NN + XGB",
+  "code_file": "jane-street-rmf-inference-nn-xgb.ipynb",
+  "language": "python",
+  "kernel_type": "notebook",
+  "is_private": false,
+  "enable_gpu": true,
+  "enable_tpu": false,
+  "enable_internet": false,
+  "keywords": [
+    "xgboost",
+    "neural networks",
+    "ensembling",
+    "pytorch",
+    "gpu"
+  ],
+  "dataset_sources": [
+    "voix97/js-with-lags-trained-xgb",
+    "voix97/js-xs-nn-trained-model"
+  ],
+  "kernel_sources": [
+    "motono0223/js24-preprocessing-create-lags"
+  ],
+  "competition_sources": [
+    "jane-street-real-time-market-data-forecasting"
+  ],
+  "model_sources": [],
+  "docker_image": "gcr.io/kaggle-private-byod/python@sha256:141219e230dab548ccc19aa4e62bcf805ed9de0b4d5112227e28f5f1a25991f8",
+  "machine_shape": "Gpu"
+}

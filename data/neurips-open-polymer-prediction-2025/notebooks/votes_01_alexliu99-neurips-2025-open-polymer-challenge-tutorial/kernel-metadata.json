@@ -1,0 +1,23 @@
+{
+  "id": "alexliu99/neurips-2025-open-polymer-challenge-tutorial",
+  "id_no": 84978842,
+  "title": "NeurIPS 2025 Open Polymer Challenge Tutorial",
+  "code_file": "neurips-2025-open-polymer-challenge-tutorial.ipynb",
+  "language": "python",
+  "kernel_type": "notebook",
+  "is_private": false,
+  "enable_gpu": true,
+  "enable_tpu": false,
+  "enable_internet": false,
+  "keywords": [
+    "gpu"
+  ],
+  "dataset_sources": [],
+  "kernel_sources": [],
+  "competition_sources": [
+    "neurips-open-polymer-prediction-2025"
+  ],
+  "model_sources": [],
+  "docker_image": "gcr.io/kaggle-private-byod/python@sha256:5de7f3337f4166df89b2d68f886fb08b30c4260df90e55e6587be5fd7648cf3f",
+  "machine_shape": "Gpu"
+}

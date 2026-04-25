@@ -1,0 +1,19 @@
+{
+  "description": "Participants develop programs that solve a set of computational tasks while minimizing the total number of characters in the code. The competition focuses on code golf, where solutions are evaluated based on their brevity and correctness across multiple test cases. Success is measured by a custom code golf metric that rewards shorter, valid programs, with rankings determined by a held-out evaluation set.",
+  "data_modality": "text",
+  "task_type": "generation",
+  "label_structure": "none",
+  "metric": "Code Golf Metric",
+  "test_split": "unknown",
+  "format": "code_comp",
+  "dataset_scale": "unknown",
+  "domain": "code_generation",
+  "data_challenges": [
+    "small_test_set",
+    "long_tail"
+  ],
+  "constraints": [
+    "kernels_only",
+    "compute_budget_limits"
+  ]
+}

@@ -1,0 +1,48 @@
+{
+  "summary": "This notebook provides a step-by-step tutorial on efficiently fine-tuning a large language model (Gemma-3-4B) using Low-Rank Adaptation (LoRA) via the Unsloth and TRL libraries. It demonstrates how to load a base model, prepare a medical instruction dataset, format it with chat templates, and dynamically calculate training hyperparameters based on dataset size and GPU memory constraints. The author emphasizes memory-efficient training techniques like 4-bit quantization, gradient checkpointing, and response-only loss masking to prevent the model from learning user prompts. Readers should learn how to adapt open-source LLMs for specialized domains without full fine-tuning, manage hardware limitations on consumer GPUs, and export fine-tuned models in multiple deployment formats (LoRA adapters, merged FP16, and GGUF).",
+  "purpose": "tutorial",
+  "competition_flow": "Loads a medical instruction dataset from Hugging Face, formats it with chat templates, dynamically configures and trains a LoRA adapter on Gemma-3-4B using Unsloth and TRL, then exports the fine-tuned model in LoRA, merged, and GGUF formats.",
+  "data_reading": [
+    "Loads the FreedomIntelligence/medical-o1-reasoning-SFT dataset from Hugging Face using the datasets library",
+    "Inspects the first few rows with pandas",
+    "Converts the dataset to a standardized list format using unsloth.chat_templates.standardize_data_formats()"
+  ],
+  "data_processing": [
+    "Removes the Complex_CoT column to reduce noise for Gemma's instruction-tuning format",
+    "Merges custom Q&A examples with the original dataset",
+    "Formats text into chat-style conversations using tokenizer.apply_chat_template()",
+    "Strips <bos> tokens to prevent duplication during training",
+    "Masks user prompts during training via train_on_responses_only() so gradients only flow through assistant responses",
+    "Calculates dataset semantic similarity using SentenceTransformer to dynamically scale training steps and learning rate"
+  ],
+  "features_engineering": [],
+  "models": [
+    "Gemma-3-4B (base)",
+    "LoRA adapters"
+  ],
+  "frameworks_used": [
+    "unsloth",
+    "trl",
+    "transformers",
+    "datasets",
+    "sentence_transformers",
+    "torch",
+    "peft"
+  ],
+  "loss_functions": [
+    "Cross-entropy loss with response-only masking (user prompts masked, only assistant responses contribute to loss)"
+  ],
+  "cv_strategy": "Optional 10% holdout split for evaluation; otherwise relies on training loss with a custom early stopping callback (patience=10, min_delta=0.001)",
+  "ensembling": "",
+  "insights": [
+    "LoRA enables efficient fine-tuning by updating only ~1-10% of parameters while keeping the base model frozen.",
+    "Chat templates are critical for teaching LLMs conversation structure, role boundaries, and multi-turn context.",
+    "Response-only training improves efficiency and quality by preventing the model from learning to predict user inputs.",
+    "Dynamic hyperparameter scaling based on dataset size and GPU memory helps optimize training on consumer hardware.",
+    "Semantic similarity of the target dataset can guide epoch count and learning rate adjustments to avoid overfitting or undertraining."
+  ],
+  "critical_findings": [],
+  "what_did_not_work": [],
+  "source_url": "https://www.kaggle.com/code/chaitanya99/customize-llm-step-by-step-lora-training",
+  "votes": 61
+}

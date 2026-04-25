@@ -1,0 +1,20 @@
+{
+  "description": "Participants predict whether a wearer is engaging in Body-Focused Repetitive Behaviors (BFRBs) using time-series data from a wrist-worn sensor. The task involves analyzing motion and physiological signals to classify behavioral states over time. Success is measured using a custom competition-specific metric (CMI_2025) on a held-out test set. Hosted by the Child Mind Institute, the competition focuses on health analytics and time series modeling.",
+  "data_modality": "time_series",
+  "task_type": "classification",
+  "label_structure": "unknown",
+  "metric": "CMI_2025",
+  "test_split": "unknown",
+  "format": "two_stage",
+  "dataset_scale": "unknown",
+  "domain": "health_wearables",
+  "data_challenges": [
+    "class_imbalance",
+    "sensor_noise",
+    "domain_shift"
+  ],
+  "constraints": [
+    "submission_limits",
+    "custom_metric"
+  ]
+}

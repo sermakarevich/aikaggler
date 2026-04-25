@@ -1,0 +1,25 @@
+{
+  "id": "hengck23/demo-submission",
+  "id_no": 100139252,
+  "title": "demo submission",
+  "code_file": "demo-submission.ipynb",
+  "language": "python",
+  "kernel_type": "notebook",
+  "is_private": false,
+  "enable_gpu": true,
+  "enable_tpu": false,
+  "enable_internet": false,
+  "keywords": [
+    "gpu"
+  ],
+  "dataset_sources": [
+    "hengck23/hengck23-demo-submit-physionet"
+  ],
+  "kernel_sources": [],
+  "competition_sources": [
+    "physionet-ecg-image-digitization"
+  ],
+  "model_sources": [],
+  "docker_image": "gcr.io/kaggle-private-byod/python@sha256:7a9d2a6b13b3566aa6cc5a22447f3b3f99acf55dce44408deb90584b6d4b0dde",
+  "machine_shape": "Gpu"
+}

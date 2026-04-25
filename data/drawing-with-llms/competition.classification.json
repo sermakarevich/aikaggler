@@ -1,0 +1,13 @@
+{
+  "description": "Participants build text-to-SVG generation models that convert textual prompts into scalable vector graphics. The competition bridges natural language processing and image synthesis, leveraging diffusion models and differentiable rendering to produce precise, concept-aligned drawings. Success is measured by a custom evaluation metric called SVG Image Fidelity, which quantifies how closely the generated vectors match the target concepts. Competitors package and submit their models as Kaggle Packages for automated testing.",
+  "data_modality": "text",
+  "task_type": "generation",
+  "label_structure": "none",
+  "metric": "SVG Image Fidelity",
+  "test_split": "unknown",
+  "format": "code_comp",
+  "dataset_scale": "unknown",
+  "domain": "text_to_image_generation",
+  "data_challenges": [],
+  "constraints": []
+}

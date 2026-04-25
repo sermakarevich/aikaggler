@@ -1,0 +1,30 @@
+{
+  "id": "atom1231/ensemble-csv-for-more-files",
+  "id_no": 84573755,
+  "title": "ensemble csv for more files",
+  "code_file": "ensemble-csv-for-more-files.ipynb",
+  "language": "python",
+  "kernel_type": "notebook",
+  "is_private": false,
+  "enable_gpu": false,
+  "enable_tpu": false,
+  "enable_internet": false,
+  "keywords": [],
+  "dataset_sources": [
+    "",
+    "",
+    "",
+    "",
+    "",
+    "atom1231/caformer-28-2",
+    "atom1231/caformrt-28-8",
+    "egortrushin/open-wfi-test"
+  ],
+  "kernel_sources": [],
+  "competition_sources": [
+    "waveform-inversion"
+  ],
+  "model_sources": [],
+  "docker_image": "gcr.io/kaggle-images/python@sha256:f4b6dd72d4ac48c76fbb02bce0798b80b284102886ad37e6041e9ab721dc8873",
+  "machine_shape": "None"
+}

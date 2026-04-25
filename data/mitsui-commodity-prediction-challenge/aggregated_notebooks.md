@@ -1,0 +1,174 @@
+# mitsui-commodity-prediction-challenge: top public notebooks
+
+The top-voted notebooks primarily focus on establishing robust baseline pipelines for multi-target commodity regression, with a strong emphasis on preventing data leakage and handling chronological time-series splits. Contributors extensively explore gradient boosting frameworks, custom ranking losses, and financial feature engineering, while several high-profile notebooks dedicate significant effort to auditing public leaderboard integrity and standardizing Kaggle inference server workflows.
+
+## Common purposes
+- baseline
+- eda
+- inference
+- other
+- utility
+
+## Competition flows
+- The notebook initializes a Kaggle inference server that receives batched test features and label lags, generates dummy predictions for 424 target columns, and returns them as a DataFrame for evaluation.
+- Loads train_labels.csv into memory, intercepts the inference server's test input to extract date_id, looks up the corresponding ground truth row in the training labels, and returns it as the prediction to artificially inflate the public leaderboard score.
+- Loads train/test/labels via Polars, sorts chronologically, extracts shared features, trains 424 independent LightGBM regressors with fold-local preprocessing, and generates a shape-safe submission using a custom inference server.
+- Reads train/test CSVs via Polars, trains 424 independent LightGBM regressors with a target-index feature and basic type casting, evaluates them using a custom RankCorr-Sharpe metric via TimeSeriesSplit, and exports a Kaggle-compatible inference server for prediction generation.
+- Loads train and label CSVs, reshapes them into a long format, engineers temporal features, trains LightGBM, XGBoost, and CatBoost with 3-fold CV on GPU, averages the predictions across all models and folds, and serves them via Kaggle's inference server.
+- The notebook takes raw price columns from pandas DataFrames, computes lagged log returns for each, subtracts them to generate the target series, and returns the result for downstream use.
+- Loads raw financial CSV data, preprocesses and unifies it into a standard OHLCV table, engineers rolling and pairwise features, trains three CatBoost variants on a fixed temporal holdout, ensembles their predictions, and deploys them via a Kaggle inference server for live scoring.
+- Loads training labels, analyzes data quality, fits Prophet models on recent training data, and runs a custom inference server that retrieves ground truth labels for the public test dates to verify data leakage and apply Prophet smoothing.
+- Loads pre-trained MLP weights, processes test data by dropping unscored rows and filling missing values with -1, runs inference, and serves predictions via Kaggle's evaluation server.
+
+## Data reading
+- Reads /kaggle/input/mitsui-commodity-prediction-challenge/train_labels.csv using pandas.read_csv and casts the date_id column to np.uint16.
+- polars.read_csv for train.csv, test.csv, and train_labels.csv
+- Converted to pandas DataFrames for downstream processing
+- polars.read_csv for train.csv, test.csv, and train_labels.csv
+- Uses polars.read_csv to load train.csv and train_labels.csv, then converts them to pandas DataFrames.
+- No explicit data loading code is provided; the function assumes raw price data is already loaded into pandas DataFrames with specific column names (e.g., 'LME_CA_Close', 'US_Stock_CCJ_adj_close').
+- pd.read_csv for train.csv, target_pairs.csv, and train_labels.csv
+- pd.read_parquet for submission.parquet
+- kaggle_evaluation.mitsui_inference_server for live inference gateway
+- Loads train_labels.csv via pd.read_csv
+- Converts date_id to uint16 for memory efficiency
+- Uses polars for test input/output DataFrames
+- Reads train and label CSVs using pandas pd.read_csv.
+- Test data is passed as Polars DataFrames and converted to Pandas via .to_pandas() before tensor conversion.
+
+## Data processing
+- Sorts train and labels by date_id to enforce chronology
+- Converts object columns to numeric and categoricals to integer codes
+- Replaces infinities with NaNs
+- Trains each target only on non-null label rows
+- Saves training feature order and reindexes inference data with zero-filling to prevent shape/categorical mismatches
+- Casts date_id to uint16 and fills missing values with 0 during the ground truth lookup in the inference function.
+- Casts object-type columns to numeric via pd.to_numeric(errors='coerce')
+- Injects a constant target_name_encoded column mapping each target to its index
+- Replaces infinite values with NaNs, fills remaining NaNs with 0, drops rows with missing targets, and reshapes wide label columns into a long format by iterating through label columns and appending them as a target column.
+- Computes lagged log returns by iterating through the data index and calculating np.log(data.iloc[t + lag + 1] / data.iloc[t + 1]), using try/except and warning suppression to handle division by zero or out-of-bounds indexing.
+- Unifies LME metals, JPX futures, US stocks, and FX pairs into a standard table with columns: date, id, close, open, high, low, volume, sprice, interest
+- Fills missing fields per asset class with None/NaN
+- Replaces competition null filler (-999999) with None before scoring
+- Sorts data by id and date
+- Filters targets with >90% missing values or <100 data points
+- Converts date_id to datetime objects for Prophet compatibility
+- Fills missing ground truth values with 0
+- Casts output predictions to Float64
+- Fills all missing values with -1.
+- Drops the is_scored column.
+- Applies a fixed chronological split (split at index 1827)
+
+## Features engineering
+- Uses only columns present in both train and test (excluding date_id, row_id, is_scored)
+- Adds a single constant feature target_name_encoded (integer target index) to each row
+- Derives temporal features (dayofweek, month, quarter, day_of_month, is_weekend, is_month_start, is_month_end) from date_id using modulo and integer division, plus a target_id column for multi-target tracking.
+- OHLC ratios: (col1-col2)/(col1+col2)
+- open/close shift-1 ratio
+- Rolling returns, volatility, and volume ratios over windows [5, 10, 20]
+- Technical features based on close vs shifted high/low
+- Premium/discount and volume/interest ratios
+- Hardcoded numeric mapping for asset IDs
+- Pairwise feature concatenation using a predefined indexlist
+
+## Models
+- LightGBM
+- XGBoost
+- CatBoostRegressor
+- Prophet
+- MLP
+
+## Frameworks used
+- pandas
+- polars
+- kaggle_evaluation.mitsui_inference_server
+- numpy
+- lightgbm
+- scikit-learn
+- joblib
+- xgboost
+- catboost
+- torch
+- prophet
+- matplotlib
+- seaborn
+
+## Loss functions
+- RMSE
+- MultiRMSE
+- MSELoss
+- Custom listwise ranking loss
+
+## CV strategies
+- TimeSeriesSplit(n_splits=3) on chronologically sorted data
+- Clean Public-90 holdout (last ~90 days)
+- Leaky Public-90 diagnostic (full training set evaluated on last ~90 days)
+- TimeSeriesSplit(n_splits=3)
+- KFold(n_splits=3, shuffle=True, random_state=42)
+- holdout 134 days
+- Fixed chronological holdout (split at index 1827)
+
+## Ensembling
+- Averages predictions across all 3 folds for each of the 3 gradient boosting models (LightGBM, XGBoost, CatBoost) to produce the final output.
+- Additive ensemble of three model predictions with weights 1, 1, and 3 (prediction1 + prediction2 + prediction3 * 3), plus a tiny random noise injection (1e-10) to prevent exact ties.
+- Weighted ensemble of ground truth labels and Prophet predictions using a fixed weight of 0.05 for the Prophet component.
+
+## Insights
+- The inference server must handle batched inputs and return predictions within strict time limits (5 minutes per batch, 15 minutes startup).
+- The first predict call can be used for heavy model loading without the usual 1-minute deadline.
+- Both Pandas and Polars DataFrames are acceptable for outputs, though Polars is recommended for performance.
+- Mapping test date_id to training labels during inference can effectively probe whether the public test set overlaps with the training period.
+- A leaderboard score significantly higher than a dummy submission indicates data leakage or test/train overlap.
+- Chronological sorting and fold-local preprocessing are critical to prevent look-ahead bias in time-series competitions.
+- Restricting features to the train-test intersection mitigates distribution shift and accidental leakage.
+- The discrepancy between clean validation scores and public leaderboard scores reliably indicates overfitting to the public LB or weak future generalization.
+- Preserving exact feature order and using zero-filling during inference eliminates categorical/shape mismatches that commonly break submissions.
+- Training separate regressors per target with a shared feature set and a target-index encoding allows efficient multi-output prediction without complex multi-task architectures.
+- A custom RankCorr-Sharpe metric effectively captures both ranking accuracy and consistency across rows, aligning with competition scoring requirements.
+- Using Polars for data I/O and pandas for in-memory processing provides a practical hybrid workflow for large tabular datasets.
+- Temporal features derived from a single date identifier can effectively capture cyclical patterns without complex date parsing.
+- Reshaping wide label matrices to long format simplifies multi-target regression training.
+- GPU acceleration is consistently applied across LightGBM, XGBoost, and CatBoost with minimal configuration changes.
+- The competition target is a derived metric based on the difference of lagged log returns between two assets, not a raw label.
+- Unifying disparate financial asset classes into a single tabular schema enables a unified feature engineering and modeling pipeline.
+- Rank-transforming continuous targets can stabilize training when the competition metric relies on rank correlation.
+- Hardcoded pairwise feature expansion significantly increases model capacity without requiring complex graph or attention architectures.
+- The public test set consists of the last 90 days of the training data, confirming data leakage in the public leaderboard.
+- Prophet smoothing can be used to generate more realistic predictions when ground truth is accessible.
+- Public leaderboard scores in this competition do not reflect true model generalization.
+- Real evaluation will occur during the forecasting phase with unseen future data.
+- A simple MLP combined with a custom listwise ranking loss can effectively capture ordinal relationships in multi-output commodity prediction tasks.
+- Filling missing values with -1 and filtering out unscored rows is sufficient for this competition's data format without complex imputation.
+- Kaggle's evaluation server can be seamlessly integrated with a custom inference function to validate submission formats locally before hidden test submission.
+
+## Critical findings
+- The competition metric uses -999999 as a filler for missing labels, requiring explicit masking during Spearman correlation calculation.
+- Training on non-null labels per target is mandatory due to sparse label availability.
+- Public leaderboard scores can be artificially inflated, making the gap between leaky and clean validation metrics a more honest indicator of robustness.
+- The scoring metric requires masking the competition's null filler value (-999999) before computing rank correlation, otherwise it breaks the calculation.
+- Many asset classes (e.g., FX, LME) only provide close prices, requiring explicit NaN handling to avoid feature computation errors.
+- The training labels contain significant missing data across many targets, with some exceeding 50% missingness.
+- Volatility in the last 90 days closely correlates with overall training volatility, indicating consistent data distribution.
+
+## What did not work
+- 
+
+## Notable individual insights
+- votes 656 (Mitsui Demo Submission): The first predict call can be used for heavy model loading without the usual 1-minute deadline.
+- votes 521 (MITSUI2025|LBProbe|V1): Mapping test date_id to training labels during inference effectively reveals public leaderboard data leakage.
+- votes 287 (🏆Leak-Safe 3CV: Shakedown-Proof Pipeline): The discrepancy between clean validation scores and public leaderboard scores reliably indicates overfitting to the public LB.
+- votes 272 (Added Some  Extra Features That's it): Temporal features derived from a single date identifier can effectively capture cyclical patterns without complex date parsing.
+- votes 256 (Mitsui Target Calculation Example): The competition target is a derived metric based on the difference of lagged log returns between two assets, not a raw label.
+- votes 218 (🥇🥇MITSUI&CO baseline train&infer🥇🥇): Unifying disparate financial asset classes into a single tabular schema enables a unified feature engineering and modeling pipeline.
+- votes 196 (LEADERBOARD PROBING WITH PROPHET AND MORE): Public leaderboard scores in this competition do not reflect true model generalization due to test/train overlap.
+
+## Notebooks indexed
+- #656 votes [[notebooks/votes_01_sohier-mitsui-demo-submission/notebook|Mitsui Demo Submission]] ([kaggle](https://www.kaggle.com/code/sohier/mitsui-demo-submission))
+- #521 votes [[notebooks/votes_02_ravi20076-mitsui2025-lbprobe-v1/notebook|MITSUI2025|LBProbe|V1]] ([kaggle](https://www.kaggle.com/code/ravi20076/mitsui2025-lbprobe-v1))
+- #287 votes [[notebooks/votes_03_yusuketogashi-leak-safe-3cv-shakedown-proof-pipeline/notebook|🏆Leak-Safe 3CV: Shakedown-Proof Pipeline]] ([kaggle](https://www.kaggle.com/code/yusuketogashi/leak-safe-3cv-shakedown-proof-pipeline))
+- #274 votes [[notebooks/votes_04_yusuketogashi-mitsui-train-cv-predict/notebook|Mitsui Train+CV+Predict]] ([kaggle](https://www.kaggle.com/code/yusuketogashi/mitsui-train-cv-predict))
+- #272 votes [[notebooks/votes_05_codingloading-added-some-extra-features-that-s-it/notebook|Added Some  Extra Features That's it]] ([kaggle](https://www.kaggle.com/code/codingloading/added-some-extra-features-that-s-it))
+- #256 votes [[notebooks/votes_06_sohier-mitsui-target-calculation-example/notebook|Mitsui Target Calculation Example]] ([kaggle](https://www.kaggle.com/code/sohier/mitsui-target-calculation-example))
+- #218 votes [[notebooks/votes_07_yuanzhezhou-mitsui-co-baseline-train-infer/notebook|🥇🥇MITSUI&CO baseline train&infer🥇🥇]] ([kaggle](https://www.kaggle.com/code/yuanzhezhou/mitsui-co-baseline-train-infer))
+- #196 votes [[notebooks/votes_08_taylorsamarel-leaderboard-probing-with-prophet-and-more/notebook|LEADERBOARD PROBING WITH PROPHET AND MORE]] ([kaggle](https://www.kaggle.com/code/taylorsamarel/leaderboard-probing-with-prophet-and-more))
+- #174 votes [[notebooks/votes_10_hengck23-lb0-456-no-leak-no-lag-no-date-mlp-list-rank-loss/notebook|lb0.456-no leak,no-lag,no-date: mlp list rank loss]] ([kaggle](https://www.kaggle.com/code/hengck23/lb0-456-no-leak-no-lag-no-date-mlp-list-rank-loss))

@@ -1,0 +1,41 @@
+{
+  "summary": "This notebook provides a complete training and inference pipeline for fine-tuning large language models on the ARC Prize 2024 competition. It demonstrates how to load and format ARC grid data into text sequences, shrink model tokenizers and embeddings to save VRAM, apply PEFT/LoRA for efficient fine-tuning, and run inference with a custom beam search/Turbo DFS decoder. Readers should learn how to adapt LLMs for grid-based reasoning tasks, manage memory via embedding reduction, and implement a custom scoring/selection mechanism for ARC submissions.",
+  "purpose": "tutorial",
+  "competition_flow": "Loads ARC JSON data, formats grids into text sequences, fine-tunes a causal LLM with PEFT and custom embedding shrinking, and generates submissions via a custom Turbo DFS beam search decoder.",
+  "data_reading": [
+    "Parses challenge and solution data from JSON files into Python dictionaries/lists, then formats them into train/query/reply text sequences."
+  ],
+  "data_processing": [
+    "Custom text formatting for ARC grids, dataset augmentations (rot90, transpose, frequency-based color permutations), sequence length capping, packing during training, and embedding/tokenizer shrinking to reduce VRAM usage."
+  ],
+  "features_engineering": [
+    ""
+  ],
+  "models": [
+    "Causal LLM (via transformers/unsloth)"
+  ],
+  "frameworks_used": [
+    "transformers",
+    "peft",
+    "unsloth",
+    "trl",
+    "torch",
+    "numpy",
+    "datasets",
+    "huggingface_hub"
+  ],
+  "loss_functions": [
+    "Cross-entropy (via trl.DataCollatorForCompletionOnlyLM)"
+  ],
+  "cv_strategy": "",
+  "ensembling": "",
+  "insights": [
+    "Shrinking the tokenizer vocabulary and model embeddings to only keep used tokens significantly reduces VRAM requirements without harming performance.",
+    "Custom color permutation augmentations based on frequency counts help improve model generalization across ARC tasks.",
+    "Turbo DFS beam search with probability tracking enables efficient exploration of multiple candidate solutions during inference."
+  ],
+  "critical_findings": [],
+  "what_did_not_work": [],
+  "source_url": "https://www.kaggle.com/code/octaviograu/lb-2-08-baseline-from-1st-place-of-2024",
+  "votes": 438
+}

@@ -1,0 +1,46 @@
+{
+  "summary": "The author's team placed first in a code golf competition by manually hand-optimizing Python solutions for 400 grid-based tasks. Their approach relied heavily on advanced Python golfing techniques like recursion, list comprehensions, regex substitutions, dimension recursion, and zlib compression to minimize byte count. They emphasized that success came from deep domain expertise in code golf and significant time investment rather than a single breakthrough technique.",
+  "extensive_summary": "## Approach & Workflow\nThe team of five experienced code golfers took a highly manual approach, authoring all solutions by hand. The only automation involved zlib-based compression, which was applied to 21 of the 400 tasks. Success was driven by extensive time investment, iterative review, and leveraging specialized golfing techniques rather than relying on a single dominant strategy.\n\n## Core Golfing Techniques\nSeveral recurring patterns formed the backbone of their solutions:\n- **Short grid operations**: Built-ins like `zip(*g)` for transposition, slicing for mirroring/rotation, and `filter(any,g)` for row cleaning were used as essential building blocks.\n- **Recursion & loops**: A baseline recursion template `p=lambda g,n=3:-n*g or F(p(g,n-1))` was favored over explicit loops. Slice recursion (`g[70:]or p(g*2)`) and `exec/eval` with string multiplication were used to save bytes in fixed-height grids.\n- **List comprehensions & state**: The walrus operator (`:=`) enabled state variables within comprehensions. `list.pop()` was cleverly used for lookahead checks and implicit list reversal.\n- **Regex & eval**: `re.sub` combined with `eval` allowed complex string manipulations on flattened grids. A rotate-and-replace strategy using f-string unpacking (`f\"{*zip(*g[::-1]),}\"`) streamlined transformations.\n- **Dimension recursion**: Reusing a single function across 2D grids, 1D rows, and 0D cells via type-checking conditions (`g*0!=0`) drastically reduced code size.\n- **Guess-and-check**: When direct enumeration was hard, the team guessed parameters and verified them using `max`/`min` with mathematical tricks like the Chinese Remainder Theorem.\n\n## Advanced Infrastructure & Tricks\n- **pysearch**: Used extensively to find shortest lookup tables and iterative formulas for input-output mappings.\n- **Cheese & Hardcoding**: Exploiting judge weaknesses by targeting the least frequent color via optimized slicing sometimes outperformed intended algorithms. Hardcoded hash-based lookup tables were used for 1-bit resolution tasks, achieving sub-1-bit entropy per test case.\n- **zlib Compression**: For solutions exceeding ~200 bytes, `zopfli`/`libdeflate` were combined with a custom re-encoder and dynamic programming to optimize Huffman trees. Variable name optimization scripts further reduced size. Compression fundamentally shifted strategy toward consistent construct repetition rather than per-step minimization.\n- **Shell Avoidance**: Shell commands (e.g., `os.popen`, perl) were intentionally avoided due to late clarification of their legality and the prohibitive workload they would add.",
+  "rank": 1,
+  "competition_flow": "Raw grid inputs for 400 tasks were manually transformed into byte-minimized Python functions using advanced golfing techniques, which were then packaged and submitted as the final contest entry.",
+  "data_reading": [],
+  "data_processing": [],
+  "features_engineering": [],
+  "models": [],
+  "frameworks_used": [],
+  "loss_functions": [],
+  "cv_strategy": "",
+  "ensembling": "",
+  "insights": [
+    "Compression fundamentally changes golfing strategy by making repetition nearly free, shifting focus to using consistent constructs over finding the shortest per-step construct.",
+    "Reusing a single function across different input dimensions (2D grid, 1D row, 0D cell) via type-checking conditions can drastically reduce code size.",
+    "Guess-and-check strategies are highly effective when verification is easier than direct enumeration, especially when combined with mathematical tricks like the Chinese Remainder Theorem."
+  ],
+  "critical_findings": [
+    "Hardcoding lookup tables using grid hashes can be highly efficient for tasks requiring only 1 bit of resolution, sometimes achieving sub-1-bit entropy per test case.",
+    "Exploiting judge weaknesses by targeting the least frequent color via optimized slicing can outperform the intended algorithmic solution."
+  ],
+  "what_did_not_work": [],
+  "github_repos": [
+    {
+      "url": "https://github.com/Seek64/NeurIPS-Code-Golf-2025",
+      "role": "solution"
+    },
+    {
+      "url": "https://github.com/lynn/pysearch",
+      "role": "library"
+    }
+  ],
+  "papers": [],
+  "other_solution_refs": [
+    {
+      "description": "Golfed solutions and explanations to hard problems",
+      "url": "https://www.kaggle.com/code/garrymoss/golfed-solutions-and-explanations-to-hard-problems"
+    },
+    {
+      "description": "Chipping skills 3: Regex",
+      "url": "https://www.kaggle.com/code/kenkrige/chipping-skills-3-regex/notebook"
+    }
+  ],
+  "source_url": "https://www.kaggle.com/competitions/google-code-golf-2025/discussion/614092"
+}

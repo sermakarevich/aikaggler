@@ -1,0 +1,52 @@
+{
+  "summary": "The author achieved 5th place by combining detection, classification, and segmentation models on medical imaging data. Key steps included creating 2.5D images from adjacent slices, using YOLO models for aneurysm and brain detection to guide cropping, and training Vision Transformer-based classifiers. The pipeline leveraged external datasets via pseudo-labeling, cleaned the training set using model predictions, and finalized with a weighted ensemble of six models.",
+  "extensive_summary": "The solution centers on a multi-stage pipeline for intracranial aneurysm detection and classification. First, the author constructs 2.5D images by stacking adjacent slices (t-1, t, t+1) into a 3-channel input. For localization, YOLOv11x (1280) is trained on manually annotated bounding boxes derived from provided aneurysm centroids, while YOLOv5n (640) detects brain regions to crop out background noise, boosting accuracy by 0.03\u20130.05. \n\nClassification experiments utilize ViT-Large, EVA-Large, and MiT-B4 FPN architectures at 384x384 resolution. A notable augmentation strategy involves horizontal flipping paired with symmetric label swapping for left/right arteries, which unexpectedly improved scores by ~0.01. To expand training data, the author incorporates two external TOF-MRA datasets, generating pseudo-labels for series and localization using the detection and classification models. The training set is further cleaned by relabeling high-confidence negative series as positive. The final submission combines six models in two weighted ensembles, with model selection guided by public leaderboard performance.",
+  "rank": 5,
+  "competition_flow": "Raw medical imaging slices are processed into 2.5D inputs, filtered via YOLO-based brain and aneurysm detection, classified using Vision Transformer models, augmented with external pseudo-labeled data, and combined into a weighted ensemble for final submission.",
+  "data_reading": [],
+  "data_processing": [
+    "2.5D slice stacking (t-1, t, t+1) into 3-channel images",
+    "Brain region cropping via YOLO detection to remove background noise",
+    "Horizontal flipping with left/right artery label swapping",
+    "Albumentations transforms: RandomResizedCrop, ShiftScaleRotate, Motion/Median/Gaussian Blur, GaussNoise, CLAHE, HueSaturationValue, RandomBrightnessContrast",
+    "Pseudo-labeling of external datasets using detection and classification model outputs",
+    "Training set cleaning by relabeling high-confidence negative series as positive"
+  ],
+  "features_engineering": [],
+  "models": [
+    "YOLOv11x",
+    "YOLOv5n",
+    "ViT-Large",
+    "EVA-Large",
+    "MiT-B4 FPN"
+  ],
+  "frameworks_used": [
+    "albumentations"
+  ],
+  "loss_functions": [],
+  "cv_strategy": "5-fold cross-validation for detection models; single model trained on near-full dataset for classification, selected via public leaderboard.",
+  "ensembling": "The final submission uses two weighted ensembles of six models (Final1 and Final2) combining detection and classification outputs, with weights and model selection guided by public leaderboard performance.",
+  "insights": [
+    "Combining classification and localization labels yields better accuracy than classification alone.",
+    "Brain detection and cropping significantly reduces background noise and improves model performance.",
+    "Horizontal flipping with symmetric label swapping is a valid and effective augmentation for anatomically symmetric structures."
+  ],
+  "critical_findings": [
+    "Manually annotating bounding boxes within \u00b110 slices of provided aneurysm centroids is highly effective and requires no specialized medical knowledge.",
+    "Horizontal flipping images and swapping left/right artery labels surprisingly improved accuracy by ~0.01."
+  ],
+  "what_did_not_work": [],
+  "github_repos": [
+    {
+      "url": "https://github.com/hoanghuyen797/RSNA-Intracranial-Aneurysm-Detection",
+      "role": "solution"
+    },
+    {
+      "url": "https://github.com/HumanSignal/labelImg",
+      "role": "library"
+    }
+  ],
+  "papers": [],
+  "other_solution_refs": [],
+  "source_url": "https://www.kaggle.com/competitions/rsna-intracranial-aneurysm-detection/discussion/611849"
+}

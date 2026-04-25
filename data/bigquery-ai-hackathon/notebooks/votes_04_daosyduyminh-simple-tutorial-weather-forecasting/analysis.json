@@ -1,0 +1,38 @@
+{
+  "summary": "The notebook demonstrates three distinct workflows for forecasting daily temperatures in Hanoi using historical NOAA weather data. It compares a local Python implementation with Facebook's Prophet, a server-side approach using BigQuery ML's linear regression, and a fully managed BigQuery AI.FORECAST function. The tutorial highlights the trade-offs between local flexibility, in-database training, and zero-code server-side forecasting. It serves as a practical guide for data engineers and scientists exploring time-series forecasting pipelines on cloud platforms.",
+  "purpose": "tutorial",
+  "competition_flow": "Queries historical temperature data from BigQuery's public NOAA dataset, applies three different forecasting methods (Prophet, BigQuery ML linear regression, and BigQuery AI.FORECAST), and outputs 30-day temperature forecasts with evaluation metrics.",
+  "data_reading": [
+    "Loads data from bigquery-public-data.noaa_gsod.gsod* using the google-cloud-bigquery Python client, filtering by station ID (stn = '488200') and year range (2020-2022), then converts the query result to a pandas DataFrame."
+  ],
+  "data_processing": [
+    "Filters out invalid temperature values (temp IS NOT NULL AND temp != 9999.9), creates a continuous daily date index, and fills missing values using time-based interpolation."
+  ],
+  "features_engineering": [
+    "day_of_year",
+    "year_num"
+  ],
+  "models": [
+    "Prophet",
+    "Linear Regression (BigQuery ML)",
+    "AI.FORECAST (BigQuery managed time-series model)"
+  ],
+  "frameworks_used": [
+    "google-cloud-bigquery",
+    "pandas",
+    "prophet",
+    "matplotlib"
+  ],
+  "loss_functions": [],
+  "cv_strategy": "",
+  "ensembling": "",
+  "insights": [
+    "BigQuery ML enables training and prediction entirely in SQL without downloading data.",
+    "BigQuery AI.FORECAST provides a zero-code, server-side alternative for rapid prototyping.",
+    "Local Prophet implementation offers full control over seasonality parameters and component visualization."
+  ],
+  "critical_findings": [],
+  "what_did_not_work": [],
+  "source_url": "https://www.kaggle.com/code/daosyduyminh/simple-tutorial-weather-forecasting",
+  "votes": 43
+}

@@ -1,0 +1,25 @@
+{
+  "id": "myso1987/cmi3-pyroch-baseline-model-add-aug-folds",
+  "id_no": 86050599,
+  "title": "CMI3 Pyroch Baseline+model_add, Aug, folds",
+  "code_file": "cmi3-pyroch-baseline-model-add-aug-folds.ipynb",
+  "language": "python",
+  "kernel_type": "notebook",
+  "is_private": false,
+  "enable_gpu": false,
+  "enable_tpu": false,
+  "enable_internet": false,
+  "keywords": [],
+  "dataset_sources": [
+    "myso1987/cmi3-models-p"
+  ],
+  "kernel_sources": [
+    "richolson/cmi-2025-metric-copy-for-import"
+  ],
+  "competition_sources": [
+    "cmi-detect-behavior-with-sensor-data"
+  ],
+  "model_sources": [],
+  "docker_image": "gcr.io/kaggle-images/python@sha256:3223337db7786b068bfeac3a1b741bf0d572a4bf309735b45692de873b7758db",
+  "machine_shape": "None"
+}

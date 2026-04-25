@@ -1,0 +1,29 @@
+{
+  "id": "wasupandceacar/lb-0-82-5fold-single-bert-model",
+  "id_no": 87047629,
+  "title": "LB 0.82 | 5fold single bert model",
+  "code_file": "lb-0-82-5fold-single-bert-model.ipynb",
+  "language": "python",
+  "kernel_type": "notebook",
+  "is_private": false,
+  "enable_gpu": true,
+  "enable_tpu": false,
+  "enable_internet": false,
+  "keywords": [
+    "gpu"
+  ],
+  "dataset_sources": [],
+  "kernel_sources": [
+    "wasupandceacar/deterministic",
+    "wasupandceacar/cmi-metric"
+  ],
+  "competition_sources": [
+    "cmi-detect-behavior-with-sensor-data"
+  ],
+  "model_sources": [
+    "wasupandceacar/cmi-models-public/PyTorch/train_fold_model05_tof16_raw/1",
+    "wasupandceacar/cmi-precompute/PyTorch/all/1"
+  ],
+  "docker_image": "gcr.io/kaggle-private-byod/python@sha256:5de7f3337f4166df89b2d68f886fb08b30c4260df90e55e6587be5fd7648cf3f",
+  "machine_shape": "NvidiaTeslaT4"
+}

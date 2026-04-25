@@ -1,0 +1,30 @@
+{
+  "summary": "This notebook implements a compute-scheduling strategy for the ARC-AGI competition using the CompressARC codebase. It calculates a simplicity score for each test task based on input color diversity and grid dimensions, then prioritizes training easier tasks first. GPU memory usage is profiled per task to dynamically allocate quotas and CPU cores across a multiprocessing pool. Iteration counts are adjusted proportionally to task complexity and remaining wall-clock time, maximizing hardware utilization before generating a final submission. Readers should learn how to profile per-task memory footprints, schedule multi-GPU jobs efficiently, and allocate compute budgets based on task difficulty rather than uniform training steps.",
+  "purpose": "training",
+  "competition_flow": "Loads ARC test challenges, computes a simplicity score per task, profiles GPU memory usage, schedules multiprocessing jobs across GPUs with dynamic iteration allocation based on remaining time, runs the CompressARC solver, and outputs a submission.json.",
+  "data_reading": [
+    "Reads task definitions from ../input/arc-prize-2025/arc-agi_{split}_challenges.json using json.load(), extracting input matrices as numpy arrays."
+  ],
+  "data_processing": [],
+  "features_engineering": [],
+  "models": [
+    "CompressARC"
+  ],
+  "frameworks_used": [
+    "pytorch",
+    "numpy",
+    "multiprocessing"
+  ],
+  "loss_functions": [],
+  "cv_strategy": "",
+  "ensembling": "",
+  "insights": [
+    "Prioritizing simpler tasks with longer training times yields better overall leaderboard scores than uniform training budgets.",
+    "Dynamically distributing compute based on task complexity and remaining wall-clock time maximizes GPU utilization.",
+    "Profiling per-task GPU memory usage is essential for stable multi-GPU multiprocessing scheduling without OOM errors."
+  ],
+  "critical_findings": [],
+  "what_did_not_work": [],
+  "source_url": "https://www.kaggle.com/code/kerta27/arc-compressarc-easiest-first-strategy",
+  "votes": 370
+}

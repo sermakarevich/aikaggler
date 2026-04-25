@@ -1,0 +1,52 @@
+{
+  "summary": "The notebook presents a methodological framework for detecting intracranial aneurysms from neuroimaging data. While the abstract describes a two-stage nnU-Net + 3D DenseNet pipeline, the implemented code demonstrates a single-stage baseline that converts 3D DICOM volumes into 2.5D multi-channel inputs (central slice, MIP, standard deviation projection) and fuses them with patient metadata. It trains multiple `timm` backbones via PyTorch, applies Test-Time Augmentation, and generates submissions using the Kaggle inference API. Readers should understand how to structure a medical imaging baseline, fuse tabular metadata with vision features, and implement a weighted ensemble with TTA for multi-label classification.",
+  "purpose": "baseline",
+  "competition_flow": "Loads DICOM series and metadata, converts volumes into 2.5D multi-channel images, fuses them with patient age/sex via a custom PyTorch model, trains using 5-Fold CV with BCE loss, and generates a weighted ensemble submission with TTA via the Kaggle inference server.",
+  "data_reading": [
+    "Reads DICOM files using `pydicom`, extracts pixel arrays, and applies rescale slope/intercept.",
+    "Parses patient metadata (modality, age, sex) directly from DICOM tags with robust fallbacks.",
+    "Uses `polars` and `pandas` to load the tabular `train.csv` metadata file."
+  ],
+  "data_processing": [
+    "Applies modality-specific DICOM windowing (center/width) and clips to [0, 255].",
+    "Resizes slices to 512x512, samples or pads to a fixed depth of 32 slices.",
+    "Constructs a 3-channel 2.5D image per series: middle slice, Maximum Intensity Projection (MIP), and Standard Deviation Projection.",
+    "Normalizes age to [0, 1] and encodes sex as binary.",
+    "Applies ImageNet normalization via Albumentations and uses 4-view TTA (original, H-flip, V-flip, 90\u00b0 rotation) during inference."
+  ],
+  "features_engineering": [
+    "Fuses patient metadata (age, sex) with vision features via a small MLP to provide holistic clinical context alongside imaging data."
+  ],
+  "models": [
+    "EfficientNetV2-S",
+    "ConvNeXt-Small",
+    "Swin Transformer-Small"
+  ],
+  "frameworks_used": [
+    "pytorch",
+    "timm",
+    "albumentations",
+    "pydicom",
+    "opencv",
+    "polars",
+    "pandas",
+    "kaggle_evaluation"
+  ],
+  "loss_functions": [
+    "Weighted Binary Cross-Entropy (BCE) loss for multi-label classification"
+  ],
+  "cv_strategy": "5-Fold Cross-Validation",
+  "ensembling": "Weighted averaging of predictions from three models (EfficientNetV2: 0.4, ConvNeXt: 0.3, Swin: 0.3) combined with 4-view Test-Time Augmentation.",
+  "insights": [
+    "Converting 3D volumes to 2.5D multi-channel inputs effectively captures both local anatomical detail and global volumetric context without heavy 3D compute costs.",
+    "Fusing patient metadata with vision features via a lightweight MLP improves holistic prediction by providing clinical priors.",
+    "Test-Time Augmentation significantly boosts robustness to spatial variations and orientation inconsistencies in medical imaging."
+  ],
+  "critical_findings": [
+    "The official metric heavily weights the global `Aneurysm Present` label (weight 13) compared to location-specific labels (weight 1), prioritizing overall detection over precise localization.",
+    "DICOM metadata parsing requires robust fallbacks for missing age/sex/modality tags to prevent pipeline crashes in production inference."
+  ],
+  "what_did_not_work": [],
+  "source_url": "https://www.kaggle.com/code/olaflundstrom/rsna-intracranial-aneurysm-detection-dtu-bioeng",
+  "votes": 146
+}

@@ -1,0 +1,31 @@
+{
+  "summary": "This notebook implements a parallelized execution pipeline for the CompressARC method on the ARC-AGI competition. It dynamically profiles per-puzzle memory and time requirements to optimally schedule tasks across available GPUs and CPUs, maximizing hardware utilization within a strict 12-hour budget. The workflow includes a memory measurement phase, a time estimation phase, and a final bulk execution phase that outputs a formatted submission file. It also provides a comprehensive visualization and evaluation module to compare model predictions against ground truth. Readers should learn how to efficiently orchestrate memory-intensive neural inference under tight time and hardware constraints.",
+  "purpose": "inference",
+  "competition_flow": "Loads ARC challenge JSONs, dynamically profiles memory and time per puzzle, parallelizes execution across GPUs/CPUs to maximize steps within a 12-hour budget, and outputs a formatted submission.json.",
+  "data_reading": [
+    "Reads puzzle definitions and ground truth solutions from local JSON files (arc-agi_{split}_challenges.json, arc-agi_training_solutions.json) using Python's json module."
+  ],
+  "data_processing": [
+    "No explicit preprocessing or cleaning is shown in this notebook; it delegates task-specific processing to external modules (preprocessing.py, solve_task.py). Mentions a minor code modification to layers.direction_share() for a 5-10% speedup."
+  ],
+  "features_engineering": [],
+  "models": [
+    "CompressARC"
+  ],
+  "frameworks_used": [
+    "torch",
+    "numpy"
+  ],
+  "loss_functions": [],
+  "cv_strategy": "",
+  "ensembling": "Generates two prediction attempts per puzzle for the final submission, but no explicit ensemble weighting or voting strategy is detailed.",
+  "insights": [
+    "Dynamically profiling memory and time per task enables safe, greedy GPU scheduling that prevents out-of-memory errors while maximizing throughput.",
+    "Setting global seeds and disabling CUDA non-deterministic algorithms ensures full reproducibility across parallel processes.",
+    "Visualizing predictions against ground truth immediately after submission helps quickly verify solution correctness and debug failures."
+  ],
+  "critical_findings": [],
+  "what_did_not_work": [],
+  "source_url": "https://www.kaggle.com/code/boristown/agi-compressarc",
+  "votes": 918
+}

@@ -1,0 +1,39 @@
+{
+  "summary": "This notebook provides a step-by-step guide to deploying and running the openai/gpt-oss-20b model on Kaggle's 2xT4 GPU environment. It demonstrates how to resolve dependency conflicts and hardware compatibility issues by pinning specific library versions and installing transformers and triton from source. The author then shows how to format a red-teaming prompt, generate a response, and parse the model's internal chain-of-thought and final output using regular expressions. Readers should learn the exact installation sequence required to bypass MXFP4 quantization errors on older GPUs and understand how to extract structured reasoning traces from the model's output.",
+  "purpose": "tutorial",
+  "competition_flow": "Installs and configures pinned library versions to run the openai/gpt-oss-20b model on Kaggle's 2xT4 GPUs, then demonstrates red-teaming inference with prompt formatting and chain-of-thought extraction.",
+  "data_reading": [
+    "Loads the openai/gpt-oss-20b model weights and tokenizer directly from Hugging Face using transformers.AutoModelForCausalLM and AutoTokenizer with device_map=\"auto\"."
+  ],
+  "data_processing": [
+    "Formats input prompts using tokenizer.apply_chat_template with system/user roles, applies tokenization, and parses the generated text output using regex to isolate <|channel|>analysis (chain of thought) and <|channel|>final (response) blocks."
+  ],
+  "features_engineering": [],
+  "models": [
+    "openai/gpt-oss-20b"
+  ],
+  "frameworks_used": [
+    "transformers",
+    "torch",
+    "triton",
+    "kernels",
+    "IPython"
+  ],
+  "loss_functions": [],
+  "cv_strategy": "",
+  "ensembling": "",
+  "insights": [
+    "Specific library version pinning and source installation are required to run gpt-oss-20b on Kaggle's T4 GPUs due to compute capability constraints.",
+    "The model outputs structured reasoning tokens that can be reliably extracted using regex patterns.",
+    "Uninstalling conflicting packages before reinstalling pinned versions prevents dependency resolution errors in the Kaggle environment."
+  ],
+  "critical_findings": [
+    "MXFP4 quantized models fail on GPUs with compute capability < 9.0 (like T4), requiring a workaround via source installations of transformers and triton.",
+    "The installation order of numpy, cupy, torch, and transformers is strictly enforced to avoid runtime crashes."
+  ],
+  "what_did_not_work": [
+    "Attempting to run the standard pip-installed transformers package resulted in a ValueError due to MXFP4 quantization incompatibility with T4 GPUs, necessitating a switch to cloning the transformers and triton repositories from GitHub."
+  ],
+  "source_url": "https://www.kaggle.com/code/bwandowando/i-m-sorry-but-i-cant-help-with-that",
+  "votes": 80
+}

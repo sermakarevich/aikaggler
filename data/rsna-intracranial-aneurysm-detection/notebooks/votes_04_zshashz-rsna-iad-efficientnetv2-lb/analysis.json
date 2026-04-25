@@ -1,0 +1,46 @@
+{
+  "summary": "This notebook provides a production-ready inference pipeline for the RSNA Intracranial Aneurysm Detection competition, demonstrating how to robustly process 3D DICOM series and generate multi-label aneurysm location predictions. It shows how to convert volumetric medical scans into compact 3-channel inputs (middle slice, MIP, and standard deviation projection) while applying modality-specific windowing and metadata integration. The code highlights practical deployment patterns for Kaggle, including Test-Time Augmentation (TTA) to stabilize outputs, weighted model ensembling, and strict memory/directory cleanup to prevent server crashes. Readers should take away a reliable template for handling DICOM metadata, projecting 3D volumes into 2D channels, and structuring inference servers that gracefully handle edge cases and fallback predictions.",
+  "purpose": "inference",
+  "competition_flow": "Reads DICOM series from a directory, extracts and processes slices into 3-channel images with patient metadata, passes them through pre-trained CNN/Transformer models with TTA, and outputs a submission DataFrame with aneurysm location probabilities.",
+  "data_reading": [
+    "Uses pydicom.dcmread to parse .dcm files from a series directory, extracting pixel arrays and DICOM tags (Modality, PatientAge, PatientSex, RescaleSlope/Intercept).",
+    "Leverages polars and pandas for DataFrame construction and kaggle_evaluation.rsna_inference_server for competition API integration."
+  ],
+  "data_processing": [
+    "Applies modality-specific DICOM windowing (CT, CTA, MRA, MRI) and rescales pixel values using RescaleSlope/Intercept.",
+    "Resizes each slice to 512x512, samples or pads exactly 32 slices per series, and constructs a 3-channel input from the middle slice, maximum intensity projection (MIP), and standard deviation projection.",
+    "Normalizes channels to [0, 255] and applies ImageNet normalization via Albumentations during inference.",
+    "Implements Test-Time Augmentation (TTA) with horizontal flip, vertical flip, and 90-degree rotation, averaging predictions across 4 transforms."
+  ],
+  "features_engineering": [
+    "Extracts patient age and sex from DICOM headers, normalizes age to [0, 1], and feeds them as a 2D metadata tensor through a small 2-layer MLP before concatenating with image features."
+  ],
+  "models": [
+    "tf_efficientnetv2_s",
+    "convnext_small",
+    "swin_small_patch4_window7_224"
+  ],
+  "frameworks_used": [
+    "torch",
+    "timm",
+    "albumentations",
+    "pydicom",
+    "cv2",
+    "polars",
+    "pandas",
+    "kaggle_evaluation.rsna_inference_server"
+  ],
+  "loss_functions": [],
+  "cv_strategy": "",
+  "ensembling": "Combines predictions from EfficientNetV2-S, ConvNeXt-Small, and Swin-Small using weighted averaging (0.4, 0.3, 0.3 respectively) when the ensemble mode is enabled.",
+  "insights": [
+    "Modality-specific DICOM windowing parameters are critical for preserving diagnostic contrast across different scan types.",
+    "Stacking a middle slice, MIP, and standard deviation projection creates a highly informative 3-channel representation that captures both anatomical detail and volumetric distribution.",
+    "Integrating lightweight patient metadata via a separate MLP branch improves model calibration without adding significant computational overhead.",
+    "TTA with geometric flips and rotations effectively reduces prediction variance and stabilizes outputs during inference."
+  ],
+  "critical_findings": [],
+  "what_did_not_work": [],
+  "source_url": "https://www.kaggle.com/code/zshashz/rsna-iad-efficientnetv2-lb",
+  "votes": 202
+}

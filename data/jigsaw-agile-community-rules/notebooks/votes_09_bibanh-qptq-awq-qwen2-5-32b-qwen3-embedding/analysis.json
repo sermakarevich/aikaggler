@@ -1,0 +1,45 @@
+{
+  "summary": "This notebook demonstrates a dual-path inference pipeline for a text classification competition, combining a large language model with a retrieval-augmented semantic search approach. It first generates predictions using a quantized Qwen2.5 32B model via vLLM with a logits processor for binary classification. Second, it leverages a fine-tuned Qwen3 0.6B embedding model to perform dense retrieval against a constructed corpus of positive and negative examples, computing rule-violation scores via semantic similarity. The two prediction streams are combined through rank-based blending to produce the final submission. Readers learn how to efficiently deploy quantized LLMs for inference, adapt embedding models for retrieval-augmented classification, and effectively fuse heterogeneous model outputs.",
+  "purpose": "ensemble",
+  "competition_flow": "Loads test data, generates predictions via a quantized Qwen2.5 32B LLM and a Qwen3 0.6B embedding-based semantic search, then blends the ranked outputs to produce a final submission CSV.",
+  "data_reading": [
+    "Reads test.csv and train.csv from Kaggle input directories using pandas.read_csv."
+  ],
+  "data_processing": [
+    "Constructs prompts by formatting subreddit, rule, and few-shot examples into a structured text template.",
+    "Cleans text using the cleantext library (fixing unicode, removing URLs/emails/phones, preserving punctuation/numbers).",
+    "Maps binary labels to 1/-1 for the embedding scoring step.",
+    "Normalizes embeddings and applies softmax to LLM logprobs for probability calibration."
+  ],
+  "features_engineering": [
+    ""
+  ],
+  "models": [
+    "Qwen2.5 32B (AWQ quantized)",
+    "Qwen3 0.6B Embedding (LoRA fine-tuned)"
+  ],
+  "frameworks_used": [
+    "vllm",
+    "transformers",
+    "sentence_transformers",
+    "peft",
+    "scipy",
+    "pandas",
+    "numpy",
+    "cleantext"
+  ],
+  "loss_functions": [
+    ""
+  ],
+  "cv_strategy": "",
+  "ensembling": "Combines two submission files by ranking their predicted probabilities, normalizing ranks to [0,1], and averaging them with equal weights (0.5 each) before saving the final submission.",
+  "insights": [
+    "Quantizing a 32B LLM to AWQ INT4 enables feasible inference on available GPU memory while maintaining performance.",
+    "Semantic search with a fine-tuned embedding model can effectively leverage few-shot examples as a corpus for rule-based classification.",
+    "Rank-based blending of heterogeneous model outputs often yields more robust predictions than raw probability averaging."
+  ],
+  "critical_findings": [],
+  "what_did_not_work": [],
+  "source_url": "https://www.kaggle.com/code/bibanh/qptq-awq-qwen2-5-32b-qwen3-embedding",
+  "votes": 267
+}

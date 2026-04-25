@@ -1,0 +1,38 @@
+{
+  "summary": "This notebook demonstrates an inference pipeline for a binary text classification task using a LoRA-adapted Qwen2.5-32B model. It constructs few-shot prompts containing positive and negative examples alongside each target Reddit comment, then leverages vLLM with GPTQ quantization for efficient generation. The author extracts log probabilities for constrained 'Yes'/'No' tokens, applies softmax normalization, and formats the results into a competition submission. Readers learn how to efficiently deploy large language models for rule-violation detection using logits processing and structured prompt engineering.",
+  "purpose": "inference",
+  "competition_flow": "Loads the test CSV, constructs few-shot prompts for each Reddit comment, generates predictions using a LoRA-adapted Qwen2.5-32B model via vLLM, extracts log probabilities, normalizes them, and saves the binary classification results as a submission CSV.",
+  "data_reading": [
+    "pd.read_csv(\"/kaggle/input/jigsaw-agile-community-rules/test.csv\")"
+  ],
+  "data_processing": [
+    "Formats test rows into few-shot prompts with positive/negative examples",
+    "Applies tokenizer chat template",
+    "Extracts log probabilities for constrained tokens",
+    "Applies softmax normalization"
+  ],
+  "features_engineering": [],
+  "models": [
+    "Qwen2.5-32B-Instruct-GPTQ-Int4"
+  ],
+  "frameworks_used": [
+    "vllm",
+    "torch",
+    "pandas",
+    "numpy",
+    "scipy",
+    "logits_processor_zoo"
+  ],
+  "loss_functions": [],
+  "cv_strategy": "",
+  "ensembling": "",
+  "insights": [
+    "Few-shot prompting with explicit positive/negative examples improves classification reliability for rule violation detection.",
+    "Using logits processors to constrain generation to specific tokens avoids sampling noise and enables direct probability estimation.",
+    "Quantizing the model with GPTQ and using vLLM enables efficient inference of a 32B parameter model on consumer GPUs."
+  ],
+  "critical_findings": [],
+  "what_did_not_work": [],
+  "source_url": "https://www.kaggle.com/code/fuumin621/qwen2-5-lora-finetune-baseline-inference",
+  "votes": 506
+}

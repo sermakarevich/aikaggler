@@ -1,0 +1,67 @@
+{
+  "summary": "The author developed a 3rd-place solution for an NFL play prediction competition by combining custom feature engineering, a dual-path Graph-Transformer architecture, and a multi-stage pre-training/fine-tuning pipeline. Key innovations include a novel dataset construction that flattens plays into fixed player slots, extensive geometric and kinematic feature engineering, and a complex multi-task loss function with auxiliary self-supervised objectives. The pipeline leverages external 2018 tracking data for pre-training, applies targeted data augmentations like player dropout and reordering, and finalizes predictions through TTA and simple averaging of four 7-fold CV models.",
+  "extensive_summary": "## Data Construction & Feature Engineering\nThe solution flattens each play along the time axis and arranges 22 players into fixed slots based on their Euclidean distance to the passer at the first frame. This ordering is frozen for the play, with missing players zero-padded. The author engineered extensive geometric, kinematic, and contextual features, including velocity decomposition, angle/motion direction, player role masks, geometric distances/projections, triangle area ratios, and time elapsed.\n\n## Dataset & Augmentation\nTo address the fixed-slot bias, the author introduced random player dropout and reordering during training, alongside horizontal flips, 180\u00b0 rotations, and random input cropping. All augmentations are disabled during validation. The dataset leverages an external 2018 tracking dataset, filtering plays by the `ball_snap \u2192 pass_forward \u2192 pass_arrived` event chain to define input/output frame splits and derive ground-truth ball landing coordinates and player roles.\n\n## Model Architecture & Training\nThe architecture employs a dual-path design: a Graph-Transformer path for inter-player interactions and a main path for individual motion patterns, augmented with separate time/player positional encodings, masking, multi-task output heads, and residual links. The model uses a wide & shallow configuration (hidden_size=384, num_layers=2) with dropout disabled. Training follows a two-stage pipeline: pre-training on a trusted feature subset, then fine-tuning with a linear bridge layer and the full feature stack. Optimization uses AdamW with layer-wise learning rates, cosine annealing, gradient clipping, and EMA.\n\n## Losses & Inference\nThe primary loss is a time-decay weighted TemporalHuberAdapted loss, supplemented by three auxiliary losses: inter-frame displacement, end-point prediction, and full spatio-temporal correspondence. Inference applies TTA (horizontal flip and random crop) with weighted averaging, followed by simple averaging of four 7-fold CV models with different seeds.",
+  "rank": 3,
+  "competition_flow": "Raw tracking data is filtered and aligned to play events, flattened into fixed player-slot tensors with extensive geometric/kinematic features, processed through a dual-path Graph-Transformer with multi-task losses, and aggregated via TTA and model averaging for final submission.",
+  "data_reading": [],
+  "data_processing": [
+    "Flattening plays along time axis",
+    "Zero-padding missing players",
+    "Freezing player slot ordering per play",
+    "Filtering external 2018 data by event chain (ball_snap \u2192 pass_forward \u2192 pass_arrived)",
+    "Deriving ball landing coordinates and player roles from external data",
+    "Horizontal flip",
+    "180\u00b0 rotation",
+    "Random player dropout",
+    "Random player reordering",
+    "Random input cropping",
+    "Disabling augmentations during validation"
+  ],
+  "features_engineering": [
+    "x, y, s, a, dir, o, ball_land_x, ball_land_y, num_frames_output",
+    "velocity_x, velocity_y",
+    "angle_to_ball, dir_rad",
+    "player_side_bool, is_passer, is_receiver",
+    "distance_to_passer, distance_to_receiver, distance_to_ball_land, passer_to_ball_land, receiver_to_ball_land",
+    "distance_to_passing_line, projection_on_passing_line, triangle_area_ratio",
+    "time_elapsed"
+  ],
+  "models": [
+    "Dual-path Graph-Transformer architecture",
+    "linear bridge layer"
+  ],
+  "frameworks_used": [],
+  "loss_functions": [
+    "TemporalHuberAdapted",
+    "Inter-frame displacement loss",
+    "End-point prediction loss",
+    "Full spatio-temporal correspondence loss"
+  ],
+  "cv_strategy": "7 GroupKFold on game_id, 50 epochs per model, different seeds",
+  "ensembling": "Simple averaging of four 7-fold CV models with different seeds, combined with TTA (weighted average of original, horizontal flip, and random crop predictions) for final submission.",
+  "insights": [
+    "Wide & shallow architectures (hidden_size=384, num_layers=2) outperform narrow & deep ones for this task.",
+    "Auxiliary self-supervised losses provide meaningful but diminishing returns on the leaderboard.",
+    "The two-stage pre-training and fine-tuning pipeline with a linear bridge layer effectively transfers knowledge from external tracking data."
+  ],
+  "critical_findings": [
+    "Randomly shuffling players and masking them as augmentation significantly boosted performance by forcing reliance on geometric features rather than slot ID bias.",
+    "Disabling dropout entirely improved regression performance.",
+    "The exact player order hardly matters, contradicting the initial assumption that distance-to-QB ordering was critical."
+  ],
+  "what_did_not_work": [
+    "More geometric distance/projection/area features",
+    "Re-ordering players by distance to receiver instead of QB",
+    "Extra augmentations: small-angle rotation, per-step noise, temporal mask + linear fill",
+    "Larger model"
+  ],
+  "github_repos": [],
+  "papers": [],
+  "other_solution_refs": [
+    {
+      "description": "Reference to another Kaggle writeup for the Graph-Transformer path design",
+      "url": "https://www.kaggle.com/competitions/nfl-big-data-bowl-2020/writeups/deep-snappers-public-5th-place-solution-overview"
+    }
+  ],
+  "source_url": "https://www.kaggle.com/competitions/nfl-big-data-bowl-2026-prediction/discussion/668048"
+}

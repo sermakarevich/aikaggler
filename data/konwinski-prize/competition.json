@@ -1,0 +1,92 @@
+{
+  "id": 84795,
+  "competitionName": "konwinski-prize",
+  "title": "Konwinski Prize",
+  "briefDescription": "$1M for the AI that can close 90% of new GitHub issues",
+  "dateEnabled": "2024-12-12T00:30:08.307Z",
+  "deadline": "2025-07-23T23:59:00Z",
+  "hasLeaderboard": true,
+  "numScoredSubmissions": 2,
+  "hasSolution": true,
+  "numPrizes": 5,
+  "forumId": 5846300,
+  "finalLeaderboardHasBeenVerified": true,
+  "disableSubmissions": true,
+  "userRankMultiplier": 1,
+  "publicLeaderboardDisclaimerMessage": "The public leaderboard score may be influenced by publicly available information. The final results will be based on future, leak-free data. ",
+  "dateCreated": "2024-09-05T23:05:24.021114Z",
+  "competitionHostSegmentId": 1,
+  "maxTeamSize": 5,
+  "medalsAllowed": true,
+  "enableTeamFiles": true,
+  "teamFileDeadline": "2025-08-07T23:59:00Z",
+  "teamMergerExplicitDeadline": "2025-03-05T23:59:00Z",
+  "prohibitNewEntrantsExplicitDeadline": "2025-03-05T23:59:00Z",
+  "organizationId": 4990,
+  "hasCoverImageUrl": true,
+  "showPrivateLeaderboard": true,
+  "isTeamCountOverridden": true,
+  "hasScripts": true,
+  "onlyAllowKernelSubmissions": true,
+  "totalTeams": 617,
+  "totalCompetitors": 531,
+  "totalSubmissions": 784,
+  "rulesRequired": true,
+  "usesSynchronousReruns": true,
+  "maxCpuRuntimeMinutes": 1440,
+  "maxGpuRuntimeMinutes": 1440,
+  "rowIdColumnName": "row_id",
+  "requiredSubmissionFilename": "submission.csv",
+  "evaluationAlgorithm": {
+    "id": 2656,
+    "name": "K Prize Metric",
+    "isMax": true,
+    "environmentRenderType": "ENVIRONMENT_RENDER_TYPE_JSON",
+    "kernelId": 71436031,
+    "latestCompetitionMetricVersionId": 31063,
+    "state": "AVAILABLE",
+    "passCompleteSubmission": true
+  },
+  "categories": [
+    {
+      "id": 12107,
+      "name": "computer science",
+      "fullPath": "subject > science and technology > computer science",
+      "description": "There is one thing we can say for sure about computer science: Computer science leads to more computer games which leads to better GPUs which leads to smarter AI.",
+      "datasetCount": 57863,
+      "competitionCount": 16,
+      "scriptCount": 940,
+      "slug": "computer-science",
+      "displayName": "Computer Science"
+    },
+    {
+      "name": "custom metric",
+      "description": "This competition's metric is defined under the 'Evaluation' tab",
+      "displayName": "Custom Metric"
+    }
+  ],
+  "organization": {
+    "slug": "andy-konwinski-prize",
+    "name": "Andy Konwinski",
+    "thumbnailImageUrl": "https://storage.googleapis.com/kaggle-media/competitions/Konwinski-Prize/400x400%20Andy%20Gray%20Sweater.jpg",
+    "profileUrl": "/organizations/andy-konwinski-prize"
+  },
+  "launched": true,
+  "createdByUserId": 1132983,
+  "license": {
+    "id": 42,
+    "name": "Subject to Competition Rules",
+    "agreementRequired": false
+  },
+  "hostName": "Andy Konwinski",
+  "scoreTruncationNumDecimals": 6,
+  "locked": true,
+  "totalJoinedUsers": 4909,
+  "requiresIdentityVerification": true,
+  "submissionSizeLimitMb": 20480,
+  "reward": {
+    "id": "USD",
+    "quantity": 1225000
+  },
+  "usesHearth": true
+}

@@ -1,0 +1,21 @@
+{
+  "id": "sohier/mitsui-demo-submission",
+  "id_no": 87081863,
+  "title": "Mitsui Demo Submission",
+  "code_file": "mitsui-demo-submission.py",
+  "language": "python",
+  "kernel_type": "script",
+  "is_private": false,
+  "enable_gpu": false,
+  "enable_tpu": false,
+  "enable_internet": false,
+  "keywords": [],
+  "dataset_sources": [],
+  "kernel_sources": [],
+  "competition_sources": [
+    "mitsui-commodity-prediction-challenge"
+  ],
+  "model_sources": [],
+  "docker_image": "gcr.io/kaggle-images/python@sha256:20d75b6c2a67c98a3a9f199ea97d51168548b4eb54898f30849e11d68ee06ea1",
+  "machine_shape": "None"
+}

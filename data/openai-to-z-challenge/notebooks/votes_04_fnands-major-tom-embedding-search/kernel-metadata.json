@@ -1,0 +1,26 @@
+{
+  "id": "fnands/major-tom-embedding-search",
+  "id_no": 83112240,
+  "title": "Major TOM Embedding Search",
+  "code_file": "major-tom-embedding-search.ipynb",
+  "language": "python",
+  "kernel_type": "notebook",
+  "is_private": false,
+  "enable_gpu": false,
+  "enable_tpu": false,
+  "enable_internet": false,
+  "keywords": [],
+  "dataset_sources": [
+    "",
+    "fnands/archaeoblog-amazon-geoglyphs",
+    "fnands/geographical-boundaries-of-amazonia-by-eva-et-al",
+    "fnands/major-tom-core-s2l1c-ssl4eo-amazonia-embeddings"
+  ],
+  "kernel_sources": [],
+  "competition_sources": [
+    "openai-to-z-challenge"
+  ],
+  "model_sources": [],
+  "docker_image": "gcr.io/kaggle-images/python@sha256:3223337db7786b068bfeac3a1b741bf0d572a4bf309735b45692de873b7758db",
+  "machine_shape": "None"
+}

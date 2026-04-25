@@ -1,0 +1,39 @@
+{
+  "summary": "This notebook demonstrates an inference pipeline that combines two distinct pretrained models (a TensorFlow CNN-LSTM-GRU architecture and a PyTorch CNN-BERT architecture) for a sensor-based gesture recognition task. It focuses on post-processing raw IMU, thermal, and TOF sensor data through gravity removal, angular velocity/distance calculations, and TOF region statistics before feeding them into the models. The core contribution is adjusting the ensemble weights (0.4 for Model 1, 0.6 for Model 2) to optimize the final submission, rather than training new models from scratch. Readers should learn how to effectively blend heterogeneous model outputs and handle multi-modal time-series sensor data in a Kaggle inference environment.",
+  "purpose": "ensemble",
+  "competition_flow": "Loads pretrained TensorFlow and PyTorch models, processes raw sensor sequences into engineered features, generates predictions from both architectures, averages them with tuned weights (0.4/0.6), and submits via Kaggle's inference server.",
+  "data_reading": [
+    "Reads CSV/Parquet data using polars and pandas, groups by sequence_id, and extracts raw IMU (acc, rot), thermal, and TOF pixel columns."
+  ],
+  "data_processing": [
+    "Removes gravity from accelerometer data using quaternion rotation, calculates angular velocity and angular distance, computes TOF region statistics, applies StandardScaler, handles missing values with ffill/bfill and custom NaN values, and pads sequences to the 95th percentile length."
+  ],
+  "features_engineering": [
+    "Gravity-removed linear acceleration, linear acceleration magnitude & jerk, angular velocity components, angular distance, TOF region statistics (mean, std, min, max) across multiple region modes, sequence length padding."
+  ],
+  "models": [
+    "ResNet-SE-CNN + LSTM + GRU + Attention (TF)",
+    "ResNet-SE-CNN + BERT (PyTorch)"
+  ],
+  "frameworks_used": [
+    "tensorflow",
+    "keras",
+    "torch",
+    "transformers",
+    "polars",
+    "scikit-learn"
+  ],
+  "loss_functions": [],
+  "cv_strategy": "StratifiedKFold(n_splits=5) and StratifiedGroupKFold (referenced in imports/config)",
+  "ensembling": "Combines predictions from a TensorFlow CNN-RNN model and a PyTorch CNN-BERT model using a weighted average (0.4 for TF model, 0.6 for PyTorch model) before taking the argmax for final class prediction.",
+  "insights": [
+    "Blending heterogeneous architectures (CNN-RNN vs CNN-Transformer) can yield robust predictions.",
+    "Careful ensemble weight tuning often provides marginal but critical gains in final leaderboard scores.",
+    "Explicit gravity removal and angular feature engineering are essential for accurate IMU-based gesture recognition.",
+    "TOF region statistics capture spatial patterns more effectively than raw pixel sequences."
+  ],
+  "critical_findings": [],
+  "what_did_not_work": [],
+  "source_url": "https://www.kaggle.com/code/sasaleaf/just-changed-the-ensemble-weights",
+  "votes": 582
+}

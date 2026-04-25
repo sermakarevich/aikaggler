@@ -1,0 +1,42 @@
+{
+  "summary": "This notebook demonstrates an optimized inference pipeline for detecting bacterial flagellar motors in 3D electron tomograms using a pre-trained YOLOv10 model. It processes 2D slice images in parallel batches, applies a custom 3D non-maximum suppression algorithm to merge detections across slices, and selects the single highest-confidence detection per tomogram for submission. The author highlights the sensitivity of the confidence threshold to local validation versus leaderboard performance and shows how dynamic batch sizing and FP16 precision can maximize GPU throughput. Readers should learn how to efficiently deploy object detection models on volumetric scientific imaging data and handle cross-slice post-processing without overfitting to local metrics.",
+  "purpose": "inference",
+  "competition_flow": "Loads a pre-trained YOLOv10 model, processes test tomogram slices in parallel batches, applies a custom 3D NMS post-processing step, and generates a CSV submission with the top motor detection coordinates per tomogram.",
+  "data_reading": [
+    "Reads test tomogram directories containing `.jpg` slice files using `os.listdir` and loads them via `cv2.imread` with a `PIL.Image.open` fallback.",
+    "Iterates through sorted slice files per tomogram to maintain z-axis order."
+  ],
+  "data_processing": [
+    "Dynamically adjusts batch size based on available GPU memory to prevent OOM errors while maximizing throughput.",
+    "Applies FP16 precision and layer fusion for inference speedup on compatible GPUs.",
+    "Defines a 2nd/98th percentile normalization function, though raw image loading is used in the main pipeline."
+  ],
+  "features_engineering": [],
+  "models": [
+    "YOLOv10"
+  ],
+  "frameworks_used": [
+    "ultralytics",
+    "pytorch",
+    "opencv",
+    "numpy",
+    "pandas",
+    "pillow"
+  ],
+  "loss_functions": [],
+  "cv_strategy": "",
+  "ensembling": "Applies a custom 3D non-maximum suppression to merge detections across slices, filters by a confidence threshold of 0.40, and selects the single highest-confidence detection per tomogram for submission.",
+  "insights": [
+    "The optimal confidence threshold differs between local cross-validation (0.5\u20130.55) and the public leaderboard (0.35\u20130.45).",
+    "Dynamic batch sizing based on available GPU memory prevents out-of-memory errors while maximizing throughput.",
+    "Custom 3D non-maximum suppression is required to merge overlapping motor detections across adjacent tomogram slices.",
+    "Layer fusion and FP16 inference provide substantial speedups on compatible GPUs without sacrificing accuracy."
+  ],
+  "critical_findings": [
+    "A lower confidence threshold (0.35\u20130.45) yields better leaderboard scores than the higher threshold (0.5\u20130.55) optimal for local validation.",
+    "The `CONCENTRATION` parameter allows subsampling slices to reduce compute time, though it is set to 1.0 here to process all slices."
+  ],
+  "what_did_not_work": [],
+  "source_url": "https://www.kaggle.com/code/hideyukizushi/byu-singleyolov10-map-0-948-f1-0-88-onlyinf-lb-762",
+  "votes": 499
+}

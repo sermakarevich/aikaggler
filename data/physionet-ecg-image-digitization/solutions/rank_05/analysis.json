@@ -1,0 +1,103 @@
+{
+  "summary": "The author developed a multi-stage pipeline for ECG image digitization, beginning with orientation correction, followed by heatmap-based keypoint estimation and iterative registration, piecewise homography-based lead cropping, and dual-encoder UNet heatmap prediction to extract lead waveforms. A core insight was prioritizing high input resolution over model complexity to preserve fine-grained details, alongside using a dual-encoder architecture that combines a high-resolution VGG19 branch with a global encoder (CoaT or ConvNeXT) to capture both local texture and long-range dependencies. The pipeline leverages iterative pseudo-labeling for keypoint refinement, column-wise Jensen-Shannon Divergence loss for heatmap decoding, and a blank template concatenation to simplify grid alignment learning. Final results were achieved through strategic model ensembling, lead fusion, and a dedicated refinement stage for out-of-range predictions, securing a 5th place finish.",
+  "extensive_summary": "## Pipeline Overview & Keypoint Estimation\nThe solution follows a strict multi-stage workflow: orientation correction \u2192 heatmap-based keypoint estimation \u2192 keypoint registration \u2192 lead cropping \u2192 heatmap-based lead waveform estimation. For keypoint detection, a 2D UNet predicts a 58-channel heatmap (1 grid channel + 57 main feature-rich channels). Initial pseudo-labels are generated using the dense matching model MINIMA-RoMa, then refined through iterative pseudo-labeling across 5 folds to denoise predictions. The model uses a multi-task loss strategy: BCE for the multimodal grid channel and Channel-Masked JSD for the unimodal main keypoint channels, weighted via GLS. Sub-pixel accuracy is further improved by finetuning with an MSELoss on DSNT predictions. Heavy augmentations (Affine, Perspective, RandomCrop, Dropout variants, etc.) and a longest-resize + padding strategy are applied, with resolution prioritized over model depth.\n\n## Keypoint Registration & Lead Cropping\nHeatmaps are decoded via argmax for main keypoints and NMS + Hungarian matching for grid keypoints. A global Homography matrix is estimated via RANSAC, followed by an iterative local Homography interpolation loop to handle non-planar distortion and missing detections. For lead cropping, the author compares global vs. piecewise homography approaches, ultimately selecting a piecewise method using K=16 nearby keypoints per cell to balance locality and robustness against grid estimation errors. Warping/resampling consistently uses `cv2.INTER_LANCZOS4` to preserve fine details.\n\n## Waveform Estimation & Modeling\nThe final stage predicts lead waveforms using another UNet that outputs column-wise 1D Gaussian heatmaps. The encoding scheme uses an adaptive sigma scale based on local waveform variance to handle sharp peaks. The architecture employs a dual-encoder design: a VGG19 branch extracts fine-grained features at strides 1/2/4, while a CoaT Lite Medium or ConvNeXT Large branch aggregates global context. Each lead crop is concatenated with a grayscale blank template (rendered via ecg-image-kit) to form a 4-channel input, helping the model learn local grid alignment. Column-wise JSD loss is used, and high resolution (1024x1024) is proven critical for SNR.\n\n## Final Submission & Key Insights\nThe submission combines a weighted ensemble (0.7/0.3) of the two dual-encoder models, fuses the first quarter of Lead II (0.5/0.5), and applies a separate \"TALL\" model as a refinement stage for predictions near the dynamic range limits. Key technical takeaways include: resolution matters more than model size; column-wise JSD outperforms BCE/CE for unimodal heatmaps; dual-encoders effectively split local/global feature extraction; and blank templates reduce learning complexity for grid alignment.",
+  "rank": 5,
+  "competition_flow": "Raw ECG images are orientation-corrected, processed through a multi-stage pipeline involving heatmap-based keypoint detection and iterative registration, piecewise homography-based lead cropping, and dual-encoder UNet heatmap prediction to extract lead waveforms, followed by ensemble fusion and range refinement for final submission.",
+  "data_reading": [],
+  "data_processing": [
+    "Longest resize + padding with bicubic interpolation",
+    "Heavy augmentations: Affine, Perspective, RandomCrop, Grayscale, RandomBrightnessContrast, ColorJitter, Downscale, Blur, Noise, Dropout (Coarse, Grid, XYMasking)",
+    "Concatenation of grayscale blank template to RGB lead crops to form 4-channel inputs",
+    "Addition of truncated normal noise (\u03c3=0.4px) to detected grid keypoints before cropping",
+    "Lanczos4 interpolation for warping and resampling",
+    "Adaptive Gaussian sigma scaling based on local waveform variance"
+  ],
+  "features_engineering": [],
+  "models": [
+    "2D UNet",
+    "ConvNeXT-small",
+    "ConvNeXT Large",
+    "CoaT Lite Medium",
+    "VGG19",
+    "efficientvit_b2.r224_in1k",
+    "MINIMA-RoMa",
+    "LoFTR",
+    "PixelShuffle-based decoder",
+    "Deformable Convolution"
+  ],
+  "frameworks_used": [
+    "timm",
+    "SMP (segmentation-models-pytorch)",
+    "OpenCV (cv2)",
+    "scipy",
+    "numpy",
+    "PyTorch"
+  ],
+  "loss_functions": [
+    "BCE",
+    "Channel-Masked JSD (Jensen-Shannon Divergence)",
+    "MSELoss (on DSNT predictions)",
+    "GLS (Geometric Loss Strategy)",
+    "Column-wise JSD Loss"
+  ],
+  "cv_strategy": "5-fold cross-validation with Out-Of-Fold (OOF) predictions used for iterative pseudo-labeling and model selection.",
+  "ensembling": "Final submission combines a weighted ensemble (0.7/0.3) of two dual-encoder models, fuses the first quarter of Lead II (0.5/0.5 weights), and applies a refinement stage using a separate \"TALL\" model to correct predictions near the dynamic range limits.",
+  "insights": [
+    "Prioritizing input image resolution over model complexity is critical for preserving fine-grained details and reducing sub-pixel error.",
+    "Column-wise JSD loss provides better inductive bias and faster convergence than BCE or CE for unimodal heatmap distributions.",
+    "Using a dual-encoder architecture (high-resolution VGG19 + global CoaT/ConvNeXT) effectively captures both local texture details and long-range dependencies.",
+    "Concatenating a grayscale blank template with lead crops helps the model learn local grid alignment and reduces learning complexity.",
+    "Adaptive Gaussian sigma scaling based on local waveform variance improves prediction accuracy for sharp peaks and high-gradient regions."
+  ],
+  "critical_findings": [
+    "Scaling the image size during inference without retraining causes severe SNR degradation, as the model fails to generalize to new input dimensions.",
+    "Ignoring near-border grid keypoints during training simplified the task but caused significant registration headaches later, suggesting all keypoints should be retained.",
+    "Deformable Convolution showed performance gains primarily due to increased parameter count rather than actual deformability, and was discarded for slower runtime.",
+    "Training on a smaller input size (512x512) and inferring on a larger size (1024x512) to handle wider waveform ranges resulted in very bad SNR, highlighting the need for joint input/output resolution scaling."
+  ],
+  "what_did_not_work": [
+    "PixelShuffle-based decoder did not outperform traditional F.interpolate() for upsampling.",
+    "Modifying encoder stride from 4 to 1 or 2 did not yield gains over standard stride 4 with 1024x1024 input/output.",
+    "Using a single global Homography matrix for cropping caused misalignment due to local distortion.",
+    "Standard augmentations (ColorJitter, BrightnessContrast, Grayscale, small Affine/Perspective) provided little gain and were downweighted.",
+    "Training the final dual-encoder architecture without validation before the deadline resulted in a messy submission process, though it still performed well."
+  ],
+  "github_repos": [
+    {
+      "url": "https://github.com/dangnh0611/kaggle_ecg_digitization",
+      "role": "solution"
+    },
+    {
+      "url": "https://github.com/alphanumericslab/ecg-image-kit",
+      "role": "library"
+    },
+    {
+      "url": "https://github.com/LSXI7/MINIMA",
+      "role": "library"
+    }
+  ],
+  "papers": [
+    {
+      "title": "Geometric Loss Strategy",
+      "url": "https://arxiv.org/pdf/1904.08492",
+      "arxiv_id": "1904.08492"
+    },
+    {
+      "title": "DSNT",
+      "url": "https://arxiv.org/pdf/1801.07372",
+      "arxiv_id": "1801.07372"
+    },
+    {
+      "title": "RoMA",
+      "url": "https://arxiv.org/abs/2305.15404",
+      "arxiv_id": "2305.15404"
+    },
+    {
+      "title": "EDSR",
+      "url": "https://arxiv.org/abs/1707.02921",
+      "arxiv_id": "1707.02921"
+    }
+  ],
+  "other_solution_refs": [],
+  "source_url": "https://www.kaggle.com/competitions/physionet-ecg-image-digitization/discussion/670227"
+}

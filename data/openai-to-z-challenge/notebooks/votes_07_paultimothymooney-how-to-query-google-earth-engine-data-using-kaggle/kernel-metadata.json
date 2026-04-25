@@ -1,0 +1,23 @@
+{
+  "id": "paultimothymooney/how-to-query-google-earth-engine-data-using-kaggle",
+  "id_no": 82768624,
+  "title": "How to query Google Earth Engine data using Kaggle",
+  "code_file": "how-to-query-google-earth-engine-data-using-kaggle.ipynb",
+  "language": "python",
+  "kernel_type": "notebook",
+  "is_private": false,
+  "enable_gpu": false,
+  "enable_tpu": false,
+  "enable_internet": true,
+  "keywords": [],
+  "dataset_sources": [
+    ""
+  ],
+  "kernel_sources": [],
+  "competition_sources": [
+    "openai-to-z-challenge"
+  ],
+  "model_sources": [],
+  "docker_image": "gcr.io/kaggle-images/python@sha256:36bd91c0e9248f9f2748be5cf354e070f2f93034099b1c02932530ef1e928303",
+  "machine_shape": "None"
+}

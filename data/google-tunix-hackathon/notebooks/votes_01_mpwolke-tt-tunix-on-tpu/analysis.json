@@ -1,0 +1,45 @@
+{
+  "summary": "The notebook demonstrates a setup for post-training a Gemma2-2B model to generate explicit reasoning traces before answers using Google's Tunix library on TPUs. It implements a Group Relative Policy Optimization (GRPO) pipeline with LoRA adapters, custom prompt templating for GSM8K math problems, and JAX-based device sharding. The author highlights the complexity of integrating Tunix with Flax/NNX and explicitly notes that the code fails at the LoRA policy initialization stage, serving as a cautionary tutorial on library compatibility and debugging rather than a completed training run.",
+  "purpose": "tutorial",
+  "competition_flow": "Downloads GSM8K math QA data, formats it into a system prompt template, loads a Gemma2-2B checkpoint, applies LoRA adapters, and attempts to initialize a GRPO training loop with Tunix on TPUs before halting due to a sharding error.",
+  "data_reading": [
+    "Loads GSM8K dataset via TensorFlow Datasets (tfds.data_source) or Kaggle Hub (kagglehub.dataset_download), parses CSV files into dictionaries with 'question' and 'answer' keys, and extracts numerical answers using a split on ####."
+  ],
+  "data_processing": [
+    "Formats prompts using a custom TEMPLATE with <reasoning>, </reasoning>, <answer>, </answer> tags; applies system prompts; shuffles and batches data using Grain; filters/extracts answers from raw text."
+  ],
+  "features_engineering": [],
+  "models": [
+    "Gemma2-2B"
+  ],
+  "frameworks_used": [
+    "jax",
+    "flax",
+    "tunix",
+    "grain",
+    "optax",
+    "orbax",
+    "qwix",
+    "kagglehub",
+    "tensorflow_datasets",
+    "wandb",
+    "humanize",
+    "tqdm"
+  ],
+  "loss_functions": [
+    "GRPO loss with KL divergence penalty (beta=0.08) and clipping (epsilon=0.2)"
+  ],
+  "cv_strategy": "",
+  "ensembling": "",
+  "insights": [
+    "High temperature (0.9) and top_p/top_k sampling are crucial during GRPO training to encourage diverse reasoning traces.",
+    "A sufficiently large KL divergence penalty coefficient (beta=0.08) is necessary to prevent policy collapse during reinforcement learning fine-tuning.",
+    "Integrating Tunix with Flax/NNX requires careful sharding configuration, and mismatched metadata arguments can cause immediate runtime failures."
+  ],
+  "critical_findings": [],
+  "what_did_not_work": [
+    "The LoRA policy initialization failed with a TypeError related to set_metadata sharding arguments, prompting the author to halt the notebook and note that the referenced Windmaple code is significantly longer and more complex."
+  ],
+  "source_url": "https://www.kaggle.com/code/mpwolke/tt-tunix-on-tpu",
+  "votes": 245
+}

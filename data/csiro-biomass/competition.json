@@ -1,0 +1,103 @@
+{
+  "id": 112509,
+  "competitionName": "csiro-biomass",
+  "title": "CSIRO - Image2Biomass Prediction",
+  "briefDescription": "Predict biomass using the provided pasture images",
+  "dateEnabled": "2025-10-28T20:02:37.367Z",
+  "deadline": "2026-01-28T23:59:00Z",
+  "hasLeaderboard": true,
+  "leaderboardPercentage": 53,
+  "maxDailySubmissions": 5,
+  "numScoredSubmissions": 2,
+  "hasSolution": true,
+  "numPrizes": 3,
+  "forumId": 8599280,
+  "finalLeaderboardHasBeenVerified": true,
+  "userRankMultiplier": 1,
+  "dateCreated": "2025-08-15T15:13:49.235217800Z",
+  "competitionHostSegmentId": 2,
+  "maxTeamSize": 5,
+  "medalsAllowed": true,
+  "enableTeamFiles": true,
+  "teamFileDeadline": "2026-02-26T23:59:00Z",
+  "teamMergerExplicitDeadline": "2026-01-21T23:59:00Z",
+  "prohibitNewEntrantsExplicitDeadline": "2026-01-21T23:59:00Z",
+  "kernelsPublishingDisabledDeadline": "2026-01-21T23:59:00Z",
+  "organizationId": 5183,
+  "hasCoverImageUrl": true,
+  "showPrivateLeaderboard": true,
+  "hasScripts": true,
+  "onlyAllowKernelSubmissions": true,
+  "totalTeams": 3805,
+  "totalCompetitors": 4463,
+  "totalSubmissions": 98640,
+  "rulesRequired": true,
+  "usesSynchronousReruns": true,
+  "maxCpuRuntimeMinutes": 540,
+  "maxGpuRuntimeMinutes": 540,
+  "rowIdColumnName": "sample_id",
+  "requiredSubmissionFilename": "submission.csv",
+  "evaluationAlgorithm": {
+    "id": 481,
+    "name": "R2 Score",
+    "isMax": true,
+    "isPublic": true,
+    "environmentRenderType": "ENVIRONMENT_RENDER_TYPE_JSON",
+    "kernelId": 39243596,
+    "latestCompetitionMetricVersionId": 9185,
+    "state": "AVAILABLE"
+  },
+  "categories": [
+    {
+      "id": 7100,
+      "name": "biology",
+      "fullPath": "subject > earth and nature > biology",
+      "description": "Explore datasets and kernels about gene expressions, transcriptomics, and even the works of Charles Darwin.",
+      "datasetCount": 17875,
+      "competitionCount": 45,
+      "scriptCount": 4883,
+      "slug": "biology",
+      "displayName": "Biology"
+    },
+    {
+      "id": 12001,
+      "name": "agriculture",
+      "fullPath": "subject > earth and nature > environment > agriculture",
+      "description": "You could be well on your way to creating the next big precision agriculture company with the resources in this tag. At the very least, you can use Weekly Corn Prices to make more informed decisions about your purchases at the store.",
+      "datasetCount": 1877,
+      "competitionCount": 13,
+      "scriptCount": 741,
+      "slug": "agriculture",
+      "displayName": "Agriculture"
+    },
+    {
+      "name": "r2 score",
+      "description": "R^2 (coefficient of determination) regression score function. See https://scikit-learn.org/stable/modules/generated/sklearn.metrics.r2_score.html",
+      "displayName": "R2 Score"
+    }
+  ],
+  "organization": {
+    "slug": "csiro",
+    "name": "CSIRO",
+    "thumbnailImageUrl": "https://storage.googleapis.com/kaggle-organizations/5183/thumbnail.png?t=2025-09-29-13-31-39",
+    "profileUrl": "/organizations/csiro"
+  },
+  "launched": true,
+  "createdByUserId": 16459904,
+  "license": {
+    "id": 8,
+    "name": "CC BY-SA 4.0",
+    "url": "https://creativecommons.org/licenses/by-sa/4.0/",
+    "agreementRequired": false
+  },
+  "hostName": "CSIRO",
+  "scoreTruncationNumDecimals": 5,
+  "locked": true,
+  "totalJoinedUsers": 13779,
+  "requiresIdentityVerification": true,
+  "submissionSizeLimitMb": 20480,
+  "reward": {
+    "id": "USD",
+    "quantity": 75000
+  }
+}

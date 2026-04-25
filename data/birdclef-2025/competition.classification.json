@@ -1,0 +1,17 @@
+{
+  "description": "Participants identify species (birds, amphibians, mammals, and insects) from audio recordings collected in Colombia's Middle Magdalena Valley. The task requires predicting multiple possible species per clip, making it a multi-label classification problem. Success is evaluated using the Birdclef ROC AUC metric on a held-out test set. Top solutions leverage pseudo-labeling and self-distillation to address class imbalance and acoustic variability.",
+  "data_modality": "audio",
+  "task_type": "classification",
+  "label_structure": "multi_label",
+  "metric": "Birdclef ROC AUC",
+  "test_split": "unknown",
+  "format": "standard",
+  "dataset_scale": "unknown",
+  "domain": "bioacoustics",
+  "data_challenges": [
+    "class_imbalance",
+    "label_noise",
+    "long_tail"
+  ],
+  "constraints": []
+}

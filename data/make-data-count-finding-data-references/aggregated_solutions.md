@@ -1,0 +1,174 @@
+# make-data-count-finding-data-references: cross-solution summary
+
+The competition focused on extracting and classifying dataset references (DOIs and Accession IDs) in scientific papers, requiring models to distinguish primary versus secondary citation roles. Winning approaches universally prioritized high-recall candidate retrieval via external corpora like DataCite and Europe PMC, followed by diverse classification strategies ranging from metadata-based CatBoost models and deterministic rules to fine-tuned LLMs and DeBERTa ensembles, all stabilized by techniques such as EMA, multi-seed averaging, and synthetic labeling to overcome noisy data and sparse labels.
+
+## Competition flows
+- PDFs converted to plain text with dataset mentions extracted via curated external mappings and predicted using metadata-based CatBoost models and 0-shot Qwen LLM prompts with family-level majority voting
+- External accession data downloaded from Europe PMC and DataCite, filtered against training labels, with XML context extracted and LLMs prompted for classification, ensembled via majority voting and family-based filtering
+- Raw text parsed to extract candidates via external corpora and regex, followed by rule-based filtering and a dual-model classification pipeline stabilized by token replacement and multi-seed averaging
+- Raw PDFs parsed for text, with Accession IDs filtered by keyword rules and embedding similarity, and DOIs classified via multi-step zero-shot LLM pipelines and strict post-processing
+- Bibliographic metadata downloaded and stored in CSVs, parsed with Grobid, and classified via LLM pipelines for author priority
+- Raw text parsed via regex to extract candidates validated against external dumps, followed by DeBERTa ensemble and threshold tuning
+- Raw texts processed to extract candidates via corpora and regex, followed by context construction, LLM fine-tuning with synthetic labels, cascaded inference, and heuristic post-processing
+- Raw text parsed via regex to extract candidates filtered by DeBERTa and classified through multi-stage fine-tuned LLM pipelines with consensus-synthesized training labels
+
+## Data reading
+- PDF text extraction with whitespace cleaning and unicode normalization
+- CSV files (train_labels.csv) and external metadata (DataCite, Europe PMC, BioSample, GSE)
+- XML/TEI parsing for paragraphs and references
+- External corpus downloads (Europe PMC, DataCite v3)
+- Regex parsing of PDF/XML text
+- MDC corpus v3/v4 usage
+
+## Data processing
+- Filtered external mappings by specific accession ID families
+- Applied regex matching to verify mention presence in text
+- Excluded sparsely labeled articles from local validation
+- Downloaded external datasets (Europe PMC, DataCite, BioSample, GSE) and stored in CSVs
+- Formed article-to-dataset mapping tables and filtered against training labels
+- Collected metadata (title, authors, dates) for DOIs and SAMNs
+- Extracted XML context via tag-id containers and table rows
+- Filtered false positives using training label patterns
+- Filtered specific repositories (figshare, HGNC, GCA, etc.)
+- Dropped IDs not present in PDF/XML text
+- Stripped Dryad version tags
+- Joined external corpora (Data Citation Corpus, DataCite, EuropePMC)
+- Applied token replacement strategies
+- Windowed context for Accessions and DOIs
+- Used BM25 similarity for context retrieval
+- Applied keyword filtering and sentence similarity thresholding
+- Enforced post-processing caps on predictions per article
+- Deleted range-based accession IDs
+- Forced specific ID types to Primary
+- Appended corpus predictions for missing IDs
+- Extracted citation IDs and metadata
+- Parsed titles and authors with Grobid
+- Applied LLM multi-stage classification
+- Regex extraction of DOIs and accessions
+- Cross-referenced against DataCite, Crossref, and EUPMC dumps
+- Filtered persistent false positives
+- Constructed prompts with citation context and titles
+- Tuned thresholds via quantiles
+- Masked dataset IDs with tokens for augmentation
+- Capped mentions per article
+- Constructed context windows with metadata and snippets
+- Removed non-data prefixes
+- Applied structured templating
+- Used mean pooling and span-gated GELU heads
+- Applied deterministic decision rules
+
+## Features engineering
+- Title similarity, author similarity, and published year comparison
+- Categorical features for publisher, journal, and repository
+- Derived feature for DOI prediction count
+- Mention frequency tokenization
+- Repository source tokenization
+- isSupplementTo flag
+- Publication date sorting
+- Online-only table detection
+- BM25 similarity scores
+- Extraction of citation IDs and metadata
+- LLM-based classification features
+- Structured input templates
+- Deterministic decision rules
+
+## Models
+- CatBoost
+- Qwen2.5-Coder
+- Qwen2.5-32B
+- Qwen3-32B
+- MedGemma-4B
+- BiomedBERT
+- Qwen3-Embedding
+- Qwen2.5-7B
+- LLM
+- DeBERTa-v3
+- Qwen2.5-14B
+- Qwen2.5-72B
+- Qwen2.5-3B
+- Qwen3-4B
+- Light-R1-14B
+- GPT-5
+- Qwen3-30B
+- LLaMA-70B
+
+## Frameworks used
+- PyMuPDF
+- CatBoost
+- vLLM
+- polars
+- Grobid
+- transformers
+- ema_pytorch
+
+## CV strategies
+- 6-fold type-stratified CatBoost grouped by article IDs with adjusted F1 excluding sparsely labeled articles
+- Cross-validation with multiple folds and threshold optimization via averaging out-of-fold predictions across multiple random seeds
+- 6-fold StratifiedGroupKFold stratified by type and grouped by article_id
+
+## Ensembling
+- Blended predictions from multiple CatBoost models with family-level majority voting post-processing
+- Majority voting of LLM outputs combined with baseline submissions and anti-join filtering
+- Averaging out-of-fold predictions across multiple random seeds for threshold stabilization
+- Testing rule-based submission variants to maximize private score stability
+- Averaging DeBERTa model predictions with quantile-based threshold tuning
+- Ensembling via Exponential Moving Average (EMA) checkpoint averaging, pseudo-labeled model diversity, and cascaded routing based on uncertainty
+
+## Insights
+- Rank 1: Skipping accession ID prediction for DOI-positive articles boosted LB score.
+- Rank 3: Misclassifying a correctly retrieved citation incurs a double F1 penalty, making type classification the most critical stage.
+- Rank 3: Smaller models like DeBERTa-v3 are more stable and performant than larger LLMs for this task.
+- Rank 4: Context engineering and deterministic rules outperformed probabilistic classifiers for extremely noisy PDF text.
+- Rank 7: Synthetic labels generated via a tool-calling agent significantly improved training on small datasets.
+- Rank 7: The DCC and PMC corpora provided near-perfect recall, rendering regex fallback largely unnecessary.
+- Rank 8: Consensus labeling across multiple large models can generate viable training data when ground truth is unavailable.
+
+## Critical findings
+- Rank 1: Sparsely labeled articles created false positives in local validation if not explicitly discarded.
+- Rank 2: Training data size limitations caused severe model instability, with folds showing wildly different convergence behaviors.
+- Rank 3: Accession IDs and DOIs exhibited only 1 degree of freedom in the training data, making traditional classification approaches ineffective.
+- Rank 5: Misclassifying registration number priority (e.g., SAMN vs. GSE) likely caused a significant ranking drop.
+- Rank 6: Ignoring DOIs when multiple accession and DOI IDs appear in the same article provided a measurable LB boost.
+- Rank 7: Articles containing 32+ accession IDs had an outsized impact on training, necessitating a hard cap of 24 mentions per article.
+- Rank 8: Automated consensus labeling across multiple large models enabled training but introduced inconsistencies that prevented successful Light-R1 fine-tuning for DOIs.
+
+## What did not work
+- Rank 1: Qwen underperformed CatBoost for DOI type classification.
+- Rank 1: High-quality OCR models like Marker were too slow for the pipeline.
+- Rank 2: The final family-based filtering trick did not improve the leaderboard score despite being trusted due to stable cross-validation.
+- Rank 3: Single model approaches for classification did not work for the authors.
+- Rank 3: The Accession ID classification model suffered from massive overfitting and instability, preventing further work.
+- Rank 4: Using publication date vs dataset creation date to classify Primary/Secondary yielded no gains.
+- Rank 5: Over-relying on author names for matching instead of DOI matching introduced significant risk.
+- Rank 6: Fine-tuning larger LLMs like Qwen2.5 7B proved highly unstable compared to DeBERTa.
+- Rank 7: The original regex-based candidate extraction approach was abandoned after discovering that the DCC and PMC corpora offered near-perfect recall with high precision.
+- Rank 8: Planned Light-R1 fine-tuning for DOIs could not be completed due to label issues.
+
+## Notable individual insights
+- Rank 1: Skipping accession ID prediction for DOI-positive articles boosted LB score.
+- Rank 3: Misclassifying a correctly retrieved citation incurs a double F1 penalty, making type classification the most critical stage.
+- Rank 3: Smaller models like DeBERTa-v3 are more stable and performant than larger LLMs for this task.
+- Rank 4: Context engineering and deterministic rules outperformed probabilistic classifiers for extremely noisy PDF text.
+- Rank 7: Synthetic labels generated via a tool-calling agent significantly improved training on small datasets.
+- Rank 7: The DCC and PMC corpora provided near-perfect recall, rendering regex fallback largely unnecessary.
+- Rank 8: Consensus labeling across multiple large models can generate viable training data when ground truth is unavailable.
+
+## Solutions indexed
+- #1 [[solutions/rank_01/solution|1st Place Solution]]
+- #2 [[solutions/rank_02/solution|2nd Place Solution [Updated]]]
+- #3 [[solutions/rank_03/solution|3rd Place Solution]]
+- #4 [[solutions/rank_04/solution|4th Place Solution]]
+- #5 [[solutions/rank_05/solution|5th Place - by standing on the shoulders of Giants]]
+- #9 [[solutions/rank_09/solution|9th place Solo Gold solution]]
+- #15 [[solutions/rank_15/solution|15th place solution]]
+- #20 [[solutions/rank_20/solution|20th Place Solution: Regex + Qwen + DeBERTa for MDC]]
+
+## GitHub links
+- [Make-Data-Count-Community/corpus-data-file](https://github.com/Make-Data-Count-Community/corpus-data-file) _(solution)_ — from [[solutions/rank_02/solution|2nd Place Solution [Updated]]]
+- [bogoconic1/9th-place-kaggle-mdc-finding-data-references](https://github.com/bogoconic1/9th-place-kaggle-mdc-finding-data-references) _(solution)_ — from [[solutions/rank_09/solution|9th place Solo Gold solution]]
+- [rbiswasfc/mdc-4th-place-solution](https://github.com/rbiswasfc/mdc-4th-place-solution) _(solution)_ — from [[solutions/rank_04/solution|4th Place Solution]]
+
+## Papers cited
+- [Problems with the DataCite Data Citation Corpus](https://doi.org/10.59350/t80g1-xys37)
+- [The Data Citation Corpus revisited](https://doi.org/10.59350/wvwva-v7125)
+- [Data Citation Corpus Data File (v1.1)](https://doi.org/10.5281/zenodo.11216814)

@@ -1,0 +1,74 @@
+{
+  "summary": "The author leveraged external data sources (Europe PMC and DataCite Data Citation Corpus v3) to identify and filter accessions, then constructed structured XML context and metadata for DOIs and SAMNs. These inputs were fed into Qwen2.5-32B-Instruct-AWQ and Qwen3-32B-AWQ via custom prompts to classify citation roles as Owner, User, or None. LLM outputs were ensembled via majority voting with a baseline CPU submission, followed by a family-based filtering step to remove false positives.",
+  "extensive_summary": "## Finding the Giants\nThe author discovered that the competition's labeling logic was heavily influenced by external data sources. By downloading all accessions from Europe PMC and the DataCite Data Citation Corpus v3, they formed an `article_id` to `dataset_id` table and filtered out accessions not present in `train_labels.csv`. This revealed that the hosts used PDFs for labeling and that DOIs/SAMNs had a roughly 50/50 primary/secondary split, while most other accessions were secondary.\n\n## Climbing the Giants & LLM Context Construction\nA baseline CPU submission was created by matching accessions, but the core solution focused on classifying DOIs and SAMNs. The author extracted context from XML/TEI documents by identifying the container where the ID appears and mapping all instances of its `tag-id`. They included actual table rows containing the ID and compiled metadata (title, authors, dates) from multiple sources. The prompt instructed the model to determine ownership by checking author overlap between the paper and the dataset, outputting `User`, `Owner`, or `None` in `\\boxed{}`.\n\n## Ensembling & Final Filtering\nClassifications from Qwen2.5-32B-Instruct-AWQ and Qwen3-32B-AWQ were extracted and ensembled via majority voting with the baseline submission. A final filtering trick removed false positives for accessions where DOIs appeared in both EuropePMC text-mined terms and DCC, filtering out specific families (`mdc`, `mdc_priority`, `gen`, `pfam`) when mixed. Although this step did not improve the leaderboard score, the author trusted it due to stable cross-validation throughout the competition.",
+  "rank": 5,
+  "competition_flow": "Download external accession data from Europe PMC and DataCite v3, filter against training labels, extract XML context and metadata for DOIs/SAMNs, prompt Qwen2.5/Qwen3 LLMs to classify citation roles, ensemble outputs via majority voting with a baseline submission, and apply family-based filtering to remove false positives.",
+  "data_reading": [
+    "CSV (`train_labels.csv`)",
+    "XML/TEI parsing for paragraphs and references",
+    "External corpus downloads (Europe PMC, DataCite v3)"
+  ],
+  "data_processing": [
+    "Downloaded all accessions from Europe PMC and DataCite Data Citation Corpus v3",
+    "Formed `article_id` to `dataset_id` table and filtered accessions not in `train_labels.csv`",
+    "Collected metadata (title, authors, dates) for DOIs and SAMNs",
+    "Extracted XML context by locating `tag-id` containers and actual table rows containing the ID",
+    "Filtered false positives based on training label patterns (DOIs in EuropePMC text-mined terms + DCC)"
+  ],
+  "features_engineering": [],
+  "models": [
+    "Qwen2.5-32B-Instruct-AWQ",
+    "Qwen3-32B-AWQ"
+  ],
+  "frameworks_used": [
+    "polars"
+  ],
+  "loss_functions": [],
+  "cv_strategy": "",
+  "ensembling": "Majority voting of classification outputs from Qwen2.5-32B-Instruct-AWQ and Qwen3-32B-AWQ, combined with a baseline CPU submission, followed by an anti-join filtering step on specific accession families to reduce false positives.",
+  "insights": [
+    "External data sources like Europe PMC and DataCite heavily influenced the competition's labeling logic.",
+    "Structuring XML context around `tag-id` containers and including actual table rows significantly improved LLM classification accuracy.",
+    "Author overlap between the paper and dataset metadata is a strong indicator of ownership."
+  ],
+  "critical_findings": [
+    "DOIs appearing in both EuropePMC text-mined terms and DCC caused false positives, requiring family-based filtering.",
+    "Prioritizing DOIs and SAMNs over other accession types was crucial because they had a 50/50 primary/secondary split while most others were secondary."
+  ],
+  "what_did_not_work": [
+    "The final family-based filtering trick did not improve the leaderboard score despite being trusted due to stable cross-validation."
+  ],
+  "github_repos": [],
+  "papers": [
+    {
+      "title": "Problems with the DataCite Data Citation Corpus",
+      "url": "https://doi.org/10.59350/t80g1-xys37",
+      "arxiv_id": null
+    },
+    {
+      "title": "The Data Citation Corpus revisited",
+      "url": "https://doi.org/10.59350/wvwva-v7125",
+      "arxiv_id": null
+    },
+    {
+      "title": "Data Citation Corpus Data File (v1.1)",
+      "url": "https://doi.org/10.5281/zenodo.11216814",
+      "arxiv_id": null
+    }
+  ],
+  "other_solution_refs": [
+    {
+      "description": "Comment by @keakohv on DOI-only experiments",
+      "url": "https://www.kaggle.com/competitions/make-data-count-finding-data-references/discussion/600330#3273757"
+    },
+    {
+      "description": "Host comment on labeling methodology",
+      "url": "https://www.kaggle.com/competitions/make-data-count-finding-data-references/discussion/584337#3224495"
+    },
+    {
+      "description": "Baseline CPU submission code",
+      "url": "https://www.kaggle.com/code/mccocoful/mdc-cpu-submission"
+    }
+  ],
+  "source_url": "https://www.kaggle.com/competitions/make-data-count-finding-data-references/discussion/606769"
+}

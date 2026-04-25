@@ -1,0 +1,26 @@
+{
+  "id": "brendanartley/hgnet-v2-starter",
+  "id_no": 82586737,
+  "title": "HGNet-V2 - Starter",
+  "code_file": "hgnet-v2-starter.ipynb",
+  "language": "python",
+  "kernel_type": "notebook",
+  "is_private": false,
+  "enable_gpu": true,
+  "enable_tpu": false,
+  "enable_internet": true,
+  "keywords": [
+    "gpu"
+  ],
+  "dataset_sources": [
+    "brendanartley/openfwi-preprocessed-72x72",
+    "egortrushin/open-wfi-test"
+  ],
+  "kernel_sources": [],
+  "competition_sources": [
+    "waveform-inversion"
+  ],
+  "model_sources": [],
+  "docker_image": "gcr.io/kaggle-private-byod/python@sha256:5b3264d2d3aefa4f5e4d6f036b0d2b2d9691dab62493ae3af85a3153608f30a7",
+  "machine_shape": "NvidiaTeslaT4"
+}

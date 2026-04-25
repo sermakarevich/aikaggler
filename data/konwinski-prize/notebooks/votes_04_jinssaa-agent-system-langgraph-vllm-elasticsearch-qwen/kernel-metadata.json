@@ -1,0 +1,35 @@
+{
+  "id": "jinssaa/agent-system-langgraph-vllm-elasticsearch-qwen",
+  "id_no": 73929498,
+  "title": "Agent System-Langgraph,Vllm,Elasticsearch,Qwen",
+  "code_file": "agent-system-langgraph-vllm-elasticsearch-qwen.ipynb",
+  "language": "python",
+  "kernel_type": "notebook",
+  "is_private": false,
+  "enable_gpu": true,
+  "enable_tpu": false,
+  "enable_internet": false,
+  "keywords": [
+    "gpu"
+  ],
+  "dataset_sources": [
+    "jinssaa/elasticsearch-8-17-0"
+  ],
+  "kernel_sources": [
+    "richolson/vllm-0-6-3-install",
+    "jinssaa/konwinski-prize-utility-scripts"
+  ],
+  "competition_sources": [
+    "konwinski-prize"
+  ],
+  "model_sources": [
+    "metaresearch/llama-3.2/Transformers/3b-instruct/1",
+    "qwen-lm/qwen2.5/Transformers/1.5b-instruct/1",
+    "qwen-lm/qwen2.5/Transformers/14b-instruct/1",
+    "qwen-lm/qwen2.5/Transformers/7b-instruct/1",
+    "qwen-lm/qwen2.5/Transformers/3b-instruct/1",
+    "qwen-lm/qwen2.5/Transformers/32b-instruct/1"
+  ],
+  "docker_image": "gcr.io/kaggle-private-byod/python@sha256:1003a82bef5df3c098b2041d936cb5f1836e52d7b610e8f0f4dedc194fb3b773",
+  "machine_shape": "NvidiaL4"
+}

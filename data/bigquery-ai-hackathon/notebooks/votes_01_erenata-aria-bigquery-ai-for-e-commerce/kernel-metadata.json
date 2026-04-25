@@ -1,0 +1,23 @@
+{
+  "id": "erenata/aria-bigquery-ai-for-e-commerce",
+  "id_no": 89332402,
+  "title": "ARIA: BigQuery AI for E-commerce",
+  "code_file": "aria-bigquery-ai-for-e-commerce.ipynb",
+  "language": "python",
+  "kernel_type": "notebook",
+  "is_private": false,
+  "enable_gpu": true,
+  "enable_tpu": false,
+  "enable_internet": true,
+  "keywords": [
+    "data analytics"
+  ],
+  "dataset_sources": [],
+  "kernel_sources": [],
+  "competition_sources": [
+    "bigquery-ai-hackathon"
+  ],
+  "model_sources": [],
+  "docker_image": "gcr.io/kaggle-private-byod/python@sha256:320043e14c68293f1c946585b9257123385205a58af4b94b17d31868cae4e868",
+  "machine_shape": "NvidiaTeslaT4"
+}

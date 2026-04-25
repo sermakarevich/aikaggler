@@ -1,0 +1,80 @@
+{
+  "summary": "The author achieved 5th place in the CSIRO Image2Biomass Prediction competition by training a multi-stream vision model on a small dataset of ~800 pasture images. Key innovations included removing timestamp artifacts via HSV inpainting, implementing a TTA-style training strategy with random augmentation selection, and designing a Mixture-of-Experts (MoE) regression head. The solution heavily leveraged physical constraints between biomass targets in a custom Gaussian NLL loss, combined with state-specific post-processing and a weighted ensemble of six models.",
+  "extensive_summary": "The competition focused on predicting five biomass components from ~800 pasture images (2000x1000 px) across four Australian states. Due to the small dataset and significant train-test distribution shift, the author prioritized robust preprocessing, targeted data augmentation, and physics-aware loss design.\n\n## Data Preprocessing & Augmentation\nOriginal images contained orange date timestamps that acted as noise. The author implemented HSV color space detection followed by `cv2.inpaint` to remove them. Images were resized to 1024x1024 and normalized with ImageNet statistics. To combat overfitting, a TTA-style training strategy was employed: during the first 15 epochs, the model saw horizontally flipped, vertically flipped, and 90-degree rotated views alongside originals, with random selection proving superior to sequential epoch-based switching. After epoch 15, only the original view was used.\n\n## Model Architecture & Training\nThe core architecture splits each 2000x1000 image into left and right halves (simulating stereo vision) while feeding the full image as a third stream. The backbone is `vit_large_patch16_dinov3_qkvb`. Regression heads use a custom `MetaMoE` (Mixture-of-Experts) module that outputs both mean and variance predictions, allowing the model to handle heteroscedasticity and automatically route inputs to suitable experts. Auxiliary heads predict NDVI, pasture height, species (15 classes), and state (4 classes). Layer-wise learning rates were applied (backbone LR multiplier of 0.1, heads at 1.0) to preserve pretrained features while allowing fast head adaptation.\n\n## Loss Function & Post-Processing\nA custom `PhysicsConsistencyLoss` was designed using `GaussianNLLLoss`. It directly regresses total, GDM, and green biomass, then derives dead and clover predictions via physical constraints (`Dead = Total - GDM`, `Clover = GDM - Green`), propagating variance accordingly. This approach downweights high-noise samples and prevents logical contradictions. Final predictions underwent state-specific range clipping, WA-state constraint enforcement (Dead=0, Total=GDM), and empirical scaling adjustments. The final submission combined six models via weighted averaging, with TTA inference averaged across three views and dual-GPU parallelization for speed.",
+  "rank": 5,
+  "competition_flow": "Raw pasture images are cleaned of timestamp artifacts, split into left/right/full streams, processed through a multi-stream ViT backbone with MoE regression heads, and post-processed with state-specific constraints before being weighted-ensembleed for final biomass predictions.",
+  "data_reading": [],
+  "data_processing": [
+    "HSV color space detection and `cv2.inpaint` to remove orange date timestamps",
+    "Resize to 1024x1024",
+    "ImageNet normalization (mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225])",
+    "TTA-style training augmentations: horizontal flip, vertical flip, 90-degree rotation, and original view with random selection during first 15 epochs",
+    "TTA inference averaging across original, horizontal flip, and vertical flip views",
+    "State-based range clipping using training set statistics",
+    "WA-state constraint enforcement (Dead=0, Total=GDM)",
+    "Empirical scaling adjustments (Clover * 0.8, Dead scaling based on thresholds)"
+  ],
+  "features_engineering": [
+    "Auxiliary regression targets: NDVI and average pasture height",
+    "Auxiliary classification targets: species (15 classes) and state (4 classes)",
+    "Meta feature embeddings for state/species information"
+  ],
+  "models": [
+    "vit_large_patch16_dinov3_qkvb",
+    "BiomassModelBasic",
+    "BiomassModelWithStateSpecies",
+    "BiomassModelWithMetaEmbedding",
+    "MetaMoE",
+    "_AuxHead"
+  ],
+  "frameworks_used": [
+    "torch",
+    "cv2",
+    "numpy",
+    "pandas",
+    "albumentations",
+    "ThreadPoolExecutor"
+  ],
+  "loss_functions": [
+    "GaussianNLLLoss",
+    "PhysicsConsistencyLoss"
+  ],
+  "cv_strategy": "Initially used fold-based validation, but final models were trained on the full dataset.",
+  "ensembling": "Weighted ensemble of six models with TTA inference averaged across three views, followed by state-specific clipping and empirical scaling post-processing.",
+  "insights": [
+    "Physical constraints in the loss function effectively address the R\u00b2 metric's sensitivity to outlier errors and prevent logical contradictions.",
+    "Randomly selecting augmentation methods during training yields better results than sequential epoch-based selection.",
+    "Layer-wise learning rates (lower for backbone, higher for heads) preserve pretrained features while enabling rapid task-specific adaptation.",
+    "Proper data augmentation and epoch control (~25 epochs) are critical to prevent overfitting on small datasets."
+  ],
+  "critical_findings": [
+    "WA state data exhibits distinct physical characteristics where Dead biomass is consistently 0 and Total equals GDM.",
+    "Public LB scores poorly correlate with Private LB due to distribution shifts and small dataset size, making submission selection highly uncertain.",
+    "Larger models (e.g., vit_huge) and longer training (30+ epochs) severely overfit on this small dataset, making moderate capacity and early stopping essential."
+  ],
+  "what_did_not_work": [
+    "Ratio prediction caused CV to drop significantly.",
+    "Using full image without splitting caused severe score drops.",
+    "LR 2e-4 with 20 epochs resulted in very low CV.",
+    "Segmentation + attention mechanisms failed to improve scores.",
+    "Mamba networks proved unstable.",
+    "UNet at original resolution caused significant LB drops.",
+    "Huge models (vit_huge) easily overfit despite high CV.",
+    "30 epochs led to overfitting and Private LB drops.",
+    "Various segmentation masks (ng/xg) were partially effective but unstable."
+  ],
+  "github_repos": [
+    {
+      "url": "https://github.com/yanqiangmiffy/2025-Kaggle-CSIRO-5th-solution",
+      "role": "solution"
+    }
+  ],
+  "papers": [],
+  "other_solution_refs": [
+    {
+      "description": "Final submission notebook",
+      "url": "https://www.kaggle.com/code/quincyqiang/csiro-ensemble-models-v12?scriptVersionId=294382133"
+    }
+  ],
+  "source_url": "https://www.kaggle.com/competitions/csiro-biomass/discussion/670668"
+}

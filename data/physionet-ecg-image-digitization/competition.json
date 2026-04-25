@@ -1,0 +1,112 @@
+{
+  "id": 97984,
+  "competitionName": "physionet-ecg-image-digitization",
+  "title": "PhysioNet - Digitization of ECG Images",
+  "briefDescription": "Extract the ECG time-series data from scans and photographs of paper printouts of the ECGs.",
+  "dateEnabled": "2025-10-21T17:00:05.267Z",
+  "deadline": "2026-01-22T23:59:00Z",
+  "hasLeaderboard": true,
+  "leaderboardPercentage": 20,
+  "maxDailySubmissions": 5,
+  "numScoredSubmissions": 2,
+  "hasSolution": true,
+  "numPrizes": 7,
+  "forumId": 7413407,
+  "finalLeaderboardHasBeenVerified": true,
+  "userRankMultiplier": 1,
+  "dateCreated": "2025-04-02T21:54:25.227665300Z",
+  "competitionHostSegmentId": 2,
+  "maxTeamSize": 5,
+  "medalsAllowed": true,
+  "enableTeamFiles": true,
+  "teamFileDeadline": "2026-02-26T00:00:00Z",
+  "teamMergerExplicitDeadline": "2026-01-15T23:59:00Z",
+  "prohibitNewEntrantsExplicitDeadline": "2026-01-15T23:59:00Z",
+  "kernelsPublishingDisabledDeadline": "2026-01-15T23:59:00Z",
+  "organizationId": 5059,
+  "hasCoverImageUrl": true,
+  "showPrivateLeaderboard": true,
+  "hasScripts": true,
+  "onlyAllowKernelSubmissions": true,
+  "totalTeams": 1424,
+  "totalCompetitors": 1689,
+  "totalSubmissions": 23524,
+  "rulesRequired": true,
+  "usesSynchronousReruns": true,
+  "maxCpuRuntimeMinutes": 540,
+  "maxGpuRuntimeMinutes": 540,
+  "rowIdColumnName": "id",
+  "requiredSubmissionFilename": "submission.csv",
+  "evaluationAlgorithm": {
+    "id": 4799,
+    "name": "Physionet ECG Signal Extraction Metric",
+    "isMax": true,
+    "environmentRenderType": "ENVIRONMENT_RENDER_TYPE_JSON",
+    "kernelId": 92927228,
+    "latestCompetitionMetricVersionId": 53570,
+    "state": "AVAILABLE"
+  },
+  "categories": [
+    {
+      "id": 13209,
+      "name": "time series analysis",
+      "fullPath": "technique > time series analysis",
+      "datasetCount": 4029,
+      "competitionCount": 837,
+      "scriptCount": 4295,
+      "slug": "time-series-analysis",
+      "displayName": "Time Series Analysis"
+    },
+    {
+      "id": 12028,
+      "name": "medicine",
+      "fullPath": "subject > health and fitness > health > medicine",
+      "description": "Medicine is the science and practice of the diagnosis, treatment, and prevention of disease. We recommend you take two datasets and analyze them in the morning. If that doesn't work, analyze one dataset every four hours.",
+      "datasetCount": 1379,
+      "competitionCount": 26,
+      "scriptCount": 1204,
+      "slug": "medicine",
+      "displayName": "Medicine"
+    },
+    {
+      "id": 11111,
+      "name": "health",
+      "fullPath": "subject > health and fitness > health",
+      "description": "Consider the health tag your data science gym. Get in there and work out those data science muscles on health analytics. Analyze heart disease until you sweat. Then recover with with a nice candy production dataset.",
+      "datasetCount": 23644,
+      "competitionCount": 540,
+      "scriptCount": 8392,
+      "slug": "health",
+      "displayName": "Health"
+    },
+    {
+      "name": "custom metric",
+      "description": "This competition's metric is defined under the 'Evaluation' tab",
+      "displayName": "Custom Metric"
+    }
+  ],
+  "organization": {
+    "slug": "physionet",
+    "name": "PhysioNet",
+    "thumbnailImageUrl": "https://storage.googleapis.com/kaggle-organizations/5059/thumbnail.png?t=2025-08-06-02-31-43",
+    "profileUrl": "/organizations/physionet"
+  },
+  "launched": true,
+  "createdByUserId": 25724013,
+  "license": {
+    "id": 13,
+    "name": "Attribution 4.0 International (CC BY 4.0)",
+    "url": "https://creativecommons.org/licenses/by/4.0/",
+    "agreementRequired": false
+  },
+  "hostName": "PhysioNet",
+  "scoreTruncationNumDecimals": 5,
+  "locked": true,
+  "totalJoinedUsers": 8668,
+  "requiresIdentityVerification": true,
+  "submissionSizeLimitMb": 20480,
+  "reward": {
+    "id": "USD",
+    "quantity": 50000
+  }
+}

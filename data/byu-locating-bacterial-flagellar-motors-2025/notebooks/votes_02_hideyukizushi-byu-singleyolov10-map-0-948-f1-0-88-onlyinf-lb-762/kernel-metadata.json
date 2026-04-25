@@ -1,0 +1,29 @@
+{
+  "id": "hideyukizushi/byu-singleyolov10-map-0-948-f1-0-88-onlyinf-lb-762",
+  "id_no": 78623225,
+  "title": "BYU|SingleYOLOv10(mAP:0.948/F1:0.88)OnlyINF|LB.762",
+  "code_file": "byu-singleyolov10-map-0-948-f1-0-88-onlyinf-lb-762.ipynb",
+  "language": "python",
+  "kernel_type": "notebook",
+  "is_private": false,
+  "enable_gpu": true,
+  "enable_tpu": false,
+  "enable_internet": false,
+  "keywords": [
+    "gpu"
+  ],
+  "dataset_sources": [
+    "hideyukizushi/byu-a-106-yolov8l-daexp-mixupexp",
+    "hideyukizushi/byu-c-301-yolov9e-daexp-mixup-hpexp",
+    "hideyukizushi/byu-d-301"
+  ],
+  "kernel_sources": [
+    "hideyukizushi/ultralytics-offlineinstall-yolo12-weights"
+  ],
+  "competition_sources": [
+    "byu-locating-bacterial-flagellar-motors-2025"
+  ],
+  "model_sources": [],
+  "docker_image": "gcr.io/kaggle-private-byod/python@sha256:d8674e13fab653bf7fb8d9a102f2ae94036771ccb5c73f51888d881421e1f937",
+  "machine_shape": "Gpu"
+}

@@ -1,0 +1,61 @@
+{
+  "summary": "The author developed a two-stage pipeline to detect and classify 3D vessel regions in medical imaging. Stage 1 leverages 2D YOLO models on MIPs of sagittal and coronal views to generate bounding boxes, which are reconstructed into 3D ROIs. Stage 2 trains 3D ResNet-18 models on these ROIs using a per-feature-map classification head and weighted BCE loss. Key technical choices include modifying convolution strides to increase feature map resolution, aggregating predictions via a Top-N mean strategy, and building a fallback model to estimate missing DICOM voxel spacing from image appearance.",
+  "extensive_summary": "### Overview\nThe solution addresses a medical imaging task through a two-stage pipeline: 3D vessel region detection followed by 3D ROI classification.\n\n### Stage 1: Vessel Region Detection\nSince target vessels occupy a limited portion of the field of view, the pipeline first detects whole vessel regions. Instead of relying on segmentation, the author computed MIPs of segmentation masks along the sagittal and coronal directions. Axis-aligned bounding boxes were constructed from the minimum and maximum mask coordinates in each view. YOLOv8n and YOLOv8m were used for detection, achieving over 0.95 mAP@0.5 on validation. Detected boxes were combined to reconstruct a 3D ROI, followed by cropping a fixed-size 3D bounding box (90\u00d790\u00d790 mm or 120\u00d7120\u00d7120 mm) centered on the detection.\n\n### Stage 2: 3D ROI Classification\nUsing the extracted 3D vessel ROIs, the team trained 3D ResNet-18 backbones via the `timm-3d` library. Inspired by a BYU 4th place solution, they attached a 14-class classification head to each feature map rather than the whole volume, optimizing with weighted BCE loss in a multi-label setting. The default stride of 2 produced a 4\u00d74\u00d74 feature map for 128\u00d7128\u00d7128 inputs, which performed poorly. By changing the stride to 1 in selected convolution layers, they increased spatial resolution. Testing input volumes from 128\u00d7128\u00d7128 up to 224\u00d7224\u00d7224 and feature maps from 8\u00d78\u00d78 to 48\u00d748\u00d748 revealed that scaling the feature map to 25\u00d725\u00d725 and the image to 196\u00d7196\u00d7196 boosted the LB score from 0.77 to 0.81.\n\n### Inference & Aggregation\nDuring inference, feature-map predictions were aggregated into per-case predictions. For each class, `Aneurysm Present` scores across spatial positions were sorted, and the top-N scores were averaged (Top-N mean) to produce the final prediction, with N varying by model configuration.\n\n### Missing DICOM Tags & Fallbacks\nDue to missing DICOM tags in test data, a regression model estimated voxel spacing along X, Y, and Z axes. Slices were padded and center-cropped to 512\u00d7512, 10 central slices were sampled along Z, and stacked with adjacent slices to form 2.5D RGB inputs. An EfficientNet V2 S model predicted voxel spacing from image appearance, averaging outputs across the 10 slices. This fallback improved the private LB from 0.84 to 0.85.\n\n### What Didn't Work\nVessel segmentation proved insufficiently robust. Adding modality and plane heads for auxiliary loss, as well as experimenting with complicated architectures like MIL, LSTMs, and decoder heads, yielded no benefits and were abandoned.",
+  "rank": 3,
+  "competition_flow": "Raw DICOM volumes are parsed into axial/sagittal/coronal planes, processed into MIPs for 2D YOLO detection, cropped into 3D ROIs, classified by 3D ResNet-18 models with per-feature-map heads, aggregated via Top-N mean scoring, and ensembled with a voxel-spacing fallback model to produce the final submission.",
+  "data_reading": [
+    "DICOM volumes parsed into axial/sagittal/coronal planes; slices padded, center-cropped to 512\u00d7512, and stacked with adjacent slices to form 2.5D RGB inputs."
+  ],
+  "data_processing": [
+    "Computed MIPs of segmentation masks along sagittal/coronal directions",
+    "Constructed 2D axis-aligned bounding boxes from mask coordinates",
+    "Reconstructed 3D ROI and cropped fixed-size 3D bounding boxes (90\u00d790\u00d790 mm or 120\u00d7120\u00d7120 mm)",
+    "Padded and center-cropped slices to 512\u00d7512",
+    "Sampled 10 central slices along Z-axis and stacked with adjacent slices to form 2.5D RGB inputs for the fallback model"
+  ],
+  "features_engineering": [],
+  "models": [
+    "YOLOv8n",
+    "YOLOv8m",
+    "3D ResNet-18",
+    "EfficientNet V2 S"
+  ],
+  "frameworks_used": [
+    "timm-3d"
+  ],
+  "loss_functions": [
+    "weighted BCE loss"
+  ],
+  "cv_strategy": "",
+  "ensembling": "An ensemble of 11 models with varying crop sizes, image resolutions, and reduced stride variants (all using a 3D ResNet-18 backbone) was combined to achieve public/private LB scores of 0.86/0.84.",
+  "insights": [
+    "Increasing feature map resolution and input image size significantly improved the LB score.",
+    "Attaching a classification head to each feature map rather than the whole volume effectively handles multi-label prediction.",
+    "Aggregating predictions via Top-N mean scoring across spatial positions robustly produces final class predictions.",
+    "Estimating missing DICOM voxel spacing from image appearance provides a crucial fallback that boosts final scores."
+  ],
+  "critical_findings": [
+    "The default 3D configuration with stride 2 produces a 4\u00d74\u00d74 feature map that yields poor results, making stride modification and higher resolution essential.",
+    "Vessel segmentation is not sufficiently robust across cases compared to bounding box detection.",
+    "Complex architectures like MIL, LSTMs, and decoder heads underperform, favoring simpler, direct classification heads."
+  ],
+  "what_did_not_work": [
+    "Vessel segmentation proved insufficiently robust across cases.",
+    "Modality and plane heads for auxiliary loss did not improve performance.",
+    "Complicated models like MIL, LSTMs, and decoder heads failed to deliver gains."
+  ],
+  "github_repos": [
+    {
+      "url": "https://github.com/tamotamo17/RSNA2025-3rd-place-solution",
+      "role": "solution"
+    }
+  ],
+  "papers": [],
+  "other_solution_refs": [
+    {
+      "description": "BYU 4th place solution (architecture inspiration)",
+      "url": "https://www.kaggle.com/competitions/byu-locating-bacterial-flagellar-motors-2025/writeups/daddies-4th-place-simple-resnet18-classification"
+    }
+  ],
+  "source_url": "https://www.kaggle.com/competitions/rsna-intracranial-aneurysm-detection/discussion/611856"
+}

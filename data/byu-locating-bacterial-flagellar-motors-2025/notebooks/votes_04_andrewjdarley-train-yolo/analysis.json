@@ -1,0 +1,41 @@
+{
+  "summary": "This notebook implements a fine-tuning pipeline for a YOLOv8 object detection model to locate bacterial flagellar motors in tomographic slices. It handles dataset YAML configuration, loads pre-trained weights, and trains the model for 30 epochs with early stopping. The author demonstrates how to monitor training progress via DFL loss curves, save periodic checkpoints, and evaluate predictions on validation samples. Readers learn how to structure a reproducible object detection training routine in a Kaggle environment and interpret loss metrics to identify the optimal checkpoint.",
+  "purpose": "training",
+  "competition_flow": "Loads a pre-prepared YOLO-format dataset via YAML, fine-tunes a YOLOv8n model for 30 epochs with early stopping, and exports the best checkpoint for downstream inference.",
+  "data_reading": [
+    "Reads dataset structure from a YAML file specifying path, train, val, and names keys.",
+    "Validates directory existence for train/val images and labels.",
+    "Dynamically fixes YAML paths to match Kaggle's /kaggle/input/ directory structure."
+  ],
+  "data_processing": [
+    "No explicit preprocessing, augmentation, or normalization code is implemented.",
+    "Relies on YOLOv8's internal defaults with a fixed input image size of 640x640."
+  ],
+  "features_engineering": [],
+  "models": [
+    "YOLOv8n"
+  ],
+  "frameworks_used": [
+    "ultralytics",
+    "torch",
+    "numpy",
+    "pandas",
+    "matplotlib",
+    "PIL",
+    "yaml"
+  ],
+  "loss_functions": [
+    "DFL loss (Distribution Focal Loss)"
+  ],
+  "cv_strategy": "Holdout split with early stopping (patience=5) based on minimum validation DFL loss.",
+  "ensembling": "",
+  "insights": [
+    "Early stopping and periodic checkpointing are essential for preventing overfitting and preserving the best model state.",
+    "Monitoring DFL loss curves allows precise identification of the epoch where validation performance peaks.",
+    "YOLOv8's high-level API abstracts training boilerplate, enabling rapid iteration on dataset configuration and hyperparameters."
+  ],
+  "critical_findings": [],
+  "what_did_not_work": [],
+  "source_url": "https://www.kaggle.com/code/andrewjdarley/train-yolo",
+  "votes": 472
+}

@@ -1,0 +1,32 @@
+{
+  "summary": "This notebook demonstrates a practical inference pipeline for the Stanford RNA 3D Folding competition by leveraging the pre-trained Boltz-1 diffusion model. It automates the conversion of raw RNA sequences into YAML inputs, runs GPU-accelerated structure prediction, and programmatically extracts C1' atom coordinates from the output CIF files. By averaging predictions across multiple diffusion samples, it stabilizes the coordinate estimates before formatting them for the competition submission. Readers should take away how to deploy a complex, pre-trained structural biology model end-to-end without fine-tuning, and how to efficiently parse and aggregate diffusion-based predictions for submission.",
+  "purpose": "inference",
+  "competition_flow": "Reads RNA sequences from a CSV, formats them as YAML inputs for Boltz-1, runs GPU-accelerated inference to generate 3D structure predictions, extracts C1' coordinates from the output CIF files, averages across 5 diffusion samples, and exports the formatted coordinates to a submission CSV.",
+  "data_reading": [
+    "Loads test sequences and sample submission templates using pandas read_csv from the Kaggle input directory."
+  ],
+  "data_processing": [
+    "Converts CSV sequences into YAML format with RNA chain metadata and empty constraints; parses output .cif files using Biopython's MMCIF2Dict to extract Cartesian coordinates for C1' atoms; cleans temporary working directories after inference."
+  ],
+  "features_engineering": [],
+  "models": [
+    "Boltz-1"
+  ],
+  "frameworks_used": [
+    "pytorch",
+    "pytorch_lightning",
+    "biopython"
+  ],
+  "loss_functions": [],
+  "cv_strategy": "",
+  "ensembling": "Averages predicted coordinates across 5 diffusion samples per target ID using pandas groupby mean to stabilize structural predictions.",
+  "insights": [
+    "Pre-trained diffusion models can be directly deployed for RNA 3D coordinate prediction without task-specific training or fine-tuning.",
+    "Programmatic parsing of CIF files via Biopython enables precise extraction of specific atom types like C1' without manual inspection.",
+    "Leveraging multiple diffusion samples and averaging their outputs improves prediction stability for structural biology tasks."
+  ],
+  "critical_findings": [],
+  "what_did_not_work": [],
+  "source_url": "https://www.kaggle.com/code/youhanlee/boltz-1-inference-submission",
+  "votes": 413
+}

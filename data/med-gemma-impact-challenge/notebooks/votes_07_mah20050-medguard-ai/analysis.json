@@ -1,0 +1,39 @@
+{
+  "summary": "The notebook demonstrates a hybrid safety filter for medical text that combines machine learning with rule-based expert logic to detect toxic or hallucinated medical advice. It constructs a synthetic balanced dataset, extracts 15+ linguistic, readability, sentiment, and domain-specific features, and trains a Random Forest classifier with class weighting to prioritize risk detection. The author validates the approach through EDA, confusion matrices, and a custom audit logging system, ultimately exporting the model for deployment. Readers should understand how feature engineering and hard-coded safety rules can complement probabilistic models in high-stakes healthcare NLP tasks.",
+  "purpose": "baseline",
+  "competition_flow": "Constructs a synthetic medical text dataset, extracts 15+ linguistic and domain-specific features, trains a class-weighted Random Forest classifier, applies a hybrid expert-logic filter, evaluates performance, and serializes the model for deployment.",
+  "data_reading": [
+    "Data is manually constructed as a Python dictionary containing 'text' and 'label' columns, then converted to a pandas DataFrame. No external files, APIs, or database connections are used."
+  ],
+  "data_processing": [
+    "Text is processed through a custom feature extraction function that computes linguistic, readability, sentiment, and domain-specific metrics. No explicit normalization, tokenization, or data augmentation is applied."
+  ],
+  "features_engineering": [
+    "15+ hand-crafted features including word count, average word length, syllable count, punctuation count, uppercase ratio, Flesch reading ease, Flesch-Kincaid grade level, difficult words count, lexical diversity, sentiment compound score, urgency flag, medical keyword count, danger trigger count, toxic advice flag, and disclaimer presence."
+  ],
+  "models": [
+    "Random Forest Classifier"
+  ],
+  "frameworks_used": [
+    "scikit-learn",
+    "pandas",
+    "numpy",
+    "textstat",
+    "nltk",
+    "seaborn",
+    "matplotlib",
+    "joblib"
+  ],
+  "loss_functions": [],
+  "cv_strategy": "",
+  "ensembling": "Combines a Random Forest classifier with a deterministic expert-logic filter that overrides predictions when specific medical keywords (e.g., 'doctor', 'consult') are present without toxic triggers.",
+  "insights": [
+    "Hand-crafted linguistic and domain-specific features effectively separate safe medical advice from dangerous misinformation.",
+    "Class weighting is essential in safety-critical NLP tasks to prioritize recall for high-risk cases.",
+    "Hybrid systems that combine probabilistic ML with deterministic rule-based filters improve reliability in healthcare applications."
+  ],
+  "critical_findings": [],
+  "what_did_not_work": [],
+  "source_url": "https://www.kaggle.com/code/mah20050/medguard-ai",
+  "votes": 35
+}

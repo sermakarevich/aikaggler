@@ -1,0 +1,28 @@
+{
+  "id": "fuumin621/qwen2-5-lora-finetune-baseline-inference",
+  "id_no": 87847529,
+  "title": "Qwen2.5-LoRA-Finetune-Baseline-Inference",
+  "code_file": "qwen2-5-lora-finetune-baseline-inference.ipynb",
+  "language": "python",
+  "kernel_type": "notebook",
+  "is_private": false,
+  "enable_gpu": true,
+  "enable_tpu": false,
+  "enable_internet": false,
+  "keywords": [
+    "gpu"
+  ],
+  "dataset_sources": [
+    "fuumin621/jigsaw-exp003-fold0"
+  ],
+  "kernel_sources": [
+    "fuumin621/qwen2-5-32b-instruct-gptq-int4",
+    "packagemanager/pm-87847529-at-07-31-2025-03-18-39"
+  ],
+  "competition_sources": [
+    "jigsaw-agile-community-rules"
+  ],
+  "model_sources": [],
+  "docker_image": "gcr.io/kaggle-private-byod/python@sha256:5de7f3337f4166df89b2d68f886fb08b30c4260df90e55e6587be5fd7648cf3f",
+  "machine_shape": "NvidiaTeslaT4"
+}

@@ -1,0 +1,46 @@
+{
+  "summary": "The notebook implements an inference-only pipeline for the Image Matching Challenge 2025. It uses DINOv2 global descriptors to shortlist candidate image pairs, ALIKED for keypoint detection and local descriptors, and LightGlue for robust feature matching. The matched keypoints are imported into a COLMAP database, followed by incremental structure-from-motion reconstruction to estimate camera poses. The final output is a CSV submission containing rotation and translation matrices for each image, with unregistered images marked as outliers. Readers learn how to chain modern feature extractors and matchers with a classical SfM pipeline for a competition baseline.",
+  "purpose": "inference",
+  "competition_flow": "Reads image paths from a CSV, uses DINOv2 to shortlist pairs, extracts ALIKED keypoints/descriptors, matches them with LightGlue, imports results into COLMAP for pose estimation, and writes a formatted submission CSV with camera poses or outlier flags.",
+  "data_reading": [
+    "Loads image paths and metadata from a CSV (train_labels.csv or sample_submission.csv) using pandas.",
+    "Reads images via Kornia (K.io.load_image) and PIL."
+  ],
+  "data_processing": [
+    "Resizes images to 1024px for ALIKED feature extraction.",
+    "Normalizes DINOv2 descriptors via L2 normalization.",
+    "Filters candidate pairs using a cosine distance threshold (sim_th = 0.3) and minimum pair count (min_pairs = 20).",
+    "Saves intermediate keypoints, descriptors, and matches in HDF5 files.",
+    "Converts missing poses to semicolon-separated 'nan' strings for CSV formatting."
+  ],
+  "features_engineering": [],
+  "models": [
+    "DINOv2-base",
+    "ALIKED",
+    "LightGlue"
+  ],
+  "frameworks_used": [
+    "pytorch",
+    "kornia",
+    "transformers",
+    "lightglue",
+    "pycolmap",
+    "pandas",
+    "numpy",
+    "h5py",
+    "opencv-python"
+  ],
+  "loss_functions": [],
+  "cv_strategy": "",
+  "ensembling": "",
+  "insights": [
+    "DINOv2 global descriptors effectively shortlist image pairs, reducing the combinatorial explosion of exhaustive matching.",
+    "ALIKED combined with LightGlue provides robust feature matching without manual threshold tuning.",
+    "COLMAP's incremental mapping can be constrained with min_model_size=3 to recover poses for smaller scenes.",
+    "The pipeline demonstrates that classical SfM remains highly effective when paired with modern deep feature extractors."
+  ],
+  "critical_findings": [],
+  "what_did_not_work": [],
+  "source_url": "https://www.kaggle.com/code/octaviograu/baseline-dinov2-aliked-lightglue",
+  "votes": 825
+}

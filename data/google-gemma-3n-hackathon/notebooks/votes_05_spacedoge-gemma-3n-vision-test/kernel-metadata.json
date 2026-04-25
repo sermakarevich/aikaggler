@@ -1,0 +1,28 @@
+{
+  "id": "spacedoge/gemma-3n-vision-test",
+  "id_no": 86333461,
+  "title": "Gemma 3N Vision test",
+  "code_file": "gemma-3n-vision-test.ipynb",
+  "language": "python",
+  "kernel_type": "notebook",
+  "is_private": false,
+  "enable_gpu": true,
+  "enable_tpu": false,
+  "enable_internet": true,
+  "keywords": [
+    "gpu"
+  ],
+  "dataset_sources": [
+    "",
+    "spacedoge/gemma3n-vision-tests"
+  ],
+  "kernel_sources": [],
+  "competition_sources": [
+    "google-gemma-3n-hackathon"
+  ],
+  "model_sources": [
+    "google/gemma-3n/Transformers/gemma-3n-e2b-it/1"
+  ],
+  "docker_image": "gcr.io/kaggle-private-byod/python@sha256:320043e14c68293f1c946585b9257123385205a58af4b94b17d31868cae4e868",
+  "machine_shape": "NvidiaTeslaT4"
+}

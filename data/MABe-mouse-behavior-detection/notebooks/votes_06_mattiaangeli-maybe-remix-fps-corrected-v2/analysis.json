@@ -1,0 +1,58 @@
+{
+  "summary": "This notebook implements a baseline pipeline for mouse behavior detection that explicitly handles variable frame rates through FPS-invariant feature engineering. It demonstrates how to extract spatial-temporal features from tracking coordinates, train an ensemble of tree-based classifiers per action, and apply adaptive temporal thresholding for frame-level localization. The author emphasizes duration-aware window scaling, custom frame-overlap scoring, and robust post-processing to handle overlapping predictions and missing videos. Readers should take away practical techniques for temporal action localization, memory-efficient stratified subsampling, and adaptive thresholding in variable-FPS video data.",
+  "purpose": "baseline",
+  "competition_flow": "Loads CSV metadata and parquet tracking files, extracts FPS-scaled spatial-temporal features for single and pair mouse interactions, trains an ensemble of tree models per action, applies adaptive temporal thresholding, and outputs a frame-level action localization submission.",
+  "data_reading": [
+    "Reads train/test CSVs via pandas",
+    "Loads per-video tracking data from parquet files",
+    "Pivots x/y coordinates by mouse_id and bodypart",
+    "Parses behaviors_labeled JSON strings into action labels",
+    "Normalizes pixel coordinates by pix_per_cm_approx"
+  ],
+  "data_processing": [
+    "Drops specific headpiece/tail body parts",
+    "Handles missing values and reorders DataFrame levels",
+    "Splits data into single-mouse and pair-mouse subsets",
+    "Applies rolling mean smoothing to prediction probabilities",
+    "Filters events shorter than 3 frames as noise"
+  ],
+  "features_engineering": [
+    "FPS-scaled temporal windows/lags for speed, curvature, turn rate, state transitions, long-range EWM/mean",
+    "Relative distance, approach/chase dynamics, velocity alignment/correlation",
+    "Lagged displacements, elongation, body angle, and ear convergence features",
+    "All temporal parameters are dynamically scaled by video FPS to ensure duration invariance"
+  ],
+  "models": [
+    "LightGBM",
+    "XGBoost",
+    "CatBoost"
+  ],
+  "frameworks_used": [
+    "lightgbm",
+    "xgboost",
+    "catboost",
+    "scikit-learn",
+    "polars",
+    "pandas",
+    "numpy",
+    "scipy"
+  ],
+  "loss_functions": [],
+  "cv_strategy": "",
+  "ensembling": "Averages predicted probabilities from an ensemble of LightGBM, XGBoost, and CatBoost classifiers (each wrapped in a stratified subsampling wrapper) trained per action, followed by action/mode-specific adaptive thresholding and temporal smoothing.",
+  "insights": [
+    "Temporal windows and lags must be scaled by the video's FPS to maintain consistent physical durations across videos with different frame rates.",
+    "Stratified subsampling helps manage memory and class imbalance during tree model training.",
+    "Adaptive per-action thresholds combined with rolling smoothing significantly improve frame-level localization precision.",
+    "Custom frame-overlap scoring is necessary because standard metrics do not account for variable-length action spans."
+  ],
+  "critical_findings": [
+    "The model explicitly underperforms on 'single' targets, prompting the author to increase training samples for that subset.",
+    "Multiple predictions for the same frame from one agent/target pair are treated as errors, and events shorter than 3 frames are filtered as likely noise."
+  ],
+  "what_did_not_work": [
+    "The model underperforms on 'single' targets, so the author increased the training sample size for that subset instead of modifying the architecture or features."
+  ],
+  "source_url": "https://www.kaggle.com/code/mattiaangeli/maybe-remix-fps-corrected-v2",
+  "votes": 217
+}

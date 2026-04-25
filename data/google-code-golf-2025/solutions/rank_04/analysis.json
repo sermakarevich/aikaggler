@@ -1,0 +1,53 @@
+{
+  "summary": "The author focused on code golf for an ARC-like competition by deploying an LLM (`gpt5-codex`) within a human-in-the-loop parallel sampling framework that iteratively generated, evaluated, and refined code across 10-30 turn sessions. They engineered AST-driven rule prompts to guide the model toward specific syntactic optimizations (regex, recursion, lambdas) and shifted the evaluation metric from raw byte count to post-compression file size (zip/zopfli) to minimize Kolmogorov complexity. A key technical insight was that resetting to a clean sandbox environment and explicitly prompting for compression-friendly code effectively broke the LLM out of local optima, yielding highly compact solutions.",
+  "extensive_summary": "## Parallel Sampling & Iterative Refinement\nThe core workflow revolved around a parallel sampling loop using `gpt5-codex`. For each task, the author ran 10-30 turn conversations, generating 4 parallel code versions per turn, evaluating them against JSON test cases, and feeding the shortest valid code into the next prompt. This process was repeated daily across ~15 parallel sessions, with turn durations scaling with problem difficulty.\n\n## AST-Driven Rule Prompts\nRather than relying on generic instructions, the author implemented rule-based follow-up prompts derived from the code's Abstract Syntax Tree (AST). Specific triggers included suggesting the `re` package for regex patterns, converting loops to recursive functions, and replacing `def` with `lambda`. This targeted guidance significantly accelerated the code golfing process.\n\n## Escaping Local Optima & Compression Optimization\nA major bottleneck was the LLM getting trapped in local optima, particularly when it had access to the repository containing previous iterations. The author mitigated this by running `codex exec` (CLI) inside fresh Docker containers to force a clean slate, and by explicitly prompting the model to ignore prior code. In the final two weeks, they replaced raw byte count with post-compression file size (using zip/zopfli) as the evaluation metric. Optimizing for minimal Kolmogorov complexity proved highly effective, producing unusually compact solutions like the one for Task 324.\n\n## Infrastructure & Tooling\nThe workflow combined Codex Cloud (Web) for manual prompting with `codex exec` (CLI) and API credits for automated scaling. Execution logs were stored in an SQLite database. The author also experimented with `grok4-code-fast-1` but abandoned it due to poor tool utilization, inefficient reasoning, and excessive API costs.",
+  "rank": 4,
+  "competition_flow": "The pipeline iteratively generated and evaluated code golf solutions using an LLM in a parallel sampling loop, guided by AST-based rule prompts and compression-aware evaluation metrics, with results logged to SQLite and manually refined before final submission.",
+  "data_reading": [],
+  "data_processing": [],
+  "features_engineering": [],
+  "models": [
+    "gpt5",
+    "gpt5-codex",
+    "grok4-code-fast-1",
+    "grok4"
+  ],
+  "frameworks_used": [],
+  "loss_functions": [],
+  "cv_strategy": "",
+  "ensembling": "The author briefly experimented with ensembling different models like Grok4 but abandoned it due to insufficient prompt engineering and high API costs, ultimately relying on iterative single-model parallel sampling and manual refinement.",
+  "insights": [
+    "Providing specific, concrete improvement ideas via AST-based rule prompts significantly accelerates LLM code golfing.",
+    "Optimizing for compression-friendly code (minimizing Kolmogorov complexity via zip size) effectively escapes local optima and yields highly compact solutions.",
+    "Resetting to a clean sandbox environment prevents LLMs from getting stuck in local optima caused by previous repository code.",
+    "LLMs may recognize their own limitations and stop improving; prompting them with 'Shorter code is known to exist' helps maintain momentum."
+  ],
+  "critical_findings": [
+    "Shifting the evaluation metric from raw byte count to post-compression file size (zip/zopfli) was a major score-moving discovery that produced unusually compact solutions.",
+    "Allowing the LLM access to the repository containing previously generated code frequently caused it to get stuck in local optima, necessitating a clean-slate approach."
+  ],
+  "what_did_not_work": [
+    "Using the prompt 'Focus on reducing the number of bytes, even if it means sacrificing some functionality' was ineffective and was abandoned.",
+    "Ensembling grok4-code-fast-1 with codex failed due to poor tool utilization, roundabout thought processes, and excessive API credit consumption.",
+    "Relying solely on explicit instructions to 'start from scratch' within Codex Cloud (Web) was imperfect compared to using a clean Docker sandbox."
+  ],
+  "github_repos": [],
+  "papers": [
+    {
+      "title": "Fuun",
+      "url": "https://web.archive.org/web/20110724172015/http://save-endo.cs.uu.nl/Endo.pdf",
+      "arxiv_id": null
+    }
+  ],
+  "other_solution_refs": [
+    {
+      "description": "Compressed solution for Task 324",
+      "url": "https://gcgc.pages.dev/task324"
+    },
+    {
+      "description": "Generator code for Task 003",
+      "url": "https://gcgc.pages.dev/task003"
+    }
+  ],
+  "source_url": "https://www.kaggle.com/competitions/google-code-golf-2025/discussion/614124"
+}

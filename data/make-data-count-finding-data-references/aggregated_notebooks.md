@@ -1,0 +1,160 @@
+# make-data-count-finding-data-references: top public notebooks
+
+The community's top-voted notebooks predominantly implement hybrid regex-LLM pipelines to extract and classify dataset citations from scientific PDFs. They rely heavily on quantized Qwen2.5/32B models via vLLM, constrained decoding, and context windows to distinguish primary/secondary data from literature references. The consensus emphasizes deterministic text parsing, strict prompt engineering, and heuristic post-filtering over traditional model training or complex architectures.
+
+## Common purposes
+- inference
+- baseline
+
+## Competition flows
+- Parses competition PDFs to text, extracts candidate dataset IDs via regex, classifies them as primary/secondary data or literature using a quantized Qwen2.5-32B LLM via vLLM, applies post-filtering, and outputs a CSV submission.
+- Parses PDFs to text, extracts dataset IDs via regex and context windows, classifies them as data/literature and primary/secondary using a Qwen2.5-32B LLM with constrained decoding, applies post-filtering, and outputs a CSV submission.
+- PDFs are parsed to text, identifiers are extracted via regex and normalized, a quantized Qwen2.5 model classifies DOIs as data or literature, and a context-aware post-filter refines results before writing a submission CSV.
+- The notebook extracts text from academic PDFs, uses a quantized Qwen2.5 LLM via vLLM to identify and normalize DOI strings, classifies them into three categories using logits processing, and outputs a formatted submission CSV with a manual validation F1 score.
+- Converts PDF papers to text, extracts and validates dataset accession IDs using regex and Polars string operations, filters false positives, and outputs a formatted submission CSV.
+- The notebook extracts text from academic PDFs, uses regex to identify candidate DOI and accession IDs, queries a quantized Qwen2.5-32B LLM via vLLM to classify them as primary or secondary research data, and formats the results into a competition submission CSV.
+- Parses academic PDFs to extract candidate dataset identifiers via regex, classifies them as data or literature using a quantized Qwen 32B LLM with constrained decoding, applies context-aware post-filtering, and outputs a formatted submission CSV.
+- Extracts text from academic PDFs, uses regex to isolate DOI contexts, prompts a quantized LLM to extract and classify DOIs, applies frequency-based filtering and deduplication, and generates a formatted submission CSV for evaluation.
+- Parses PDFs to text, extracts DOIs and accession codes via regex, classifies DOIs using a quantized Qwen2.5-32B LLM with constrained decoding, applies context-based post-filtering, and outputs a CSV submission.
+- Loads academic PDFs, extracts text chunks around DOIs and accession IDs, queries a quantized Qwen2.5 LLM via vLLM with custom prompts and logit processing to classify dataset types, and generates a deduplicated submission CSV.
+
+## Data reading
+- Loads PDF files from the competition directory and converts them to plain text using PyMuPDF.
+- Reads ground truth labels from a CSV file using Polars for local evaluation.
+- PDFs are converted to plain text using pymupdf and loaded into Polars DataFrames.
+- Ground truth labels are read from CSV files.
+- PDFs are loaded from a competition directory using pymupdf and converted to plain text files.
+- Ground truth labels are read from a CSV using Polars.
+- PDFs are loaded from a local directory using `fitz` (PyMuPDF), converted to lowercase text, and truncated at the "references" section if present; DOI strings are extracted via regex and paired with surrounding text chunks.
+- Loads PDF files from input directories and converts them to .txt files using pymupdf or marker.
+- Reads .txt/.md files into a Polars DataFrame by iterating over file paths.
+- Loads ground truth labels from a CSV file for optional evaluation.
+- PDFs are loaded from a local directory using PyMuPDF (`fitz`), converted to raw text page-by-page, and article IDs are parsed directly from the filenames.
+- Loads PDFs from Kaggle input using kagglehub, converts them to raw text with PyMuPDF, and reads ground truth labels from train_labels.csv using Polars.
+- Loads PDF files from a local directory using `fitz` (PyMuPDF), iterates through pages to extract raw text, splits text at the "references" keyword to exclude citation lists, and extracts `article_id` from filenames.
+- Loads PDFs from `/kaggle/input/make-data-count-finding-data-references/{train,test}/PDF/`
+- Reads `train_labels.csv` for evaluation
+- Resolves paths via `kagglehub` or environment variables
+- PDFs loaded via `fitz` (PyMuPDF) page-by-page, filtered by directory path based on competition rerun flag.
+
+## Data processing
+- Normalizes extracted text (NFKC, ASCII-only, Zenodo URL normalization).
+- Splits documents into body and reference sections using compiled regex patterns for headers and citation markers.
+- Extracts candidate dataset IDs (DOIs, accession codes) via regex and extracts fixed-size context windows around matches.
+- Constructs chat templates for LLM inference and applies post-filtering rules to remove false positive DOI rows.
+- String normalization (NFKC, ASCII filtering, Zenodo URL mapping).
+- Regex-based ID extraction and normalization for DOIs and specific accession formats.
+- Context window extraction around citation strings.
+- Deduplication and filtering of known false-positive DOI prefixes.
+- Text is normalized via NFKC, non-ASCII characters are stripped, URLs are standardized, whitespace is collapsed, and strings are lowercased.
+- Documents are split into body and reference sections using regex header detection.
+- 100-character context windows are extracted around each identifier for LLM prompting and post-filtering.
+- Text is lowercased, split at the "references" keyword, and truncated to a 100-character span around each DOI match; DOI URLs are lowercased and deduplicated in the final submission.
+- PDF-to-text conversion via pymupdf or marker.
+- Text normalization (NFKC), ASCII filtering, and paragraph splitting/joining.
+- Regex-based extraction of database accession IDs (CHEMBL, GEO, EMPIAR, ENSEMBL, EPI_ISL, EPI, HPA, CP, IPR, PF, KEGG, PRJNA, PXD, SAMN, dryad, pasta).
+- ID cleaning (whitespace removal, trailing punctuation stripping), DOI URL reconstruction, and bracket/parenthesis balancing checks.
+- Context window extraction, deduplication, and type assignment (Primary/Secondary).
+- The references section is algorithmically removed using backward scanning and pattern matching. Candidate DOIs and accession IDs are extracted via regex, and surrounding text is chunked with a 200-character span. Invalid classifications and duplicates are filtered out before formatting the final submission.
+- Normalizes Unicode and whitespace, splits documents into body and reference sections via regex header detection, extracts candidate identifiers using extensive regex patterns, deduplicates matches, and constructs fixed-size context windows around each ID.
+- Uses regex to find DOI patterns (`10.\d{4}`), creates 400-character context windows around each match, saves chunks to pickle, parses LLM JSON outputs, removes "Not Relevant" classifications, deduplicates entries, and filters out `dataset_id`s appearing three or more times.
+- Removal of soft hyphens/word joiners and line-break hyphens.
+- Context window extraction around matched IDs.
+- Regex-based filtering of bad/self-referencing IDs.
+- Multiprocessing for parallel PDF reading, regex-based removal of references/bibliography sections, context window extraction (±200 chars) around matched identifiers, MD5-based prompt caching to deduplicate queries, and strict regex patterns for DOI/accession matching.
+
+## Features engineering
+- Regex patterns for DOI and accession ID extraction (e.g., CHEMBL, GEO, PRJ, SRA, PDB prefixes).
+- DOI prefix classification rules mapping repository prefixes to data types.
+- Publisher prefix lists for false positive filtering.
+- Context window keyword matching for data-related terms.
+- Hand-crafted regex patterns for DOIs and specific database accession formats (e.g., GEO, PRJ, SRA, PDB), domain-specific prefix filters for known data repositories versus academic publishers, and context-window text snippets for LLM prompting.
+- Hand-crafted regex patterns for reference headers, citation formats, DOI prefixes, and biological/database accession codes.
+- Context windows (100 chars) around extracted IDs used as LLM prompts.
+
+## Models
+- Qwen2.5-32B-Instruct (AWQ)
+- Qwen-3-8B (AWQ)
+- Marker
+
+## Frameworks used
+- vllm
+- logits-processor-zoo
+- torch
+- polars
+- pandas
+- pymupdf
+- fitz
+- numpy
+- re
+- marker-pdf
+- multiprocessing
+- json
+- pickle
+
+## CV strategies
+- Holdout evaluation on training labels using exact match on article_id, dataset_id, and type to compute TP/FP/FN and F1 score.
+
+## Insights
+- Context windows around extracted identifiers are essential for accurate LLM-based citation classification.
+- DOI prefixes alone cannot reliably distinguish data repositories from publisher DOIs without linguistic context.
+- Combining deterministic regex extraction with a quantized large language model enables efficient and scalable data citation disambiguation.
+- Constrained decoding via logits processors improves LLM classification reliability.
+- Post-filtering based on contextual keywords effectively reduces false positives in citation classification.
+- Constrained decoding with MultipleChoiceLogitsProcessor guarantees valid A/B outputs without post-processing.
+- Using `logits-processor-zoo` allows strict categorical classification without relying on prompt formatting or post-processing regex.
+- Temperature 0 and logit argmax provide deterministic, probability-weighted predictions for multi-class tasks.
+- Truncating PDF text at the "references" section prevents the LLM from processing irrelevant full-text content.
+- Vectorized Polars string operations can efficiently handle complex regex extraction, cleaning, and validation pipelines without explicit Python loops.
+- Context windows around extracted IDs can be preserved for downstream verification or model training.
+- DOI and accession ID formats vary widely across databases, requiring custom regex patterns and post-processing rules to avoid false positives.
+- Structured system prompts combined with logits processors can effectively constrain LLM outputs to specific multi-class choices without requiring model fine-tuning.
+- Regex-based candidate generation significantly reduces the context window needed for LLM inference, improving efficiency and accuracy.
+- Filtering out the references section before LLM prompting prevents the model from misclassifying citation metadata as primary data.
+- Layered regex extraction combined with constrained LLM inference reliably outperforms end-to-end NER or deep learning models in this competition due to label noise.
+- Isolating the pipeline into modular stages enables rapid iteration and patching when competition rules or labels change.
+- Constrained decoding via a logits processor forcing single-character output significantly improves LLM classification reliability over free-form prompting.
+- Clear prompt engineering and context windowing enable LLMs to reliably extract and classify DOI citations from unstructured academic text.
+- Filtering frequent false-positive predictions significantly improves precision in citation extraction tasks.
+- Excluding the References section during text extraction prevents the model from misinterpreting citation metadata as primary data sources.
+- Combining regex extraction with constrained LLM decoding improves precision for structured reference parsing.
+- Publisher DOIs can be filtered effectively using local context keywords rather than relying solely on the DOI prefix.
+- Logit-based classification with a custom processor provides reliable multiple-choice outputs without fine-tuning.
+- Prompt caching via MD5 hashing significantly reduces redundant LLM calls and speeds up inference.
+- Strict regex and context windowing improve identifier extraction precision and reduce noise.
+- Multi-step prompting (extraction → classification) separates concerns and improves pipeline robustness.
+
+## Critical findings
+- DOI prefixes heavily overlap between data repositories and academic publishers, making prefix-only filtering unreliable.
+- Certain identifiers like dryad, zenodo, and pasta require explicit prefix mapping or exclusion to avoid false positives.
+- DOI prefixes alone are insufficient for classification due to overlaps between data repositories and publishers.
+- Regex extraction misses certain ID formats, necessitating LLM fallback.
+- GBIF occurrence data requires specialized context window handling to avoid misclassification.
+- Competition labels are noisy and incomplete, with a 'Missing' type that requires special handling during local scoring.
+- Neither PDF nor XML sources alone are sufficient; both are needed to capture complete and fully labeled mentions.
+- Aggressive post-filtering is required to eliminate false positives from academic publisher DOI prefixes that lack explicit data-repository context.
+- Frequent false-positive DOI predictions occur naturally and can be mitigated by filtering dataset IDs that appear three or more times across the dataset.
+- Publisher DOIs (e.g., 10.1038) often appear in data sections but are literature; local context keywords are necessary to distinguish them.
+- Soft hyphens and word joiners in PDFs cause text extraction artifacts that break regex matching if not cleaned.
+- Self-referencing DOIs (where the DOI contains the article ID) must be explicitly filtered to avoid false positives.
+
+## Notable individual insights
+- votes 358 (Fork of 0.606_AFTER_LLM 993720): Combining deterministic regex extraction with a quantized large language model enables efficient and scalable data citation disambiguation.
+- votes 300 ([LB 0.548] Fork of fork of fork of fork of ...): Constrained decoding with MultipleChoiceLogitsProcessor guarantees valid A/B outputs without post-processing.
+- votes 269 (notebook2d0b45c244): Vectorized Polars string operations can efficiently handle complex regex extraction, cleaning, and validation pipelines without explicit Python loops.
+- votes 248 ([LB 0.289] Improved Basline (Prompt Engineering)): Filtering out the references section before LLM prompting prevents the model from misclassifying citation metadata as primary data.
+- votes 239 (🪼Semantically-Aware Mention Classification Stack): Layered regex extraction combined with constrained LLM inference reliably outperforms end-to-end NER or deep learning models in this competition due to label noise.
+- votes 235 (Keyword Search + LLM Baseline [CV 0.120 LB 0.105]): Filtering frequent false-positive predictions significantly improves precision in citation extraction tasks.
+- votes 181 (FDR25 LLM baseline): Prompt caching via MD5 hashing significantly reduces redundant LLM calls and speeds up inference.
+
+## Notebooks indexed
+- #358 votes [[notebooks/votes_01_anglolodorf-fork-of-0-606-after-llm-993720/notebook|Fork of 0.606_AFTER_LLM 993720]] ([kaggle](https://www.kaggle.com/code/anglolodorf/fork-of-0-606-after-llm-993720))
+- #322 votes [[notebooks/votes_02_imdadulhasanhamim-lb-0-62-llm-prediction/notebook|LB: 0.62 | llm prediction]] ([kaggle](https://www.kaggle.com/code/imdadulhasanhamim/lb-0-62-llm-prediction))
+- #300 votes [[notebooks/votes_03_kawchar85-lb-0-548-fork-of-fork-of-fork-of-fork-of/notebook|[LB 0.548] Fork of fork of fork of fork of ...]] ([kaggle](https://www.kaggle.com/code/kawchar85/lb-0-548-fork-of-fork-of-fork-of-fork-of))
+- #282 votes [[notebooks/votes_04_aerdem4-mdc-search-llm-logits-processor-zoo/notebook|MDC Search + LLM + logits-processor-zoo]] ([kaggle](https://www.kaggle.com/code/aerdem4/mdc-search-llm-logits-processor-zoo))
+- #269 votes [[notebooks/votes_05_mccocoful-notebook2d0b45c244/notebook|notebook2d0b45c244]] ([kaggle](https://www.kaggle.com/code/mccocoful/notebook2d0b45c244))
+- #248 votes [[notebooks/votes_06_kawchar85-lb-0-289-improved-basline-prompt-engineering/notebook|[LB 0.289] Improved Basline (Prompt Engineering)]] ([kaggle](https://www.kaggle.com/code/kawchar85/lb-0-289-improved-basline-prompt-engineering))
+- #239 votes [[notebooks/votes_07_verracodeguacas-semantically-aware-mention-classification-stack/notebook|🪬Semantically-Aware Mention Classification Stack]] ([kaggle](https://www.kaggle.com/code/verracodeguacas/semantically-aware-mention-classification-stack))
+- #235 votes [[notebooks/votes_08_yeoyunsianggeremie-keyword-search-llm-baseline-cv-0-120-lb-0-105/notebook|Keyword Search + LLM Baseline [CV 0.120 LB 0.105]]] ([kaggle](https://www.kaggle.com/code/yeoyunsianggeremie/keyword-search-llm-baseline-cv-0-120-lb-0-105))
+- #187 votes [[notebooks/votes_09_yusuketogashi-lb-0-598-mdc-fork-of-solution-ed608a/notebook|LB 0.598 | MDC | Fork of Solution  ed608a]] ([kaggle](https://www.kaggle.com/code/yusuketogashi/lb-0-598-mdc-fork-of-solution-ed608a))
+- #181 votes [[notebooks/votes_10_kurisew-fdr25-llm-baseline/notebook|FDR25 LLM baseline]] ([kaggle](https://www.kaggle.com/code/kurisew/fdr25-llm-baseline))

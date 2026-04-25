@@ -1,0 +1,45 @@
+{
+  "summary": "This notebook demonstrates a complete reinforcement learning pipeline to fine-tune the Gemma 3 1B instruction-tuned model for mathematical reasoning using Group Relative Policy Optimization (GRPO) with QLoRA. It replaces the traditional critic network to reduce memory overhead, implements deterministic rewards for strict XML formatting and answer correctness, and provides a robust environment setup to bypass JAX/TPU/CuDNN conflicts. The author includes a comparative evaluation against the base model and details how to structure Socratic chain-of-thought prompts for reliable reasoning. Readers should learn how to apply GRPO for reasoning tasks, efficiently fine-tune LLMs with quantized adapters, and monitor training stability using KL divergence and perplexity metrics.",
+  "purpose": "training",
+  "competition_flow": "Loads GSM8K math problems via TensorFlow Datasets, fine-tunes Gemma 3 1B using GRPO with QLoRA and strict format/correctness rewards, evaluates the RL model against the base model on a hold-out test split, and saves the final checkpoint.",
+  "data_reading": [
+    "Uses tfds.load(\"gsm8k\", split=split, as_supervised=False) to fetch the dataset, converts it to a numpy iterator, decodes question and answer strings from bytes, and splits the ground truth answer by \"####\" to isolate the final numerical result."
+  ],
+  "data_processing": [
+    "Formats inputs with system instructions and one-shot examples, wraps prompts and responses in <start_of_turn> tags, shuffles the dataset with seed 42, batches it to size 1, and repeats the training dataset 50 times."
+  ],
+  "features_engineering": [],
+  "models": [
+    "Gemma 3 1B IT (google/gemma-3-1b-it)"
+  ],
+  "frameworks_used": [
+    "jax",
+    "flax",
+    "qwix",
+    "tunix",
+    "optax",
+    "tensorflow_datasets",
+    "grain",
+    "huggingface_hub",
+    "transformers"
+  ],
+  "loss_functions": [
+    "GRPO objective (KL-constrained policy gradient with clipping) optimized via deterministic reward functions (1.0 for format compliance, 2.0 for correctness, 0.0 otherwise)."
+  ],
+  "cv_strategy": "",
+  "ensembling": "",
+  "insights": [
+    "GRPO eliminates the need for a separate value network, significantly reducing GPU memory overhead compared to standard PPO.",
+    "Targeting MLP layers (gate_proj, up_proj, down_proj) alongside attention projections is critical for capturing reasoning capabilities.",
+    "Combining strict format rewards with correctness rewards effectively guides the model toward valid logical paths without inducing reward hacking.",
+    "Using low temperature (0.1) and top-k sampling during inference prevents mode collapse and ensures deterministic reasoning outputs."
+  ],
+  "critical_findings": [
+    "Extremely low perplexity combined with low reward during training indicates mode collapse where the model repeats incorrect reasoning.",
+    "A KL divergence spike greater than 0.1 signals reward hacking or policy divergence from the natural language distribution.",
+    "The base model lacks strict formatting compliance, requiring engineered one-shot prompts and aggressive post-processing to reliably extract answers."
+  ],
+  "what_did_not_work": [],
+  "source_url": "https://www.kaggle.com/code/jayaprakashmurugan/teach-gemma-3-llm-to-reason-gpu",
+  "votes": 48
+}

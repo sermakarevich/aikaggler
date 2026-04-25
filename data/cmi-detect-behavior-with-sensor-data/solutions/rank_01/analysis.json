@@ -1,0 +1,80 @@
+{
+  "summary": "The team secured 1st place by building large ensembles of CNN, GRU, LSTM, and 3D CNN models tailored for IMU, thermal, and time-of-flight sensor data. Key drivers included rigorous sequence cleaning, extensive IMU feature engineering (jerks, correlations, gravity-removed accelerations), and targeted augmentations like mixup and time shift/stretch. They validated using a group-by-subject K-fold strategy, trained models with AdamW/Adam and cosine annealing schedulers, and blended logits across IMU-only, all-features, and TOF-only subsets. Post-processing adjusted predictions to respect class and orientation distribution constraints, while slightly increasing inference sequence length to decorrelate models.",
+  "extensive_summary": "## Solution Overview\nThe team won 1st place by constructing large ensembles of deep learning models specifically adapted for multi-modal sensor data (IMU, THM, TOF). The pipeline emphasized rigorous data cleaning, extensive IMU feature engineering, targeted augmentations, and a group-by-subject K-fold validation strategy. Final predictions were blended via a weighted sum of logits and adjusted post-hoc to respect class and orientation distribution constraints.\n\n## Data Processing & Feature Engineering\nRaw sequences were cleaned by removing subjects who wore devices incorrectly and filtering out sequences with low gesture ratios or completely missing TOF data. TOF values of -1 were replaced with 500 to encode large distances, and NaNs were filled using `seq.ffill().bfill().fillna(0)`. Sequences were padded or cropped to the 94th percentile (~120 max length). Handedness was normalized by flipping IMU axes and reflecting quaternion signs. While some models used a robust scaler, the author found that applying no scalers yielded the largest early-stage improvement. IMU feature engineering was extensive, producing 35 features including accelerations, jerks, correlations, gravity-removed accelerations, and their squared variants.\n\n## Model Architectures & Training\nMultiple architectures were explored across modalities. Devin's part utilized CNN-GRU hybrids with separate stems, pure CNNs with residual blocks and expanding kernels (5, 9, 13), dense GRUs, self-excitation models, and a 3D CNN for TOF data. Ogurtsov's part focused on IMU-only and all-features models using LSTM, attention, or CNN-based time dimension processing, with a key innovation of independently processing feature groups in early layers. zyz's part used simple RNN and CNN1D combinations. Training ran for 60-220 epochs with batch size 64, using `torch.optim.Adam` or `AdamW` with learning rates between `4e-4` and `5e-4`, weight decay `3e-4`, and schedulers like `CosineAnnealingWarmRestarts` or `LinearLR`.\n\n## Augmentation & Ensemble Strategy\nAugmentations included up/down-scaling, random noise, masking, mixup (`MIXUP_ALPHA = 0.4`), and time shift/stretch transforms. The author noted that picking the right augmentation probability, strength, and order was difficult. The final submission blended IMU-only, all-features, and TOF-only models as a weighted sum of logits. Post-processing accounted for limited class and orientation samples per subject. During inference, sequence length was increased by 5 to decorrelate models, and the best fold results across 3 runs were selected.",
+  "rank": 1,
+  "competition_flow": "Raw sensor data (IMU, THM, TOF) was cleaned, normalized, and augmented, then fed into large ensembles of CNN, GRU, LSTM, and 3D CNN models trained with group-by-subject K-fold validation; logits were blended and post-processed to respect class/orientation constraints before submission.",
+  "data_reading": [],
+  "data_processing": [
+    "Removed subjects who wore devices incorrectly and filtered sequences with low gesture ratios or completely missing TOF data",
+    "Replaced TOF -1 values with 500 to encode large distances",
+    "Filled NaNs with `seq.ffill().bfill().fillna(0)`",
+    "Padded/cropped sequences to the 94th percentile (~120 max length)",
+    "Normalized handedness by flipping IMU axes and reflecting quaternion signs",
+    "Applied robust scaler in some models but found no scalers yielded better early-stage improvement"
+  ],
+  "features_engineering": [
+    "35 IMU features including accelerations, jerks, correlations, gravity-removed accelerations, and their squared variants",
+    "Temporal differences of TOF features and thermal data",
+    "Rotational differences and magnitude calculations",
+    "Independent processing of feature groups in early network layers"
+  ],
+  "models": [
+    "CNN GRU",
+    "Pure CNN",
+    "dense GRU",
+    "self excitation models",
+    "3D CNN",
+    "LSTM",
+    "attention-based models",
+    "RNN",
+    "CNN1D"
+  ],
+  "frameworks_used": [
+    "pytorch"
+  ],
+  "loss_functions": [
+    "focal loss",
+    "class weights"
+  ],
+  "cv_strategy": "CV5 with group by subject K-fold, using 5 models on inference.",
+  "ensembling": "Large ensembles of IMU-only, all-features, and TOF-only models were blended as a weighted sum of logits, with post-processing applied to account for limited class and orientation samples per subject.",
+  "insights": [
+    "Normalizing handedness by flipping IMU axes and reflecting quaternion signs is critical for cross-subject generalization.",
+    "Independently processing feature groups in early network layers significantly improves performance.",
+    "Increasing sequence length by 5 during inference effectively decorrelates models without hurting CV scores.",
+    "Mixup and time-based augmentations require careful tuning of probability and strength to be effective."
+  ],
+  "critical_findings": [
+    "Using no scalers provided the largest improvement at the early training stage compared to using them.",
+    "A bug in cross-attention (shared weights for 3 different attentions) surprisingly worked well and was kept.",
+    "Class weights are meaningless for mixup samples but can still serve as effective regularization.",
+    "-1 in TOF data encodes large distance and should be replaced with 500 rather than treated as missing."
+  ],
+  "what_did_not_work": [
+    "dense GRU scored lower but helped slightly in ensemble",
+    "some self excitation models did not combine well",
+    "picking the right augmentation probability, strength, and order was difficult"
+  ],
+  "github_repos": [
+    {
+      "url": "https://github.com/statist-bhfz/kaggle_cmi_1st_place_solution",
+      "role": "solution"
+    }
+  ],
+  "papers": [],
+  "other_solution_refs": [
+    {
+      "description": "Post-processing description",
+      "url": "https://www.kaggle.com/competitions/cmi-detect-behavior-with-sensor-data/discussion/603544"
+    },
+    {
+      "description": "Sequence data augmentation transforms",
+      "url": "https://www.kaggle.com/code/alejopaullier/cmi-sequence-data-augmentation"
+    },
+    {
+      "description": "Pipeline structure and baseline",
+      "url": "https://www.kaggle.com/code/myso1987/cmi3-pyroch-baseline-model-add-aug-folds?scriptVersionId=248310337"
+    }
+  ],
+  "source_url": "https://www.kaggle.com/competitions/cmi-detect-behavior-with-sensor-data/discussion/603611"
+}

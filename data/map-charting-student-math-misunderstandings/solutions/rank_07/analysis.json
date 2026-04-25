@@ -1,0 +1,70 @@
+{
+  "summary": "The team achieved a private 7th place by combining direct logit training, synthetic data generation, and knowledge distillation across multiple LLM pipelines. They leveraged GPT-4.1 and GPT-5-mini to create diverse synthetic student explanations, filtered misconception candidates to shorten prompts, and used knowledge distillation from Qwen2.5-32B to handle noisy labels. The final submission was an ensemble of three distinct pipelines using Gemma-2-9B-IT, Qwen2.5-32B, DeepSeek-R1-Distill-Qwen-32B, and Qwen3-8B, with careful prompt engineering and checkpoint selection driving the performance gains.",
+  "extensive_summary": "The solution revolves around a multi-pipeline approach for predicting student math misconceptions, emphasizing direct logit training and synthetic data augmentation. The authors generated synthetic training data by extracting groups of identical labels from the original dataset and using GPT-4.1 and GPT-5-mini to produce diverse \"student explanations\" from sampled references. To optimize inference and prompt efficiency, they filtered misconception candidates per question and added alternative multiple-choice options for context. They also reverse-engineered detailed explanations for misconceptions using Claude Sonnet.\n\nTraining strategies varied across three pipelines. Pipeline 1 combined Gemma-2-9B-IT and Qwen2.5-32B (AWQ) with label smoothing and temperature scaling, using knowledge distillation where competition data was mixed with Qwen2.5-32B OOF predictions. Pipeline 2 utilized DeepSeek-R1-Distill-Qwen-32B, training with a combination of CrossEntropy and KL divergence losses on both external and competition data, filtering external samples by OOF top-1 accuracy. Pipeline 3 focused on Qwen3-8B with full fine-tuning over 3 epochs at a learning rate of 2e-5, discovering that using existing tokens as correct answers and selecting slightly later checkpoints yielded significant gains.\n\nThe final ensemble integrated outputs from these pipelines, leveraging vLLM for optimal inference performance. Post-processing included pre-identifying correct answers to eliminate one error source and adding True/False labels. The authors note that synthetic data effectiveness was highly model-dependent, and failed attempts like dynamic ensemble weight adjustment and small model additions provided valuable lessons on computational constraints and data sufficiency.",
+  "rank": 7,
+  "competition_flow": "Raw competition data and synthetic explanations were processed through filtered prompts and reverse-engineered context, then fed into multiple fine-tuned LLMs using direct logit training and knowledge distillation, with outputs ensembled and post-processed to predict misconceptions and correct answers.",
+  "data_reading": [],
+  "data_processing": [
+    "Generated synthetic data using GPT-4.1 and GPT-5-mini by sampling reference entries from groups with identical labels",
+    "Filtered misconception candidates per question to reduce prompt length",
+    "Applied label smoothing (\u03b1=0.1) for noise mitigation",
+    "Used knowledge distillation with soft labels from Qwen2.5-32B OOF predictions",
+    "Pre-identified correct answers for post-processing"
+  ],
+  "features_engineering": [],
+  "models": [
+    "Gemma-2-9B-IT",
+    "Qwen2.5-32B",
+    "DeepSeek-R1-Distill-Qwen-32B",
+    "Qwen3-8B",
+    "GPT-4.1",
+    "GPT-5-mini",
+    "Claude Sonnet"
+  ],
+  "frameworks_used": [
+    "vLLM"
+  ],
+  "loss_functions": [
+    "CrossEntropy loss",
+    "CE_loss",
+    "KL_div_loss"
+  ],
+  "cv_strategy": "Fold-based training with Out-Of-Fold (OOF) predictions used for distillation and filtering external data.",
+  "ensembling": "Combined multiple pipelines with different models and prompting strategies; dynamic weight adjustment was attempted but abandoned; post-processing included adding True/False labels and leveraging vLLM for inference.",
+  "insights": [
+    "Synthetic data effectiveness is highly model-dependent.",
+    "Prompt engineering and candidate filtering are crucial for efficiency.",
+    "Combining distillation with label smoothing effectively handles noisy data.",
+    "Pre-identifying correct answers eliminates one source of error."
+  ],
+  "critical_findings": [
+    "Using existing tokens as correct answers instead of special tokens yielded significant CV/LB gains.",
+    "Selecting a slightly later checkpoint rather than the lowest eval_loss checkpoint improved performance.",
+    "Synthetic data improvements were specific to Gemma2-9B-it + OOF predictions, showing model-specific adaptation needs."
+  ],
+  "what_did_not_work": [
+    "Dynamic ensemble weight adjustment per question failed due to computational constraints and insufficient data.",
+    "Adding small/lightweight models to the ensemble provided no improvement."
+  ],
+  "github_repos": [],
+  "papers": [],
+  "other_solution_refs": [
+    {
+      "description": "Synthetic dataset hosted by team member",
+      "url": "https://www.kaggle.com/datasets/isakatsuyoshi/map-synthetic-dataset"
+    },
+    {
+      "description": "Baseline notebook used for synthetic data evaluation",
+      "url": "https://www.kaggle.com/code/cdeotte/gemma2-9b-it-cv-0-945"
+    },
+    {
+      "description": "Discussion thread referenced for pre-identifying correct answers",
+      "url": "https://www.kaggle.com/competitions/map-charting-student-math-misunderstandings/discussion/589400"
+    },
+    {
+      "description": "Author's public notebook containing training code",
+      "url": "https://www.kaggle.com/code/sinchir0/lb-0-942-train-fullft-qwen3-8b-by-sfttrainer"
+    }
+  ],
+  "source_url": "https://www.kaggle.com/competitions/map-charting-student-math-misunderstandings/discussion/612134"
+}

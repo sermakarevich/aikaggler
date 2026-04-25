@@ -1,0 +1,54 @@
+{
+  "summary": "The author presents a preliminary solution that replaces traditional multiple sequence alignment (MSA) with a large RNA language model to capture evolutionary information. This is combined with a smaller downstream structure prediction model, initially leveraging five out of one hundred available structure models. The writeup outlines future experimental directions, including energy-based scoring for model selection, clustering, converting (N,C,P) frames and distance maps to a C1 backbone, and applying quantization/fp16 to extend sequence length to 800.",
+  "extensive_summary": "## Approach & Architecture\nThe baseline replaces standard MSA with a large RNA language model to model evolutionary information. This is paired with a smaller downstream structure prediction model. For the current leaderboard score, the author uses five out of 100 available smaller structure models, explicitly noting that incorporating more structure models improves performance.\n\n## Experimental Plans\nFuture iterations aim to implement energy scoring to select the best model outputs, potentially followed by clustering. The author also plans to train a model to convert (N,C,P) frames and distance maps into a C1 backbone. To handle longer sequences, quantization and fp16 precision are planned to extend the model length to 800.\n\n## Hardware & Resources\nExperiments were run on an HP Z8 Fury-G5 Data Science Workstation equipped with 2x Nvidia Ada A6000 GPUs (48 GB VRAM each), an Intel Xeon w7-3455 CPU (24 cores/48 threads), and 256 GB RAM.",
+  "rank": null,
+  "competition_flow": "Sequence data is processed through an RNA language model for evolutionary features, passed to a downstream structure prediction model, and will be refined via energy scoring and clustering before submission.",
+  "data_reading": [],
+  "data_processing": [],
+  "features_engineering": [],
+  "models": [
+    "RNA language model",
+    "structure downstream model",
+    "Drfold2"
+  ],
+  "frameworks_used": [],
+  "loss_functions": [],
+  "cv_strategy": "",
+  "ensembling": "",
+  "insights": [
+    "Using an RNA language model instead of MSA effectively captures evolutionary information.",
+    "Incorporating more available structure models consistently improves the leaderboard score."
+  ],
+  "critical_findings": [],
+  "what_did_not_work": [],
+  "github_repos": [
+    {
+      "url": "https://github.com/bytedance/Protenix",
+      "role": "library"
+    },
+    {
+      "url": "https://github.com/Dao-AILab/flash-attention",
+      "role": "library"
+    },
+    {
+      "url": "https://github.com/hypnopump/MiniFold",
+      "role": "library"
+    },
+    {
+      "url": "https://github.com/facebookresearch/schedule_free",
+      "role": "library"
+    },
+    {
+      "url": "https://github.com/Tan-group/FebRNA",
+      "role": "library"
+    }
+  ],
+  "papers": [],
+  "other_solution_refs": [
+    {
+      "description": "Baseline kernel referenced for comparison",
+      "url": "https://www.kaggle.com/code/hengck23/lb0-286-simple-drfold-no-msa"
+    }
+  ],
+  "source_url": "https://www.kaggle.com/competitions/stanford-rna-3d-folding/discussion/566906"
+}

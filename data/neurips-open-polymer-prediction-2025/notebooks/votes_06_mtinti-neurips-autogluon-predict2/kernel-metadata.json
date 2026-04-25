@@ -1,0 +1,38 @@
+{
+  "id": "mtinti/neurips-autogluon-predict2",
+  "id_no": 86202089,
+  "title": "NeurIPS_AutoGluon_predict2",
+  "code_file": "neurips-autogluon-predict2.ipynb",
+  "language": "python",
+  "kernel_type": "notebook",
+  "is_private": false,
+  "enable_gpu": false,
+  "enable_tpu": false,
+  "enable_internet": false,
+  "keywords": [],
+  "dataset_sources": [
+    "senkin13/rdkit-2025-3-3-cp311",
+    "dmitryuarov/smiles-extra-data",
+    "minatoyukinaxlisa/tc-smiles"
+  ],
+  "kernel_sources": [
+    "mtinti/download-molformer",
+    "",
+    "",
+    "mtinti/autogluon-package",
+    "mtinti/scikit-package",
+    "",
+    "",
+    "",
+    "",
+    ""
+  ],
+  "competition_sources": [
+    "neurips-open-polymer-prediction-2025"
+  ],
+  "model_sources": [
+    "michaelrowen/c/Transformers/default/1"
+  ],
+  "docker_image": "gcr.io/kaggle-images/python@sha256:3223337db7786b068bfeac3a1b741bf0d572a4bf309735b45692de873b7758db",
+  "machine_shape": "None"
+}

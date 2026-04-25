@@ -1,0 +1,38 @@
+{
+  "summary": "This notebook demonstrates a complete supervised fine-tuning pipeline for the Gemma-3-1B model on the GSM8K math dataset using JAX and TPU acceleration. It covers data loading, strict prompt formatting with XML-style reasoning tags, tokenization via Grain, and full parameter training with Optax optimizers. The author validates the setup by running inference with a custom sampler and evaluates performance using a majority voting strategy over multiple generated reasoning paths. Readers should learn how to efficiently adapt open-weight LLMs for structured reasoning tasks on TPUs, handle dataset-specific formatting quirks, and implement robust evaluation pipelines.",
+  "purpose": "training",
+  "competition_flow": "Loads GSM8K math problems, formats them with strict reasoning/answer tags, fully fine-tunes a Gemma-3-1B model on TPU v5e-8, and evaluates the output using a majority voting inference pipeline.",
+  "data_reading": [
+    "Loaded via `datasets.load_dataset(\"openai/gsm8k\", \"main\", split=\"train\"/\"test\")`."
+  ],
+  "data_processing": [
+    "Cleans GSM8K calculation annotations by replacing `<<...>>` with parentheses, extracts reasoning and answer components, formats data into strict XML-style prompts, tokenizes with a custom tokenizer, applies padding/truncation to a maximum sequence length of 2048, and creates loss masks to ignore prompts and padding during training."
+  ],
+  "features_engineering": [],
+  "models": [
+    "Gemma-3-1B"
+  ],
+  "frameworks_used": [
+    "jax",
+    "tunix",
+    "grain",
+    "optax",
+    "flax.nnx",
+    "orbax.checkpoint",
+    "datasets",
+    "kagglehub"
+  ],
+  "loss_functions": [],
+  "cv_strategy": "",
+  "ensembling": "Evaluates predictions using majority voting over multiple generated reasoning paths (configurable via `VOTE_SAMPLES`) with temperature 0.7 and top_k=40 to encourage diverse outputs, followed by robust answer extraction and normalization.",
+  "insights": [
+    "Strict system prompts and XML-style tags significantly improve model compliance and output parsing reliability.",
+    "Replacing GSM8K's `<<...>>` calculation artifacts with parentheses prevents tokenization and formatting issues during supervised fine-tuning.",
+    "JAX compilation overhead causes a slow first training step, but TPU execution becomes highly efficient afterward.",
+    "Majority voting with moderate temperature and top_k sampling effectively boosts accuracy by aggregating diverse reasoning paths."
+  ],
+  "critical_findings": [],
+  "what_did_not_work": [],
+  "source_url": "https://www.kaggle.com/code/marculera/supervised-fine-tuning-full",
+  "votes": 89
+}

@@ -1,0 +1,44 @@
+{
+  "summary": "The author achieved 15th place by implementing an online training approach that retracts models every 7 days during inference using newly available labeled data. This dynamic strategy adapts to non-stationary financial markets by combining three deep learning architectures (Attention DNN, Residual DNN, AutoEncoder) in a performance-weighted ensemble. The pipeline relies heavily on advanced financial feature engineering (2,658 features covering momentum, volatility, microstructure, etc.) and a hybrid ranking loss function to optimize for both magnitude accuracy and Spearman correlation.",
+  "extensive_summary": "## Online Training Strategy\nThe core innovation replaces static model training with a dynamic online approach. During inference, newly available labeled data accumulates in a buffer, and every 7 days a new set of models is trained, using the most recent 7 samples as a validation set. This continuous retraining allows the system to adapt to non-stationary financial markets and evolving commodity correlations.\n\n## Model Architecture & Ensemble Design\nThe solution employs a flexible strategy pattern to combine three complementary deep learning architectures: an Attention DNN (1024 \u2192 768 \u2192 512 \u2192 384 \u2192 256 \u2192 424 outputs) that dynamically focuses on important features, a Residual DNN with skip connections for stable gradient flow, and an AutoEncoder that learns a 128-dim latent space for multi-task reconstruction and prediction. Rather than uniform averaging, the ensemble uses performance-based weighting computed from rank-based scoring on both validation and test sets, balancing performance (\u03b1=0.1) and timeliness (1-\u03b1=0.9).\n\n## Feature Engineering & Selection\nThe pipeline generates 2,658 advanced financial features spanning momentum indicators (ROC, RSI, Williams %R, CCI), volatility metrics (historical, Garman-Klass, semi-volatility, jump variation), moving averages/trends (SMA/EMA, MACD, Bollinger Bands), market microstructure (volume momentum, Amihud illiquidity), cross-market dynamics (rolling correlations, spread features, half-life), regime detection (ADX, Hurst exponent), and statistical moments. These are reduced to the top 800 features using Mutual Information Regression and RobustScaler to handle financial outliers.\n\n## Training & Validation\nModels are trained using CombinatorialPurgedGroupKFold (5 splits, 1 test split) with purging and embargo to prevent temporal data leakage. The optimization objective is a custom hybrid ranking loss: `0.2 * MSE + 0.8 * (1 - Spearman_Correlation)`, heavily weighting ranking accuracy to match the competition metric. Training is stabilized with EarlyStopping, ReduceLROnPlateau, gradient clipping, and batch normalization.\n\n## Limitations & Lessons\nA key limitation was using only the first target for feature selection, which constrained multi-target optimization. Additionally, an alternative lightweight target-specific feature engineering approach initially outperformed the baseline but failed during inference due to memory constraints and infrastructure fragility, underscoring that robustness and checkpointing are critical for production adaptive models.",
+  "rank": 15,
+  "competition_flow": "Raw commodity/market data is processed into 2,658 financial features, fed into a dynamic ensemble of three DNNs trained via a hybrid ranking loss, with models retrained every 7 days during inference using accumulating labeled data and weighted by performance-based rank scoring.",
+  "data_reading": [],
+  "data_processing": [
+    "RobustScaler normalization for outlier handling",
+    "Feature selection via Mutual Information Regression to reduce 2,658 features to top 800",
+    "No explicit train-time augmentations or TTA mentioned"
+  ],
+  "features_engineering": [
+    "2,658 advanced financial features including momentum indicators (ROC, RSI, Williams %R, CCI), volatility metrics (historical, Garman-Klass, semi-volatility, jump variation), moving averages/trends (SMA/EMA, MACD, Bollinger Bands), market microstructure (volume momentum, Amihud illiquidity), cross-market dynamics (rolling correlations, spread features, half-life), regime detection (ADX, Hurst exponent), and statistical moments (skewness, kurtosis, z-scores)"
+  ],
+  "models": [
+    "Attention DNN",
+    "Residual DNN",
+    "AutoEncoder"
+  ],
+  "frameworks_used": [],
+  "loss_functions": [
+    "Hybrid ranking loss: 0.2 * MSE + 0.8 * (1 - Spearman_Correlation)"
+  ],
+  "cv_strategy": "CombinatorialPurgedGroupKFold (5 splits, 1 test split) with purging and embargo to prevent temporal data leakage and account for autocorrelation.",
+  "ensembling": "Performance-based dynamic weighting using rank-based scoring on validation and test sets, balancing performance (\u03b1=0.1) and timeliness (1-\u03b1=0.9) to combine predictions from the three DNN architectures.",
+  "insights": [
+    "Continuous retraining every 7 days effectively adapts to non-stationary financial market regimes.",
+    "Combining diverse architectures (attention, residual, autoencoder) creates a more robust ensemble than relying on a single model type.",
+    "Comprehensive financial feature engineering spanning multiple domains provides significantly richer signal than raw price data alone.",
+    "RobustScaler is essential for handling the heavy outliers typical in commodity market data."
+  ],
+  "critical_findings": [
+    "The score improved dramatically from Round 2 (0.110) to Round 3 (0.445) specifically because the online training strategy successfully adapted to the final test period's market dynamics.",
+    "A target-specific feature engineering approach initially outperformed the baseline in Round 1 but failed completely in Round 3 due to memory constraints and infrastructure fragility, proving that robustness often outweighs raw initial performance in production inference."
+  ],
+  "what_did_not_work": [
+    "Feature selection using only the first target (target_0) for scoring and applying it to all 424 targets limited potential performance gains.",
+    "An alternative lightweight target-specific feature engineering approach initially scored higher but failed during inference due to memory limits and lack of robust checkpointing."
+  ],
+  "github_repos": [],
+  "papers": [],
+  "other_solution_refs": [],
+  "source_url": "https://www.kaggle.com/competitions/mitsui-commodity-prediction-challenge/discussion/668673"
+}

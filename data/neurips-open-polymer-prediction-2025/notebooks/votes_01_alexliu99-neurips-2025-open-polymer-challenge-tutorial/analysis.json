@@ -1,0 +1,44 @@
+{
+  "summary": "This tutorial demonstrates three baseline approaches for predicting polymer properties using the Open Polymer Challenge dataset. It compares modeling polymers as sequential SMILES strings with an LSTM, as fixed-length Morgan fingerprints with a Random Forest, and as molecular graphs with a Graph Neural Network. The notebook highlights how different molecular representations dictate distinct preprocessing pipelines and architectural choices. It also explicitly warns that the development metric (MSE) differs from the competition metric (weighted MAE), emphasizing the need to align optimization strategies with the official leaderboard. Readers should learn how to rapidly prototype and compare molecular property prediction pipelines using standard cheminformatics and deep learning tools.",
+  "purpose": "tutorial",
+  "competition_flow": "Loads polymer SMILES and target properties from CSV files, splits them into deterministic train/validation/test sets, trains three baseline models (LSTM, Random Forest, GNN) using different molecular representations, and averages the LSTM and GNN predictions to generate a CSV submission file.",
+  "data_reading": [
+    "CSV files loaded via pandas.read_csv; SMILES strings extracted as Python lists, and target properties ('Tg', 'FFV', 'Tc', 'Density', 'Rg') extracted as numpy arrays."
+  ],
+  "data_processing": [
+    "Deterministic holdout split (60% train, 20% validation, 20% test) using sklearn's train_test_split with random_state=42; NaN values in targets are masked during metric computation rather than imputed."
+  ],
+  "features_engineering": [
+    "Morgan fingerprints (radius=2, 1024 bits) extracted from SMILES strings using RDKit's AllChem.GetMorganFingerprintAsBitVect for the Random Forest baseline."
+  ],
+  "models": [
+    "LSTM",
+    "Random Forest",
+    "GNN"
+  ],
+  "frameworks_used": [
+    "pandas",
+    "numpy",
+    "scikit-learn",
+    "rdkit",
+    "torch-molecule",
+    "tqdm"
+  ],
+  "loss_functions": [
+    "Mean Squared Error (MSE) used for development evaluation; notebook notes the competition uses weighted MAE."
+  ],
+  "cv_strategy": "Single deterministic holdout split (60% train, 20% validation, 20% test) via sklearn's train_test_split.",
+  "ensembling": "Averages the predictions from the LSTM and GNN models before saving to the submission CSV.",
+  "insights": [
+    "Different molecular representations (sequence, vector, graph) dictate distinct preprocessing pipelines and model architectures.",
+    "Fixed-length fingerprints simplify modeling but discard topological information preserved by sequence and graph models.",
+    "Optimizing for the development metric (MSE) may not align with leaderboard performance since the competition uses weighted MAE.",
+    "Automated hyperparameter search via torch-molecule's autofit provides a rapid baseline without manual tuning."
+  ],
+  "critical_findings": [
+    "The development loss function (MSE) differs from the official competition metric (weighted MAE), which could mislead model selection if ignored."
+  ],
+  "what_did_not_work": [],
+  "source_url": "https://www.kaggle.com/code/alexliu99/neurips-2025-open-polymer-challenge-tutorial",
+  "votes": 987
+}

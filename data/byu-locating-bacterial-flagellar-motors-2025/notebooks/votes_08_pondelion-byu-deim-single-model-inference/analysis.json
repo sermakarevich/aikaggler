@@ -1,0 +1,45 @@
+{
+  "summary": "This notebook demonstrates a complete inference pipeline for the BYU locating bacterial flagellar motors competition using a single DEIM model. It processes 3D tomography data by slicing it into 3-channel windows along the z-axis, running batched inference, and collecting raw detections. The core contribution lies in a custom post-processing routine that clusters nearby detections via Euclidean distance and connected components, then aggregates them using a score-weighted mean. The author shows how to handle edge cases like tomos with no detected motors and format the final coordinates for submission. Readers should take away how spatial clustering and coordinate aggregation can refine raw detector outputs without retraining.",
+  "purpose": "inference",
+  "competition_flow": "Loads test tomography slices, resizes them to 384x384, runs a sliding-window inference with a single DEIM model, clusters and aggregates detections using distance thresholds and score-weighted means, and exports a complete submission CSV.",
+  "data_reading": [
+    "Reads image slices from nested directories per tomo_id, sorts them by numerical index in the filename, loads them via PIL or torchvision.io, and stacks them into (n_frames, h, w) numpy arrays."
+  ],
+  "data_processing": [
+    "Resizes all images to 384x384, normalizes pixel values to float [0,1] during inference, optionally applies a 21-frame rolling mean along the z-axis (disabled by default), slices 3-channel windows along the z-axis for batch processing, and scales bounding box coordinates back to original image dimensions."
+  ],
+  "features_engineering": [
+    ""
+  ],
+  "models": [
+    "DEIM"
+  ],
+  "frameworks_used": [
+    "pytorch",
+    "torchvision",
+    "numpy",
+    "pandas",
+    "scipy",
+    "networkx",
+    "PIL",
+    "cv2"
+  ],
+  "loss_functions": [
+    ""
+  ],
+  "cv_strategy": "",
+  "ensembling": "Single model inference with post-processing: detections are filtered by score, clustered via Euclidean distance threshold and connected components, aggregated using score-weighted mean coordinates, and the highest-scoring cluster per tomo is selected as the final prediction.",
+  "insights": [
+    "Sliding-window inference along the z-axis with 3-channel slices effectively adapts a 2D detector for 3D tomography data.",
+    "Post-processing aggregation using connected components and score-weighted mean coordinates significantly refines raw detection outputs.",
+    "Explicitly handling tomos with zero detections by assigning -1 coordinates ensures complete and valid submission coverage."
+  ],
+  "critical_findings": [
+    "The reported COCO metrics show perfect recall at IoU=0.50 (1.000) but unavailable scores for small and large objects (-1.000), suggesting potential ground truth gaps or class imbalance for extreme sizes."
+  ],
+  "what_did_not_work": [
+    ""
+  ],
+  "source_url": "https://www.kaggle.com/code/pondelion/byu-deim-single-model-inference",
+  "votes": 342
+}

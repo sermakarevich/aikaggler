@@ -1,0 +1,50 @@
+{
+  "summary": "This notebook provides a structured tutorial for the March Machine Learning Mania competition, demonstrating how to transform raw box score and seed data into predictive features for tournament outcomes. It walks through data normalization (including overtime adjustments), feature engineering across four complexity tiers (seeds, season averages, Elo ratings, and GLM-derived team quality), and trains a gradient-boosted model to predict point differentials. The author emphasizes statistical calibration using splines to convert point predictions into win probabilities and validates the approach via leave-one-season-out cross-validation. Readers should learn how to systematically build domain-specific features, calibrate regression outputs for classification tasks, and benchmark statistical baselines against machine learning models.",
+  "purpose": "tutorial",
+  "competition_flow": "Loads and merges men's/women's box score and seed CSVs, engineers tiered statistical and rating features, trains season-specific XGBoost models via leave-one-season-out CV, calibrates predictions with splines, and generates a tournament win probability submission.",
+  "data_reading": [
+    "Reads MRegularSeasonDetailedResults.csv, MNCAATourneyDetailedResults.csv, MNCAATourneySeeds.csv (and women's equivalents) via pd.read_csv, concatenates them, and filters by season >= 2003."
+  ],
+  "data_processing": [
+    "Adjusts box score stats for overtimes by dividing by (40 + 5 * NumOT) / 40 to normalize accumulation.",
+    "Doubles the dataset by swapping team positions (T1/T2) to create symmetric match features.",
+    "Computes point differentials, win labels, and clips raw predictions to [-30, 30] before calibration."
+  ],
+  "features_engineering": [
+    "Extracts seed numbers and Seed_diff.",
+    "Calculates season-long averages for team and opponent box score stats (Score, FGA, Blk, PF, PointDiff).",
+    "Implements a custom Elo rating system per season.",
+    "Derives team quality scores using statsmodels.GLM with Gaussian family.",
+    "Final feature set includes men_women, seeds, Seed_diff, selected season averages, elo_diff, and diff_quality."
+  ],
+  "models": [
+    "XGBoost (reg:squarederror)"
+  ],
+  "frameworks_used": [
+    "numpy",
+    "pandas",
+    "matplotlib",
+    "seaborn",
+    "xgboost",
+    "scipy",
+    "scikit-learn",
+    "statsmodels"
+  ],
+  "loss_functions": [
+    "reg:squarederror"
+  ],
+  "cv_strategy": "Leave-one-season-out cross-validation",
+  "ensembling": "Averages spline-calibrated win probabilities across season-specific models and clips final probabilities to [0.01, 0.99].",
+  "insights": [
+    "GLM-derived team quality differences outperform raw seed differences in predicting tournament outcomes.",
+    "Calibrating raw point difference predictions with a UnivariateSpline significantly improves Brier score over uncalibrated outputs.",
+    "Team quality rankings from GLM closely align with official tournament seeds, validating the statistical approach."
+  ],
+  "critical_findings": [
+    "Box score statistics accumulate differently during overtimes, requiring a normalization factor to prevent bias.",
+    "Many intermediate box score features (e.g., FGM, FGA, rebounds, assists) were ultimately excluded from the final model, suggesting they add little predictive value over simpler aggregates like point differential and shooting attempts."
+  ],
+  "what_did_not_work": [],
+  "source_url": "https://www.kaggle.com/code/raddar/vilnius-ncaa",
+  "votes": 311
+}

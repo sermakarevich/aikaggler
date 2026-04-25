@@ -1,0 +1,48 @@
+{
+  "summary": "The author achieved a Public LB 12th place in the Jane Street competition by pivoting from GBDT baselines to neural networks after weeks of negative R2 scores. They designed two architectures combining MLP, GRU, and Transformer (symbol-wise attention) layers, ensemble feature maps to create four base models, and used all responders as auxiliary targets to boost performance. The solution heavily relies on a robust online learning pipeline for daily model updates and validates using a 120-day time-based holdout with multiple training window lengths.",
+  "extensive_summary": "## Pipeline & Online Learning\nThe author emphasizes that constructing a robust inference pipeline is paramount, particularly for online learning in this competition. They initially built a synthetic test set to debug the pipeline, which proved highly valuable for the community. The final solution implements a fast online learning mechanism that updates the model daily, taking roughly 0.5\u20130.7 seconds per model per day. While updating every 120 or 200 days could theoretically improve scores, the author avoided it to prevent pipeline complexity and stay within the 1-minute inference limit.\n\n## Model Architecture & Training\nAfter LightGBM and XGBoost baselines failed to improve and yielded negative R2 scores for weeks, the author pivoted to neural networks. They experimented extensively with architectures like iTransformers, patchTST, and Convnet before settling on two primary architectures built from MLP, GRU, and Transformer (symbol-wise attention) components. Under each architecture, feature maps were ensemble in two distinct ways, yielding four base models. Training was conducted across three window lengths (978, 800, and 600 days), with only the 978 and 800-day models making the final cut.\n\n## Data & Features\nThe dataset presents significant challenges, including fat-tailed distributions, non-stationary time-series, and noisy signals. The author relied heavily on EDA and visualization pipelines to build an intuitive understanding of the data. For features, they used 79 raw columns (excluding `9, 10, 11`, `time_id`, and `weights`), filled missing values with zeros, and engineered the mean and standard deviation of lagged responders. A key architectural choice was using all responders as targets rather than relying solely on Responder_6, which significantly boosted performance.\n\n## Validation & Ensembling\nValidation was strictly time-based, holding out the last 120 days for both offline and online evaluation. The final ensemble consists of 8 models derived from the two architectures and two training window lengths. The author notes that different normalization methods and loss functions were experimented with during the trial-and-error phase, though specific choices for the final model are not detailed. The solution underscores the importance of community knowledge sharing and practical, hands-on experimentation over theoretical model hunting.",
+  "rank": 12,
+  "competition_flow": "Raw data is loaded with 79 features (excluding specific columns), missing values are zero-filled, and all responders are used as targets; models are trained on sliding windows (978/800 days), validated on the last 120 days, and updated daily via a fast online learning pipeline before final ensembling of 8 models.",
+  "data_reading": [],
+  "data_processing": [
+    "Missing values filled with zeros",
+    "Lagged responders' mean and standard deviation computed",
+    "Multiple normalization methods experimented with"
+  ],
+  "features_engineering": [
+    "79 raw features excluding columns 9, 10, 11, time_id, and weights",
+    "Mean and standard deviation of lagged responders computed",
+    "All responders used as auxiliary targets"
+  ],
+  "models": [
+    "MLP",
+    "GRU",
+    "Transformer (symbol-wise attention)",
+    "iTransformers",
+    "patchTST",
+    "Convnet"
+  ],
+  "frameworks_used": [],
+  "loss_functions": [],
+  "cv_strategy": "Time-based holdout on the last 120 days; training windows of 978, 800, and 600 days tested.",
+  "ensembling": "Final submission combines 8 models (two architectures with feature maps ensemble in two ways each) trained on 978 and 800 day windows.",
+  "insights": [
+    "Building a robust inference pipeline with online learning is crucial for this competition.",
+    "Neural networks (MLP, GRU, Transformer) outperformed GBDT baselines (LightGBM, XGBoost) for this dataset.",
+    "Using all responders as auxiliary targets significantly boosts both CV and LB scores.",
+    "Thorough EDA and visualization pipelines are essential for understanding fat-tailed, non-stationary time-series data."
+  ],
+  "critical_findings": [
+    "Switching from GBDT to neural networks early was necessary because GBDT performance plateaued and negative R2 scores persisted for weeks.",
+    "Using auxiliary targets (all responders) instead of only Responder_6 greatly improved both CV and LB performance."
+  ],
+  "what_did_not_work": [
+    "GBDT models (LightGBM, XGBoost) could not be effectively improved.",
+    "iTransformers, patchTST, and Convnet architectures were tried but not used in the final solution.",
+    "Online training with every 120 or 200 days was considered but skipped due to pipeline complexity and the 1-minute limit."
+  ],
+  "github_repos": [],
+  "papers": [],
+  "other_solution_refs": [],
+  "source_url": "https://www.kaggle.com/competitions/jane-street-real-time-market-data-forecasting/discussion/556548"
+}

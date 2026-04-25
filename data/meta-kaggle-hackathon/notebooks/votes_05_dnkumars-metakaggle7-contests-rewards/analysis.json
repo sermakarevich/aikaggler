@@ -1,0 +1,46 @@
+{
+  "summary": "This notebook performs a comprehensive exploratory analysis of Kaggle's competition ecosystem using the Meta-Kaggle dataset. It tracks historical trends in competition hosting, reward structures, and participant behavior over time. By parsing and aggregating metadata on hosts, prize pools, submission deadlines, and team formations, it visualizes how the platform's competitive landscape has evolved. Readers should understand how host segments influence prize distribution, how submission patterns shift around deadlines, and how team collaboration dynamics have changed annually. The work demonstrates effective use of Polars and Pandas for large-scale tabular data manipulation alongside interactive Plotly visualizations for temporal trend analysis.",
+  "purpose": "eda",
+  "competition_flow": "Downloads the Meta-Kaggle dataset via kagglehub, parses and filters competition, submission, and team metadata using Polars and Pandas, aggregates temporal trends, and generates interactive HTML visualizations of host segments, reward structures, submission behavior, and team formation patterns.",
+  "data_reading": [
+    "Loads CSV files (Competitions.csv, Submissions.csv, Teams.csv, TeamMemberships.csv) from the local Meta-Kaggle dataset path using polars.read_csv and pandas.read_csv.",
+    "Parses dates using str.strptime in Polars and pd.to_datetime in Pandas with %m/%d/%Y or %m/%d/%Y %H:%M:%S formats."
+  ],
+  "data_processing": [
+    "Filters null/empty strings in categorical columns (HostSegmentTitle, RewardType).",
+    "Parses and extracts year, month, and week from raw date columns, handling missing values with strict=False and errors='coerce'.",
+    "Groups and aggregates counts/sums by year and host, pivots categorical host segments into time-series columns, and converts Polars DataFrames to Pandas for visualization.",
+    "Performs memory cleanup using gc.collect() and sys.getsizeof to monitor DataFrame sizes."
+  ],
+  "features_engineering": [
+    "Extracts temporal features (year, month, week) from raw date strings.",
+    "Creates aggregated metrics (total USD rewards per year, submission counts per month/week, average team size per year).",
+    "Pivots categorical host segments into time-series columns for aligned trend analysis."
+  ],
+  "models": [],
+  "frameworks_used": [
+    "kagglehub",
+    "polars",
+    "pandas",
+    "numpy",
+    "matplotlib",
+    "seaborn",
+    "plotly.express",
+    "plotly.graph_objs",
+    "plotly.subplots",
+    "IPython.display"
+  ],
+  "loss_functions": [],
+  "cv_strategy": "",
+  "ensembling": "",
+  "insights": [
+    "Competition hosting and prize distribution are heavily concentrated among specific host segments over time.",
+    "USD-awarded competitions show distinct yearly trends that correlate with host segment activity.",
+    "Submission volume exhibits clear monthly and weekly patterns, with notable differences between pre- and post-deadline behavior.",
+    "Team formation and average team size have evolved consistently year-over-year, reflecting changing collaboration norms on the platform."
+  ],
+  "critical_findings": [],
+  "what_did_not_work": [],
+  "source_url": "https://www.kaggle.com/code/dnkumars/metakaggle7-contests-rewards",
+  "votes": 28
+}

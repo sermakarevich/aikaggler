@@ -1,0 +1,48 @@
+{
+  "summary": "The author achieved a public leaderboard score of 0.872 by treating mel spectrograms as images rather than processing raw audio waves directly. Key strategies included optimizing melspectrogram parameters, applying image-based augmentations (RandAug, RandomErasing, Time/Frequency Masking, and Mixup), and using FocalBCE loss. The pipeline leveraged EfficientNet models with a custom middle-feature aggregation strategy and relied on public LB tracking instead of k-fold CV, culminating in an ensemble of multiple tuned models with post-processing.",
+  "extensive_summary": "## Data Representation & Processing\nRaw audio wave augmentation or processing was found to hurt performance. Instead, the author converted melspectrograms to images, applied normalization, and treated them as standard image inputs. Image-style augmentations were applied: RandAug, RandomErasing, Time and Frequency Masking, and Mixup (probability 1.0). CSA recordings were filtered/processed by isolating human sound, and training was conducted on random 5-second segments rather than the first 5 seconds.\n\n## Model Architecture & Training Dynamics\nEfficientNet models were used with a critical architectural tweak: combining middle features and passing them into the global pooling layer outperformed the default `conv_head` in `timm`. FocalBCE was selected as the loss function after standard BCE with various weight types underperformed. Because k-fold cross-validation is invalid for this competition, the author emphasized closely tracking batch size, iteration count, warmup schedules, and learning rate, as simple models overfit extremely quickly.\n\n## Validation & Ensembling\nMelspectrogram parameters were heavily tuned through visual exploration, proving highly impactful on scores. The author also recommended visualizing model attentions (CAM) on training soundscapes to diagnose feature focus. The final submission was built by ensembling models that individually scored 0.854, 0.856, 0.858, and 0.859, combined with post-processing techniques referenced from a previous public notebook to reach the final 0.872 public LB score.",
+  "rank": null,
+  "competition_flow": "Convert raw audio waves to mel spectrograms, treat them as normalized images, apply image-based augmentations and human-sound filtering, train EfficientNet models with FocalBCE loss while monitoring the Public Leaderboard for validation, and ensemble multiple tuned models with post-processing to achieve a 0.872 score.",
+  "data_reading": [],
+  "data_processing": [
+    "Convert melspectrograms to images and apply normalization",
+    "Apply RandAug, RandomErasing, Time and Frequency Masking, and Mixup (probability 1.0)",
+    "Filter/Process CSA recordings by isolating human sound",
+    "Train on random 5-second segments instead of the first 5 seconds"
+  ],
+  "features_engineering": [],
+  "models": [
+    "EfficientNet"
+  ],
+  "frameworks_used": [
+    "timm"
+  ],
+  "loss_functions": [
+    "FocalBCE"
+  ],
+  "cv_strategy": "Public Leaderboard validation (explicitly noted that k-fold cross-validation is invalid for this competition's validation scheme).",
+  "ensembling": "Combined models that achieved 0.854, 0.856, 0.858, and 0.859 scores to reach a final public LB score of 0.872, along with post-processing steps referenced from a previous notebook.",
+  "insights": [
+    "Treating mel spectrograms as images rather than raw audio waves significantly improves performance.",
+    "Melspectrogram parameter tuning is highly impactful and should be explored visually.",
+    "Combining middle features and passing them into the global pooling layer in EfficientNet models outperforms standard convolutional heads.",
+    "Visualizing model attentions (CAM) on training soundscapes helps diagnose what the model is learning."
+  ],
+  "critical_findings": [
+    "Applying augmentations or processing directly on raw audio waves hurts model performance.",
+    "Simple models overfit extremely quickly, making public LB tracking essential since k-fold cross-validation is invalid for this competition's validation scheme.",
+    "Training on random 5-second audio segments yields better results than using the first 5 seconds."
+  ],
+  "what_did_not_work": [
+    "Standard BCE with various weight types underperformed compared to FocalBCE, and using the first 5 seconds of audio segments was less effective than random 5-second segments."
+  ],
+  "github_repos": [],
+  "papers": [],
+  "other_solution_refs": [
+    {
+      "description": "Previous public notebook referenced for training pipeline and post-processing details",
+      "url": "https://www.kaggle.com/code/salmanahmedtamu/training-0-65-0-66"
+    }
+  ],
+  "source_url": "https://www.kaggle.com/competitions/birdclef-2025/discussion/573066"
+}

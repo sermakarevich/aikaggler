@@ -1,0 +1,46 @@
+{
+  "summary": "This notebook explores Python package adoption trends within the Kaggle ecosystem by parsing thousands of public kernels over time. It quantifies package usage frequency, tracks ranking shifts from 2016 to 2025, and investigates the relationship between the number of imported libraries and community engagement. Additionally, it applies market basket analysis to uncover common package co-occurrence patterns. Readers should take away how the Kaggle tooling landscape has evolved toward deep learning frameworks like PyTorch and transformers, while noting that simplicity often correlates better with community appreciation than complexity.",
+  "purpose": "eda",
+  "competition_flow": "Loads kernel metadata and source code from the Meta Kaggle dataset, extracts and aggregates Python package imports over time, and visualizes usage trends, popularity shifts, and co-import patterns.",
+  "data_reading": [
+    "Loads Kernels.csv from the kaggle/meta-kaggle dataset via kagglehub with pandas adapter.",
+    "Parses .ipynb files directly from the local filesystem using nbformat and ast to extract import statements."
+  ],
+  "data_processing": [
+    "Samples kernels at fixed intervals (e.g., every 10 days) for scalability.",
+    "Extracts top-level package names from import and from-import statements using AST parsing.",
+    "Aggregates usage counts and ratios across sampled kernels.",
+    "Filters packages with usage ratio > 0.001 for year-over-year comparison.",
+    "Converts package counts to ordered categoricals for visualization."
+  ],
+  "features_engineering": [
+    "usage_ratio (package count / total kernels)",
+    "rank by usage",
+    "growth_ratio between years",
+    "frequent_itemsets via Apriori",
+    "association_rules (lift-based)"
+  ],
+  "models": [],
+  "frameworks_used": [
+    "kagglehub",
+    "pandas",
+    "numpy",
+    "nbformat",
+    "tqdm",
+    "plotnine",
+    "mlxtend"
+  ],
+  "loss_functions": [],
+  "cv_strategy": "",
+  "ensembling": "",
+  "insights": [
+    "The Kaggle tooling landscape has shifted toward deep learning frameworks, with PyTorch and transformers rapidly gaining adoption while Keras and traditional NLP libraries decline.",
+    "There is a negative correlation between the number of imported packages and kernel upvotes, suggesting that simpler notebooks are often more appreciated by the community.",
+    "Package usage follows a long-tail distribution where a small number of libraries dominate adoption while most packages have very low usage ratios.",
+    "Market basket analysis reveals strong, consistent co-import patterns that reflect standard data science and machine learning workflows on Kaggle."
+  ],
+  "critical_findings": [],
+  "what_did_not_work": [],
+  "source_url": "https://www.kaggle.com/code/alijalali4ai/python-package-usage-trends-patterns-on-kaggle",
+  "votes": 23
+}

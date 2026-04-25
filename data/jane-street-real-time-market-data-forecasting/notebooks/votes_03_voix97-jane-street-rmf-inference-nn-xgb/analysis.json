@@ -1,0 +1,43 @@
+{
+  "summary": "This notebook demonstrates an inference pipeline for the Jane Street Real-Time Market Forecasting competition, combining a pre-trained XGBoost model with a 5-fold PyTorch Lightning neural network ensemble. It loads preprocessed validation and test data containing lagged target features, runs predictions through both models, averages their outputs, and clips the final scores to a [-5, 5] range. The author highlights practical deployment considerations, such as handling Polars DataFrames in Kaggle's inference server and managing the 15-minute model loading constraint. Readers should learn how to structure a production-ready inference script that seamlessly integrates tabular and deep learning models for time-series forecasting.",
+  "purpose": "inference",
+  "competition_flow": "Loads preprocessed validation/test data with lagged features, predicts using a pre-trained XGBoost model and an averaged 5-fold PyTorch neural network, combines them with equal weighting, clips outputs, and serves predictions via Kaggle's official inference server.",
+  "data_reading": [
+    "Loads parquet files using Polars (pl.scan_parquet().collect().to_pandas()), converts to pandas for model inference, and handles Polars DataFrames for the final submission format."
+  ],
+  "data_processing": [
+    "Fills missing values using forward fill followed by zero filling; clips final predictions to [-5, 5]; joins lagged features from previous time steps; handles Polars/pandas type conversions for compatibility."
+  ],
+  "features_engineering": [
+    "Uses 79 raw features plus 9 lagged target features (responder_{idx}_lag_1); lag creation handled in external preprocessing notebooks."
+  ],
+  "models": [
+    "XGBoost (XGBRegressor)",
+    "PyTorch Lightning MLP (Sequential with BatchNorm1d, SiLU, Dropout, Linear layers, Tanh output)"
+  ],
+  "frameworks_used": [
+    "pytorch",
+    "pytorch_lightning",
+    "xgboost",
+    "scikit-learn",
+    "polars",
+    "pandas"
+  ],
+  "loss_functions": [
+    "Weighted Mean Squared Error (MSE)"
+  ],
+  "cv_strategy": "5-fold cross-validation (loads nn_{fold}.model checkpoints)",
+  "ensembling": "Averages predictions from 5 neural network folds and combines them with the XGBoost model using equal weights (0.5 * XGB + 0.5 * NN), followed by clipping predictions to [-5, 5].",
+  "insights": [
+    "Combining tree-based and neural network predictions via simple averaging can yield robust performance on financial time-series tasks.",
+    "Handling Polars DataFrames correctly is critical for Kaggle's inference server compatibility.",
+    "Forward-filling missing values before zero-filling stabilizes model inputs.",
+    "Clipping predictions prevents extreme outliers in financial forecasting."
+  ],
+  "critical_findings": [
+    "The official Kaggle inference server requires returning a Polars DataFrame rather than pandas, which caused initial compatibility issues."
+  ],
+  "what_did_not_work": [],
+  "source_url": "https://www.kaggle.com/code/voix97/jane-street-rmf-inference-nn-xgb",
+  "votes": 1222
+}

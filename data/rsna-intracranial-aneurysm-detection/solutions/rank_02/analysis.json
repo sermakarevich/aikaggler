@@ -1,0 +1,85 @@
+{
+  "summary": "The authors achieved 2nd place by implementing a two-stage pipeline designed for simplicity and robustness across highly diverse DICOM data. Stage 1 uses a 2D nnU-Net to extract tri-axial ROIs, while Stage 2 employs a 3D multi-task nnU-Net for joint vessel/aneurysm segmentation and classification. Key innovations include cross-attention pooling, modality classification heads, targeted oversampling for rare classes, and heavy test-time augmentation with label swapping. They also leveraged external TopCoW and TopBrain datasets, manually corrected systematic annotation errors, and identified a public-private distribution shift that guided their final inference strategy.",
+  "extensive_summary": "## Pipeline Overview\nThe solution adopts a two-stage approach optimized for speed and generality. Stage 1 performs fast 2D tri-axial ROI extraction using a 2D nnU-Net segmentation model to crop binary vascular regions. Stage 2 unifies all spacing and modalities by resizing inputs to 224x224x224 and runs a 3D multi-task nnU-Net that jointly performs vessel and aneurysm segmentation alongside classification.\n\n## Key Technical Enhancements\nThe 3D multi-task model incorporates several architectural and training modifications. Cross-attention pooling replaced average pooling to accelerate convergence, and a modality 4-class head was added to stabilize training. To address class imbalance, rare classes were oversampled and assigned higher cross-entropy weights. Data augmentation heavily relied on left-right flips with corresponding label and mask swaps, effectively doubling the dataset size. Inference was optimized for speed by forwarding only the encoder and classification head.\n\n## Data Handling and External Resources\nThe team faced significant preprocessing challenges due to multi-frame DICOMs, deleted test fields, and varying spacings. They switched to pydicom, mapped spacing by slice count, and trained a T2-specific orientation classifier. They manually corrected annotation errors in the provided CSV (e.g., left/right side mix-ups) and iteratively refined aneurysm masks using center-point distance heatmaps. External data from TopCoW and TopBrain challenges was incorporated to improve vessel segmentation masks, though the LargeIA dataset was excluded.\n\n## Training and Inference Strategy\nTraining followed nnU-Net defaults from scratch, using cross-entropy loss with heatmap weighting for aneurysm centers. The final submission utilized a conservative two-fold ensemble run on 2x T4 GPUs, taking ~9 hours. Heavy TTA (8x flips with label swapping) was applied during inference. The authors noted that removing a 0.5 prediction fallback revealed a consistent 3\u20134% gap between public and private leaderboards, indicating a distribution shift in abnormal cases.",
+  "rank": 2,
+  "competition_flow": "Raw multi-frame DICOMs are preprocessed and resized to 224x224x224, passed through a 2D nnU-Net for tri-axial ROI extraction, then fed into a 3D multi-task nnU-Net for joint vessel/aneurysm segmentation and classification, with heavy TTA and a two-fold ensemble producing the final submission.",
+  "data_reading": [
+    "Multi-frame DICOM files parsed via pydicom (after dicom2nifti failed on deleted test fields), with spacing mapped by slice count and T2-specific orientation classification applied."
+  ],
+  "data_processing": [
+    "All volumes resized to 224x224x224",
+    "Spacing and orientation corrected via slice-count mapping and a T2 classifier",
+    "External TopCoW and TopBrain annotations merged to refine vessel masks",
+    "Manual correction of left/right and anatomical label mix-ups",
+    "Left-right flips with label/mask swapping for augmentation",
+    "Rare class oversampling with higher cross-entropy weights",
+    "Heavy TTA (8x flips with label swapping)"
+  ],
+  "features_engineering": [],
+  "models": [
+    "nnU-Net 2D",
+    "nnU-Net 3D"
+  ],
+  "frameworks_used": [
+    "nnU-Net",
+    "pydicom",
+    "dicom2nifti"
+  ],
+  "loss_functions": [
+    "Cross-entropy loss with heatmap weighting for aneurysm centers"
+  ],
+  "cv_strategy": "Multi-fold validation (specifically a two-fold ensemble mentioned in ablation), validated locally on all training cases.",
+  "ensembling": "The final submission uses a conservative two-fold model ensemble combined with heavy test-time augmentation (8x left-right flips with label swapping) to maximize robustness and inference speed.",
+  "insights": [
+    "Stage 1 2D tri-axial ROI extraction significantly improved inference speed.",
+    "Incorporating vessel segmentation clearly enhanced both aneurysm segmentation and classification performance.",
+    "Noise-handling techniques proved more effective on the public dataset than the private one.",
+    "Removing the 0.5 prediction fallback exposed a consistent 3\u20134% public-private leaderboard gap, indicating a distribution shift in abnormal cases."
+  ],
+  "critical_findings": [
+    "The provided RSNA aneurysm annotations contained systematic left/right and anatomical position mix-ups that required manual correction to prevent performance degradation.",
+    "Relying on a 0.5 prediction fallback masked a consistent 3\u20134% performance gap between public and private leaderboards, revealing a distribution shift in abnormal cases.",
+    "Increasing public leaderboard scores consistently translated to private leaderboard improvements, validating the chosen augmentation and annotation refinement strategies."
+  ],
+  "what_did_not_work": [
+    "Using dicom2nifti failed on test sets with deleted fields, necessitating a switch to pydicom.",
+    "Implementing try-except fallbacks to 0.5 predictions reduced robustness and was removed from the final inference pipeline."
+  ],
+  "github_repos": [
+    {
+      "url": "https://github.com/PengchengShi1220/RSNA2025_Intracranial-Aneurysm-Detection",
+      "role": "solution"
+    }
+  ],
+  "papers": [
+    {
+      "title": "nnU-Net: a self-configuring method for deep learning-based biomedical image segmentation",
+      "url": "",
+      "arxiv_id": null
+    },
+    {
+      "title": "Benchmarking the CoW with the TopCoW Challenge: Topology-Aware Anatomical Segmentation of the Circle of Willis for CTA and MRA",
+      "url": "",
+      "arxiv_id": "2312"
+    }
+  ],
+  "other_solution_refs": [
+    {
+      "description": "Inference demo kernel",
+      "url": "https://www.kaggle.com/code/pengchengshi/bravecowcow-2nd-place-inference-demo"
+    },
+    {
+      "description": "Final submission inference kernel",
+      "url": "https://www.kaggle.com/code/pengchengshi/bravecowcow-2nd-place-inference-final-submission"
+    },
+    {
+      "description": "Stage 1 model checkpoint",
+      "url": "https://www.kaggle.com/models/pengchengshi/dataset180_2d_vessel_box_seg_stable"
+    },
+    {
+      "description": "Stage 2 model checkpoint",
+      "url": "https://www.kaggle.com/models/pengchengshi/rsna2025-stage2-models"
+    }
+  ],
+  "source_url": "https://www.kaggle.com/competitions/rsna-intracranial-aneurysm-detection/discussion/611867"
+}

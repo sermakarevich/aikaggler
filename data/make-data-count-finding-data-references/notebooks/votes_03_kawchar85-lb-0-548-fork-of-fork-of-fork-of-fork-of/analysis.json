@@ -1,0 +1,42 @@
+{
+  "summary": "The notebook implements a deterministic text extraction pipeline combined with a constrained LLM classifier to identify and categorize data repository references in academic PDFs. It parses PDFs to plain text, uses regex and string normalization to extract DOIs and accession IDs, and splits documents into body and reference sections. A quantized Qwen2.5-32B model via vLLM classifies DOIs as either data or literature using a custom few-shot prompt and constrained decoding. A final post-filtering step removes false positives by checking DOI prefixes against known publisher patterns and scanning context windows for data-related keywords. The pipeline outputs a structured submission CSV with article IDs, dataset IDs, and their inferred types.",
+  "purpose": "inference",
+  "competition_flow": "PDFs are parsed to text, identifiers are extracted via regex and normalized, a quantized Qwen2.5 model classifies DOIs as data or literature, and a context-aware post-filter refines results before writing a submission CSV.",
+  "data_reading": [
+    "PDFs are loaded from a competition directory using pymupdf and converted to plain text files.",
+    "Ground truth labels are read from a CSV using Polars."
+  ],
+  "data_processing": [
+    "Text is normalized via NFKC, non-ASCII characters are stripped, URLs are standardized, whitespace is collapsed, and strings are lowercased.",
+    "Documents are split into body and reference sections using regex header detection.",
+    "100-character context windows are extracted around each identifier for LLM prompting and post-filtering."
+  ],
+  "features_engineering": [
+    "Regex patterns for DOI and accession ID extraction (e.g., CHEMBL, GEO, PRJ, SRA, PDB prefixes).",
+    "DOI prefix classification rules mapping repository prefixes to data types.",
+    "Publisher prefix lists for false positive filtering.",
+    "Context window keyword matching for data-related terms."
+  ],
+  "models": [
+    "Qwen2.5-32B-Instruct (AWQ)"
+  ],
+  "frameworks_used": [
+    "vllm",
+    "polars",
+    "pymupdf",
+    "logits-processor-zoo",
+    "numpy"
+  ],
+  "loss_functions": [],
+  "cv_strategy": "",
+  "ensembling": "",
+  "insights": [
+    "Constrained decoding with MultipleChoiceLogitsProcessor guarantees valid A/B outputs without post-processing.",
+    "Combining regex extraction with LLM classification effectively reduces false positives from publisher DOIs.",
+    "Context window analysis successfully filters out literature DOIs that lack data-related keywords nearby."
+  ],
+  "critical_findings": [],
+  "what_did_not_work": [],
+  "source_url": "https://www.kaggle.com/code/kawchar85/lb-0-548-fork-of-fork-of-fork-of-fork-of",
+  "votes": 300
+}

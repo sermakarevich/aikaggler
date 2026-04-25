@@ -1,0 +1,39 @@
+{
+  "summary": "This notebook demonstrates an inference-time post-processing technique for a sound event detection task, specifically applying a power transformation to low-confidence class predictions per time chunk, followed by temporal smoothing across adjacent chunks. It shows how manipulating prediction distributions can improve leaderboard scores without retraining models. The author explicitly warns that such aggressive post-processing may overfit to the public leaderboard. Readers should learn how to implement chunk-wise power scaling and temporal averaging for sequential audio predictions.",
+  "purpose": "inference",
+  "competition_flow": "Loads 60-second audio files, splits them into 5-second chunks, extracts log-mel spectrograms, runs them through three pre-trained models, applies chunk-wise power adjustment to low-ranked classes, averages model outputs, applies temporal smoothing across chunks, and saves the final submission CSV.",
+  "data_reading": [
+    "Reads .ogg audio files from a directory using torchaudio.load",
+    "Converts stereo to mono",
+    "Splits each 60s file into 12 non-overlapping 5-second segments"
+  ],
+  "data_processing": [
+    "Extracts log-mel spectrograms using torchaudio.transforms.MelSpectrogram (32kHz sample rate, 128 mel bins, n_fft=1024, hop_length=512)",
+    "Applies per-chunk mean/std normalization",
+    "Stacks processed chunks into a tensor for model input"
+  ],
+  "features_engineering": [],
+  "models": [
+    "eca_nfnet_l0 (via timm)",
+    "Custom TimmSED wrapper with AttBlockV2 attention mechanism"
+  ],
+  "frameworks_used": [
+    "pytorch",
+    "timm",
+    "torchaudio",
+    "numpy",
+    "pandas"
+  ],
+  "loss_functions": [],
+  "cv_strategy": "",
+  "ensembling": "Averages predictions across three pre-trained models, then applies a chunk-wise power transformation to low-confidence class columns and a 0.2/0.6/0.2 temporal smoothing filter across adjacent time chunks.",
+  "insights": [
+    "Power adjustment on low-ranked class predictions can effectively boost leaderboard scores.",
+    "Temporal smoothing across adjacent time chunks improves prediction consistency.",
+    "Aggressive inference-time post-processing risks overfitting to the public leaderboard."
+  ],
+  "critical_findings": [],
+  "what_did_not_work": [],
+  "source_url": "https://www.kaggle.com/code/myso1987/post-processing-with-power-adjustment-for-low-rank",
+  "votes": 354
+}

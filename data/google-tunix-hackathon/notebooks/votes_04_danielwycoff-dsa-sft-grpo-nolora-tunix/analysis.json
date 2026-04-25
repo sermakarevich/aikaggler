@@ -1,0 +1,42 @@
+{
+  "summary": "This notebook demonstrates a two-stage training pipeline for Gemma 3-1B-IT that combines supervised fine-tuning (SFT) and reinforcement learning via GRPO to enforce a structured 'Dual-Stream Architecture' (DSA) for mathematical reasoning. It formats GSM8K data into a strict template requiring explicit Plan, Reasoning, Evidence, and Sanity_check sections inside a <reasoning> block, followed by a final answer in an <answer> block. The SFT stage teaches the model this format, while the GRPO stage uses custom DSA-CAST rewards to align the model toward both structural compliance and mathematical correctness. Readers should learn how to design custom reward functions for format adherence and math accuracy, and how to chain SFT with GRPO for full-parameter alignment without parameter-efficient adapters.",
+  "purpose": "training",
+  "competition_flow": "Loads GSM8K data, formats it into a strict dual-stream template, performs full-parameter supervised fine-tuning on Gemma 3-1B-IT, applies GRPO with custom format and math rewards, and evaluates the final model on GSM8K with majority voting.",
+  "data_reading": [
+    "Loads GSM8K via the Hugging Face datasets library and TensorFlow Datasets, with an optional merge step for a custom CSV containing question, answer, reasoning, and calculation expression columns."
+  ],
+  "data_processing": [
+    "Cleans GSM8K calculation annotations, normalizes whitespace, formats prompts and responses into a strict XML-like template with system instructions, masks loss to only the model response portion, and tokenizes inputs using a custom tokenizer adapter."
+  ],
+  "features_engineering": [],
+  "models": [
+    "Gemma 3-1B-IT"
+  ],
+  "frameworks_used": [
+    "jax",
+    "flax",
+    "optax",
+    "grain",
+    "google-tunix",
+    "kagglehub",
+    "datasets",
+    "tensorflow_datasets",
+    "sympy"
+  ],
+  "loss_functions": [],
+  "cv_strategy": "",
+  "ensembling": "",
+  "insights": [
+    "Structured internal monologues with explicit sections improve model oversight and debuggability.",
+    "Chaining full-parameter SFT with GRPO using format-aware rewards effectively aligns LLMs to verifiable reasoning patterns without LoRA.",
+    "Reward shaping (exact vs. soft) provides a smoother learning signal for structural compliance during reinforcement learning."
+  ],
+  "critical_findings": [
+    "JAX compilation causes the first training step to take 2-5 minutes, after which TPU speeds up significantly.",
+    "Running on CPU instead of TPU will produce incorrect results due to sharding mismatches.",
+    "Majority voting for evaluation requires a temperature > 0 to generate diverse reasoning paths, otherwise it yields identical samples."
+  ],
+  "what_did_not_work": [],
+  "source_url": "https://www.kaggle.com/code/danielwycoff/dsa-sft-grpo-nolora-tunix",
+  "votes": 94
+}

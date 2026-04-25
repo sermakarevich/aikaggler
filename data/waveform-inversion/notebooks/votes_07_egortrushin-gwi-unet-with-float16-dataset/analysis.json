@@ -1,0 +1,38 @@
+{
+  "summary": "This notebook implements a complete training pipeline for a seismic waveform inversion task using a custom U-Net architecture. It highlights a key practical optimization: converting the dataset from float32 to float16 to double disk I/O speed, which effectively allows processing twice as much data per epoch without increasing runtime. The code walks through memory-mapped data loading, model definition with residual connections, training with early stopping and learning rate scheduling, and final inference submission generation. Readers should take away how to efficiently handle large seismic datasets, implement a standard U-Net baseline, and apply straightforward training tricks to stabilize convergence.",
+  "purpose": "training",
+  "competition_flow": "Loads seismic waveform data (converted to float16), trains a U-Net model with residual blocks using L1 loss and early stopping, and generates a CSV submission with predicted velocity models.",
+  "data_reading": [
+    "Reads .npy files using np.load with mmap_mode='r' via custom SeismicDataset and TestDataset classes.",
+    "File paths are managed via pathlib and configured in a YAML config file or environment variables."
+  ],
+  "data_processing": [
+    "Dataset converted externally from float32 to float16 to accelerate disk I/O.",
+    "Inputs are dynamically padded or cropped to 70x70 within the model forward pass.",
+    "Model outputs are scaled and offset by * 1000.0 + 1500.0 to match the target range.",
+    "No explicit data augmentations or normalization are applied."
+  ],
+  "features_engineering": [],
+  "models": [
+    "UNet (custom implementation with ResidualDoubleConv blocks, depth=5, init_features=32)"
+  ],
+  "frameworks_used": [
+    "pytorch",
+    "numpy",
+    "yaml"
+  ],
+  "loss_functions": [
+    "L1Loss"
+  ],
+  "cv_strategy": "Holdout split (every 16th file allocated to validation, rest to training)",
+  "ensembling": "",
+  "insights": [
+    "Converting large seismic datasets from float32 to float16 effectively doubles disk I/O speed, allowing more data to be processed per epoch without increasing runtime.",
+    "Memory-mapped file reading prevents out-of-memory errors when handling large .npy files.",
+    "Combining early stopping with ReduceLROnPlateau provides a robust training schedule for this inversion task."
+  ],
+  "critical_findings": [],
+  "what_did_not_work": [],
+  "source_url": "https://www.kaggle.com/code/egortrushin/gwi-unet-with-float16-dataset",
+  "votes": 226
+}

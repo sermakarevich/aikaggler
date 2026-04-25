@@ -1,0 +1,51 @@
+{
+  "summary": "The author achieved 11th place in a 3D reconstruction competition by designing a multi-stage image matching and structure-from-motion (SfM) pipeline that balances accuracy with computational efficiency. They combined global features (DinoV2/Base) for initial candidate selection with local features (ALIKED) and a lightweight GPU-accelerated distance matrix to efficiently rerank and filter image pairs. The pipeline further prunes redundant matches via graph degree capping to prevent cluster bias, uses NetworkX for rough clustering, and runs COLMAP's incremental mapping multiple times per cluster before merging maps based on shared image counts and reprojection error thresholds.",
+  "extensive_summary": "## Pipeline Overview\nThe solution tackles a 3D reconstruction task through a carefully optimized, multi-stage pipeline designed to mitigate the high computational cost of full local feature matching while preserving reconstruction quality.\n\n## Global-to-Local Matching & Reranking\nCandidate image pairs are initially generated using a global feature extractor (DinoV2/Base) with a top-k selection of 150. To avoid the expense of running LightGlue on all candidates, the author introduces a reranking step that extracts local descriptors using the ALIKED model (resized to 2048px, 2048 keypoints, detection threshold 0.01). All descriptors are L2-normalized, and a GPU-computed Euclidean distance matrix is calculated between each pair. Pairs are filtered by counting matches where the minimum distance per row falls below 1.0; pairs with \u226415 valid matches are discarded.\n\n## Full Matching & Graph Pruning\nThe remaining pairs undergo full image matching using ALIKED (n16, 1536px resize, 8192 keypoints) paired with LightGlue, followed by a post-processing filter requiring >15 matches. A critical pruning step represents matches as a graph where images are nodes and match counts are edges. By capping the degree of each node to 6, the author prevents the incremental mapping process from being biased toward highly connected clusters, thereby improving the chances of reconstructing smaller, isolated structures.\n\n## Clustering & COLMAP Execution\nRough clustering is handled via NetworkX using edges with \u2265150 matches, followed by `nx.weakly_connected_components`. Each cluster undergoes COLMAP's exhaustive matching (via pycolmap 0.6.1 with defaults) and incremental mapping executed four times with specific parameters (`multiple_models=True`, `min_model_size=2`, `max_num_models=15`, `init_num_trials=1000`).\n\n## Map Merging\nMaps are merged if they share at least six images and have a mean reprojection error \u2264 2.0. Merging uses COLMAP's native `model_merger` and `bundle_adjuster` with focal length, principal point, and extra parameter refinement enabled.",
+  "rank": 11,
+  "competition_flow": "Raw images are processed through a global-to-local feature matching pipeline with pruning and clustering, followed by multiple runs of COLMAP's incremental mapping per cluster, and finally merged into a unified 3D model using native COLMAP APIs.",
+  "data_reading": [],
+  "data_processing": [
+    "Resizing images to 2048px for ALIKED reranking and 1536px for full matching",
+    "Extracting 2048/8192 keypoints with a 0.01 detection threshold",
+    "L2-normalizing local descriptors",
+    "Computing GPU-accelerated Euclidean distance matrices for lightweight pair filtering",
+    "Thresholding matches (min distance < 1.0, >15 valid matches)",
+    "Graph-based edge pruning to cap node degree at 6",
+    "Clustering via weakly connected components on edges with \u2265150 matches",
+    "Map merging based on \u22656 shared images and \u22642.0 mean reprojection error"
+  ],
+  "features_engineering": [],
+  "models": [
+    "DinoV2/Base",
+    "ALIKED",
+    "LightGlue",
+    "COLMAP"
+  ],
+  "frameworks_used": [
+    "pycolmap",
+    "NetworkX",
+    "COLMAP native APIs"
+  ],
+  "loss_functions": [],
+  "cv_strategy": "",
+  "ensembling": "",
+  "insights": [
+    "Using a GPU-computed Euclidean distance matrix as a lightweight approximation for LightGlue significantly reduces processing time without sacrificing match quality.",
+    "Pruning image pairs to cap node degree at 6 prevents incremental mapping from being biased toward highly connected clusters, improving reconstruction of smaller structures.",
+    "Running incremental mapping four times per cluster with multiple models enabled increases the likelihood of capturing diverse geometric configurations."
+  ],
+  "critical_findings": [
+    "Match results often concentrate on a handful of images, causing incremental mapping to favor certain clusters; capping edges per node mitigates this bias.",
+    "LightGlue's GNN-based matching is computationally expensive, making the distance-matrix approximation a necessary trade-off for scalability."
+  ],
+  "what_did_not_work": [],
+  "github_repos": [],
+  "papers": [],
+  "other_solution_refs": [
+    {
+      "description": "Author's solution notebook",
+      "url": "https://www.kaggle.com/code/motono0223/imc2025-11th-place-solution"
+    }
+  ],
+  "source_url": "https://www.kaggle.com/competitions/image-matching-challenge-2025/discussion/583097"
+}

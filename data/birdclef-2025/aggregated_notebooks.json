@@ -1,0 +1,112 @@
+{
+  "overall_summary": "The top-voted notebooks primarily focus on end-to-end inference pipelines and baseline training workflows for audio classification, emphasizing the conversion of raw bird recordings into fixed-size mel spectrograms. They heavily leverage pre-trained CNN architectures like EfficientNet, NFNet, and ConvNeXt, combined with test-time augmentation, temporal smoothing, and weighted model blending to boost leaderboard performance. While most entries prioritize inference and post-processing, a few provide foundational training recipes and diagnostic visualization tools for debugging model behavior.",
+  "common_purposes": [
+    "inference",
+    "utility",
+    "baseline"
+  ],
+  "competition_flows": [
+    "End-to-end training pipeline with stratified folds, mel spectrogram conversion, and checkpoint saving",
+    "Inference pipeline converting raw audio to spectrograms, running through pre-trained models with TTA, and formatting submission CSVs",
+    "Weighted model blending with post-processing (power adjustment, temporal smoothing) for leaderboard optimization",
+    "Diagnostic visualization workflow overlaying spectrograms with prediction heatmaps for debugging",
+    "Standalone preprocessing pipeline extracting fixed-length audio segments and outputting normalized image-like tensors for CNNs"
+  ],
+  "data_reading": [
+    "Loading train.csv and taxonomy.csv via pandas",
+    "Loading pre-computed mel spectrograms (.npy) or raw audio (.ogg) via librosa or torchaudio",
+    "Converting stereo audio to mono",
+    "Reading sample submission CSVs for column alignment",
+    "Debug mode subsetting of audio files"
+  ],
+  "data_processing": [
+    "Converting raw audio to mel spectrograms (varying FFT/hop/mel parameters, HTK/power-to-dB scaling)",
+    "Padding/truncating/cropping audio to fixed 5-second windows",
+    "Normalizing spectrograms (min-max, standard deviation, peak amplitude, or [0,1] scaling)",
+    "Resizing spectrograms to 256x256 via OpenCV",
+    "Applying test-time augmentations (horizontal/vertical flips) and training augmentations (time/frequency masking, brightness/contrast)",
+    "Applying mixup regularization during training",
+    "Post-processing predictions (power transformation on low-confidence columns, temporal smoothing across adjacent chunks)",
+    "Handling NaN values and stereo-to-mono conversion"
+  ],
+  "features_engineering": [],
+  "models": [
+    "EfficientNet-B0",
+    "eca_nfnet_l0",
+    "seresnext26t_32x4d",
+    "convnextv2_nano.fcmae_ft_in22k_in1k",
+    "tf_efficientnetv2_s.in21k_ft_in1k",
+    "Custom TimmSED wrapper with AttBlockV2 attention mechanism"
+  ],
+  "frameworks_used": [
+    "pytorch/torch",
+    "timm",
+    "librosa",
+    "torchaudio",
+    "numpy",
+    "pandas",
+    "opencv/cv2",
+    "scikit-learn",
+    "soundfile",
+    "matplotlib",
+    "torchvision",
+    "tqdm"
+  ],
+  "loss_functions": [
+    "BCEWithLogitsLoss",
+    "FocalLossBCE (custom combination of BCEWithLogitsLoss and sigmoid_focal_loss)"
+  ],
+  "cv_strategies": [
+    "StratifiedKFold(n_splits=5, shuffle=True, random_state=42)"
+  ],
+  "ensembling": [
+    "Averaging predictions across multiple model checkpoints and TTA variations",
+    "Weighted blending of two distinct architectures (e.g., NFNet + ConvNeXtV2 or seresnext + nfnet)",
+    "Chunk-wise power transformation on low-confidence predictions combined with temporal smoothing",
+    "Applying a fixed 3-point temporal smoothing filter (0.2/0.6/0.2) across adjacent audio chunks"
+  ],
+  "insights": [
+    "Pre-computed mel spectrograms significantly reduce training time compared to on-the-fly generation.",
+    "Mixup regularization and spectrogram augmentations help mitigate overfitting on multi-label audio data.",
+    "Stratified cross-validation is essential for preserving class distribution in imbalanced bird sound datasets.",
+    "Handling variable-length audio via center-cropping and padding ensures consistent input dimensions for CNNs.",
+    "Strategic model blending can significantly boost leaderboard scores.",
+    "Applying power transformations to low-confidence predictions improves detection rates.",
+    "Temporal smoothing enforces realistic prediction consistency across audio segments.",
+    "High leaderboard scores in BirdCLEF often indicate overfitting to the public test set.",
+    "Overlaying mel spectrograms with prediction heatmaps allows direct visual correlation between acoustic events and model confidence.",
+    "Comparing visualizations across submissions with varying leaderboard scores helps diagnose whether improvements stem from better temporal alignment or higher prediction certainty.",
+    "Peak normalization and mel spectrogram configuration are critical for consistent feature visualization during model debugging.",
+    "Converting 1D audio to 2D mel-spectrograms enables the use of standard 2D CNN architectures for audio classification.",
+    "Fixed-length 5-second centering and resizing standardizes variable-length audio inputs for efficient batch processing.",
+    "Min-max normalization and dB scaling prepare the spectrograms for stable neural network training.",
+    "Using diverse model architectures improves robustness and leaderboard performance in audio classification tasks.",
+    "Post-processing techniques like power adjustment and temporal smoothing can effectively boost scores without retraining.",
+    "Adjusting blending weights should be done in private notebooks to prevent data leakage and maintain fairness.",
+    "Mel-spectrograms normalized per-sample and resized to a fixed shape work effectively as input for CNN-based audio classification.",
+    "Temporal smoothing of per-window predictions helps reduce prediction jitter and improves submission quality.",
+    "A custom FocalLossBCE combining BCE and focal loss components is effective for handling class imbalance in audio classification tasks.",
+    "Test-time augmentation via spectrogram flips improves prediction robustness without additional training.",
+    "Temporal smoothing of adjacent 5-second windows enforces biological plausibility and boosts leaderboard scores.",
+    "Averaging outputs from multiple pre-trained checkpoints is a straightforward method to enhance inference performance.",
+    "Using FocalLossBCE from BirdCLEF 2024 produces strong OOF scores (~0.962) and transfers well to BirdCLEF 2025.",
+    "Converting audio to mel spectrograms and resizing to 256x256 provides a robust input format for EfficientNet backbones.",
+    "Simple temporal smoothing significantly stabilizes predictions across consecutive 5-second audio windows without complex modeling.",
+    "Power adjustment on low-ranked class predictions can effectively boost leaderboard scores.",
+    "Temporal smoothing across adjacent time chunks improves prediction consistency.",
+    "Aggressive inference-time post-processing risks overfitting to the public leaderboard."
+  ],
+  "critical_findings": [
+    "The weighted blend likely overfits to the public leaderboard test set, a recurring pattern in BirdCLEF competitions."
+  ],
+  "what_did_not_work": [],
+  "notable_individual_insights": [
+    "votes 949 (EfficientNet B0 Pytorch [Train] | BirdCLEF'25): Pre-computed mel spectrograms significantly reduce training time compared to on-the-fly generation.",
+    "votes 580 (Bird25 | WeightedBlend | 0.88): High leaderboard scores in BirdCLEF often indicate overfitting to the public test set, and strategic model blending can significantly boost scores.",
+    "votes 531 (BirdCLEF2025+:Sound Event Visualisations): Overlaying mel spectrograms with prediction heatmaps allows direct visual correlation between acoustic events and model confidence.",
+    "votes 455 (Transforming Audio-to-Mel Spec. | BirdCLEF'25): Fixed-length 5-second centering and resizing standardizes variable-length audio inputs for efficient batch processing.",
+    "votes 433 (Bird25|nfnet+convnextv2|WeightedBlend|LB.860): Adjusting blending weights should be done in private notebooks to prevent data leakage and maintain fairness.",
+    "votes 399 (Bird25|OnlyINF|v2_s FocalLossBCE(CV.962)|LB.829): A custom FocalLossBCE combining BCE and focal loss components is effective for handling class imbalance in audio classification tasks.",
+    "votes 354 (Post-Processing with Power Adjustment for Low-Rank): Aggressive inference-time post-processing risks overfitting to the public leaderboard."
+  ]
+}

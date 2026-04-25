@@ -1,0 +1,36 @@
+{
+  "id": "itahiro/deberta-large-2epochs-1hr",
+  "id_no": 93061921,
+  "title": "deberta-large(2epochs-1hr)",
+  "code_file": "deberta-large-2epochs-1hr.ipynb",
+  "language": "python",
+  "kernel_type": "notebook",
+  "is_private": false,
+  "enable_gpu": true,
+  "enable_tpu": false,
+  "enable_internet": false,
+  "keywords": [
+    "gpu"
+  ],
+  "dataset_sources": [
+    "mustafakeser4/distilroberta-base",
+    "verracodeguacas/huggingfacedebertav3variants",
+    "bibanh/qwen3-8b-embedding"
+  ],
+  "kernel_sources": [
+    "packagemanager/pm-93061921-at-10-18-2025-09-30-26"
+  ],
+  "competition_sources": [
+    "jigsaw-agile-community-rules"
+  ],
+  "model_sources": [
+    "caokhoihuynh/distillbert/Transformers/default/1",
+    "google/gemma-3/Transformers/gemma-3-270m-it/1",
+    "yangjiahua/lora_14b_gptq_1epoch_r32/Keras/default/1",
+    "qwen-lm/qwen-3-embedding/Transformers/0.6b/1",
+    "qwen-lm/qwen2.5/Transformers/0.5b-instruct/1",
+    "qwen-lm/qwen2.5/Transformers/14b-instruct-gptq-int4/1"
+  ],
+  "docker_image": "gcr.io/kaggle-private-byod/python@sha256:320043e14c68293f1c946585b9257123385205a58af4b94b17d31868cae4e868",
+  "machine_shape": "NvidiaTeslaT4"
+}

@@ -1,0 +1,49 @@
+{
+  "summary": "The author developed a hybrid pipeline combining regex extraction, DeBERTa filtering, and fine-tuned large language models to classify identifiers in the MDC competition. For accession IDs, they used regex candidates filtered by DeBERTa, then classified them using a Qwen2.5-3B model fine-tuned with QLoRA, employing mean pooling and a span-gated GELU head. For DOIs, they applied a multi-stage process involving regex prefix extraction, Qwen3-4B detection, DeBERTa filtering, and a decision-making pipeline using Qwen2.5-14B and Light-R1-14B-awq. Training labels were synthesized via consensus across several state-of-the-art models.",
+  "extensive_summary": "## Identifier Extraction and Filtering\nThe solution begins with regex-based candidate extraction for both accession IDs and DOIs. For DOIs, the author specifically extracts prefixes matching `10.\\d{4,9}` and strips non-data prefixes. These raw candidates are then passed through DeBERTa to filter out false positives before downstream classification.\n\n## Accession ID Classification\nFor accession IDs, the author fine-tuned Qwen2.5-3B (base) using QLoRA. The input format combines the identifier with its surrounding context inside a structured template designed with explicit cues. The model's representations are aggregated using global mean and target-span mean pooling, followed by a span-gated GELU classifier head to make the final prediction.\n\n## DOI Classification Pipeline\nDOI handling follows a more complex, multi-model workflow. After regex and DeBERTa filtering, Qwen2.5-14B is used to extract paper titles and author lists. These are combined with context and fed into Light-R1-14B-awq. The final classification relies on a deterministic decision rule: first checking if the DOI is data vs. non-data, then leveraging author overlap if available, falling back to context cues, and defaulting to None if ambiguous.\n\n## Data and Labeling Strategy\nTraining data was sourced from the MDC corpus v3.0 and v4.1. Since ground truth labels were unavailable, the author generated them via consensus across GPT-5, Qwen3-30B-thinking, Qwen2.5-72B, and LLaMA-70B. This automated labeling approach enabled model training but later caused issues when attempting to fine-tune Light-R1 for DOIs, which the author notes could not be completed due to label inconsistencies.",
+  "rank": 20,
+  "competition_flow": "Raw text is parsed using regex to extract identifier candidates, which are filtered by DeBERTa and classified through a multi-stage pipeline of fine-tuned Qwen and Light-R1 models, with training labels synthesized via consensus across multiple large language models.",
+  "data_reading": [],
+  "data_processing": [
+    "Regex extraction of candidates",
+    "Removal of non-data prefixes",
+    "Structured templating with contextual cues",
+    "Global mean and target-span mean pooling",
+    "Span-gated GELU classifier head",
+    "Deterministic decision rules for DOI classification"
+  ],
+  "features_engineering": [
+    "Structured input templates with contextual cues",
+    "Deterministic decision rules for DOI classification (data vs non-data check, author overlap, context cues, None fallback)"
+  ],
+  "models": [
+    "DeBERTa",
+    "Qwen2.5-3B (base)",
+    "Qwen3-4B",
+    "Qwen2.5-14B",
+    "Light-R1-14B-awq",
+    "GPT-5",
+    "Qwen3-30B-thinking",
+    "Qwen2.5-72B",
+    "LLaMA-70B"
+  ],
+  "frameworks_used": [],
+  "loss_functions": [],
+  "cv_strategy": "",
+  "ensembling": "",
+  "insights": [
+    "Using regex for initial extraction followed by DeBERTa filtering effectively reduces false positives before LLM classification.",
+    "Consensus labeling across multiple large models can generate viable training data when ground truth is unavailable.",
+    "Mean pooling combined with a span-gated GELU head helps fine-tuned LLMs focus on relevant identifier spans."
+  ],
+  "critical_findings": [
+    "Automated consensus labeling across multiple large models enabled training but introduced inconsistencies that prevented successful Light-R1 fine-tuning for DOIs."
+  ],
+  "what_did_not_work": [
+    "Planned Light-R1 fine-tuning for DOIs could not be completed due to label issues."
+  ],
+  "github_repos": [],
+  "papers": [],
+  "other_solution_refs": [],
+  "source_url": "https://www.kaggle.com/competitions/make-data-count-finding-data-references/discussion/606746"
+}

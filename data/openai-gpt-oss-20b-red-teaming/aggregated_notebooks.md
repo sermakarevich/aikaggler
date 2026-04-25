@@ -1,0 +1,83 @@
+# openai-gpt-oss-20b-red-teaming: top public notebooks
+
+The community's top-voted notebooks collectively focus on deploying, running, and evaluating the open-weight gpt-oss-20b model locally on Kaggle GPU environments. They cover installation workarounds for dependency conflicts, local model serving via Ollama, llama.cpp, and Hugging Face, and systematic red-teaming or adversarial evaluation frameworks. The shared emphasis is on practical inference pipelines, prompt engineering for structured reasoning extraction, and safety probing techniques without relying on external commercial APIs.
+
+## Common purposes
+- tutorial
+- utility
+- other
+- eda
+
+## Competition flows
+- Installs Ollama, downloads the gpt-oss:20b model, and provides a Python interface to interact with it locally via the OpenAI API.
+- Installs compatible dependencies, downloads the GPT-OSS-20b model via Kaggle Hub, runs a text-generation inference pipeline, and prints the generated response.
+- Installs llama.cpp dependencies, launches a local HTTP server to run the GPT-OSS-20B model, and demonstrates multi-turn conversational inference with custom response parsing.
+- Installs Ollama on a Kaggle GPU instance, downloads the GPT-OSS-20B model weights, and provides a Python wrapper to query the model via a local OpenAI-compatible API.
+- Installs and configures pinned library versions to run the openai/gpt-oss-20b model on Kaggle's 2xT4 GPUs, then demonstrates red-teaming inference with prompt formatting and chain-of-thought extraction.
+- Installs Ollama and the gpt-oss:20b model on a Kaggle GPU runtime, wraps it in a Python class, and demonstrates local inference via a custom chat interface.
+- Configures a local Ollama server, downloads the GPT-OSS 20B model, and generates text completions via an OpenAI-compatible API client.
+- Sets up a local Ollama server, pulls the `gpt-oss:20b` model, generates a hardcoded fact database, runs five adversarial prompt strategies against it, and outputs a JSON report analyzing accuracy, strategy effectiveness, and category/difficulty vulnerabilities.
+- Generates structured adversarial prompts programmatically, runs them through GPT-OSS-20B (or a proxy) via Hugging Face Transformers, applies heuristic refusal detection and output sanitization, and exports categorized evasion metrics to CSV for safety evaluation.
+- Loads a JSON competition dataset, parses its nested structure into pandas DataFrames, and generates a text visualization to explore the input format.
+
+## Data reading
+- Loads the openai/gpt-oss-20b model weights and tokenizer directly from Hugging Face using transformers.AutoModelForCausalLM and AutoTokenizer with device_map="auto".
+- Hardcoded Python list of dictionaries converted to a pandas DataFrame and exported to `fact_database.csv`.
+- No external datasets are loaded; prompts are constructed programmatically via Python dictionaries and string templates, with results saved directly to the working directory as CSVs.
+- Uses json.load and pd.read_json to load example-harmony-findings.json from the competition input directory.
+
+## Data processing
+- Formats input prompts using tokenizer.apply_chat_template with system/user roles, applies tokenization, and parses the generated text output using regex to isolate <|channel|>analysis (chain of thought) and <|channel|>final (response) blocks.
+- Applies Hugging Face chat templates (Harmony format) for prompt formatting, implements SHA256 hashing for output anonymization, uses regex-based heuristic classifiers to label outputs as 'refusal' or 'potentially_noncompliant', and redacts unsafe content before saving.
+- Converts JSON dictionaries into pandas DataFrames using specific keys (issue_summary, model, steps_to_reproduce, environment, harmony_response_walkthroughs); applies custom index assignment and filters text for word cloud generation.
+
+## Models
+- gpt-oss:20b
+- Qwen/Qwen2.5-3B-Instruct
+
+## Frameworks used
+- openai
+- ollama
+- IPython
+- torch
+- transformers
+- kagglehub
+- triton
+- llama.cpp
+- requests
+- pandas
+- numpy
+- json
+- datetime
+- subprocess
+- os
+- sys
+- time
+- random
+- tqdm
+- hashlib
+- matplotlib
+- seaborn
+- plotly
+- wordcloud
+- kernels
+
+## Notable individual insights
+- votes 316 (Interactive Chat: Run gpt-oss-20b in Kaggle!): Local open-weight models can be served and queried in Kaggle notebooks using Ollama and the OpenAI-compatible API.
+- votes 80 (🤖 "I'm sorry, but I cant help with that"): MXFP4 quantized models fail on GPUs with compute capability < 9.0 (like T4), requiring a workaround via source installations of transformers and triton.
+- votes 50 (GPT-OSS-20B Red-Teaming Starter Harness): Proxy models like Qwen2.5-3B enable fast, low-resource iteration before scaling to larger, compute-heavy models.
+- votes 54 (Fact Database Comparison With: gpt-oss-20b): Leading questions and authority appeals are particularly effective at causing factual deviations in open-weight models.
+- votes 92 (Run gpt-oss-20b in Kaggle! How to With Ollama): Background server processes require explicit health checks and restart logic to handle crashes or defunct states.
+- votes 40 (Red teaming don't shrink ): Effective AI red teaming requires a multi-level approach that addresses both technical model flaws and broader organizational or systemic factors.
+
+## Notebooks indexed
+- #316 votes [[notebooks/votes_01_taylorsamarel-interactive-chat-run-gpt-oss-20b-in-kaggle/notebook|Interactive Chat: Run gpt-oss-20b in Kaggle!]] ([kaggle](https://www.kaggle.com/code/taylorsamarel/interactive-chat-run-gpt-oss-20b-in-kaggle))
+- #156 votes [[notebooks/votes_02_paultimothymooney-how-to-use-gpt-oss-20b-on-kaggle/notebook|How to use GPT-OSS-20b on Kaggle]] ([kaggle](https://www.kaggle.com/code/paultimothymooney/how-to-use-gpt-oss-20b-on-kaggle))
+- #97 votes [[notebooks/votes_03_jaejohn-52-tok-s-gpt-oss-20b-using-llama-cpp/notebook|[52 tok/s] gpt-oss-20b using llama.cpp]] ([kaggle](https://www.kaggle.com/code/jaejohn/52-tok-s-gpt-oss-20b-using-llama-cpp))
+- #92 votes [[notebooks/votes_04_taylorsamarel-run-gpt-oss-20b-in-kaggle-how-to-with-ollama/notebook|Run gpt-oss-20b in Kaggle! How to With Ollama]] ([kaggle](https://www.kaggle.com/code/taylorsamarel/run-gpt-oss-20b-in-kaggle-how-to-with-ollama))
+- #80 votes [[notebooks/votes_05_bwandowando-i-m-sorry-but-i-cant-help-with-that/notebook|🤖 "I'm sorry, but I cant help with that"]] ([kaggle](https://www.kaggle.com/code/bwandowando/i-m-sorry-but-i-cant-help-with-that))
+- #62 votes [[notebooks/votes_06_stefanogiannini-tutorial-run-gpt-oss-20b-in-kaggle/notebook|🧭Tutorial: Run gpt-oss-20b in Kaggle]] ([kaggle](https://www.kaggle.com/code/stefanogiannini/tutorial-run-gpt-oss-20b-in-kaggle))
+- #57 votes [[notebooks/votes_07_ckskaggle-gpt-oss-ollama-stater-notebook/notebook|gpt oss -Ollama- stater Notebook]] ([kaggle](https://www.kaggle.com/code/ckskaggle/gpt-oss-ollama-stater-notebook))
+- #54 votes [[notebooks/votes_08_longissachairfay-fact-database-comparison-with-gpt-oss-20b/notebook|Fact Database Comparison With: gpt-oss-20b]] ([kaggle](https://www.kaggle.com/code/longissachairfay/fact-database-comparison-with-gpt-oss-20b))
+- #50 votes [[notebooks/votes_09_jeffborschowa-gpt-oss-20b-red-teaming-starter-harness/notebook|GPT-OSS-20B Red-Teaming Starter Harness]] ([kaggle](https://www.kaggle.com/code/jeffborschowa/gpt-oss-20b-red-teaming-starter-harness))
+- #40 votes [[notebooks/votes_10_mpwolke-red-teaming-don-t-shrink/notebook|Red teaming don't shrink ]] ([kaggle](https://www.kaggle.com/code/mpwolke/red-teaming-don-t-shrink))

@@ -1,0 +1,15 @@
+{
+  "description": "Participants interact with the OpenAI gpt-oss-20b language model to discover previously unreported vulnerabilities and flaws through adversarial prompting. The competition focuses on natural language processing and adversarial techniques, requiring competitors to craft inputs that expose model weaknesses. Success is evaluated based on the novelty and severity of the identified security issues rather than a traditional predictive metric.",
+  "data_modality": "text",
+  "task_type": "generation",
+  "label_structure": "none",
+  "metric": "unknown",
+  "test_split": "unknown",
+  "format": "standard",
+  "dataset_scale": "unknown",
+  "domain": "llm_security",
+  "data_challenges": [],
+  "constraints": [
+    "limited_daily_submissions"
+  ]
+}

@@ -1,0 +1,28 @@
+{
+  "id": "gpreda/testing-gemma-3n-like-a-pro",
+  "id_no": 86343788,
+  "title": "Testing Gemma 3n like a pro ",
+  "code_file": "testing-gemma-3n-like-a-pro.ipynb",
+  "language": "python",
+  "kernel_type": "notebook",
+  "is_private": false,
+  "enable_gpu": true,
+  "enable_tpu": false,
+  "enable_internet": true,
+  "keywords": [
+    "nlp",
+    "question answering",
+    "text-to-text generation",
+    "text generation"
+  ],
+  "dataset_sources": [],
+  "kernel_sources": [],
+  "competition_sources": [
+    "google-gemma-3n-hackathon"
+  ],
+  "model_sources": [
+    "google/gemma-3n/Transformers/gemma-3n-e2b-it/1"
+  ],
+  "docker_image": "gcr.io/kaggle-private-byod/python@sha256:5de7f3337f4166df89b2d68f886fb08b30c4260df90e55e6587be5fd7648cf3f",
+  "machine_shape": "NvidiaTeslaT4"
+}

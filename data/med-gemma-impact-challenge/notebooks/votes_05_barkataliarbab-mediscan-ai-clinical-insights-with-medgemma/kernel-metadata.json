@@ -1,0 +1,23 @@
+{
+  "id": "barkataliarbab/mediscan-ai-clinical-insights-with-medgemma",
+  "id_no": 106974630,
+  "title": "MediScan AI: Clinical Insights with MedGemma",
+  "code_file": "mediscan-ai-clinical-insights-with-medgemma.ipynb",
+  "language": "python",
+  "kernel_type": "notebook",
+  "is_private": false,
+  "enable_gpu": false,
+  "enable_tpu": false,
+  "enable_internet": true,
+  "keywords": [],
+  "dataset_sources": [
+    "barkataliarbab/chm-diabeties"
+  ],
+  "kernel_sources": [],
+  "competition_sources": [
+    "med-gemma-impact-challenge"
+  ],
+  "model_sources": [],
+  "docker_image": "gcr.io/kaggle-images/python@sha256:9afebf76637ce6541a4a62ba59c41f7cdf5402c3e9b93b86637ef048b20283e0",
+  "machine_shape": "None"
+}

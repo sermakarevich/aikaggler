@@ -1,0 +1,100 @@
+{
+  "id": 74608,
+  "competitionName": "neurips-open-polymer-prediction-2025",
+  "title": "NeurIPS - Open Polymer Prediction 2025",
+  "briefDescription": "Predicting polymer properties with machine learning to accelerate sustainable materials research.",
+  "dateEnabled": "2025-06-16T18:24:41.910Z",
+  "deadline": "2025-09-15T23:59:00Z",
+  "hasLeaderboard": true,
+  "leaderboardPercentage": 8,
+  "maxDailySubmissions": 5,
+  "numScoredSubmissions": 2,
+  "hasSolution": true,
+  "numPrizes": 5,
+  "forumId": 4839083,
+  "finalLeaderboardHasBeenVerified": true,
+  "userRankMultiplier": 1,
+  "dateCreated": "2024-04-03T19:21:28.771511400Z",
+  "competitionHostSegmentId": 1,
+  "maxTeamSize": 5,
+  "medalsAllowed": true,
+  "enableTeamFiles": true,
+  "teamFileDeadline": "2025-10-04T00:00:00Z",
+  "teamMergerExplicitDeadline": "2025-09-08T23:59:00Z",
+  "prohibitNewEntrantsExplicitDeadline": "2025-09-08T23:59:00Z",
+  "kernelsPublishingDisabledDeadline": "2025-09-08T23:59:00Z",
+  "organizationId": 5053,
+  "hasCoverImageUrl": true,
+  "showPrivateLeaderboard": true,
+  "hasScripts": true,
+  "onlyAllowKernelSubmissions": true,
+  "totalTeams": 2240,
+  "totalCompetitors": 2650,
+  "totalSubmissions": 51013,
+  "rulesRequired": true,
+  "usesSynchronousReruns": true,
+  "maxCpuRuntimeMinutes": 540,
+  "maxGpuRuntimeMinutes": 540,
+  "rowIdColumnName": "id",
+  "requiredSubmissionFilename": "submission.csv",
+  "evaluationAlgorithm": {
+    "id": 4156,
+    "name": "open_polymer_2025",
+    "environmentRenderType": "ENVIRONMENT_RENDER_TYPE_JSON",
+    "kernelId": 84603218,
+    "latestCompetitionMetricVersionId": 40796,
+    "state": "AVAILABLE"
+  },
+  "categories": [
+    {
+      "id": 12000,
+      "name": "science and technology",
+      "fullPath": "subject > science and technology",
+      "datasetCount": 4617,
+      "competitionCount": 12,
+      "scriptCount": 1636,
+      "slug": "technology-and-applied-sciences",
+      "displayName": "Science and Technology"
+    },
+    {
+      "id": 7402,
+      "name": "chemistry",
+      "fullPath": "subject > earth and nature > physical science > chemistry",
+      "description": "Chemistry addresses topics such as how atoms and molecules interact via chemical bonds to form new chemical compounds.",
+      "datasetCount": 1045,
+      "competitionCount": 15,
+      "scriptCount": 389,
+      "slug": "chemistry",
+      "displayName": "Chemistry"
+    },
+    {
+      "name": "custom metric",
+      "description": "This competition's metric is defined under the 'Evaluation' tab",
+      "displayName": "Custom Metric"
+    }
+  ],
+  "organization": {
+    "slug": "university-of-notre-dame",
+    "name": "University of Notre Dame",
+    "thumbnailImageUrl": "https://storage.googleapis.com/kaggle-organizations/5053/thumbnail.jpg?t=2025-01-16-22-35-04",
+    "profileUrl": "/organizations/university-of-notre-dame"
+  },
+  "launched": true,
+  "createdByUserId": 8345173,
+  "license": {
+    "id": 31,
+    "name": "MIT",
+    "url": "https://www.mit.edu/~amini/LICENSE.md",
+    "agreementRequired": false
+  },
+  "hostName": "University of Notre Dame",
+  "scoreTruncationNumDecimals": 5,
+  "locked": true,
+  "totalJoinedUsers": 10336,
+  "requiresIdentityVerification": true,
+  "submissionSizeLimitMb": 20480,
+  "reward": {
+    "id": "USD",
+    "quantity": 50000
+  }
+}

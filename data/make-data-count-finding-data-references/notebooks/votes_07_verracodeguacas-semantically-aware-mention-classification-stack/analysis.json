@@ -1,0 +1,40 @@
+{
+  "summary": "This notebook implements a modular, rule-based plus LLM hybrid pipeline to extract and classify dataset mentions in academic PDFs for the Make Data Count competition. It parses PDFs with PyMuPDF, extracts candidate identifiers using extensive regex patterns, and constructs context windows around each match. A quantized Qwen 32B model via vLLM then classifies each candidate as Primary (data) or Secondary (literature) using a structured few-shot prompt. The pipeline emphasizes robust post-filtering and local F1 scoring to handle noisy, incomplete competition labels. Readers should learn how layered regex extraction combined with constrained LLM inference can outperform end-to-end deep learning models in noisy, label-poor environments.",
+  "purpose": "inference",
+  "competition_flow": "Parses academic PDFs to extract candidate dataset identifiers via regex, classifies them as data or literature using a quantized Qwen 32B LLM with constrained decoding, applies context-aware post-filtering, and outputs a formatted submission CSV.",
+  "data_reading": [
+    "Loads PDFs from Kaggle input using kagglehub, converts them to raw text with PyMuPDF, and reads ground truth labels from train_labels.csv using Polars."
+  ],
+  "data_processing": [
+    "Normalizes Unicode and whitespace, splits documents into body and reference sections via regex header detection, extracts candidate identifiers using extensive regex patterns, deduplicates matches, and constructs fixed-size context windows around each ID."
+  ],
+  "features_engineering": [
+    "Hand-crafted regex patterns for DOIs and specific database accession formats (e.g., GEO, PRJ, SRA, PDB), domain-specific prefix filters for known data repositories versus academic publishers, and context-window text snippets for LLM prompting."
+  ],
+  "models": [
+    "Qwen 32B (AWQ)"
+  ],
+  "frameworks_used": [
+    "vllm",
+    "polars",
+    "numpy",
+    "logits-processor-zoo",
+    "pymupdf"
+  ],
+  "loss_functions": [],
+  "cv_strategy": "",
+  "ensembling": "",
+  "insights": [
+    "Layered regex extraction combined with constrained LLM inference reliably outperforms end-to-end NER or deep learning models in this competition due to label noise.",
+    "Isolating the pipeline into modular stages enables rapid iteration and patching when competition rules or labels change.",
+    "Constrained decoding via a logits processor forcing single-character output significantly improves LLM classification reliability over free-form prompting."
+  ],
+  "critical_findings": [
+    "Competition labels are noisy and incomplete, with a 'Missing' type that requires special handling during local scoring.",
+    "Neither PDF nor XML sources alone are sufficient; both are needed to capture complete and fully labeled mentions.",
+    "Aggressive post-filtering is required to eliminate false positives from academic publisher DOI prefixes that lack explicit data-repository context."
+  ],
+  "what_did_not_work": [],
+  "source_url": "https://www.kaggle.com/code/verracodeguacas/semantically-aware-mention-classification-stack",
+  "votes": 239
+}

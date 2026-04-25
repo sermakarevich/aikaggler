@@ -1,0 +1,82 @@
+{
+  "summary": "The authors achieved 17th place by adapting the Ultralytics YOLO framework with a ConvNeXtV2-Base backbone for object detection in microscopy images. They experimented with different feature pyramid neck designs, ultimately removing the P5 scale and incorporating adaptive pooling from P2 to improve feature aggregation. The solution relied on model soup ensembling of three configurations trained with standard and heavy augmentations, combined with HDBSCAN-based post-processing for prediction aggregation. A key insight was that leveraging established YOLO infrastructure with custom Timm backbones outperformed both traditional U-Nets and simpler classification/segmentation heads.",
+  "extensive_summary": "## Background & Approach Evolution\nThe team initially explored U-Nets and Timm backbones with simple classification/segmentation heads, but these plateaued around a 0.770 public leaderboard score. Inspired by successful YOLO-based approaches in the competition, they pivoted to the Ultralytics framework, leveraging its built-in augmentations, loss functions, and optimized bounding box heads. They integrated a `convnextv2_base.fcmae_ft_in22k_in1k` backbone via a community PR and designed two custom neck architectures that extract features from P4, P3, and P2.\n\n## Model Architectures & Training\nBoth configurations shared the same ConvNeXtV2-Base backbone but differed in their neck design. Model 1 used an SPPF + C2PSA neck with upsampling from P4 to P3 before the head. Model 2 added an `adaptive_avg_pool2d` block at P2 and concatenated it with the upsampled P4 features. Training was conducted on 80% of the training data (motors with trust=4) plus 80% of an external dataset (trust=0), with the remainder held out for validation. They trained for 40 epochs with a batch size of 2, image size of 960, and standard YOLO augmentations (mosaic, mixup, flipud, scale, degrees). A second model variant applied heavy Albumentations augmentations during training.\n\n## Validation, Ensembling & Inference\nValidation metrics showed poor correlation with the public leaderboard, and epoch selection proved highly unstable. To address this, they adopted model soup averaging across multiple epochs rather than picking a single checkpoint. The final submission combined three models: two from the first configuration (standard and heavy augmentation) and one from the second configuration. During inference, they processed only half the slices (`concentration = 0.5`) for speed and aggregated predictions using HDBSCAN clustering with specific min_samples, cluster size, and EPS parameters, applying a confidence adjustment favoring larger clusters.\n\n## Key Findings & Lessons\nRemoving the P5 scale significantly boosted scores, highlighting the importance of P2 features for this task. Larger backbones like ConvNeXt-Large actually degraded performance, and alternative backbones (EfficientNetV2, ResNeXt, CaFormer) failed to surpass the ConvNeXt-Base baseline. Interestingly, the true best private score (0.856) came from a single model configuration with a different epoch soup, proving that the ensemble strategy was suboptimal and that P2 features were critical.",
+  "rank": 17,
+  "competition_flow": "Raw microscopy images filtered by trust scores were trained on custom ConvNeXtV2-based YOLO architectures with modified feature pyramid necks, aggregated via model soup averaging and HDBSCAN clustering for final submission.",
+  "data_reading": [],
+  "data_processing": [
+    "Filtered training data to include only images with motors at trust=4, supplemented with 80% of an external dataset (trust=0).",
+    "Applied standard YOLO augmentations (mosaic=0.5, mixup=0.4, flipud=0.5, scale=0.25, degrees=45) and a secondary heavy augmentation pipeline using Albumentations (Blur, MedianBlur, ToGray, CLAHE, RandomBrightnessContrast, RandomGamma, ImageCompression, ShiftScaleRotate, GaussNoise, GaussianBlur, UnsharpMask).",
+    "Input image size was set to 960x960."
+  ],
+  "features_engineering": [],
+  "models": [
+    "convnextv2_base.fcmae_ft_in22k_in1k",
+    "YOLO10X",
+    "tf_efficientnetv2_l.in21k_ft_in1k",
+    "resnext50_32x4d.fb_swsl_ig1b_ft_in1k",
+    "caformer_b36.sail_in22k",
+    "ConvNeXt-Large"
+  ],
+  "frameworks_used": [
+    "ultralytics",
+    "timm",
+    "albumentations"
+  ],
+  "loss_functions": [],
+  "cv_strategy": "Split 80% of trust=4 images and 80% of external trust=0 images for training, with the remainder used as validation; evaluated using mAP50, mAP50-95, precision, and recall curves.",
+  "ensembling": "Combined three models via model soup weight averaging across multiple epochs, followed by HDBSCAN-based prediction clustering with size-dependent confidence adjustments and a 0.4 YOLO confidence threshold.",
+  "insights": [
+    "Leveraging the Ultralytics YOLO framework with custom Timm backbones outperformed traditional U-Nets and simple classification/segmentation heads.",
+    "Removing the P5 feature scale and incorporating P2 features via adaptive pooling significantly improved detection performance.",
+    "Model soup averaging proved necessary to mitigate unstable validation metrics and poor epoch selection correlation with the leaderboard.",
+    "P2 features were critically important for this task, as evidenced by the superior performance of the second model configuration."
+  ],
+  "critical_findings": [
+    "Larger architectures like ConvNeXt-Large actually performed worse than ConvNeXt-Base, contradicting the expectation that bigger models always help.",
+    "The team's true best private score (0.856) came from a single model configuration with a different epoch soup, revealing that their chosen ensemble strategy was suboptimal.",
+    "Validation metrics (mAP50, mAP50-95, precision, recall) showed almost no correlation with public leaderboard performance, making checkpoint selection highly unreliable."
+  ],
+  "what_did_not_work": [
+    "Testing alternative backbones (EfficientNetV2-L, ResNeXt-50, CaFormer-B36) yielded ~0.8 performance but failed to surpass ConvNeXt-Base.",
+    "Using ConvNeXt-Large degraded performance compared to the Base variant.",
+    "Replacing the detection head with ConvNeXt blocks improved mAP50-95 but did not translate to leaderboard gains.",
+    "Relying on standard validation metrics and single-epoch checkpoint selection led to poor correlation with public leaderboard scores."
+  ],
+  "github_repos": [
+    {
+      "url": "https://github.com/ultralytics/ultralytics",
+      "role": "library"
+    },
+    {
+      "url": "https://github.com/yang-0201/MHAF-YOLO",
+      "role": "library"
+    }
+  ],
+  "papers": [
+    {
+      "title": "Model Soup",
+      "url": "https://arxiv.org/abs/2203.05482",
+      "arxiv_id": "2203.05482"
+    }
+  ],
+  "other_solution_refs": [
+    {
+      "description": "Speed optimization notebook",
+      "url": "https://www.kaggle.com/code/junkoda/speed-up-inference"
+    },
+    {
+      "description": "YOLO features reverse engineering notebook",
+      "url": "https://www.kaggle.com/code/tatamikenn/reverse-engineering-yolo"
+    },
+    {
+      "description": "Bartley external dataset discussion",
+      "url": "https://www.kaggle.com/competitions/byu-locating-bacterial-flagellar-motors-2025/discussion/569921"
+    },
+    {
+      "description": "Epoch selection discussion",
+      "url": "https://www.kaggle.com/competitions/byu-locating-bacterial-flagellar-motors-2025/discussion/576756"
+    }
+  ],
+  "source_url": "https://www.kaggle.com/competitions/byu-locating-bacterial-flagellar-motors-2025/discussion/583144"
+}

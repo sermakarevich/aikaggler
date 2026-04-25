@@ -1,0 +1,48 @@
+{
+  "summary": "This notebook demonstrates a complete time-series gesture recognition pipeline for multi-sensor data (IMU, TOF, thermal). It highlights a key preprocessing step: using quaternion orientation data to project and subtract the gravity vector from raw accelerometer readings, isolating true linear acceleration for cleaner motion signals. The author constructs a two-branch neural network that processes IMU and TOF/thermal features separately before fusing them into a hybrid BiLSTM+GRU+Attention architecture. Training leverages MixUp augmentation, class weighting, and cosine decay learning rate scheduling to handle imbalance and improve generalization. Readers should learn how quaternion-based gravity removal enhances gesture discrimination and how a CNN-RNN-Attention hybrid effectively captures both local spatial patterns and long-range temporal dependencies in sensor time series.",
+  "purpose": "training",
+  "competition_flow": "Loads raw sensor CSVs, applies quaternion-based gravity removal and kinematic feature engineering, aggregates TOF pixel data, scales and pads sequences, trains a two-branch CNN-BiLSTM-GRU-Attention model with MixUp and class weights, and exports the model for inference.",
+  "data_reading": [
+    "pd.read_csv for train.csv and train_demographics.csv, merged on subject column."
+  ],
+  "data_processing": [
+    "ffill/bfill/fillna(0) for missing values, StandardScaler fitted on concatenated training steps, sequence padding to 95th percentile length, MixUp augmentation (alpha=0.4), class weight balancing, cosine decay LR scheduling, early stopping."
+  ],
+  "features_engineering": [
+    "Quaternion-based gravity removal yielding linear_acc_x/y/z, linear_acc_mag, linear_acc_mag_jerk.",
+    "Kinematic derivatives: acc_mag_jerk, rot_angle_vel.",
+    "TOF pixel aggregation: mean, std, min, max per sensor.",
+    "Cross-sensor contrast features: range and std across sensors for TOF and thermal data."
+  ],
+  "models": [
+    "Two-branch architecture: residual SE-CNN blocks (IMU), lightweight CNNs (TOF/Thermal), Bidirectional LSTM, Bidirectional GRU, GaussianNoise, Dense, Attention."
+  ],
+  "frameworks_used": [
+    "tensorflow",
+    "keras",
+    "numpy",
+    "pandas",
+    "scipy",
+    "scikit-learn",
+    "joblib",
+    "polars"
+  ],
+  "loss_functions": [
+    "CategoricalCrossentropy (label_smoothing=0.1)"
+  ],
+  "cv_strategy": "train_test_split (80/20, stratified by gesture)",
+  "ensembling": "",
+  "insights": [
+    "Quaternion-based gravity removal isolates true linear acceleration, significantly improving gesture discrimination.",
+    "MixUp augmentation and class weighting effectively regularize the model and handle class imbalance.",
+    "A hybrid CNN-RNN-Attention architecture successfully captures both local spatial patterns and long-range temporal dependencies in multi-sensor time series."
+  ],
+  "critical_findings": [],
+  "what_did_not_work": [
+    "Further reducing the initial learning rate to 2e-4 worsened the validation score.",
+    "Adjusting dropout rates provided no improvement over the baseline configuration.",
+    "Replacing the simpler CNN in the TOF/Thermal branch with residual SE blocks was detrimental to performance."
+  ],
+  "source_url": "https://www.kaggle.com/code/rktqwe/lb-0-77-linear-accel-tf-bilstm-gru-attention",
+  "votes": 427
+}

@@ -1,0 +1,29 @@
+{
+  "id": "adamlogman/neurips-ensemble-xgb-extratrees",
+  "id_no": 87409117,
+  "title": " NeurIPS |Ensemble XGB+ExtraTrees",
+  "code_file": "neurips-ensemble-xgb-extratrees.ipynb",
+  "language": "python",
+  "kernel_type": "notebook",
+  "is_private": false,
+  "enable_gpu": false,
+  "enable_tpu": false,
+  "enable_internet": false,
+  "keywords": [],
+  "dataset_sources": [
+    "",
+    "adamlogman/desc-de-dataset",
+    "adamlogman/modred-dataset",
+    "negoto/mordred-1-2-0-py3-none-any",
+    "senkin13/rdkit-2025-3-3-cp311"
+  ],
+  "kernel_sources": [
+    "packagemanager/pm-87409117-at-09-16-2025-11-59-29"
+  ],
+  "competition_sources": [
+    "neurips-open-polymer-prediction-2025"
+  ],
+  "model_sources": [],
+  "docker_image": "gcr.io/kaggle-images/python@sha256:20d75b6c2a67c98a3a9f199ea97d51168548b4eb54898f30849e11d68ee06ea1",
+  "machine_shape": "None"
+}

@@ -1,0 +1,29 @@
+{
+  "id": "yeoyunsianggeremie/keyword-search-llm-baseline-cv-0-120-lb-0-105",
+  "id_no": 85043540,
+  "title": "Keyword Search + LLM Baseline [CV 0.120 LB 0.105]",
+  "code_file": "keyword-search-llm-baseline-cv-0-120-lb-0-105.ipynb",
+  "language": "python",
+  "kernel_type": "notebook",
+  "is_private": false,
+  "enable_gpu": true,
+  "enable_tpu": false,
+  "enable_internet": false,
+  "keywords": [
+    "gpu"
+  ],
+  "dataset_sources": [],
+  "kernel_sources": [
+    "yeoyunsianggeremie/mdc-fine-grained-eval",
+    "packagemanager/pm-85043540-at-06-14-2025-08-34-07"
+  ],
+  "competition_sources": [
+    "make-data-count-finding-data-references"
+  ],
+  "model_sources": [
+    "qwen-lm/qwen-3/Transformers/8b-awq/1",
+    "qwen-lm/qwen-3/Transformers/0.6b/1"
+  ],
+  "docker_image": "gcr.io/kaggle-private-byod/python@sha256:5de7f3337f4166df89b2d68f886fb08b30c4260df90e55e6587be5fd7648cf3f",
+  "machine_shape": "NvidiaTeslaT4"
+}

@@ -1,0 +1,37 @@
+{
+  "summary": "This notebook provides a complete inference pipeline for the Stanford RNA 3D Folding competition using the Protenix structural biology model. It handles environment setup, reads test RNA sequences, generates formatted input JSONs, runs the Protenix diffusion model to predict 3D structures, and extracts C1' atom coordinates from the resulting CIF files. The script then expands these coordinates into the exact submission format required by the competition. It demonstrates how to integrate external scientific models into Kaggle, parse structural biology outputs, and manage model inference workflows. Readers learn the practical steps of running diffusion-based RNA structure predictors and preparing competition submissions from raw CIF/PDBx files.",
+  "purpose": "inference",
+  "competition_flow": "Reads test RNA sequences from CSV, runs the Protenix diffusion model to predict 3D structures, extracts C1' coordinates from CIF outputs, and generates a formatted submission CSV.",
+  "data_reading": [
+    "pd.read_csv() is used to load validation_sequences.csv, validation_labels.csv, train_sequences.csv (repurposed as test data), and sample_submission.csv."
+  ],
+  "data_processing": [
+    "Constructs input JSONs with RNA sequences and modifications; parses CIF files via biotite to extract and sort C1' atom coordinates; pads missing predictions with zeros and duplicates available models to ensure exactly 5 samples per sequence."
+  ],
+  "features_engineering": [],
+  "models": [
+    "Protenix (model_v0.2.0.pt)"
+  ],
+  "frameworks_used": [
+    "pandas",
+    "numpy",
+    "rdkit",
+    "protenix",
+    "biotite",
+    "subprocess",
+    "glob",
+    "tqdm"
+  ],
+  "loss_functions": [],
+  "cv_strategy": "",
+  "ensembling": "Generates 5 structural samples per sequence via diffusion sampling (--sample_diffusion.N_sample 5) and treats them as ensemble members; no explicit weighting or voting is applied, only direct coordinate extraction and zero-padding for submission formatting.",
+  "insights": [
+    "Protenix can be seamlessly integrated into Kaggle environments by installing wheels and symlinking CCD cache files.",
+    "Parsing CIF/PDBx outputs with biotite reliably extracts the C1' coordinates required for the competition format.",
+    "The submission format requires expanding each RNA residue into multiple rows to accommodate coordinates from 5 different model samples."
+  ],
+  "critical_findings": [],
+  "what_did_not_work": [],
+  "source_url": "https://www.kaggle.com/code/ishgirwan/protenix-inference",
+  "votes": 292
+}

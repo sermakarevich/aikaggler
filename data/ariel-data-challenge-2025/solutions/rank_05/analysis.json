@@ -1,0 +1,57 @@
+{
+  "summary": "The author developed a physics-based modeling approach to fit noisy exoplanet transit data, replacing deep learning with a differentiable physical model. The pipeline calibrates and bins the input data, then optimizes a transit depth model with limb darkening and polynomial drift using a regularized Levenberg-Marquardt algorithm. Final predictions are refined through PCA on the radius variation and gradient boosting, which applies constant shifts to the mean and sigma outputs using star metadata and fitted parameters. This combination of analytical modeling and lightweight post-processing secured a 5th place finish.",
+  "extensive_summary": "## Physical Model Architecture\nThe core of the solution is a differentiable physical model designed to match noisy transit observations. The model computes transit depth by integrating a nonlinear limb darkening law (using six coefficients covering $x^{0.5}$ to $x^3$) over the intersection of stellar and planetary discs. It also incorporates a bivariate polynomial drift (degree 4 in time, degree 2 in wavelength) to account for instrumental or environmental trends. Key parameters include mean and varying planetary radius ($R_p$), impact factor $b$, ingress/egress timings, and limb darkening coefficients.\n\n## Optimization & Fitting Strategy\nRather than relying on neural networks, the author optimized all physical parameters simultaneously using a regularized Levenberg-Marquardt algorithm. The optimization assumes Gaussian noise and minimizes an MSE loss weighted by wavelength-specific noise deviations. The fitting process runs for 220 iterations, strategically locking the polynomial drift after 70 iterations and $R_p$ variation after 180 iterations to stabilize convergence. The entire logic was implemented in PyTorch leveraging autograd, with the transit depth integral approximated using 40 rings.\n\n## Refinement & Post-Processing\nThe raw model outputs required targeted corrections to achieve competitive scores. The author observed that the model inherently introduced a linear trend and instability at the right edge of the spectrum, which was manually removed. For high impact factor planets ($b > 0.75$), the model systematically overestimated the mean signal by ~4-6%, prompting a dedicated scaling correction. To further boost performance, PCA was applied to the predicted $R_p$ variation (using 3 components), and gradient boosting was employed to refine both $\\mu$ and $\\sigma$ predictions. The boosting model took `star_info.csv` and all fitted parameters as inputs, outputting constant shifts to the physical model's predictions.",
+  "rank": 5,
+  "competition_flow": "Raw data is calibrated and binned in time and spectrum, a differentiable physical transit model is fitted via Levenberg-Marquardt optimization, and the outputs are refined using PCA and gradient boosting before submission.",
+  "data_reading": [],
+  "data_processing": [
+    "Calibrate data, remove outliers",
+    "Apply 5x time binning (T=1125) and 6x spectrum binning (W=47)",
+    "Remove linear trend from Rp and fix unstable right-edge values (Rp[-50:] = Rp[-50])",
+    "Scale mu/sigma for high impact factor planets (b > 0.75)"
+  ],
+  "features_engineering": [
+    "Input features for gradient boosting consist of star_info.csv data and all fitted physical model parameters",
+    "Outputs are constant shifts applied to mu and sigma predictions"
+  ],
+  "models": [
+    "Differentiable physical transit model (nonlinear limb darkening law with 6 coefficients, bivariate polynomial drift)",
+    "Gradient Boosting",
+    "PCA"
+  ],
+  "frameworks_used": [
+    "pytorch"
+  ],
+  "loss_functions": [
+    "MSE loss with wavelengths weighted according to noise deviations"
+  ],
+  "cv_strategy": "",
+  "ensembling": "The solution does not use traditional model ensembling; instead, it refines the physical model outputs via PCA on the predicted Rp variation and gradient boosting to apply constant shifts to mu and sigma predictions.",
+  "insights": [
+    "Fitting all physical parameters simultaneously via Levenberg-Marquardt is highly effective for this noisy transit data.",
+    "Gradient boosting significantly boosts the final score when used to refine mu and sigma predictions using star info and fitted parameters.",
+    "Including FGS channel data alongside AIRS improves the overall score."
+  ],
+  "critical_findings": [
+    "The model inherently fits Rp with an unwanted linear trend and unstable right-edge values, requiring manual post-processing.",
+    "Planets with high impact factors (b > 0.75) systematically overestimate mu by ~4-6%, requiring a dedicated scaling correction.",
+    "Adding orbit radius to account for trajectory curvature improved results on manually generated samples but failed on the actual training data."
+  ],
+  "what_did_not_work": [
+    "Adding orbit radius to account for trajectory curvature produced better results on manually generated samples but did not work well on the training data."
+  ],
+  "github_repos": [
+    {
+      "url": "https://github.com/Alehandreus/ariel-2025",
+      "role": "solution"
+    }
+  ],
+  "papers": [],
+  "other_solution_refs": [
+    {
+      "description": "Referenced for limb darkening model and numerical integration implementation",
+      "url": "https://www.kaggle.com/code/junkoda/limb-darkening"
+    }
+  ],
+  "source_url": "https://www.kaggle.com/competitions/ariel-data-challenge-2025/discussion/609629"
+}

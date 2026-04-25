@@ -1,0 +1,72 @@
+[
+  {
+    "topic_id": 581108,
+    "title": "4th Place Solution: SD3.5M + DRaFT + diffvg",
+    "owner": "BachiLi",
+    "repo": "diffvg",
+    "url": "https://github.com/BachiLi/diffvg"
+  },
+  {
+    "topic_id": 581108,
+    "title": "4th Place Solution: SD3.5M + DRaFT + diffvg",
+    "owner": "clarkkev",
+    "repo": "svg-diffusion",
+    "url": "https://github.com/clarkkev/svg-diffusion"
+  },
+  {
+    "topic_id": 581108,
+    "title": "4th Place Solution: SD3.5M + DRaFT + diffvg",
+    "owner": "tgxs002",
+    "repo": "HPSv2",
+    "url": "https://github.com/tgxs002/HPSv2"
+  },
+  {
+    "topic_id": 581108,
+    "title": "4th Place Solution: SD3.5M + DRaFT + diffvg",
+    "owner": "yuvalkirstain",
+    "repo": "PickScore",
+    "url": "https://github.com/yuvalkirstain/PickScore"
+  },
+  {
+    "topic_id": 581108,
+    "title": "4th Place Solution: SD3.5M + DRaFT + diffvg",
+    "owner": "richzhang",
+    "repo": "PerceptualSimilarity",
+    "url": "https://github.com/richzhang/PerceptualSimilarity"
+  },
+  {
+    "topic_id": 581032,
+    "title": "13th Place Solution - A Kaggle beginner's attempt",
+    "owner": "mit-han-lab",
+    "repo": "nunchaku",
+    "url": "https://github.com/mit-han-lab/nunchaku"
+  },
+  {
+    "topic_id": 581034,
+    "title": "12th Place Solution: SD3.5M + GRPO",
+    "owner": "yanyanhuang",
+    "repo": "12th-Place-Solution-for-Kaggle-Drawing-with-LLMs",
+    "url": "https://github.com/yanyanhuang/12th-Place-Solution-for-Kaggle-Drawing-with-LLMs"
+  },
+  {
+    "topic_id": 581128,
+    "title": "5th place solution - VTracer and DiffVG optimization",
+    "owner": "matheuspf",
+    "repo": "draw",
+    "url": "https://github.com/matheuspf/draw"
+  },
+  {
+    "topic_id": 581128,
+    "title": "5th place solution - VTracer and DiffVG optimization",
+    "owner": "THUDM",
+    "repo": "ImageReward",
+    "url": "https://github.com/THUDM/ImageReward"
+  },
+  {
+    "topic_id": 581128,
+    "title": "5th place solution - VTracer and DiffVG optimization",
+    "owner": "fogleman",
+    "repo": "primitive",
+    "url": "https://github.com/fogleman/primitive"
+  }
+]

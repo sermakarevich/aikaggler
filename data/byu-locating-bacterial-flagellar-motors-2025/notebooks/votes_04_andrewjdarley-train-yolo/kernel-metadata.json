@@ -1,0 +1,25 @@
+{
+  "id": "andrewjdarley/train-yolo",
+  "id_no": 77620494,
+  "title": "Train Yolo",
+  "code_file": "train-yolo.ipynb",
+  "language": "python",
+  "kernel_type": "notebook",
+  "is_private": false,
+  "enable_gpu": true,
+  "enable_tpu": false,
+  "enable_internet": true,
+  "keywords": [
+    "gpu"
+  ],
+  "dataset_sources": [],
+  "kernel_sources": [
+    "andrewjdarley/parse-data"
+  ],
+  "competition_sources": [
+    "byu-locating-bacterial-flagellar-motors-2025"
+  ],
+  "model_sources": [],
+  "docker_image": "gcr.io/kaggle-private-byod/python@sha256:d8674e13fab653bf7fb8d9a102f2ae94036771ccb5c73f51888d881421e1f937",
+  "machine_shape": "NvidiaTeslaT4"
+}

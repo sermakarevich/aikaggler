@@ -1,0 +1,30 @@
+{
+  "id": "sharifi76/eda-visualization-yolov8",
+  "id_no": 78042227,
+  "title": "EDA+Visualization+YOLOv8",
+  "code_file": "eda-visualization-yolov8.ipynb",
+  "language": "python",
+  "kernel_type": "notebook",
+  "is_private": false,
+  "enable_gpu": true,
+  "enable_tpu": false,
+  "enable_internet": false,
+  "keywords": [
+    "yolov8",
+    "data visualization",
+    "exploratory data analysis",
+    "model explainability",
+    "computer vision",
+    "gpu"
+  ],
+  "dataset_sources": [],
+  "kernel_sources": [
+    "sharifi76/ultralytics-for-offline-install"
+  ],
+  "competition_sources": [
+    "byu-locating-bacterial-flagellar-motors-2025"
+  ],
+  "model_sources": [],
+  "docker_image": "gcr.io/kaggle-private-byod/python@sha256:d8674e13fab653bf7fb8d9a102f2ae94036771ccb5c73f51888d881421e1f937",
+  "machine_shape": "NvidiaTeslaT4"
+}

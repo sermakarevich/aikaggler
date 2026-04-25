@@ -1,0 +1,53 @@
+{
+  "summary": "The author won 1st place by treating a seismic inversion problem as an image-to-image regression task, reshaping non-aligned velocity and seismic data into square images for Vision Transformers. They replaced a UNet approach with an encoder-decoder ViT architecture using a Dinov2-pretrained backbone, finding that Rotary Positional Embeddings (RoPE) were a bottleneck in EVA02. A key innovation was an \"Iterative Pseudo\" training loop that forward-models the model's own predictions to generate new training data every epoch. By filtering training data to focus on four specific velocity model styles and applying TTA, EMA, and MAE loss, they achieved a top leaderboard score.",
+  "extensive_summary": "## Preprocessing & Data Representation\nThe author rejected traditional segmentation approaches like UNet because the velocity model pixels do not spatially align with the seismic data. Instead, they reshaped the raw input from `(5, 1000, 70)` to `(1, 350, 350)` and finally to `(350, 350)` square images, forcing channels into a spatial layout. This simple reshape dramatically improved CV scores and made Vision Transformers viable for the task.\n\n## Architecture & Backbone Selection\nThe core model is an encoder-decoder Vision Transformer setup. Initial experiments used `EVA02-small`, but performance plateaued. The author investigated architectural differences and discovered that Rotary Positional Embeddings (RoPE) were the primary bottleneck. Switching to `vit_small_patch14_reg4_dinov2.lvd142m` as the backbone significantly improved training speed and accuracy. The model outputs logits that are passed through a sigmoid and scaled to the `(1500, 4500)` range, optimized with MAE loss.\n\n## Training Strategy & Iterative Pseudo Data Generation\nTraining utilized a holdout split of 440k samples for training and 30k for validation, with a learning rate of `1e-4` (cosine annealing to `~1e-5`), AdamW optimizer, EMA, and horizontal flips. The author introduced an \"Iterative Pseudo\" loop: after each epoch, the model predicts on the validation and test sets, these predictions are forward-modeled to generate new seismic inputs, and this synthetic data is used to train the next epoch. This loop ran for a total of 570 epochs.\n\n## Data Filtering & Final Tuning\nTo maximize efficiency and score, the author filtered the augmented dataset to retain only four velocity model styles: `CurveFault_B`, `CurveVel_B`, `Style_A`, and `Style_B`. This reduced data volume by half, accelerated training, and allowed the model to focus on high-impact patterns. The final submission combined a model trained at `896x896` with an existing Top4 model, applying TTA and replacing predictions from non-top-4 styles with the new model's outputs.",
+  "rank": 1,
+  "competition_flow": "Raw seismic and velocity data is reshaped into square images, fed into an encoder-decoder Vision Transformer trained with an iterative pseudo-data generation loop and targeted style filtering, then post-processed with TTA and EMA to produce final velocity model predictions.",
+  "data_reading": [
+    "Reshaped from `(5, 1000, 70)` to `(1, 350, 350)` and `(350, 350)` square images; specific file format/loader not explicitly stated."
+  ],
+  "data_processing": [
+    "Resized to 350x350 (later 896x896).",
+    "Applied `FiveCrop` and `5xRandomAffine` (`degrees=15`, `translate=(0.2, 0)`, `shear=(-15, 15)`, `padding_mode='reflection'`, `resample='nearest'`).",
+    "Used horizontal flips and TTA.",
+    "Scaled sigmoid outputs to `(1500, 4500)`.",
+    "Filtered training data to retain only `['CurveFault_B', 'CurveVel_B', 'Style_A', 'Style_B']`."
+  ],
+  "features_engineering": [],
+  "models": [
+    "Unet",
+    "Vision Transformer",
+    "EVA02-small",
+    "vit_small_patch14_reg4_dinov2.lvd142m",
+    "encoder-decoder ViT"
+  ],
+  "frameworks_used": [
+    "pytorch"
+  ],
+  "loss_functions": [
+    "MAE"
+  ],
+  "cv_strategy": "Holdout split (440k training, 30k validation).",
+  "ensembling": "Ensembled a Top4 model trained at 896x896 with an existing Top4 model, applied TTA and EMA, and replaced predictions from non-top-4 velocity styles with the new model's outputs.",
+  "insights": [
+    "Vision Transformers can effectively process non-spatially aligned seismic data without UNet skip connections.",
+    "Rotary Positional Embeddings (RoPE) were a major bottleneck in EVA02, making Dinov2 a superior backbone choice.",
+    "Iteratively forward-modeling the model's own predictions to generate new training data each epoch significantly boosts performance.",
+    "Focusing training data on a subset of four velocity model styles improves score and speeds up training."
+  ],
+  "critical_findings": [
+    "Reshaping non-aligned velocity model pixels into a square spatial layout jumped CV from 46.9 to 32.5.",
+    "Repeating the encoder+decoder architecture with base/large variants caused overfitting without improvement.",
+    "The model was severely underfitting at 50 epochs, requiring extension to 300+ epochs for optimal performance."
+  ],
+  "what_did_not_work": [
+    "MAE/MIM self-supervised pretraining",
+    "Standard Augmentations",
+    "Unet decoder, UperNet, Mask2Former, ViT-Adapter, Fusion heads, more complicated heads than a linear layer",
+    "Generating new velocity models with heuristics or diffusion"
+  ],
+  "github_repos": [],
+  "papers": [],
+  "other_solution_refs": [],
+  "source_url": "https://www.kaggle.com/competitions/waveform-inversion/discussion/587388"
+}

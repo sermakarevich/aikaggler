@@ -1,0 +1,49 @@
+{
+  "summary": "This notebook provides a complete workflow for the MedGemma Impact Challenge, demonstrating how to use FiftyOne to explore the SLAKE medical dataset, run zero-shot inference with MedGemma 1.5, and systematically evaluate performance. It covers computing and visualizing MedSigLIP embeddings to assess class separability, implementing an LLM-based semantic judge for VQA evaluation, and fine-tuning MedGemma for object localization using QLoRA and TRL's SFTTrainer. The author emphasizes iterative debugging through sliced metric analysis and embedding visualization rather than relying on aggregate scores. Readers learn how to bridge FiftyOne's data management capabilities with PyTorch-based VLM fine-tuning for medical imaging tasks.",
+  "purpose": "tutorial",
+  "competition_flow": "Loads the SLAKE dataset via FiftyOne, explores data distributions and embeddings, runs zero-shot inference with MedGemma for VQA and detection, evaluates performance using sliced metrics and an LLM judge, and fine-tunes the model for localization using QLoRA and TRL before outlining how to iterate on the results.",
+  "data_reading": [
+    "fiftyone.utils.huggingface.load_from_hub(\"Voxel51/SLAKE\", max_samples=50)"
+  ],
+  "data_processing": [
+    "FiftyOne dataset slicing/filtering with ViewField expressions",
+    "80/20 random train/val split via fiftyone.utils.random.random_split",
+    "Flattening multi-detection samples into individual patches using to_patches(\"detections\")",
+    "Custom GetItem class to convert bounding box format from [x, y, w, h] (normalized [0,1]) to [y0, x0, y1, x1] (scaled [0, 1000])",
+    "Conversion to PyTorch datasets via to_torch()"
+  ],
+  "features_engineering": [],
+  "models": [
+    "MedGemma 1.5-4b-it",
+    "MedSigLIP-448",
+    "Gemma 3 270m-it"
+  ],
+  "frameworks_used": [
+    "fiftyone",
+    "transformers",
+    "peft",
+    "trl",
+    "torch",
+    "torchvision",
+    "umap-learn",
+    "bitsandbytes",
+    "accelerate",
+    "sentencepiece",
+    "protobuf",
+    "huggingface_hub"
+  ],
+  "loss_functions": [],
+  "cv_strategy": "80/20 random train/val split via fiftyone.utils.random.random_split",
+  "ensembling": "",
+  "insights": [
+    "Visualizing high-dimensional embeddings in 2D before modeling quickly diagnoses whether a dataset's classes are fundamentally separable.",
+    "Slicing evaluation metrics by modality, anatomical location, and question type reveals actionable failure patterns that aggregate accuracy hides.",
+    "Using a smaller LLM as a semantic judge is more reliable than exact string matching for evaluating open-ended medical VQA outputs.",
+    "Flattening multi-detection samples into individual patches enables straightforward instance-level fine-tuning for localization tasks.",
+    "QLoRA with 4-bit quantization and LoRA adapters makes fine-tuning 4B+ parameter VLMs feasible on consumer GPUs."
+  ],
+  "critical_findings": [],
+  "what_did_not_work": [],
+  "source_url": "https://www.kaggle.com/code/harpdeci/starter-nb-fine-tune-medgemma-1-5-for-detection",
+  "votes": 45
+}

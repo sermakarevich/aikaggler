@@ -1,0 +1,45 @@
+{
+  "summary": "The notebook demonstrates how to drastically reduce inference latency for a 2D object detection task by shifting preprocessing to the GPU, enabling automatic mixed precision, and applying test-time augmentation. It proves that CPU-bound resizing and normalization can become a major bottleneck, while GPU-accelerated preprocessing and AMP on T4 GPUs can halve total inference time. The author also shows that rot90 TTA reliably boosts both local cross-validation and public leaderboard scores with manageable compute overhead. Readers should learn that strategic hardware utilization and simple augmentation strategies often yield faster, more robust predictions than complex model changes alone.",
+  "purpose": "inference",
+  "competition_flow": "Loads test tomogram slices, applies GPU-accelerated preprocessing and rot90 test-time augmentation, runs inference with a pretrained ConvNeXt-based model using automatic mixed precision and multiprocessing, and generates a CSV submission with predicted motor coordinates.",
+  "data_reading": [
+    "Globbing test directories for slice_*.jpg files, parsing slice numbers from filenames, and loading images via PIL into numpy arrays."
+  ],
+  "data_processing": [
+    "Resizing to 640x640, quantile normalization (clipping to 5th/95th percentiles), moving preprocessing to GPU, and applying rot90 rotations for TTA."
+  ],
+  "features_engineering": [],
+  "models": [
+    "ConvNeXt Tiny"
+  ],
+  "frameworks_used": [
+    "pytorch",
+    "timm",
+    "torchvision",
+    "numpy",
+    "pandas",
+    "multiprocessing",
+    "yaml",
+    "tqdm"
+  ],
+  "loss_functions": [
+    "BCEWithLogitsLoss",
+    "MSELoss"
+  ],
+  "cv_strategy": "",
+  "ensembling": "Averages predictions across four rot90 TTA transformations and optionally across multiple model folds, then applies a 0.5 confidence threshold to filter negative predictions before submission.",
+  "insights": [
+    "Moving preprocessing to the GPU eliminates it as a bottleneck compared to model inference.",
+    "Automatic mixed precision provides a ~2x speedup on T4 GPUs but offers no benefit on P100s.",
+    "Rot90 TTA improves both local CV and public LB scores and can be used for more robust evaluation.",
+    "Multiprocessing across multiple GPUs efficiently handles large test sets without significant overhead."
+  ],
+  "critical_findings": [
+    "CPU preprocessing takes ~240 seconds for 20 tomograms, making it comparable to inference time, whereas GPU preprocessing makes it negligible.",
+    "AMP speeds up T4 inference by a factor of 2 but offers no benefit on P100.",
+    "Using only \u00b14 positive slices during training speeds up training with minimal score loss, though adding negatives might improve scores."
+  ],
+  "what_did_not_work": [],
+  "source_url": "https://www.kaggle.com/code/junkoda/speed-up-inference",
+  "votes": 232
+}

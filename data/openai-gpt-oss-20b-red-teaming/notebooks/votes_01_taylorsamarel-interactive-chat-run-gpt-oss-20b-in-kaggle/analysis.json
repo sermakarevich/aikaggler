@@ -1,0 +1,28 @@
+{
+  "summary": "This notebook demonstrates how to set up and run the open-weight gpt-oss:20b model locally within a Kaggle notebook environment using Ollama. It walks through installing dependencies, starting the Ollama server, downloading the model, and wrapping the local API in a reusable Python class for interactive chat. The author provides utility functions for managing conversation history, system prompts, logging, and troubleshooting, making it a practical template for running local LLMs in restricted cloud environments. Readers should learn how to bridge local model serving with the OpenAI Python SDK and manage stateful interactions programmatically.",
+  "purpose": "utility",
+  "competition_flow": "Installs Ollama, downloads the gpt-oss:20b model, and provides a Python interface to interact with it locally via the OpenAI API.",
+  "data_reading": [],
+  "data_processing": [],
+  "features_engineering": [],
+  "models": [
+    "gpt-oss:20b"
+  ],
+  "frameworks_used": [
+    "openai",
+    "ollama",
+    "IPython"
+  ],
+  "loss_functions": [],
+  "cv_strategy": "",
+  "ensembling": "",
+  "insights": [
+    "Local open-weight models can be served and queried in Kaggle notebooks using Ollama and the OpenAI-compatible API.",
+    "Conversation state and system prompts can be managed programmatically without relying on external commercial APIs.",
+    "Ollama provides a straightforward CLI for downloading and running large models locally in cloud environments."
+  ],
+  "critical_findings": [],
+  "what_did_not_work": [],
+  "source_url": "https://www.kaggle.com/code/taylorsamarel/interactive-chat-run-gpt-oss-20b-in-kaggle",
+  "votes": 316
+}

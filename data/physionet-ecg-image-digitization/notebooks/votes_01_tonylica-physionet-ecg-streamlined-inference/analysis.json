@@ -1,0 +1,40 @@
+{
+  "summary": "This notebook implements a streamlined inference pipeline for digitizing ECG images into 12-lead waveforms. It chains three neural network stages to correct image orientation, rectify grid lines, and convert pixel intensities to electrical signals. The pipeline dynamically selects image preprocessing techniques based on a predicted source suffix to handle varying scan qualities. It applies Einthoven\u2019s law correction and Savitzky-Golay filtering to the extracted signals before formatting them for submission. Readers should learn how to structure a multi-stage vision pipeline and adapt preprocessing based on data provenance for robust medical image digitization.",
+  "purpose": "inference",
+  "competition_flow": "Loads test ECG images, predicts their source suffix to select optimal preprocessing, runs a three-stage neural network pipeline to extract and correct 12-lead ECG signals, and formats the results into a competition submission CSV.",
+  "data_reading": [
+    "pd.read_csv for test metadata",
+    "pd.read_parquet for sample submission IDs",
+    "cv2.imread for loading test images"
+  ],
+  "data_processing": [
+    "Source-specific image preprocessing (CLAHE, grayworld white balance, bilateral/median denoising, LAB background correction)",
+    "Dynamic quality-based selection of preprocessed vs raw stage1 output",
+    "Resizing to 1696x4352 and normalization",
+    "Einthoven correction on short leads",
+    "Savitzky-Golay filtering (window=7, polyorder=2)",
+    "Signal padding/truncation to match required lengths"
+  ],
+  "features_engineering": [],
+  "models": [
+    "ResNet-34",
+    "EfficientNet-B2",
+    "Custom UNet-like decoder (MyCoordUnetDecoder)"
+  ],
+  "frameworks_used": [
+    "pytorch",
+    "timm",
+    "opencv",
+    "scipy",
+    "numpy",
+    "pandas"
+  ],
+  "loss_functions": [],
+  "cv_strategy": "",
+  "ensembling": "",
+  "insights": [],
+  "critical_findings": [],
+  "what_did_not_work": [],
+  "source_url": "https://www.kaggle.com/code/tonylica/physionet-ecg-streamlined-inference",
+  "votes": 422
+}

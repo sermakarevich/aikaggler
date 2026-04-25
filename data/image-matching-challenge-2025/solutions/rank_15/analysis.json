@@ -1,0 +1,37 @@
+{
+  "summary": "The author developed a feature-based image matching pipeline using ALIKED for feature extraction and LightGlue for matching. Key technical choices included pre-rotating images to determine pairwise angles, applying multi-scale TTA with 8192 features, and carefully tuning hyperparameters like the search range (min_pair), match filtering threshold (min_matches), and detection threshold. These adjustments, combined with parallel processing optimizations, significantly improved leaderboard stability and overall scores.",
+  "extensive_summary": "## Base Solution Pipeline\nThe core approach relies on feature extraction using ALIKED followed by feature matching with LightGlue. To prepare the data, images were pre-rotated in advance to determine the optimal angle for each pair. The pipeline leverages TTA across four image scales [1024, 2560, 1536, 2048] with `num_features = 8192`. Hyperparameter tuning played a critical role: expanding the search range to `min_pair = 60\u201370` increased both public and private scores by approximately 3 points compared to `min_pair = 20`. Match filtering was set to `min_matches = 20`, and the detection threshold was lowered to `aliked_detection_threshold = 0.001` to reduce leaderboard score variance.\n\n## Speed Optimizations\nTo handle computational demands, the author implemented multi-threaded reconstruction and parallel CPU/GPU processing. ALIKED and LightGlue were executed in parallel across two GPUs. LightGlue's `width_confidence` was set to 0.9 to accelerate processing, and feature extraction was explicitly skipped for unused angles. The best private score was ultimately achieved with `min_pair = 60`.",
+  "rank": 15,
+  "competition_flow": "Raw images are pre-rotated to determine pairwise angles, then processed through ALIKED for feature extraction and LightGlue for matching, with multi-scale TTA and optimized thresholds to produce final matches.",
+  "data_reading": [],
+  "data_processing": [
+    "Images were rotated in advance to determine the angle for each pair",
+    "TTA applied across image sizes [1024, 2560, 1536, 2048] with num_features = 8192",
+    "Detection threshold set to aliked_detection_threshold = 0.001",
+    "Match filtering threshold set to min_matches = 20",
+    "Feature extraction skipped for unused angles"
+  ],
+  "features_engineering": [],
+  "models": [
+    "ALIKED",
+    "LightGlue"
+  ],
+  "frameworks_used": [],
+  "loss_functions": [],
+  "cv_strategy": "",
+  "ensembling": "TTA across four image scales [1024, 2560, 1536, 2048] with 8192 features was combined with threshold tuning (min_pair 60\u201370, min_matches 20, detection threshold 0.001) to stabilize and improve leaderboard scores.",
+  "insights": [
+    "Expanding the search range to min_pair = 60\u201370 increased both public and private scores by approximately 3 points compared to min_pair = 20.",
+    "A lower match filtering threshold (min_matches = 20) improved leaderboard performance over the higher threshold (100) typically effective in CV tasks.",
+    "Smaller detection thresholds (0.001) tend to reduce leaderboard score variance."
+  ],
+  "critical_findings": [
+    "A match filtering threshold of 100, which is effective in standard CV tasks, actually lowered the leaderboard score, making 20 the optimal choice.",
+    "Smaller detection thresholds (0.001) were found to reduce leaderboard score variance rather than just increasing matches."
+  ],
+  "what_did_not_work": [],
+  "github_repos": [],
+  "papers": [],
+  "other_solution_refs": [],
+  "source_url": "https://www.kaggle.com/competitions/image-matching-challenge-2025/discussion/582810"
+}

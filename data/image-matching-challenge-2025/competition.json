@@ -1,0 +1,103 @@
+{
+  "id": 91498,
+  "competitionName": "image-matching-challenge-2025",
+  "title": "Image Matching Challenge 2025",
+  "briefDescription": "Reconstruct 3D scenes from messy image collections.",
+  "dateEnabled": "2025-04-01T20:16:13.213Z",
+  "deadline": "2025-06-02T23:59:00Z",
+  "hasLeaderboard": true,
+  "leaderboardPercentage": 50,
+  "maxDailySubmissions": 5,
+  "numScoredSubmissions": 2,
+  "hasSolution": true,
+  "numPrizes": 5,
+  "forumId": 6794804,
+  "finalLeaderboardHasBeenVerified": true,
+  "userRankMultiplier": 1,
+  "dateCreated": "2025-01-16T04:21:17.519248100Z",
+  "competitionHostSegmentId": 2,
+  "maxTeamSize": 5,
+  "medalsAllowed": true,
+  "enableTeamFiles": true,
+  "teamFileDeadline": "2025-06-28T00:00:00Z",
+  "teamMergerExplicitDeadline": "2025-05-26T23:59:59Z",
+  "prohibitNewEntrantsExplicitDeadline": "2025-05-26T23:59:59Z",
+  "kernelsPublishingDisabledDeadline": "2025-05-26T23:59:59Z",
+  "organizationId": 3963,
+  "hasCoverImageUrl": true,
+  "showPrivateLeaderboard": true,
+  "hasScripts": true,
+  "onlyAllowKernelSubmissions": true,
+  "totalTeams": 943,
+  "totalCompetitors": 1176,
+  "totalSubmissions": 21617,
+  "rulesRequired": true,
+  "usesSynchronousReruns": true,
+  "maxCpuRuntimeMinutes": 540,
+  "maxGpuRuntimeMinutes": 540,
+  "clonedFromCompetitionId": 71885,
+  "rowIdColumnName": "image_id",
+  "requiredSubmissionFilename": "submission.csv",
+  "evaluationAlgorithm": {
+    "id": 3589,
+    "name": "IMC 2025 Metric",
+    "isMax": true,
+    "environmentRenderType": "ENVIRONMENT_RENDER_TYPE_JSON",
+    "kernelId": 79323862,
+    "latestCompetitionMetricVersionId": 39345,
+    "state": "AVAILABLE",
+    "passCompleteSubmission": true
+  },
+  "categories": [
+    {
+      "id": 13207,
+      "name": "computer vision",
+      "fullPath": "technique > computer vision",
+      "description": "Teaching a machine to interpret real-world images and videos. Applications include detecting objects, capturing motion, and restoring images.",
+      "datasetCount": 6463,
+      "competitionCount": 136,
+      "scriptCount": 6208,
+      "slug": "image-processing",
+      "displayName": "Computer Vision"
+    },
+    {
+      "id": 14102,
+      "name": "image",
+      "fullPath": "data type > image",
+      "datasetCount": 62361,
+      "competitionCount": 601,
+      "scriptCount": 6952,
+      "slug": "image-data",
+      "displayName": "Image"
+    },
+    {
+      "name": "custom metric",
+      "description": "This competition's metric is defined under the 'Evaluation' tab",
+      "displayName": "Custom Metric"
+    }
+  ],
+  "organization": {
+    "slug": "CTU-in-Prague",
+    "name": "Czech Technical University in Prague",
+    "thumbnailImageUrl": "https://storage.googleapis.com/kaggle-organizations/3963/thumbnail.png",
+    "profileUrl": "/organizations/CTU-in-Prague"
+  },
+  "launched": true,
+  "createdByUserId": 1095143,
+  "license": {
+    "id": 30,
+    "name": "Apache 2.0",
+    "url": "https://www.apache.org/licenses/LICENSE-2.0",
+    "agreementRequired": false
+  },
+  "hostName": "Czech Technical University in Prague",
+  "scoreTruncationNumDecimals": 2,
+  "locked": true,
+  "totalJoinedUsers": 5606,
+  "requiresIdentityVerification": true,
+  "submissionSizeLimitMb": 20480,
+  "reward": {
+    "id": "USD",
+    "quantity": 50000
+  }
+}

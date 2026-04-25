@@ -1,0 +1,102 @@
+{
+  "summary": "The team combined three complementary approaches: YOLO 2.5D models with two different backbones, a custom 3D CenterNet architecture with a 2D EfficientNetV2-S extractor, and stacked meta-classifiers (LightGBM, XGBoost, CatBoost). They treated 13 vessel locations as separate bounding box classes and adopted a 2.5D strategy by stacking adjacent slices into RGB channels without Z-spacing standardization. The final predictions were obtained by averaging outputs from the YOLO models, the 3D CenterNet model, and the three meta-classifiers, with a parallel ensemble structure proving superior to a series structure for the meta-classifiers.",
+  "extensive_summary": "## Overview & Core Architecture\nThe solution integrates three complementary model families to address both aneurysm presence classification and 13-class vessel localization. The first component consists of YOLO 2.5D models using two backbones: the standard `YOLOv11m` and a custom YOLO architecture with `timm/tf_efficientnetv2_s.in21k_ft_in1k`. Instead of standardizing Z-axis spacing, the team adopted a 2.5D strategy where adjacent slices are stacked into RGB channels (`R = slice i-1`, `G = slice i`, `B = slice i+1`). This approach improved cross-validation scores by over 0.02 despite the lack of Z-resampling.\n\n## 3D CenterNet & Flayer Design\nThe second component, dubbed \"Flayer,\" employs a slice-wise 2D encoder paired with a shallow 3D head. It uses a 2D ImageNet-pretrained EfficientNetV2-S in features-only mode, extracting penultimate feature maps. These are rearranged into 3D volumes and processed by a lightweight Conv3d-BN-ReLU head to produce 3D centerness heatmaps and sub-voxel offsets. An auxiliary 2D segmentation head supervises early-layer features using vessel masks derived from a 3D DynUNet trained on isotropic 0.7 mm resampled volumes.\n\n## Meta-Classifier & Ensembling\nThe final stage uses a stacked ensemble of LightGBM, XGBoost, and CatBoost. The meta-classifiers ingest concatenated predictions from the YOLO models and the Flayer, along with patient metadata (age, sex). The team compared series and parallel input structures, finding that a parallel configuration combining all model outputs (44 features) yielded higher CV and private scores. Final probabilities are averaged across all base models and meta-classifiers.\n\n## Training & Optimization Details\nYOLO models were trained with mixup (0.4), mosaic (0.4), and custom fitness functions prioritizing mAP@50 and AUC. The Flayer model used AdamW with cosine annealing, AMP mixed precision, and a combination of CenterNet-style focal loss, L1 offset loss, BCE classification loss, and auxiliary Dice/BCE loss. Negative samples were sampled evenly (10 per series), while positive samples used all annotated slices.",
+  "rank": 9,
+  "competition_flow": "Raw DICOM slices are processed into 2.5D triplets and 3D volumes, fed into YOLO 2.5D models and a 3D CenterNet-based Flayer for localization and classification, with outputs combined alongside patient metadata into parallel LightGBM, XGBoost, and CatBoost meta-classifiers to produce final averaged probabilities.",
+  "data_reading": [
+    "DICOM slices sorted by spatial position (SliceLocation \u2192 ImagePositionPatient \u2192 InstanceNumber), converted to 2.5D RGB triplets for YOLO, and precomputed as `.npy` volumes for the Flayer model."
+  ],
+  "data_processing": [
+    "Resized to 512\u00d7512 with min-max normalization; stacked adjacent slices into 2.5D RGB channels without Z-axis resampling. Negative samples sampled evenly (10 per series), positives used all annotated slices. YOLO training used mixup (0.4) and mosaic (0.4); Flayer used shared 2D affine warp augmentations and Albumentations normalization."
+  ],
+  "features_engineering": [
+    "Patient metadata (age, sex) concatenated with model predictions for meta-classifiers; 13 vessel location classes treated as separate bounding box targets; 2.5D slice stacking for YOLO inputs."
+  ],
+  "models": [
+    "YOLOv11m",
+    "Custom YOLO with timm backbone",
+    "timm/tf_efficientnetv2_s.in21k_ft_in1k",
+    "3D CenterNet",
+    "EfficientNetV2-S",
+    "LightGBM",
+    "XGBoost",
+    "CatBoost",
+    "3D DynUNet"
+  ],
+  "frameworks_used": [
+    "timm",
+    "Albumentations",
+    "Ultralytics"
+  ],
+  "loss_functions": [
+    "CenterNet-style focal loss (\u03b1=2, \u03b2=4)",
+    "L1 offset loss",
+    "BCE-with-logits classification loss",
+    "auxiliary Dice & BCE loss",
+    "custom fitness function (0.5 \u00d7 mAP@50 + 0.25 \u00d7 mAP@50-95 + 0.25 \u00d7 mAUC)"
+  ],
+  "cv_strategy": "MultilabelStratifiedKFold stratified by aneurysm presence, all 13 vessel locations, and modality; K-fold protocol driven by training CSV split.",
+  "ensembling": "Final probabilities are obtained by averaging outputs from the YOLO 2.5D models, the 3D CenterNet model, and the three meta-classifiers, with a parallel input structure for the meta-classifiers and Nelder-Mead optimization applied during CV.",
+  "insights": [
+    "Using a 2.5D slice-stacking strategy without Z-axis resampling improved cross-validation scores by over 0.02.",
+    "Prioritizing mAP@50 over mAP@50-95 in the YOLO fitness function yielded better performance.",
+    "A parallel ensemble structure for meta-classifiers outperformed a series configuration.",
+    "Initial poor YOLO classification AUROC was traced back to an insufficient number of negative training samples."
+  ],
+  "critical_findings": [
+    "Training ConvNeXt architectures in half precision caused the loss to quickly become NaN.",
+    "Modifying the YOLO neck and head based on P3 feature utilization did not improve validation scores.",
+    "Using 3D segmentation masks to filter invalid YOLO location predictions caused a significant drop in recall.",
+    "Applying wavelet and log-polar transforms to YOLO-extracted patches failed to improve performance."
+  ],
+  "what_did_not_work": [
+    "Insufficient negative samples in early YOLO training caused poor classification AUROC.",
+    "Training ConvNeXt in half precision caused loss to quickly become NaN.",
+    "Modifying the YOLO neck and head yielded no validation improvement.",
+    "Using 3D segmentation masks to filter invalid YOLO location predictions caused recall to drop.",
+    "Wavelet and log-polar transforms on YOLO-extracted patches did not yield good results.",
+    "Keypoint-Based Dual-Graph Predictor was too time-consuming and led to timeouts."
+  ],
+  "github_repos": [
+    {
+      "url": "https://github.com/tom99763/9th-place-solution-RSNA-IAD",
+      "role": "solution"
+    },
+    {
+      "url": "https://github.com/tom99763/9th-place-solution-yolo-RSNA-IAD",
+      "role": "solution"
+    }
+  ],
+  "papers": [],
+  "other_solution_refs": [
+    {
+      "description": "BYU competition writeup referenced for YOLO+timm customization and fitness function insights",
+      "url": "https://www.kaggle.com/competitions/byu-locating-bacterial-flagellar-motors-2025/writeups/sergio-alvarez-paradox-17th-place-solution-ultraly"
+    },
+    {
+      "description": "Public notebook with initial LB 0.69 score used as starting point",
+      "url": "https://www.kaggle.com/code/yosukeyama/rsna2025-32ch-img-infer-lb-0-69-share"
+    },
+    {
+      "description": "Inspiration for 2.5D models with auxiliary segmentation head",
+      "url": "https://www.kaggle.com/code/hengck23/3d-unet-using-2d-image-encoder"
+    },
+    {
+      "description": "Reverse engineering notebook used to investigate YOLO feature utilization",
+      "url": "https://www.kaggle.com/code/tatamikenn/reverse-engineering-yolo"
+    },
+    {
+      "description": "Vessel segmentation code referenced for filtering invalid predictions",
+      "url": "https://www.kaggle.com/code/tom99763/rsna-iad-vessel-segmentation"
+    },
+    {
+      "description": "Failed attempt using wavelet and log-polar transforms on YOLO patches",
+      "url": "https://www.kaggle.com/code/tom99763/yolos-phw-mip-lp-rsna-i"
+    },
+    {
+      "description": "BYU writeup referencing the Keypoint-Based Dual-Graph Predictor approach",
+      "url": "https://www.kaggle.com/competitions/byu-locating-bacterial-flagellar-motors-2025/writeups/bias-vibes-trade-off-20th-place-solution-keypoint-"
+    }
+  ],
+  "source_url": "https://www.kaggle.com/competitions/rsna-intracranial-aneurysm-detection/discussion/611908"
+}

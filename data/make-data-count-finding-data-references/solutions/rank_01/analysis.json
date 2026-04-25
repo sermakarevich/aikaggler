@@ -1,0 +1,79 @@
+{
+  "summary": "The author secured 1st place by implementing a two-stage pipeline that separates DOI and accession ID detection from type classification. For DOIs, they leveraged the Data Citation Corpus V4.1 for mention extraction and trained six CatBoost models on metadata-derived features like title and author similarity. For accession IDs, they combined filtered families from the Data Citation Corpus and original EUPMC mappings, then used a 0-shot Qwen2.5-Coder LLM prompt enriched with context and specific metadata for classification. Careful handling of sparse labels, family-level majority voting, and strategic exclusion of accession IDs for DOI-positive articles drove their high leaderboard performance.",
+  "extensive_summary": "## Pipeline Overview\nThe solution splits the task into DOI and accession ID processing, prioritizing DOI detection first. Articles that receive a DOI prediction are excluded from accession ID processing, a decision that significantly boosted the leaderboard score. PDFs are converted to plain text using PyMuPDF, followed by whitespace cleaning and unicode normalization to ensure accurate regex matching.\n\n## DOI Detection and Classification\nMention-level detection relies on the Data Citation Corpus V4.1 (DataCite source), which outperformed version 3 on training labels. Only DOIs explicitly present in the cleaned text are retained. Type classification is entirely metadata-driven, bypassing article context. The author gathered article metadata via Crossref and dataset metadata via the DataCite API. Features focus heavily on comparing article and dataset titles, authors, and publication years, alongside categorical features for publisher, journal, and repository. Six type-stratified CatBoost models are trained, grouped by article IDs to simulate the test set's distribution of new articles.\n\n## Accession ID Detection and Classification\nAccession ID candidates are sourced from a curated mix of the Data Citation Corpus (EUPMC source) and original EUPMC text-mined mappings. The author carefully selected which families to include from each source, filtering out noisy ones like the European Nucleotide Archive using regex patterns. Type classification uses Qwen2.5-Coder (32B, AWQ quantization) via vLLM in a 0-shot setup. The prompt primarily uses the context snippet around the mention, but BioSample (SAMN) IDs receive enriched prompts with article metadata and NCBI API gatherer submitter details. Outputs are constrained using MultipleChoiceLogitsProcessor, and a final rule-based step assigns the type based on the most frequent prediction within each accession ID family per article.",
+  "rank": 1,
+  "competition_flow": "PDFs are converted to plain text, dataset mentions are extracted using curated external mappings (Data Citation Corpus and EUPMC), and their types are predicted using metadata-based CatBoost models for DOIs and a 0-shot Qwen LLM prompt for accession IDs, followed by family-level majority voting and sparse label filtering.",
+  "data_reading": [
+    "PDFs converted to plain text using PyMuPDF, with whitespace cleaning and unicode normalization applied before regex matching."
+  ],
+  "data_processing": [
+    "Filtered external mappings by specific accession ID families, applied regex matching to verify mention presence in text, and excluded sparsely labeled articles from local validation metrics to prevent false positives."
+  ],
+  "features_engineering": [
+    "Title similarity, author similarity, and published year comparison between article and dataset.",
+    "Categorical features for article publisher, journal, and dataset repository.",
+    "Derived feature for number of DOI predictions per article."
+  ],
+  "models": [
+    "CatBoost",
+    "Qwen2.5-Coder (32B, AWQ quantization)"
+  ],
+  "frameworks_used": [
+    "PyMuPDF",
+    "CatBoost",
+    "vLLM"
+  ],
+  "loss_functions": [],
+  "cv_strategy": "6-fold type-stratified CatBoost grouped by article IDs; adjusted F1 score excluding sparsely labeled articles for local validation; LB submissions used to validate accession ID family inclusion.",
+  "ensembling": "Blended predictions from 6 CatBoost models for DOI classification; applied family-level majority voting post-processing for accession ID type predictions.",
+  "insights": [
+    "Relying on EUPMC and DataCite mappings outperformed pure regex extraction.",
+    "Grouping CatBoost folds by article IDs is critical for handling new articles in the test set.",
+    "BioSample accession IDs benefit from enriched prompts containing submitter name and date.",
+    "Filtering specific accession ID families with regex patterns improved validation scores."
+  ],
+  "critical_findings": [
+    "Skipping accession ID prediction for articles that already received DOI predictions boosted the LB score.",
+    "Sparsely labeled articles created false positives in local validation if not explicitly discarded.",
+    "Using dataset DOI-article relationship types from DataCite did not improve classification performance."
+  ],
+  "what_did_not_work": [
+    "Qwen underperformed CatBoost for DOI type classification.",
+    "Adding article context features to DOI classification provided no benefit.",
+    "Complexifying the Qwen prompt or translating it to Chinese yielded no gains.",
+    "High-quality OCR models like Marker were too slow for the pipeline."
+  ],
+  "github_repos": [],
+  "papers": [],
+  "other_solution_refs": [
+    {
+      "description": "Kaggle discussion link",
+      "url": "https://www.kaggle.com/competitions/make-data-count-finding-data-references/discussion/586075"
+    },
+    {
+      "description": "Kaggle discussion link",
+      "url": "https://www.kaggle.com/competitions/make-data-count-finding-data-references/discussion/585036"
+    },
+    {
+      "description": "Kaggle discussion link",
+      "url": "https://www.kaggle.com/competitions/make-data-count-finding-data-references/discussion/584792"
+    },
+    {
+      "description": "Kaggle discussion link",
+      "url": "https://www.kaggle.com/competitions/make-data-count-finding-data-references/discussion/584337#3224495"
+    },
+    {
+      "description": "Kaggle discussion link",
+      "url": "https://www.kaggle.com/competitions/make-data-count-finding-data-references/writeups/tricks-10char#3286524"
+    },
+    {
+      "description": "Kaggle discussion link",
+      "url": "https://www.kaggle.com/competitions/make-data-count-finding-data-references/discussion/590778#3252688"
+    },
+    {
+      "description": "Kaggle discussion link",
+      "url": "https://www.kaggle.com/competitions/make-data-count-finding-data-references/discussion/598550#3268157"
+    }
+  ],
+  "source_url": "https://www.kaggle.com/competitions/make-data-count-finding-data-references/discussion/606853"
+}

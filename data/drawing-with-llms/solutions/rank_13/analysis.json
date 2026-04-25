@@ -1,0 +1,59 @@
+{
+  "summary": "The author developed a 13th place solution for an SVG scoring competition by optimizing the bitmap-to-SVG conversion pipeline and leveraging a modern diffusion model. Key technical choices included mitigating OCR hallucinations by injecting a specific SVG path, using binary search to maximize bitmap dimensions within a 10kB file limit, and applying custom SVG compression techniques. Image generation was handled by FLUX.1 Schnell quantized with nunchaku, while evaluation relied on a dummy VQA approach combined with linear regression to predict final scores efficiently.",
+  "extensive_summary": "## OCR Mitigation\nTo address OCR hallucinations, the author injected a hardcoded SVG path representing the letter `'a'` into the bottom right corner of the generated image. This simple intervention proved effective at stabilizing downstream scoring metrics.\n\n## Bitmap to SVG Conversion Optimization\nThe pipeline utilized VTracer for bitmap-to-SVG conversion. Instead of resizing bitmaps to a fixed smaller dimension, the author implemented a binary search to dynamically find the maximum bitmap size that stays under the competition's 10kB SVG limit. Further optimization involved custom SVG compression: converting absolute coordinates to relative ones, stripping unnecessary `translate` transformations, and converting the longest path into a fill rectangle. This compression strategy allowed bitmaps to be approximately 50px larger without increasing the final file size.\n\n## Image Generation & Evaluation\nThe author compared base Stable Diffusion models, finetuned SDXL LoRAs, and FLUX.1 Schnell, ultimately selecting FLUX.1 Schnell for its superior prompt adherence and speed when quantized via nunchaku. For evaluation, the pipeline generated 10-12 candidate images per prompt and scored them using dummy VQA questions. A linear regression model was trained on dummy VQA scores from an extended training set to predict the final VQA score. The author noted that generating more images with fewer VQA questions was significantly more time-efficient than the alternative.\n\n## Hindsight\nThe author reflects on missed opportunities, specifically noting that trying `pydiffvg` for further optimization and utilizing Siglip could have improved the score. They also highlight the challenges of solo competition work.",
+  "rank": 13,
+  "competition_flow": "Raw prompts are converted to bitmaps, optimized via binary search and custom SVG compression using VTracer, generated as multiple candidates with FLUX.1 Schnell, evaluated via dummy VQA scores, and ranked using a linear regression predictor before final submission.",
+  "data_reading": [],
+  "data_processing": [
+    "OCR mitigation via SVG path injection",
+    "Binary search for optimal bitmap dimensions within 10kB limit",
+    "Custom SVG compression (absolute to relative coordinates, transform removal, longest path to fill rectangle)",
+    "Multi-image generation per prompt"
+  ],
+  "features_engineering": [
+    "Linear regression weights mapping dummy VQA scores to predicted final VQA scores"
+  ],
+  "models": [
+    "FLUX.1 Schnell",
+    "VTracer",
+    "linear regression"
+  ],
+  "frameworks_used": [
+    "nunchaku",
+    "VTracer"
+  ],
+  "loss_functions": [],
+  "cv_strategy": "",
+  "ensembling": "Generated 10-12 candidate images per prompt and selected the top-scoring output based on linear regression-predicted VQA scores.",
+  "insights": [
+    "Adding a hardcoded letter to the image corner effectively reduces OCR hallucinations during scoring.",
+    "Binary search optimizes bitmap sizing to maximize detail within strict file size limits.",
+    "Custom SVG compression techniques like coordinate conversion and transform removal significantly increase allowable bitmap dimensions.",
+    "Generating more images with fewer evaluation questions yields better time-to-score efficiency than fewer images with more questions."
+  ],
+  "critical_findings": [
+    "FLUX.1 Schnell outperformed both base SD models and finetuned SDXL LoRAs in prompt adherence and generation speed when quantized.",
+    "SVG compression primarily benefits non-SVG-friendly images, allowing substantially larger input bitmaps without violating size constraints."
+  ],
+  "what_did_not_work": [
+    "Base Stable Diffusion models and finetuned SDXL LoRAs were outperformed by FLUX.1 Schnell in both prompt adherence and speed."
+  ],
+  "github_repos": [
+    {
+      "url": "https://github.com/mit-han-lab/nunchaku",
+      "role": "library"
+    }
+  ],
+  "papers": [],
+  "other_solution_refs": [
+    {
+      "description": "Educational notebook and starting point for the solution",
+      "url": "https://www.kaggle.com/code/richolson/stable-diffusion-svg-scoring-metric"
+    },
+    {
+      "description": "Reference for VTracer pipeline and binary search optimization",
+      "url": "https://www.kaggle.com/code/dhurky/lb-0-52-sd-svg-conversion-using-vtracer"
+    }
+  ],
+  "source_url": "https://www.kaggle.com/competitions/drawing-with-llms/discussion/581032"
+}

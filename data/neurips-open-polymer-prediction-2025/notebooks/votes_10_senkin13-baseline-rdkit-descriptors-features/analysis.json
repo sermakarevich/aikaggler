@@ -1,0 +1,38 @@
+{
+  "summary": "This notebook provides a baseline solution for the NeurIPS 2025 Open Polymer Prediction competition by leveraging RDKit molecular descriptors as features for a LightGBM regressor. It demonstrates a straightforward pipeline that computes all available physicochemical and topological descriptors from SMILES strings, concatenates them to the dataset, and trains separate LightGBM models for each of the five target properties. The approach highlights how off-the-shelf chemical descriptors can serve as a strong, interpretable starting point for polymer property prediction without requiring custom feature engineering or deep learning architectures. Readers should understand how to efficiently batch-process SMILES into tabular features and apply a standard gradient boosting workflow for multi-target regression.",
+  "purpose": "baseline",
+  "competition_flow": "Loads train/test CSVs containing SMILES strings, computes all RDKit descriptors for each molecule, trains five separate LightGBM regressors using 5-fold cross-validation (one per target property), and averages the fold predictions to generate a submission CSV.",
+  "data_reading": [
+    "pd.read_csv() on /kaggle/input/neurips-open-polymer-prediction-2025/train.csv and test.csv"
+  ],
+  "data_processing": [
+    "Computes RDKit descriptors for each SMILES string; invalid molecules return None (resulting in NaNs); no explicit imputation, scaling, or normalization is applied before training."
+  ],
+  "features_engineering": [
+    "All available RDKit descriptors (e.g., molecular weight, topological indices, VSA, fragment counts, and physicochemical properties) computed directly from SMILES strings."
+  ],
+  "models": [
+    "LightGBM"
+  ],
+  "frameworks_used": [
+    "lightgbm",
+    "scikit-learn",
+    "rdkit",
+    "pandas",
+    "numpy"
+  ],
+  "loss_functions": [
+    "mae"
+  ],
+  "cv_strategy": "KFold(n_splits=5, random_state=817, shuffle=True)",
+  "ensembling": "Averages predictions across the 5 LightGBM folds for each target property before saving to submission.",
+  "insights": [
+    "RDKit's built-in descriptor set provides a comprehensive, ready-to-use feature space for polymer property prediction.",
+    "Gradient boosting with MAE loss and early stopping is effective for handling the diverse scale and distribution of molecular properties.",
+    "Using all available descriptors without manual selection or scaling serves as a robust baseline."
+  ],
+  "critical_findings": [],
+  "what_did_not_work": [],
+  "source_url": "https://www.kaggle.com/code/senkin13/baseline-rdkit-descriptors-features",
+  "votes": 220
+}

@@ -1,0 +1,36 @@
+{
+  "summary": "This notebook implements an optimized inference pipeline to generate competition submissions for locating bacterial flagellar motors in 3D tomograms. It loads pre-trained YOLOv8 weights, processes test slices with GPU-accelerated parallelization, and applies 3D non-maximum suppression to consolidate detections across slices. The author demonstrates how to efficiently handle large-scale medical imaging inference by dynamically adjusting batch sizes, utilizing half-precision computation, and overlapping I/O with GPU processing. Readers should learn practical techniques for deploying object detection models in resource-constrained or time-sensitive Kaggle environments.",
+  "purpose": "inference",
+  "competition_flow": "Loads pre-trained YOLOv8 weights, runs optimized GPU inference on test tomogram slices, applies 3D NMS to merge detections, and exports the top prediction per tomogram to a CSV submission file.",
+  "data_reading": [
+    "Reads test data as directories of .jpg slice files per tomogram, loading them via cv2.imread with PIL as a fallback."
+  ],
+  "data_processing": [
+    "Normalizes slice intensities using 2nd and 98th percentile clipping.",
+    "Subsamples slices across the z-axis using a configurable CONCENTRATION ratio to control processing speed."
+  ],
+  "features_engineering": [],
+  "models": [
+    "YOLOv8"
+  ],
+  "frameworks_used": [
+    "torch",
+    "ultralytics"
+  ],
+  "loss_functions": [],
+  "cv_strategy": "",
+  "ensembling": "Applies 3D non-maximum suppression to cluster and merge nearby detections across slices, then selects the single highest-confidence detection per tomogram for the final submission.",
+  "insights": [
+    "Dynamic batch sizing based on available GPU memory prevents out-of-memory errors while maximizing throughput.",
+    "Fusing convolutional and batch normalization layers and enabling FP16 inference significantly accelerates YOLOv8 prediction.",
+    "Overlapping image preloading with GPU inference via threading reduces I/O bottlenecks during large-scale processing.",
+    "3D NMS effectively consolidates redundant slice-level detections into coherent 3D motor coordinates."
+  ],
+  "critical_findings": [
+    "Subsampling slices via the CONCENTRATION parameter trades detection recall for speed, making it useful for pipeline verification rather than final scoring.",
+    "GPU memory availability directly dictates the maximum feasible batch size, requiring runtime calculation rather than static configuration."
+  ],
+  "what_did_not_work": [],
+  "source_url": "https://www.kaggle.com/code/andrewjdarley/submission-notebook",
+  "votes": 484
+}

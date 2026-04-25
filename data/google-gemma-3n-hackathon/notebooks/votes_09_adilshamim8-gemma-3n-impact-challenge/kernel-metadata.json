@@ -1,0 +1,24 @@
+{
+  "id": "adilshamim8/gemma-3n-impact-challenge",
+  "id_no": 85950224,
+  "title": "Gemma 3n Impact Challenge",
+  "code_file": "gemma-3n-impact-challenge.ipynb",
+  "language": "python",
+  "kernel_type": "notebook",
+  "is_private": false,
+  "enable_gpu": false,
+  "enable_tpu": false,
+  "enable_internet": false,
+  "keywords": [
+    "tabular",
+    "text"
+  ],
+  "dataset_sources": [],
+  "kernel_sources": [],
+  "competition_sources": [
+    "google-gemma-3n-hackathon"
+  ],
+  "model_sources": [],
+  "docker_image": "gcr.io/kaggle-images/python@sha256:3223337db7786b068bfeac3a1b741bf0d572a4bf309735b45692de873b7758db",
+  "machine_shape": "None"
+}

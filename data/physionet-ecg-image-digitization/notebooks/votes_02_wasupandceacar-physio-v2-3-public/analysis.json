@@ -1,0 +1,46 @@
+{
+  "summary": "This notebook implements a multi-stage inference pipeline for the PhysioNet ECG Image Digitization competition. It sequentially applies three neural networks to correct image geometry, rectify the ECG trace, and predict pixel-level coordinates that are converted into time-series waveforms. The author demonstrates how to adapt a previous version to a competition hint and higher resolution by updating the network architecture, preprocessing, and postprocessing steps. Readers should understand how to chain image processing stages, handle coordinate-to-series conversion, and manage submission formatting for multi-lead ECG data.",
+  "purpose": "inference",
+  "competition_flow": "Loads test ECG images, processes them through three sequential neural networks for geometric correction and coordinate prediction, converts the predicted coordinates into 12-lead time-series waveforms, and exports a formatted CSV submission.",
+  "data_reading": [
+    "Images are loaded via cv2.imread as RGB arrays.",
+    "Metadata and test splits are read with pd.read_csv.",
+    "Intermediate model outputs are loaded via np.load."
+  ],
+  "data_processing": [
+    "Applies homography-based normalization and gridpoint rectification for geometric correction.",
+    "Crops the image to a fixed ROI, resizes to (1696, 4352) using bilinear interpolation, and normalizes pixel values by dividing by 255.",
+    "Uses linear interpolation to match target row counts during submission assembly."
+  ],
+  "features_engineering": [
+    ""
+  ],
+  "models": [
+    "Stage0Net",
+    "Stage1Net",
+    "Net3 (ResNet34 encoder with custom MyCoordUnetDecoder and Conv2d head)"
+  ],
+  "frameworks_used": [
+    "pytorch",
+    "timm",
+    "opencv-python",
+    "pandas",
+    "numpy",
+    "plotly",
+    "kagglehub"
+  ],
+  "loss_functions": [
+    ""
+  ],
+  "cv_strategy": "",
+  "ensembling": "",
+  "insights": [
+    "Multi-stage geometric correction (homography followed by gridpoint rectification) is required before coordinate prediction to handle ECG image distortions.",
+    "Coordinate outputs must be scaled and offset using competition-specific constants (zero_mv, mv_to_pixel) to reconstruct valid ECG series.",
+    "Submission formatting requires expanding 4-channel predictions to 12 leads and interpolating sequences to match the exact row counts specified in the test metadata."
+  ],
+  "critical_findings": [],
+  "what_did_not_work": [],
+  "source_url": "https://www.kaggle.com/code/wasupandceacar/physio-v2-3-public",
+  "votes": 321
+}

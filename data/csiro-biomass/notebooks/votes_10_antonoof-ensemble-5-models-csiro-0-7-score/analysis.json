@@ -1,0 +1,28 @@
+{
+  "summary": "This notebook demonstrates a post-processing ensemble pipeline that combines predictions from five independently trained models to generate a final competition submission. It orchestrates external inference scripts, loads the resulting CSV files, aligns them by sample ID, and computes a weighted average of the target predictions. The author notes that this approach achieves a competitive score of approximately 0.7 while maintaining a manageable inference runtime of roughly 7.45 hours. Readers should take away how straightforward weighted ensembling can effectively aggregate diverse model outputs without requiring additional training or complex post-processing. The notebook also serves as a practical template for managing multi-model inference and submission generation in Kaggle competitions.",
+  "purpose": "ensemble",
+  "competition_flow": "Loads five pre-generated model predictions from CSV files, merges them by sample ID, applies a weighted average, and exports the final ensemble submission.",
+  "data_reading": [
+    "Reads five submission CSV files (submission1.csv to submission5.csv) using pandas, each containing a sample_id column and a target column."
+  ],
+  "data_processing": [
+    "Renames target columns to target_1 through target_5, merges all DataFrames on sample_id, and calculates a weighted average of the predictions."
+  ],
+  "features_engineering": [],
+  "models": [],
+  "frameworks_used": [
+    "pandas"
+  ],
+  "loss_functions": [],
+  "cv_strategy": "",
+  "ensembling": "Combines five model predictions using a weighted average with weights [0.19, 0.27, 0.22, 0.22, 0.10] applied to the respective target columns before saving the final submission.",
+  "insights": [
+    "Simple weighted averaging of diverse model predictions can effectively boost competition scores without additional training.",
+    "External inference scripts can be orchestrated directly in a notebook to manage complex or time-consuming prediction pipelines.",
+    "Proper column renaming and merging by a common identifier is crucial for aligning heterogeneous model outputs."
+  ],
+  "critical_findings": [],
+  "what_did_not_work": [],
+  "source_url": "https://www.kaggle.com/code/antonoof/ensemble-5-models-csiro-0-7-score",
+  "votes": 232
+}

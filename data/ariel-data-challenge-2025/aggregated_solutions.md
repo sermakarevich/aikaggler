@@ -1,0 +1,222 @@
+# ariel-data-challenge-2025: cross-solution summary
+
+This exoplanet transit characterization competition required participants to extract precise transit depths and uncertainties from noisy, instrument-specific spectroscopic signals. Winning approaches predominantly combined rigorous physics-based transit modeling (e.g., batman, differentiable physical models) with targeted signal calibration, chunking strategies, and lightweight post-processing pipelines. Success heavily depended on handling detector systematics, implementing robust uncertainty calibration, and leveraging ensemble or gradient-boosting refinements rather than relying solely on complex deep learning architectures.
+
+## Competition flows
+- Raw sensor counts binned/calibrated -> iterative Bayesian inference solver with custom prior/batman -> post-hoc calibration of 12 parameters.
+- Raw calibrated signals cleaned -> split into frequency/time chunks -> phase-based feature extraction & CNN processing -> ensemble of 36 RQ NNs with custom loss.
+- Raw observation preprocessing -> physics-based phase detection & multi-component GP modeling -> deep learning residual correction with quantile regression -> gradient boosting for sigma scale -> pseudo-labeling on test data.
+- GPU-accelerated preprocessing -> hierarchical physics-based transit fit (batman/iMinuit) -> cross-validated ensemble blending PCA-regularized & smoothed predictions optimized against score.
+- Raw light curve preprocessing -> iterative transit curve-fitting (batman/pylightcurve-torch/GP) -> linear NN calibrated with GLLoss.
+- Standard preprocessing -> transit boundary detection via second derivative extrema & polynomial detrending -> Ridge regression with edge-transit handling & bootstrapping uncertainty.
+- Data calibration/binning -> differentiable physical transit model fit via Levenberg-Marquardt -> PCA & gradient boosting refinement.
+
+## Data reading
+- Raw sensor data in counts per pixel; time binning (5 frames for AIRS, 50 for FGS); wavelength binning via summing over the dispersion axis.
+
+## Data processing
+- Time binning
+- Wavelength binning
+- Hot/dead pixel masking
+- Cosmic ray removal/replacement
+- PCA-based jitter analysis
+- Background signal removal
+- Low-pass filtering
+- Standard gain/offset/non-linearity calibration
+- 8σ/5σ time-domain outlier removal
+- Moving average smoothing
+- Frequency/time chunk splitting
+- Custom feature scaling
+- Signal/gradient smoothing
+- Gradient clipping
+- Edge zeroing
+- Gaussian smoothing
+- Threshold scanning for transit boundaries
+- Local baseline sampling
+- Training augmentations (time-axis flipping, noise injection)
+- ADC gain/offset correction
+- 5th-degree polynomial non-linearity correction
+- Master dark frame subtraction
+- Flat-fielding
+- Center-of-mass jitter regression
+- Aperture photometry
+- Edge-background subtraction
+- Spike-cleaning
+- Frame averaging
+- Slope correction
+- PCA projection
+- Savitzky-Golay smoothing
+- Wavelength-dependent sigma calibration scaling
+- Inverted encoding formula
+- Dark frame scaling by sensor reset duration
+- 2D interpolation jitter removal
+- Dark-region masking
+- Edge transit flagging
+- Poor quality transit removal
+- Sigma scaling for low-quality cases
+- Linear trend removal from Rp
+- Right-edge value fixing
+- Mu/sigma scaling for high impact factor planets
+
+## Features engineering
+- PCA basis functions for transit depth variation
+- Gaussian Process kernels for wavelength variation
+- Quadratic limb darkening parameters
+- Third-order polynomial drift terms
+- Phase-derived statistics (mean, min, max, range, min div edge, 8th-degree polynomial fits) from gradient extrema
+- Squaring Rs features
+- Averaged CNN features
+- Physics-derived features (reconstructed signals, ideal transit models, multi-component GP kernel)
+- Baseline polynomial degree restriction
+- Transit boundary detection via second derivative extrema
+- Polynomial detrending
+- Depth estimates from SNR-weighted AIRS frequencies
+- Intersecting windows across adjacent AIRS frequencies
+- FG1 channel features
+- Average/mid-transit/percentile depth values
+- Flux ratio estimates
+- Slope features
+- Star metadata
+- Fitted physical model parameters
+- Constant shifts to mu/sigma
+
+## Models
+- batman transit model
+- Gaussian Process
+- PCA
+- Third-order polynomial drift
+- Quadratic limb darkening model
+- CNN
+- Rational Quadratic Neural Network (RQ NN)
+- Soft RBF/RQ clustering
+- Multilayer Perceptron (MLP)
+- BiGRU + CNN + MLP
+- BiLSTM + CNN + MLP
+- BiLSTM + CNN + BiLSTM
+- Gradient Boosting
+- Savitzky-Golay filter
+- Ridge Regression
+- pylightcurve-torch
+- gpytorch
+- Linear NN
+- 2D polynomial
+- Differentiable physical transit model (nonlinear limb darkening with bivariate polynomial drift)
+
+## Frameworks used
+- batman
+- scipy
+- numpy
+- joblib
+- optuna
+- jax
+- adabelief
+- CuPy
+- iMinuit
+- pqdm
+- torch
+- pylightcurve-torch
+- gpytorch
+- pytorch
+
+## Loss functions
+- Maximum likelihood estimation (MLE)
+- Competition metric optimization
+- Custom median-weighted loss
+- Quantile regression
+- MSE
+- GLLoss
+- MSE loss with noise-weighted wavelengths
+
+## CV strategies
+- Hyperparameters and fudging parameters fitted on the full training set without explicit CV
+- Simple 80-20 train/validation split
+- 10-fold Grouped K-Fold Cross-Validation grouped by planet_id
+- 4-fold split by star with separate CV for NN postprocessing
+
+## Ensembling
+- Not applicable (single pipeline with post-hoc calibration)
+- Deep ensembling of 36 RQ NNs predicting mean and variance directly
+- Averaging calibrated predictions and uncertainties across 10 cross-validated models
+- No explicit ensembling (predictions processed through a single linear NN)
+- Uncertainty calibration via bootstrapping and CV standard deviations
+- Refinement via PCA and gradient boosting instead of traditional ensembling
+
+## Insights
+- Bayesian inference provides a principled framework for estimating transit depth and uncertainty but requires careful prior specification.
+- Post-hoc calibration is surprisingly necessary for top scores, indicating a gap between the prior model and reality.
+- Jitter shapes approximately sum to zero but detector calibration imperfections prevent perfect cancellation.
+- Focusing gradient updates on models performing worse than the ensemble median prevents overfitting and boosts validation scores.
+- Soft RBF/RQ clustering effectively handles diverse transit curve shapes by grouping instances before performing linear regression within clusters.
+- Splitting airs data into 32 frequency chunks and processing them independently significantly improves feature resolution and CV performance.
+- Model inference speed is negligible compared to data reading time, making efficient data loading a priority over complex architecture design.
+
+## Critical findings
+- Removing the post-hoc calibration step drops the score from 1st place to ~20th place, revealing a major model misspecification.
+- Comparing transit profiles for the same planet shows unexplained variations that the current prior cannot capture.
+- Noise characteristics deviate from pure Poisson, with lower noise for brighter pixels and occasional noisy outliers.
+- Simple 8σ time-domain outlier removal on calibrated signals alone improved the CV score by ~0.05.
+- Training exclusively on models performing worse than the ensemble median prevents overfitting and boosts CV by ~0.03+.
+- Standard regularization techniques like L1/L2, dropout, and entropy-based regularization for RBF/RQ clusters failed to improve performance.
+- Using multiple observations for the same planet during training but discarding them during inference is a viable strategy that does not harm generalization.
+- The Gaussian Process kernel, while not directly improving sigma prediction, unexpectedly stabilized all downstream tasks including linear corrections and neural networks.
+- Quantile regression effectively enabled simultaneous prediction of wavelength residuals and uncertainty (sigma).
+- Pseudo-labeling was viable because validation performance remained stable even when training MSE overfitted.
+- Using sigma estimates from top-performing solutions often reduced the final score by ~0.1, making them counterproductive.
+- Higher-order baseline polynomials caused signal instability, and reducing the degree to 2–3 yielded a ~0.01 improvement.
+- More complex neural network architectures failed to improve performance over simpler ones.
+- PSF photometry yields lower SNR than aperture photometry for FGS1 due to detector jitter.
+- A PCA-based jitter correction method for AIRS proved less effective than center-of-mass regression and was disabled.
+- Subtracting background from detector edges is suboptimal because the spectroscopic signal diffracts across the entire sensor, complicating noise isolation.
+- Attempts to isolate additive foreground noise in AIRS data failed to de-correlate signal from noise, yielding incorrect compensation values.
+- Inverting the competition's encoding formula was necessary to correctly decode the raw data.
+- Scaling the dark frame by the sensor reset duration significantly impacts signal accuracy.
+- Using a GLLoss instead of MSE for the calibration network better handles uncertainty estimation.
+- The FGS1 sensor does not produce a clean elliptical light spot, requiring dark-region masking instead of standard square cropping.
+- Some frames exhibit large center deviations due to cosmic rays, necessitating frame replacement with the preceding valid frame.
+- Dispersion changes caused by jitter remain significant and were not fully corrected, affecting signal variance across spatial axes.
+- Higher polynomial degrees become less reliable when transits occupy a large portion of the observation due to fewer out-of-transit points for baseline fitting.
+- Slope features and percentile-based depth measurements significantly improved the score compared to using only average/mid-transit depths.
+- Bootstrapping was essential for robust uncertainty estimation, as removing it caused a major score drop.
+- Optimizing polynomial degree (1-5) yielded only marginal leaderboard improvements despite theoretical appeal.
+- Removing bootstrapping caused a severe private score drop (61.2 to 57.6), highlighting its critical role in uncertainty calibration.
+- Slope features were highly impactful, as their removal caused a massive score drop from 60.9 to 52.6.
+- Fitting all physical parameters simultaneously via Levenberg-Marquardt is highly effective for this noisy transit data.
+- Gradient boosting significantly boosts the final score when used to refine mu and sigma predictions using star info and fitted parameters.
+- Including FGS channel data alongside AIRS improves the overall score.
+- The model inherently fits Rp with an unwanted linear trend and unstable right-edge values, requiring manual post-processing.
+- Planets with high impact factors (b > 0.75) systematically overestimate mu by ~4-6%, requiring a dedicated scaling correction.
+- Adding orbit radius to account for trajectory curvature improved results on manually generated samples but failed on the actual training data.
+
+## What did not work
+- A fully principled preprocessing flow that simultaneously handles jitter, non-Poisson noise, invalid pixels, and background signals failed to be fully optimized.
+- Different limb darkening models did not resolve the discrepancy between the prior and the synthetic data.
+- L1 and L2 regularization
+- Dropout
+- Data augmentation via random splicing of transit data
+- Fischer-information-like or entropy based regularisation for RBF/RQ
+- Full trainable Mahalanobis distance
+- More complex model architectures did not bring improvements.
+- Post-processing with Gaussian Processes and Ridge Regression yielded worse results than the PCA/smoothed blend, and attempts to isolate additive foreground noise in AIRS data failed to de-correlate signal from noise.
+- Adding orbit radius to account for trajectory curvature produced better results on manually generated samples but did not work well on the training data.
+
+## Notable individual insights
+- rank 1 (Bayesian Inference, of course): Post-hoc calibration is surprisingly necessary for top scores, indicating a gap between the prior model and reality.
+- rank 3 (3rd Place Solution): Focusing gradient updates on models performing worse than the ensemble median prevents overfitting and boosts validation scores.
+- rank 6 (6th Place Solution Batman-Minuit): Grouping cross-validation folds by planet_id is essential to prevent data leakage in time-series/transit data.
+- rank 7 (7th Place Solution): Using sigma estimates from top-performing solutions often reduced the final score, making them counterproductive.
+- rank 9 (9th Solution): Inverting the competition's encoding formula was necessary to correctly decode the raw data.
+- rank 2 (2nd Place Solution): Removing bootstrapping caused a severe private score drop, highlighting its critical role in uncertainty calibration.
+- rank 5 (5th place solution): Planets with high impact factors (b > 0.75) systematically overestimate mu by ~4-6%, requiring a dedicated scaling correction.
+
+## Solutions indexed
+- #1 [[solutions/rank_01/solution|1st place solution: Bayesian Inference, of course]]
+- #2 [[solutions/rank_02/solution|2nd Place Solution]]
+- #3 [[solutions/rank_03/solution|3rd Place Solution]]
+- #5 [[solutions/rank_05/solution|5th place solution]]
+- #6 [[solutions/rank_06/solution|6th Place Solution Batman-Minuit]]
+- #7 [[solutions/rank_07/solution|7th Place Solution]]
+- #9 [[solutions/rank_09/solution|9th Solution]]
+
+## GitHub links
+- [jcottaar/ariel2](https://github.com/jcottaar/ariel2) _(solution)_ — from [[solutions/rank_01/solution|1st place solution: Bayesian Inference, of course]]
+- [Alehandreus/ariel-2025](https://github.com/Alehandreus/ariel-2025) _(solution)_ — from [[solutions/rank_05/solution|5th place solution]]

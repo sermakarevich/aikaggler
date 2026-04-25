@@ -1,0 +1,56 @@
+{
+  "summary": "The author secured 4th place by implementing a multi-modal regression network that fuses ViT-Huge visual features with tabular measurements. A critical data cleaning step involved manually cropping cardboard artifacts from pasture images, which consistently boosted leaderboard scores. The pipeline utilized a two-stage training approach: a primary regression model combined self-supervised DINOv3 features with tabular inputs via a 2-layer MLP, followed by an auxiliary task that forced the backbone to predict tabular features directly from images. These architectural and preprocessing choices, combined with careful loss weighting and normalization, drove the final Gold Medal performance.",
+  "extensive_summary": "## Data Preprocessing & Cleaning\nBefore model training, the author identified that a significant portion of the image data contained irrelevant background noise from cardboard backing used during data collection. Manual cropping of these cardboard edges was implemented to force the model to focus purely on biomass (grass/clover). This preprocessing step alone provided a consistent **+0.01** boost on both the public and private leaderboards.\n\n## Model Architecture & Multi-Modal Fusion\nThe core approach is a **Multi-Modal Regression Network** built on the `vit_huge_plus_patch16_dinov3.lvd1689m` backbone. The self-supervised DINOv3 weights were chosen over standard supervised weights because they provided superior feature extraction for grass textures. Instead of relying solely on images, the pipeline incorporated physical measurements (`Pre_GSHH_NDVI` and `Height_Ave_cm`). These tabular features were encoded via a 2-layer MLP and concatenated with the ViT global average pooling features before passing to the final regression heads. The primary loss was `WeightedSmoothL1Loss` with custom weights `[0.1, 0.1, 0.1, 0.2, 0.5]` to heavily penalize errors on Total and GDM biomass targets.\n\n## Auxiliary Task Training\nA major performance driver was a secondary training stage where the backbone was repurposed to predict tabular features (`NDVI` and `Height`) solely from RGB images. Initialized with the best weights from Fold 0 of the main training loop, this auxiliary task forced the model to learn robust, domain-specific features correlated with plant health and density that the primary heads might have overlooked. This stage added another **+0.01** to both final leaderboard scores.\n\n## Training Configuration & Failed Experiments\nTraining followed a two-stage pipeline with StandardScaler normalization applied to all targets and features. Stage 1 used AdamW, CosineAnnealingWarmRestarts, a batch size of 10, and 800x800 input images across 5 folds (Seed 42). Stage 2 used AdamW, ReduceLROnPlateau, a batch size of 8, and 5 folds (Seed 44). The author explicitly documented several failed attempts, including pure MSE, Quantile Loss, Log Loss, R2 optimization, log/Sigmoid target transforms, input sizes >800x800, dual-image processing, and a custom Hybrid Texture Pooling layer that showed promising validation loss but failed to generalize to the private leaderboard.",
+  "rank": 4,
+  "competition_flow": "Raw pasture images and tabular measurements were cleaned (cardboard cropping) and normalized, then fed into a two-stage multi-modal ViT pipeline where a primary regression model fused visual and tabular features, followed by an auxiliary task to predict tabular inputs from images, with final predictions aggregated across 5-fold CV.",
+  "data_reading": [],
+  "data_processing": [
+    "Manual cropping of cardboard edges from pasture images",
+    "Input resizing to 800x800",
+    "StandardScaler normalization for all regression targets and tabular features"
+  ],
+  "features_engineering": [
+    "Pre_GSHH_NDVI",
+    "Height_Ave_cm"
+  ],
+  "models": [
+    "vit_huge_plus_patch16_dinov3.lvd1689m",
+    "Multi-Modal Regression Network",
+    "2-layer MLP",
+    "Hybrid Texture Pooling"
+  ],
+  "frameworks_used": [],
+  "loss_functions": [
+    "WeightedSmoothL1Loss",
+    "MSELoss"
+  ],
+  "cv_strategy": "5-Fold Cross-Validation (Seed 42 for Stage 1, Seed 44 for Stage 2)",
+  "ensembling": "Predictions were aggregated across 5-fold cross-validation for both training stages, with no additional threshold tuning, calibration, or TTA detailed.",
+  "insights": [
+    "Manually removing background artifacts like cardboard backing from images provides a significant and consistent score boost.",
+    "Self-supervised DINOv3 weights outperform standard supervised weights for extracting fine-grained grass texture features.",
+    "Predicting tabular features from images via an auxiliary task forces the backbone to learn robust, domain-specific plant health and density representations.",
+    "Normalizing all regression targets and tabular inputs with StandardScaler is crucial for stable convergence in multi-modal regression pipelines."
+  ],
+  "critical_findings": [
+    "Input image sizes larger than 800x800 yielded diminishing returns and caused OOM errors rather than improving performance.",
+    "A custom Hybrid Texture Pooling layer that reconstructed spatial grids from ViT tokens showed promising validation loss but failed to generalize to the private leaderboard.",
+    "Target transformations like log scaling or Sigmoid outputs consistently degraded performance compared to raw regression targets."
+  ],
+  "what_did_not_work": [
+    "Pure MSE, Quantile Loss, Log Loss, and direct R2 optimization all failed to beat SmoothL1.",
+    "Log transformation of targets and Scaled Sigmoid outputs reduced performance.",
+    "Input sizes larger than 800x800 offered diminishing returns and caused OOM errors.",
+    "Complex dual-input image processing did not yield better results.",
+    "Hybrid Texture Pooling architecture showed promising validation loss but failed to generalize to the private leaderboard."
+  ],
+  "github_repos": [
+    {
+      "url": "https://github.com/Jatin-Mehra119/Kaggle-CSIRO-4th-Position-Solution-",
+      "role": "solution"
+    }
+  ],
+  "papers": [],
+  "other_solution_refs": [],
+  "source_url": "https://www.kaggle.com/competitions/csiro-biomass/discussion/670677"
+}

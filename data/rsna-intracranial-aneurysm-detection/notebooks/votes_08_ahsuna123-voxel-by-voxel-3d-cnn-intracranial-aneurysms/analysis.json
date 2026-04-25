@@ -1,0 +1,44 @@
+{
+  "summary": "This notebook delivers a comprehensive exploratory analysis and a baseline 3D CNN pipeline for detecting and localizing intracranial aneurysms from 3D DICOM brain scans. It systematically investigates label distributions, anatomical location frequencies, imaging modality biases, patient demographics, and DICOM metadata properties like slice thickness and voxel spacing. The author demonstrates a complete end-to-end workflow that parses raw DICOM series, normalizes them into uniform 64\u00b3 tensors, and trains a lightweight multi-label 3D convolutional network. Readers should understand how to handle variable-depth medical imaging data, manage class imbalance, and structure a memory-efficient 3D CNN baseline for voxel-wise medical diagnosis.",
+  "purpose": "baseline",
+  "competition_flow": "Loads raw DICOM series and CSV labels, preprocesses them into normalized 3D volumes, trains a lightweight multi-label 3D CNN, and generates a submission via a Kaggle inference server.",
+  "data_reading": [
+    "Reads train.csv and train_localizers.csv via pandas.",
+    "Parses DICOM series by walking directories, sorting files by InstanceNumber, and extracting pixel_array, RescaleSlope, RescaleIntercept, PixelSpacing, and SliceThickness using pydicom."
+  ],
+  "data_processing": [
+    "Clips volumes to 1st\u201399th percentiles to handle outliers.",
+    "Normalizes pixel values to [0, 1].",
+    "Resizes volumes to 64\u00b3 using scipy.ndimage.zoom.",
+    "Returns zero tensors for invalid or empty series to prevent pipeline crashes."
+  ],
+  "features_engineering": [],
+  "models": [
+    "Simple3DCNN (custom lightweight 3D CNN with 4 Conv3d blocks, BatchNorm, MaxPool3d, AdaptiveAvgPool3d, and 3 FC layers)"
+  ],
+  "frameworks_used": [
+    "pytorch",
+    "pydicom",
+    "scikit-learn",
+    "kaggle_evaluation"
+  ],
+  "loss_functions": [
+    "BCELoss"
+  ],
+  "cv_strategy": "",
+  "ensembling": "",
+  "insights": [
+    "Aneurysms show strong spatial clustering in specific brain regions, with notable co-occurrence patterns across arteries.",
+    "Imaging modality preference (CTA vs MRA) varies significantly by anatomical location, indicating potential diagnostic workflow biases.",
+    "DICOM series exhibit high variability in slice count and voxel spacing, necessitating robust normalization and resizing for 3D models.",
+    "Only a small fraction of scans include vessel segmentation masks, limiting supervised segmentation approaches."
+  ],
+  "critical_findings": [
+    "The dataset exhibits significant class imbalance, with far fewer positive aneurysm cases than negatives.",
+    "Minor label mismatches exist between train.csv and train_localizers.csv, suggesting potential annotation noise or underreporting.",
+    "Many scans contain very few slices, which may lack sufficient anatomical context for reliable 3D detection."
+  ],
+  "what_did_not_work": [],
+  "source_url": "https://www.kaggle.com/code/ahsuna123/voxel-by-voxel-3d-cnn-intracranial-aneurysms",
+  "votes": 131
+}

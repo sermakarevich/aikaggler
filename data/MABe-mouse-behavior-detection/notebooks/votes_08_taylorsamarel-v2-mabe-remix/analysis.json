@@ -1,0 +1,32 @@
+{
+  "summary": "This notebook provides a comprehensive baseline and ensemble pipeline for the MABe (Mouse Behavior) challenge, emphasizing extensive exploratory data analysis and feature visualization. It demonstrates how to extract spatial, temporal, and behavioral features from raw tracking data, then train and combine multiple tree-based models. The author highlights the importance of detailed statistical and distributional analysis to understand feature behavior and prediction alignment with ground truth. Readers should take away best practices for handling JSON-labeled behaviors, managing class imbalance via stratified sampling, and generating publication-quality visualizations to debug and interpret model outputs.",
+  "purpose": "ensemble",
+  "competition_flow": "Loads raw tracking and behavioral data, extracts spatial-temporal features, trains an ensemble of tree-based classifiers with stratified sampling, combines their predictions, and generates a submission alongside comprehensive diagnostic visualizations.",
+  "data_reading": [
+    "Uses polars and pandas to load tabular data; parses JSON-formatted behavior labels and metadata strings."
+  ],
+  "data_processing": [
+    "Parses JSON behavior strings, computes derived metrics (video duration, total frames, arena area, pixel density), handles missing values with SimpleImputer, filters warnings, and applies stratified sampling for class balance."
+  ],
+  "features_engineering": [
+    "Spatial history features, speed/displacement/activity metrics (sp_, disp, act), position coordinates (cx_, cy_, x_, y_), distance/curvature features (d_m, curv), temporal aggregations (_m, _s, pct, rng), and lab/video-level aggregations."
+  ],
+  "models": [
+    "LightGBM, XGBoost, CatBoost, GANDALF"
+  ],
+  "frameworks_used": [
+    "lightgbm, xgboost, catboost, gandalf, scikit-learn, polars, pandas, numpy, scipy, matplotlib, seaborn"
+  ],
+  "loss_functions": [],
+  "cv_strategy": "",
+  "ensembling": "Combines predictions from multiple tree-based models trained on different feature sections, with post-processing and extensive diagnostic analysis of prediction distributions, action frequencies, and agent-target interactions.",
+  "insights": [
+    "Comprehensive distributional and correlation analysis of features is essential for debugging and understanding model inputs.",
+    "Stratified sampling effectively maintains class balance during training.",
+    "Comparing prediction distributions against ground truth reveals alignment gaps and guides feature refinement."
+  ],
+  "critical_findings": [],
+  "what_did_not_work": [],
+  "source_url": "https://www.kaggle.com/code/taylorsamarel/v2-mabe-remix",
+  "votes": 170
+}

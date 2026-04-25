@@ -1,0 +1,41 @@
+{
+  "summary": "This notebook implements an LLM-driven pipeline to classify scientific citations as primary data, secondary data, or literature references. It begins by extracting text from PDFs and using extensive regex patterns to identify candidate dataset identifiers (DOIs, accession codes, GBIF links). These candidates are then fed into a quantized Qwen2.5-32B model via vLLM, using carefully crafted few-shot prompts and context windows to distinguish between data repositories and scholarly publications. A secondary post-processing step filters false positives by checking DOI prefixes and surrounding linguistic cues. The workflow demonstrates how combining deterministic regex extraction with contextual LLM classification can effectively solve data citation disambiguation tasks without traditional model training.",
+  "purpose": "inference",
+  "competition_flow": "Parses competition PDFs to text, extracts candidate dataset IDs via regex, classifies them as primary/secondary data or literature using a quantized Qwen2.5-32B LLM via vLLM, applies post-filtering, and outputs a CSV submission.",
+  "data_reading": [
+    "Loads PDF files from the competition directory and converts them to plain text using PyMuPDF.",
+    "Reads ground truth labels from a CSV file using Polars for local evaluation."
+  ],
+  "data_processing": [
+    "Normalizes extracted text (NFKC, ASCII-only, Zenodo URL normalization).",
+    "Splits documents into body and reference sections using compiled regex patterns for headers and citation markers.",
+    "Extracts candidate dataset IDs (DOIs, accession codes) via regex and extracts fixed-size context windows around matches.",
+    "Constructs chat templates for LLM inference and applies post-filtering rules to remove false positive DOI rows."
+  ],
+  "features_engineering": [],
+  "models": [
+    "Qwen2.5-32B-Instruct (AWQ quantized)"
+  ],
+  "frameworks_used": [
+    "vllm",
+    "logits-processor-zoo",
+    "torch",
+    "polars",
+    "pymupdf"
+  ],
+  "loss_functions": [],
+  "cv_strategy": "",
+  "ensembling": "",
+  "insights": [
+    "Context windows around extracted identifiers are essential for accurate LLM-based citation classification.",
+    "DOI prefixes alone cannot reliably distinguish data repositories from publisher DOIs without linguistic context.",
+    "Combining deterministic regex extraction with a quantized large language model enables efficient and scalable data citation disambiguation."
+  ],
+  "critical_findings": [
+    "DOI prefixes heavily overlap between data repositories and academic publishers, making prefix-only filtering unreliable.",
+    "Certain identifiers like dryad, zenodo, and pasta require explicit prefix mapping or exclusion to avoid false positives."
+  ],
+  "what_did_not_work": [],
+  "source_url": "https://www.kaggle.com/code/anglolodorf/fork-of-0-606-after-llm-993720",
+  "votes": 358
+}

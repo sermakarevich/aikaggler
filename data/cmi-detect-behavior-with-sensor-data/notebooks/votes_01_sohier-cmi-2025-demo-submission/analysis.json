@@ -1,0 +1,28 @@
+{
+  "summary": "This notebook provides a minimal demo submission for the CMI 2025 competition, demonstrating the exact interface required for inference. It defines a placeholder predict function that accepts sensor sequence and demographic data as Polars DataFrames and returns a string prediction. The code initializes Kaggle's official evaluation API to handle batched inference requests and includes a local gateway for testing. Readers should take away the expected input/output contract, the recommendation to use Polars for data handling, and the 30-minute timeout constraint for processing each batch.",
+  "purpose": "inference",
+  "competition_flow": "The notebook defines a placeholder prediction function that accepts sensor and demographic Polars DataFrames, wraps it in Kaggle's official inference server API, and runs it locally to simulate the competition's evaluation environment.",
+  "data_reading": [
+    "The inference server's local gateway loads test.csv and test_demographics.csv from the competition input directory and passes them as Polars DataFrames to the predict function."
+  ],
+  "data_processing": [],
+  "features_engineering": [],
+  "models": [],
+  "frameworks_used": [
+    "polars",
+    "kaggle_evaluation.cmi_inference_server",
+    "pandas"
+  ],
+  "loss_functions": [],
+  "cv_strategy": "",
+  "ensembling": "",
+  "insights": [
+    "The competition evaluation passes data to a user-defined predict function one sequence at a time via a custom API.",
+    "Predictions must be returned as strings, and each batch must be processed within a 30-minute window.",
+    "Polars is explicitly recommended over Pandas for handling the input DataFrames."
+  ],
+  "critical_findings": [],
+  "what_did_not_work": [],
+  "source_url": "https://www.kaggle.com/code/sohier/cmi-2025-demo-submission",
+  "votes": 875
+}

@@ -1,0 +1,23 @@
+{
+  "id": "valentintosetchi/ocr-models-judge",
+  "id_no": 103553334,
+  "title": "OCR Models Judge",
+  "code_file": "ocr-models-judge.ipynb",
+  "language": "python",
+  "kernel_type": "notebook",
+  "is_private": false,
+  "enable_gpu": false,
+  "enable_tpu": false,
+  "enable_internet": false,
+  "keywords": [],
+  "dataset_sources": [
+    "urbikn/sroie-datasetv2"
+  ],
+  "kernel_sources": [],
+  "competition_sources": [
+    "gemini-3"
+  ],
+  "model_sources": [],
+  "docker_image": "gcr.io/kaggle-images/python@sha256:bf0b407a5ed73626191ae2259063a0090ae36666c8f00ffdfae3fb543eae750d",
+  "machine_shape": "None"
+}

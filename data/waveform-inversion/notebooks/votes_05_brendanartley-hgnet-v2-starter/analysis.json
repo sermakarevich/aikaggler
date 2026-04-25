@@ -1,0 +1,43 @@
+{
+  "summary": "This notebook demonstrates a distributed training pipeline for a seismic waveform inversion task, leveraging two GPUs via PyTorch DDP to maximize Kaggle's weekly quota and enable larger batch sizes. It implements a custom U-Net architecture with an HGNet-V2 backbone, incorporating temporal flip augmentation, Exponential Moving Average (EMA) for training stability, and Monai upsampling blocks. The author provides a complete workflow from data loading and preprocessing to validation and test-time augmentation (TTA) inference, along with three pretrained checkpoints. Readers should learn how to structure multi-GPU training in PyTorch, adapt backbone strides for U-Net compatibility, and effectively ensemble multiple models for robust predictions.",
+  "purpose": "training",
+  "competition_flow": "Loads preprocessed seismic waveform data, trains a custom U-Net with an HGNet-V2 backbone using 2-GPU DDP and EMA, validates on a fixed fold, and generates a submission by averaging predictions from three pretrained models with test-time augmentation.",
+  "data_reading": [
+    "Loads preprocessed .npy files via np.load with mmap_mode='r' for training and standard loading for validation; metadata and fold assignments are read from folds.csv.",
+    "Test data is loaded from a directory of .npy files using glob."
+  ],
+  "data_processing": [
+    "Resizes inputs to (70,70) using area interpolation and pads with replicate mode to reach (72,72), then converts to float16.",
+    "Applies a temporal flip augmentation during training that reverses both source and receiver dimensions for inputs and labels.",
+    "Uses flip-based TTA during inference by averaging original and flipped predictions."
+  ],
+  "features_engineering": [],
+  "models": [
+    "Custom U-Net with HGNet-V2 backbone (hgnetv2_b2 for training, hgnetv2_b4 for checkpoints)",
+    "Monai upsampling blocks (UpSample/SubpixelUpsample)",
+    "SCSE attention modules",
+    "Intermediate convolutions in skip connections"
+  ],
+  "frameworks_used": [
+    "pytorch",
+    "timm",
+    "monai",
+    "numpy",
+    "pandas"
+  ],
+  "loss_functions": [
+    "L1Loss"
+  ],
+  "cv_strategy": "Fixed holdout split using fold 0 for validation and all other folds for training.",
+  "ensembling": "Averages the raw outputs of three pretrained models using a custom ensemble class during validation and test inference.",
+  "insights": [
+    "Distributing training across two GPUs with DDP enables larger batch sizes and faster convergence while maximizing Kaggle's GPU quota.",
+    "Removing BatchNorm2d layers and adding intermediate convolutions in U-Net skip connections accelerates convergence and improves prediction quality.",
+    "Temporal flip augmentation must reverse both spatial dimensions of inputs and labels to preserve physical consistency in waveform data.",
+    "EMA provides more stable validation metrics compared to raw epoch weights."
+  ],
+  "critical_findings": [],
+  "what_did_not_work": [],
+  "source_url": "https://www.kaggle.com/code/brendanartley/hgnet-v2-starter",
+  "votes": 460
+}

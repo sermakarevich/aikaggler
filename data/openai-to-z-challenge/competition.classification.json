@@ -1,0 +1,15 @@
+{
+  "description": "Participants use large vision-language models to detect hidden archaeological sites in geospatial imagery. The task focuses on identifying potential excavation locations across South American regions, particularly Brazil, using satellite or aerial data. Success is evaluated based on the accuracy of site detection or classification predictions submitted by competitors.",
+  "data_modality": "image",
+  "task_type": "detection",
+  "label_structure": "unknown",
+  "metric": "unknown",
+  "test_split": "unknown",
+  "format": "standard",
+  "dataset_scale": "unknown",
+  "domain": "archaeology",
+  "data_challenges": [],
+  "constraints": [
+    "submission_limits"
+  ]
+}

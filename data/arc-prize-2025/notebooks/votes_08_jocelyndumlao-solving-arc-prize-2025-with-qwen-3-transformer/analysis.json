@@ -1,0 +1,32 @@
+{
+  "summary": "This notebook demonstrates how to adapt the Qwen-3 large language model for solving ARC (Abstraction and Reasoning Corpus) challenges using in-context learning rather than fine-tuning. It loads the ARC dataset from JSON files, constructs few-shot prompts with training examples, and routes them through a custom chatbot wrapper that manages context window limits and enables chain-of-thought reasoning. The model generates text predictions, which are programmatically parsed, validated into grid structures, and compiled into a Kaggle submission file. Readers learn how to bridge causal LLMs with grid-based reasoning tasks, handle token constraints, and robustly parse model outputs for competition formats.",
+  "purpose": "inference",
+  "competition_flow": "Loads ARC challenge JSON files, constructs few-shot prompts with training examples, feeds them to a quantized Qwen-3 model via a custom chatbot wrapper, parses the generated text into grid predictions, and saves them in the required Kaggle submission format.",
+  "data_reading": [
+    "JSON files loaded via json.load() from /kaggle/input/arc-prize-2025/, including training/evaluation challenges, solutions, and sample submission templates."
+  ],
+  "data_processing": [
+    "Text is tokenized via the Qwen tokenizer; prompts are constructed by concatenating training examples; model outputs are stripped of whitespace/newlines, parsed for [[...]] delimiters, and converted to lists via ast.literal_eval; grid validity is verified row-by-row."
+  ],
+  "features_engineering": [],
+  "models": [
+    "Qwen-3 (0.6B via Kaggle Hub, fallback to 7B)"
+  ],
+  "frameworks_used": [
+    "transformers",
+    "torch",
+    "kagglehub"
+  ],
+  "loss_functions": [],
+  "cv_strategy": "",
+  "ensembling": "",
+  "insights": [
+    "In-context learning with a causal LLM can solve abstract reasoning tasks without parameter updates or fine-tuning.",
+    "Managing context window limits via history truncation is necessary to prevent token overflow during multi-example prompting.",
+    "Parsing raw LLM text output requires robust delimiter detection and type validation to ensure compatibility with competition submission formats."
+  ],
+  "critical_findings": [],
+  "what_did_not_work": [],
+  "source_url": "https://www.kaggle.com/code/jocelyndumlao/solving-arc-prize-2025-with-qwen-3-transformer",
+  "votes": 262
+}

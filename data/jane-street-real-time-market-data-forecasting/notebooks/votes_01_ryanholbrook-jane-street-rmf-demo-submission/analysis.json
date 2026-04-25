@@ -1,0 +1,33 @@
+{
+  "summary": "This notebook provides a minimal, working template for the Jane Street Real-Time Market Forecasting competition, demonstrating how to structure the required inference API. It shows how to initialize the `JSInferenceServer`, implement the `predict` function to accept test features and previous-day lags, and return predictions in the exact format expected by the evaluation gateway. The code emphasizes using Polars for performance, handling the `lags` parameter for temporal context, and adhering to strict response time limits during inference. Readers should learn the exact boilerplate needed to submit to this specific competition and understand how the evaluation pipeline passes data timestep-by-timestep.",
+  "purpose": "inference",
+  "competition_flow": "Initializes a Kaggle inference server, defines a dummy `predict` function that returns zero-valued predictions for `responder_6`, and serves the model locally or on the competition platform using provided parquet files.",
+  "data_reading": [
+    "Loads test features and lags from parquet files (`test.parquet`, `lags.parquet`) via the local gateway or competition environment."
+  ],
+  "data_processing": [
+    "None explicitly shown; only validates that the output DataFrame has the correct columns and row count."
+  ],
+  "features_engineering": [
+    "None explicitly shown; references a global `lags_` variable to cache previous day's responders for potential feature use."
+  ],
+  "models": [],
+  "frameworks_used": [
+    "polars",
+    "pandas",
+    "kaggle_evaluation"
+  ],
+  "loss_functions": [],
+  "cv_strategy": "",
+  "ensembling": "",
+  "insights": [
+    "The competition evaluation gateway passes data timestep-by-timestep, requiring the inference server to maintain state across calls.",
+    "Previous day's responder data is available via the `lags` parameter and can be stored globally for feature engineering.",
+    "Polars is recommended over Pandas for better performance during inference.",
+    "Predictions must strictly match the expected schema (`row_id`, `responder_6`) and row count."
+  ],
+  "critical_findings": [],
+  "what_did_not_work": [],
+  "source_url": "https://www.kaggle.com/code/ryanholbrook/jane-street-rmf-demo-submission",
+  "votes": 3254
+}

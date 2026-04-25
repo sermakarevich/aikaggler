@@ -1,0 +1,31 @@
+{
+  "id": "suthcong/baseline-dino-aliked-lightglue-edit-params",
+  "id_no": 83204212,
+  "title": "Baseline: DINO+ALIKED+LightGLUE edit Params",
+  "code_file": "baseline-dino-aliked-lightglue-edit-params.ipynb",
+  "language": "python",
+  "kernel_type": "notebook",
+  "is_private": false,
+  "enable_gpu": true,
+  "enable_tpu": false,
+  "enable_internet": false,
+  "keywords": [
+    "gpu"
+  ],
+  "dataset_sources": [
+    "oldufo/imc2024-packages-lightglue-rerun-kornia",
+    "vostankovich/imc24lightglue",
+    "eduardtrulls/imc25-utils"
+  ],
+  "kernel_sources": [],
+  "competition_sources": [
+    "image-matching-challenge-2025"
+  ],
+  "model_sources": [
+    "oldufo/aliked/PyTorch/aliked-n16/1",
+    "metaresearch/dinov2/PyTorch/base/1",
+    "oldufo/lightglue/PyTorch/aliked/1"
+  ],
+  "docker_image": "gcr.io/kaggle-private-byod/python@sha256:d8674e13fab653bf7fb8d9a102f2ae94036771ccb5c73f51888d881421e1f937",
+  "machine_shape": "NvidiaTeslaT4"
+}

@@ -1,0 +1,43 @@
+{
+  "summary": "This notebook provides a baseline pipeline for predicting March Madness game outcomes by optimizing for the Brier score. It demonstrates how to transform raw NCAA team and game statistics into game-level features, train a Random Forest regressor, and apply post-hoc probability calibration to improve probabilistic reliability. The author emphasizes that proper scoring rules like Brier score and log loss are essential for evaluating calibrated predictions rather than relying on point estimates or accuracy. Readers should learn how to structure a tabular sports prediction task, engineer robust game-level aggregations, and implement calibration to align predicted probabilities with actual outcomes.",
+  "purpose": "baseline",
+  "competition_flow": "Loads historical NCAA team and game data, engineers game-level features and seed differences, trains a Random Forest regressor with probability calibration, and outputs a CSV submission of predicted win probabilities.",
+  "data_reading": [
+    "Uses glob to locate CSV files in the input directory, reads them with pandas using latin-1 encoding, and concatenates men's and women's datasets (teams, regular season results, tournament results, seeds).",
+    "Parses seeds into a dictionary mapping season and team ID to seed integers."
+  ],
+  "data_processing": [
+    "Maps win location to integers (1, 2, 3), fills missing values with -1, imputes remaining missing values with mean using SimpleImputer, and scales features with StandardScaler.",
+    "Clips final predictions to [0.001, 0.999] to avoid boundary extremes."
+  ],
+  "features_engineering": [
+    "Computes seed differences, raw score differences, and normalized score differences.",
+    "Aggregates detailed game statistics (field goals, 3-pointers, free throws, rebounds, assists, turnovers, steals, blocks, fouls) per team pair using groupby with multiple aggregations (sum, mean, median, max, min, std, skew, nunique)."
+  ],
+  "models": [
+    "RandomForestRegressor"
+  ],
+  "frameworks_used": [
+    "scikit-learn",
+    "pandas",
+    "numpy",
+    "matplotlib",
+    "seaborn"
+  ],
+  "loss_functions": [
+    "brier_score_loss",
+    "log_loss",
+    "mean_squared_error"
+  ],
+  "cv_strategy": "KFold(n_splits=5, shuffle=True, random_state=42)",
+  "ensembling": "None; uses a single Random Forest model with a separate Random Forest regressor for post-hoc probability calibration.",
+  "insights": [
+    "Probability calibration significantly improves the reliability of predicted win probabilities for Brier score optimization.",
+    "Aggregating detailed game statistics per team pair provides strong predictive signals for tournament outcomes.",
+    "Proper scoring rules like Brier score and log loss are better suited than accuracy for evaluating probabilistic tournament predictions."
+  ],
+  "critical_findings": [],
+  "what_did_not_work": [],
+  "source_url": "https://www.kaggle.com/code/jocelyndumlao/march-ml-mania-2025-brier-score-prediction",
+  "votes": 347
+}

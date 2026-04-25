@@ -1,0 +1,109 @@
+{
+  "id": 120570,
+  "competitionName": "gemini-3",
+  "title": "Google DeepMind - Vibe Code with Gemini 3 Pro in AI Studio ",
+  "briefDescription": "Build with Gemini 3 and compete for $500,000 in credits",
+  "dateEnabled": "2025-12-05T17:00:00Z",
+  "deadline": "2025-12-12T23:59:00Z",
+  "leaderboardPercentage": 30,
+  "maxDailySubmissions": 1,
+  "numScoredSubmissions": 1,
+  "numPrizes": 1,
+  "forumId": 9301458,
+  "finalLeaderboardHasBeenVerified": true,
+  "dateCreated": "2025-11-10T18:57:02.108515700Z",
+  "competitionHostSegmentId": 1,
+  "maxTeamSize": 5,
+  "teamMergerExplicitDeadline": "2025-12-12T23:59:00Z",
+  "prohibitNewEntrantsExplicitDeadline": "2025-12-12T23:59:00Z",
+  "kernelsPublishingDisabledDeadline": "2025-12-12T23:59:00Z",
+  "organizationId": 3823,
+  "hasCoverImageUrl": true,
+  "showPrivateLeaderboard": true,
+  "hasScripts": true,
+  "totalTeams": 4095,
+  "totalCompetitors": 4874,
+  "totalSubmissions": 4095,
+  "rulesRequired": true,
+  "clonedFromCompetitionId": 113664,
+  "categories": [
+    {
+      "id": 12101,
+      "name": "artificial intelligence",
+      "fullPath": "subject > science and technology > computer science > artificial intelligence",
+      "description": "This tag has datasets and kernels where people come together and use cutting-edge research to train models on pictures of cats.",
+      "datasetCount": 4376,
+      "competitionCount": 86,
+      "scriptCount": 3818,
+      "slug": "artificial-intelligence",
+      "displayName": "Artificial Intelligence"
+    },
+    {
+      "id": 13102,
+      "name": "beginner",
+      "fullPath": "audience > beginner",
+      "description": "New to data science? Explore tips, tricks, and beginner friendly work from other Kagglers.",
+      "datasetCount": 10625,
+      "competitionCount": 14662,
+      "scriptCount": 44681,
+      "slug": "beginner",
+      "displayName": "Beginner"
+    },
+    {
+      "id": 13103,
+      "name": "intermediate",
+      "fullPath": "audience > intermediate",
+      "datasetCount": 6337,
+      "competitionCount": 103,
+      "scriptCount": 6978,
+      "slug": "intermediate",
+      "displayName": "Intermediate"
+    },
+    {
+      "id": 13104,
+      "name": "advanced",
+      "fullPath": "audience > advanced",
+      "datasetCount": 2321,
+      "competitionCount": 30,
+      "scriptCount": 2724,
+      "slug": "advanced",
+      "displayName": "Advanced"
+    },
+    {
+      "id": 16702,
+      "name": "image generator",
+      "fullPath": "task > image-generator",
+      "description": "",
+      "datasetCount": 273,
+      "competitionCount": 7,
+      "scriptCount": 411,
+      "slug": "image-generator",
+      "displayName": "Image Generator"
+    }
+  ],
+  "organization": {
+    "slug": "deepmind",
+    "name": "Google DeepMind",
+    "thumbnailImageUrl": "https://storage.googleapis.com/kaggle-organizations/3823/thumbnail.png",
+    "profileUrl": "/organizations/deepmind"
+  },
+  "launched": true,
+  "createdByUserId": 8939556,
+  "license": {
+    "id": 42,
+    "name": "Subject to Competition Rules",
+    "agreementRequired": false
+  },
+  "hostName": "Google DeepMind",
+  "scoreTruncationNumDecimals": 5,
+  "locked": true,
+  "totalJoinedUsers": 19022,
+  "requiresIdentityVerification": true,
+  "submissionSizeLimitMb": 20480,
+  "reward": {
+    "id": "USD",
+    "quantity": 500000,
+    "clarification": "$500,000 in Gemini API credits"
+  },
+  "hackathon": true
+}

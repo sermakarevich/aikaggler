@@ -1,0 +1,27 @@
+{
+  "id": "neibyr/30-min-just-use-semantic-search-qwen3-emb-0-6b",
+  "id_no": 89234153,
+  "title": "[30 min] Just use semantic search. Qwen3-emb-0.6B",
+  "code_file": "30-min-just-use-semantic-search-qwen3-emb-0-6b.ipynb",
+  "language": "python",
+  "kernel_type": "notebook",
+  "is_private": false,
+  "enable_gpu": true,
+  "enable_tpu": false,
+  "enable_internet": false,
+  "keywords": [
+    "gpu"
+  ],
+  "dataset_sources": [],
+  "kernel_sources": [
+    "packagemanager/pm-89234153-at-08-13-2025-18-48-57"
+  ],
+  "competition_sources": [
+    "jigsaw-agile-community-rules"
+  ],
+  "model_sources": [
+    "qwen-lm/qwen-3-embedding/Transformers/0.6b/1"
+  ],
+  "docker_image": "gcr.io/kaggle-private-byod/python@sha256:320043e14c68293f1c946585b9257123385205a58af4b94b17d31868cae4e868",
+  "machine_shape": "Gpu"
+}

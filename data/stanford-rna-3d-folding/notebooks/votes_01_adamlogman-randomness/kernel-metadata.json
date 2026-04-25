@@ -1,0 +1,33 @@
+{
+  "id": "adamlogman/randomness",
+  "id_no": 80419563,
+  "title": "Randomness",
+  "code_file": "randomness.ipynb",
+  "language": "python",
+  "kernel_type": "notebook",
+  "is_private": false,
+  "enable_gpu": true,
+  "enable_tpu": false,
+  "enable_internet": false,
+  "keywords": [
+    "gpu"
+  ],
+  "dataset_sources": [
+    "ogurtsov/biopython",
+    "youhanlee/boltz-dependencies",
+    "igorkrashenyi/fairscale-0413",
+    "geraseva/protenix-checkpoints",
+    "youhanlee/rna-prediction-boltz",
+    "metric/usalign"
+  ],
+  "kernel_sources": [
+    "metric/ribonanza-tm-score",
+    "packagemanager/pm-80419563-at-05-27-2025-14-16-03"
+  ],
+  "competition_sources": [
+    "stanford-rna-3d-folding"
+  ],
+  "model_sources": [],
+  "docker_image": "gcr.io/kaggle-private-byod/python@sha256:d8674e13fab653bf7fb8d9a102f2ae94036771ccb5c73f51888d881421e1f937",
+  "machine_shape": "NvidiaTeslaT4"
+}

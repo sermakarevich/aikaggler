@@ -1,0 +1,26 @@
+{
+  "summary": "This notebook provides a minimal boilerplate template for implementing the inference API required by the NFL 2026 competition. It demonstrates the exact function signature, input/output types, and server initialization needed to pass Kaggle's evaluation gateway. The code highlights performance best practices, such as using Polars for data handling, and explains the strict timing constraints for batch predictions. Readers should take away the structural requirements for submission code, including how to handle local testing versus platform execution.",
+  "purpose": "utility",
+  "competition_flow": "Initializes a Kaggle inference server, defines a placeholder predict function that accepts Polars DataFrames and returns zero-filled predictions, and routes execution to either a local gateway or the competition platform based on environment variables.",
+  "data_reading": [],
+  "data_processing": [],
+  "features_engineering": [],
+  "models": [],
+  "frameworks_used": [
+    "polars",
+    "pandas",
+    "kaggle_evaluation.nfl_inference_server"
+  ],
+  "loss_functions": [],
+  "cv_strategy": "",
+  "ensembling": "",
+  "insights": [
+    "The inference API requires a specific predict function signature that accepts Polars DataFrames and returns predictions within strict time limits.",
+    "Participants must use kaggle_evaluation.nfl_inference_server to wrap their logic and can run the gateway locally for testing.",
+    "Polars is recommended over Pandas for inference performance."
+  ],
+  "critical_findings": [],
+  "what_did_not_work": [],
+  "source_url": "https://www.kaggle.com/code/sohier/nfl-2026-demo-submission",
+  "votes": 362
+}

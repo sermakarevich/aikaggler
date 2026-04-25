@@ -1,0 +1,57 @@
+{
+  "summary": "The authors placed 2nd in a MAP@3 ranking competition by predicting student misconceptions from math problem explanations. They reframed the classification task as a multi-choice generation problem to enable fast inference via vLLM. Key techniques included generating 80K external samples using commercial LLMs, creating soft labels from averaged 5-fold OOF predictions, and fine-tuning quantized LLMs with a custom multi-loss trainer that combines generation and classification objectives. An equal-weight ensemble of 37-class and 65-class models secured the final rank.",
+  "extensive_summary": "## Competition Context & Core Insight\nThe task required predicting student misconceptions from math explanations, evaluated with MAP@3. The authors recognized that the ranking metric made labels inherently ambiguous, prompting a strategy to denoise targets and generate soft labels to mitigate label leakage.\n\n## Data Augmentation & Labeling Strategy\nTo address limited data for rare labels, they used commercial LLMs (GPT-4/5, Claude-Sonnet, Gemini, Seed, Doubao) to generate 80K external training samples with contrastive learning prompts. They also reduced the original 65 misconception categories to 37, using DeepSeek to expand and explain each category. To create reliable soft labels, they trained multiple LLMs (Phi-4, Qwen3, Mistral, Qwen2.5) across 5 folds and averaged the OOF predictions.\n\n## Model Training & Custom Loss Design\nThe team fine-tuned quantized architectures (AWQ) including Qwen2.5-14B/32B, Qwen3-14B, and QWQ-32B. Training used a learning rate of 2e-4, batch size of 8, and 2 epochs. They implemented a custom `SFTChoiceTrainer` that merges standard generation loss (hard labels) with a classification loss (soft labels) via `F.cross_entropy`. They noted that while external data and distillation improved leaderboard scores, fusing them provided no additional gain.\n\n## Inference & Ensembling\nThe final submission combined an equal-weight average of four 37-classification models and four 65-classification models. AWQ quantization proved crucial, balancing performance with inference times of 20-40 minutes. Converting classification to multi-choice generation was the primary driver of efficient vLLM-based inference.",
+  "rank": 2,
+  "competition_flow": "Raw student explanations and questions are augmented with LLM-generated external data and soft labels, fine-tuned on quantized LLMs using a custom multi-loss trainer, and combined via equal-weight ensemble for final MAP@3 predictions.",
+  "data_reading": [],
+  "data_processing": [
+    "Converted 65 misconception categories to 37 categories",
+    "Generated 80K external training samples using commercial LLMs (GPT-4/5, Claude, Gemini, Seed, Doubao) with contrastive prompts",
+    "Created soft labels by averaging 5-fold OOF predictions",
+    "Applied AWQ quantization to models",
+    "Formatted inputs as multi-choice generation prompts"
+  ],
+  "features_engineering": [],
+  "models": [
+    "qwen3-14b",
+    "qwen2.5",
+    "mistral",
+    "phi-4",
+    "phi_4_reasoning_14b",
+    "qwen3_32b",
+    "mistral_12b",
+    "qwen2_5_72b",
+    "Qwen25-14B-AWQ",
+    "Qwen3-14B-AWQ",
+    "Qwen25-32B-AWQ",
+    "QWQ-32B-AWQ"
+  ],
+  "frameworks_used": [
+    "vLLM",
+    "SFTTrainer",
+    "PyTorch"
+  ],
+  "loss_functions": [
+    "generation loss (hard labels)",
+    "classification loss (soft labels)",
+    "F.cross_entropy"
+  ],
+  "cv_strategy": "5-fold cross-validation with OOF averaging for soft label generation",
+  "ensembling": "Equal-weight average fusion of four 37-classification models and four 65-classification models.",
+  "insights": [
+    "Reframing classification as multi-choice generation enables efficient vLLM inference.",
+    "Soft labels derived from averaged OOF predictions effectively handle ambiguous MAP@3 labels.",
+    "Combining generation loss with classification loss improves model performance on this task."
+  ],
+  "critical_findings": [
+    "Fusing additional data with distillation yields no further score improvement despite initial gains.",
+    "AWQ quantization allows running 32B parameter models with acceptable inference times (20-40 minutes)."
+  ],
+  "what_did_not_work": [
+    "Fusing additional data with distillation provided no further benefit after initial score improvements."
+  ],
+  "github_repos": [],
+  "papers": [],
+  "other_solution_refs": [],
+  "source_url": "https://www.kaggle.com/competitions/map-charting-student-math-misunderstandings/discussion/612145"
+}

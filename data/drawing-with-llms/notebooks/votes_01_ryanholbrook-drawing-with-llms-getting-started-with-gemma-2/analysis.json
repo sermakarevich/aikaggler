@@ -1,0 +1,35 @@
+{
+  "summary": "This notebook demonstrates a baseline approach for the Drawing with LLMs competition by leveraging the Gemma 2 9B IT model to generate SVG images from text descriptions. It highlights how 4-bit quantization makes large language models feasible on Kaggle's GPU tier, and how structured prompting with explicit constraints and examples guides the model toward valid outputs. The author emphasizes that generative models require robust post-processing, showing how XML parsing and regex validation enforce submission rules and prevent malformed code. Readers should take away that combining constrained prompting with strict programmatic validation is essential for reliable LLM-based generation tasks.",
+  "purpose": "tutorial",
+  "competition_flow": "Loads the Gemma 2 9B IT model with 4-bit quantization, generates SVG code from text prompts via a constrained template, enforces submission constraints through XML parsing and regex validation, and outputs valid SVGs for Kaggle submission.",
+  "data_reading": [
+    "Uses Polars to read train.csv for local testing; relies on Kaggle's kagglehub and kaggle_evaluation packages for model weights and evaluation metrics."
+  ],
+  "data_processing": [
+    "Enforces SVG constraints by parsing XML to remove disallowed elements/attributes, validates path d attributes with regex, ensures valid SVG structure, and handles generation timeouts or parse errors by falling back to a default SVG."
+  ],
+  "features_engineering": [],
+  "models": [
+    "Gemma 2 9B IT"
+  ],
+  "frameworks_used": [
+    "torch",
+    "transformers",
+    "kagglehub",
+    "lxml",
+    "cairosvg",
+    "polars"
+  ],
+  "loss_functions": [],
+  "cv_strategy": "",
+  "ensembling": "",
+  "insights": [
+    "4-bit quantization enables running large LLMs on Kaggle GPUs without memory issues.",
+    "Structured prompting with explicit constraints and examples significantly improves LLM output compliance.",
+    "Generative models require robust post-processing, as programmatic validation and constraint enforcement are necessary to guarantee submission validity."
+  ],
+  "critical_findings": [],
+  "what_did_not_work": [],
+  "source_url": "https://www.kaggle.com/code/ryanholbrook/drawing-with-llms-getting-started-with-gemma-2",
+  "votes": 1366
+}

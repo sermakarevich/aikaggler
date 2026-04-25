@@ -1,0 +1,67 @@
+{
+  "summary": "The author achieved 4th place by simplifying the misconception detection task to predicting explanation types and candidate targets per question, reducing the label space from 65 to 37. They fine-tuned Qwen3-Reranker-8B using knowledge distillation from Qwen2.5-Math-72B-Instruct, employing a pointwise ranking approach with small effective batch sizes. Iterative prompt engineering with few-shot examples and careful validation fold selection drove the score improvements, culminating in a single-model submission that outperformed ensembling attempts.",
+  "extensive_summary": "## Data Preprocessing & Task Simplification\nThe author split the training data using StratifiedKFold into 5 folds, deliberately selecting a validation fold with a slightly below-average CV score to avoid extreme splits. They corrected 12 mislabeled category entries in the training set based on a Kaggle discussion. Recognizing that the online test set shares the same 15 questions as training, they simplified the task from predicting correct answers to predicting explanation types (Correct, Misconception, or Neither) and candidate targets. This reduced the prediction space from 65 to 37 labels. Candidate and negative candidate targets were mapped per QuestionId using pandas groupby operations.\n\n## Modeling & Backbone Selection\nThe approach adopted a pointwise ranking strategy, processing one label at a time within the context window. Since each row_id contained 4 to 6 candidate labels, the effective batch size per step was 4 to 6. After testing multiple Qwen series models, Qwen3-Reranker-8B was selected as the student model, with Qwen2.5-Math-72B-Instruct serving as the teacher for knowledge distillation. The task was framed as CausalLM.\n\n## Prompt Engineering & Optimization\nThe author iterated through two prompt versions. Prompt_v1 served as the base, while Prompt_v2 introduced few-shot examples for each target category. During training, 1 to 3 examples per target were randomly sampled, while 6 examples per target were used during inference. Training progressed from validation folds to the full dataset. A 2-epoch run on the full dataset yielded the best single-model score (0.951 LB). However, T4 GPU limitations in vLLM caused bfloat16/float16 overflow and NaN values during inference, forcing a workaround of retraining on augmented validation data to approximate the 2-epoch full-data behavior.\n\n## Ensembling & Final Submission\nAn ensemble combining the best single model with Qwen3-32B-AWQ was attempted but underperformed on the private leaderboard compared to the single model. Consequently, the single Qwen3-Reranker-8B model remained the final submission. The author also documented failed experiments, including listwise ranking, chain-of-thought prompting, and retrieval-augmented prompts using Qwen3-Embedding-8B, all of which degraded leaderboard performance.",
+  "rank": 4,
+  "competition_flow": "Raw CSV data was cleaned and split into 5 stratified folds; candidate targets were mapped per question; a pointwise ranking model (Qwen3-Reranker-8B) was fine-tuned via knowledge distillation from a larger teacher model using iterative few-shot prompt engineering; the final submission was generated via vLLM inference with float16 conversion to avoid overflow.",
+  "data_reading": [],
+  "data_processing": [
+    "StratifiedKFold split into 5 folds with selection of a slightly below-average CV fold for validation",
+    "Correction of 12 wrong category labels in training data",
+    "Mapping of candidate_targets and neg_candidate_targets per QuestionId",
+    "Reduction of target space from 65 to 37 labels",
+    "Random sampling of 1-3 few-shot examples per target during training and 6 during inference",
+    "Conversion to float16 for vLLM inference to avoid bfloat16 overflow on T4 GPUs"
+  ],
+  "features_engineering": [
+    "Mapped candidate_targets and neg_candidate_targets per QuestionId using groupby and set operations",
+    "Reduced prediction labels from 65 to 37 by focusing on explanation type and candidate targets"
+  ],
+  "models": [
+    "Qwen3-32B",
+    "Qwen3-Reranker-8B",
+    "QWQ-32B",
+    "Qwen3-14B",
+    "Qwen2.5-Math-7B-Instruct",
+    "Qwen2.5-14B-Instruct",
+    "Qwen3-8B",
+    "Qwen2.5-7B-Instruct",
+    "Qwen2.5-Math-72B-Instruct",
+    "Qwen3-32B-AWQ",
+    "Qwen3-Emebedding-8B"
+  ],
+  "frameworks_used": [
+    "vllm"
+  ],
+  "loss_functions": [],
+  "cv_strategy": "StratifiedKFold split into 5 folds; selected a fold with a cross-validation score slightly below average as the validation set to avoid extreme scores.",
+  "ensembling": "Attempted to ensemble the best single model (Prompt_v2 + Qwen3-Reranker-8B + distill + 2 epochs) with Qwen3-32B-AWQ, but the ensemble's private score (0.948) did not surpass the single model's score (0.951), so the single model was used for the final submission.",
+  "insights": [
+    "Simplifying the task to predict explanation types and candidate targets per question significantly reduces the prediction space and improves model focus.",
+    "Using a pointwise ranking approach with small effective batch sizes (4-6) per row_id aligns well with the label structure of this competition.",
+    "Iterative prompt engineering with few-shot examples per target category yields substantial score gains.",
+    "Training on the full dataset for 2 epochs improves performance, but hardware constraints require careful dtype handling to avoid inference NaNs."
+  ],
+  "critical_findings": [
+    "The training set and online test set share the same 15 questions, meaning correct answer prediction is unnecessary and the task can be simplified to explanation type prediction.",
+    "Converting the model to float16 for vLLM inference on T4 GPUs caused overflow and NaN values, necessitating a workaround of retraining on augmented validation data instead of relying on the 2-epoch full-data model for inference.",
+    "Retrieving and adding the most relevant explanations via a fine-tuned embedding model improved CV scores but degraded public/private leaderboard performance."
+  ],
+  "what_did_not_work": [
+    "listwist ranker",
+    "chain of thought",
+    "add the most relevant explanation to prompt"
+  ],
+  "github_repos": [],
+  "papers": [],
+  "other_solution_refs": [
+    {
+      "description": "Discussion thread for label correction",
+      "url": "https://www.kaggle.com/competitions/map-charting-student-math-misunderstandings/discussion/589400"
+    },
+    {
+      "description": "1st place solution reference for pointwise ranking approach",
+      "url": "https://www.kaggle.com/competitions/eedi-mining-misconceptions-in-mathematics/writeups/mth-101-1st-place-detailed-solution"
+    }
+  ],
+  "source_url": "https://www.kaggle.com/competitions/map-charting-student-math-misunderstandings/discussion/612178"
+}

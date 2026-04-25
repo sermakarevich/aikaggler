@@ -1,0 +1,40 @@
+{
+  "summary": "This notebook demonstrates a multi-model inference pipeline for a math misconception classification task, leveraging three open-weight LLMs (Gemma-2 9b, Qwen3 8b, and Deepseek Math 7b). It shows how to efficiently run parallel inference across multiple GPUs to reduce runtime, extract top-25 class probabilities from each model, and combine them using a custom scoring function that weights base probabilities, model agreement, and peak confidence. The approach highlights that ensembling diverse LLMs with probabilistic fusion can yield robust predictions without requiring complex training loops. Readers should learn how to structure multi-GPU inference, extract and merge model probabilities, and apply a simple yet effective disagreement-handling ensemble strategy.",
+  "purpose": "ensemble",
+  "competition_flow": "Loads train/test CSVs, formats prompts for three LLMs, runs parallel GPU inference to extract class probabilities, and fuses them via a weighted agreement/confidence scoring function to generate a final submission.",
+  "data_reading": [
+    "pd.read_csv for train and test CSVs from the Kaggle dataset directory."
+  ],
+  "data_processing": [
+    "Fills NaN misconceptions with 'NA', creates a combined target column, applies LabelEncoder, constructs a structured prompt template, tokenizes inputs with max_length=256, and uses DataCollatorWithPadding for dynamic batching."
+  ],
+  "features_engineering": [],
+  "models": [
+    "Gemma-2 9b",
+    "Qwen3 8b",
+    "Deepseek Math 7b"
+  ],
+  "frameworks_used": [
+    "transformers",
+    "torch",
+    "datasets",
+    "pandas",
+    "numpy",
+    "scikit-learn",
+    "scipy",
+    "tqdm",
+    "threading"
+  ],
+  "loss_functions": [],
+  "cv_strategy": "",
+  "ensembling": "Combines top-25 probabilities from three models using a custom function that calculates a final score as 60% weighted average probability + 30% agreement bonus + 10% confidence bonus, then selects the top-3 classes per row.",
+  "insights": [
+    "Parallel multi-GPU inference significantly reduces runtime for large LLMs.",
+    "Extracting and merging top-k probabilities allows for fine-grained control over ensemble scoring.",
+    "Model agreement and peak confidence can be explicitly weighted to handle disagreement and boost high-confidence predictions."
+  ],
+  "critical_findings": [],
+  "what_did_not_work": [],
+  "source_url": "https://www.kaggle.com/code/kishanvavdara/ensemble-gemma-qwen-deepseek",
+  "votes": 769
+}

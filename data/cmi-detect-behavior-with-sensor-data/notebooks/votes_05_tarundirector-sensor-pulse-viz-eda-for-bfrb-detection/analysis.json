@@ -1,0 +1,43 @@
+{
+  "summary": "This notebook delivers a comprehensive exploratory data analysis and feature derivation pipeline for a wearable sensor dataset designed to detect Body-Focused Repetitive Behaviors (BFRBs). It systematically examines data quality, focusing on missing value patterns across IMU, thermopile, and time-of-flight sensors, and visualizes univariate and multivariate distributions of both sensor readings and demographic metadata. The author computes sequence-level aggregations (mean, std, max) from raw time-series data and derives physical features like acceleration magnitude and wrist rotation angle. Key takeaways include the necessity of handling variable-length sequences, managing multimodal sensor dropout in the test set, and addressing moderate class imbalance across 18 gesture classes.",
+  "purpose": "eda",
+  "competition_flow": "Loads raw train/test CSVs and demographics, performs extensive missingness and distribution analysis, derives sequence-level aggregated features from raw time-series sensor data, and visualizes relationships to inform future modeling.",
+  "data_reading": [
+    "pd.read_csv() loads train.csv, test.csv, train_demographics.csv, and test_demographics.csv from Kaggle input paths."
+  ],
+  "data_processing": [
+    "Treats -1 values in Time-of-Flight sensors as missing (replace(-1, np.nan)).",
+    "Groups time-series data by sequence_id to compute sequence-level aggregations.",
+    "No explicit normalization, scaling, or augmentation is applied."
+  ],
+  "features_engineering": [
+    "Computes acceleration magnitude (acc_mag) and wrist rotation angle (rot_angle) from raw IMU data.",
+    "Derives sequence-level aggregations (mean, std, max) for acc_mag and rot_angle.",
+    "Calculates per-timestamp mean across 64 ToF pixels per sensor, then aggregates mean/std per sequence.",
+    "Computes mean of 5 thermopile sensors per timestamp, then aggregates mean/std per sequence."
+  ],
+  "models": [],
+  "frameworks_used": [
+    "pandas",
+    "numpy",
+    "matplotlib",
+    "seaborn"
+  ],
+  "loss_functions": [],
+  "cv_strategy": "",
+  "ensembling": "",
+  "insights": [
+    "Gestures vary widely in duration (up to 700 steps), requiring models to handle variable-length inputs rather than fixed windows.",
+    "Time-of-Flight sensors exhibit ~60% missingness in training, and the hidden test set will likely have ~50% of sequences with only IMU data, necessitating robust handling of multimodal sensor dropout.",
+    "The target distribution spans 18 classes with moderate imbalance (top classes ~10%, tail ~1.5-2%), indicating a need for class-balanced sampling or weighted loss.",
+    "IMU, thermopile, and ToF sensors provide complementary signals (motion dynamics, skin contact, spatial proximity) that should be combined rather than relying on IMU alone."
+  ],
+  "critical_findings": [
+    "ToF missingness is structurally encoded as -1 rather than standard NaN, requiring explicit handling to avoid skewing statistics.",
+    "The public test.csv is explicitly warned against using for final model decisions, as the hidden leaderboard test is entirely different and accessed via API.",
+    "Sequence-level missingness varies significantly by sensor type, with ToF having high partial missingness and thermopile having ~5-8% partially missing sequences, while IMU is nearly complete."
+  ],
+  "what_did_not_work": [],
+  "source_url": "https://www.kaggle.com/code/tarundirector/sensor-pulse-viz-eda-for-bfrb-detection",
+  "votes": 483
+}

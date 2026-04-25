@@ -1,0 +1,51 @@
+{
+  "summary": "This notebook provides a baseline inference pipeline for the Image Matching Challenge 2025. It combines DINOv2 global descriptors to efficiently shortlist candidate image pairs, ALIKED for keypoint detection and descriptor extraction, and LightGlue for robust feature matching. The matched features are imported into COLMAP to perform incremental structure-from-motion, yielding camera poses and cluster assignments for each image. The pipeline outputs a formatted submission CSV and includes a built-in metric scorer for training data evaluation. Readers should understand how to chain modern feature matchers with COLMAP for rapid baseline generation without training any models.",
+  "purpose": "inference",
+  "competition_flow": "Reads image paths from a CSV, uses DINOv2 to shortlist pairs, extracts ALIKED features, matches them with LightGlue, runs COLMAP incremental mapping to recover poses, and writes a formatted submission CSV.",
+  "data_reading": [
+    "Loads image paths and metadata from train_labels.csv or sample_submission.csv using pandas.",
+    "Reads images via Kornia (K.io.load_image) and PIL."
+  ],
+  "data_processing": [
+    "Resizes images to 1024px for ALIKED.",
+    "Normalizes DINO descriptors with L2 norm.",
+    "Filters pairs using a Euclidean distance threshold (sim_th = 0.3).",
+    "Handles missing data by writing 'nan' strings for unregistered images."
+  ],
+  "features_engineering": [
+    ""
+  ],
+  "models": [
+    "DINOv2-base",
+    "ALIKED",
+    "LightGlue",
+    "COLMAP Incremental Pipeline"
+  ],
+  "frameworks_used": [
+    "pytorch",
+    "kornia",
+    "transformers",
+    "lightglue",
+    "pycolmap",
+    "pandas",
+    "numpy",
+    "opencv",
+    "h5py"
+  ],
+  "loss_functions": [],
+  "cv_strategy": "",
+  "ensembling": "",
+  "insights": [
+    "Using DINOv2 global descriptors for pair shortlisting significantly reduces the computational burden of exhaustive feature matching.",
+    "ALIKED combined with LightGlue provides a highly effective, parameter-light baseline for image matching without training.",
+    "COLMAP's default reconstruction thresholds often need lowering for smaller or sparse scenes to avoid empty outputs.",
+    "Graceful error handling per dataset is essential to ensure partial submissions are generated even if some scenes fail."
+  ],
+  "critical_findings": [
+    "The author notes that the DINO similarity threshold (sim_th = 0.3) should be kept strict to avoid false positive matches.",
+    "COLMAP's default min_model_size of 10 can cause reconstruction failures on scenes with fewer images, so lowering it to 8 is recommended."
+  ],
+  "what_did_not_work": [],
+  "source_url": "https://www.kaggle.com/code/suthcong/baseline-dino-aliked-lightglue-edit-params",
+  "votes": 114
+}

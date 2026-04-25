@@ -1,0 +1,50 @@
+{
+  "summary": "The author developed a CNN-Transformer architecture to recognize social actions in mice across multiple laboratory environments. Key to the approach was making input features invariant to lab-specific differences in arena size, shape, and tracked body parts, enabling effective transfer learning. The pipeline combined positive/negative/masked target definitions, agent-centric coordinate transformations, and multi-scale time windowing with data augmentation. Final performance was boosted by ensembling multiple CNN-Transformers trained on different time scales and stacking them with XGBoost models trained on out-of-fold predictions and baseline features.",
+  "extensive_summary": "## Goal & Baseline\nThe author aimed to beat the top public XGBoost notebook using a neural network. Starting from a strong XGBoost baseline, they established a local validation strategy that excluded three specific labs (`MABe22`, `CalMS21`, `CRIM13`) to match the test distribution, noting a near-perfect correlation between this corrected CV and the public leaderboard.\n\n## Invariant Feature Engineering\nTo enable transfer learning across labs, the author transformed raw tracking data into lab-invariant representations. This included shifting coordinates to an **agent centric coordinate system**, applying min-max scaling with 5% and 95% quantiles, and computing inter-body-part distances instead of absolute positions. Inconsistent body part labels across labs were unified (e.g., renaming `hip` and `lateral` to `side_left` and `side_right`), and a `pixels_per_cm` feature was added to account for arena scale differences.\n\n## Target Definition & Loss Handling\nThe model outputs 37 action probabilities per frame. Targets were carefully defined as positive, negative, or masked. Actions present in annotations were labeled positive, absent but in the `behavior_labeled` list were labeled negative, and completely missing actions were masked so their loss was excluded during training.\n\n## CNN Transformer Architecture & Multi-Scale Training\nThe core model is a **CNN Transformer** where CNN layers convolve along the time dimension to capture kinematic changes, followed by cross-attention and self-attention layers to compare agent/target mice and intra-mouse body parts. The architecture was trained across four different sliding window lengths (64 to 512 frames, approx. 2s to 16s), with additional dilated convolution layers added for longer windows to capture larger temporal scales.\n\n## Data Augmentation & Inference\nTrain-time augmentations included random FPS changes, rotation, x/y scaling, horizontal flips, body part relabeling, and dropout. These not only prevented overfitting but also harmonized visual distributions across labs. During inference, predictions were temporally smoothed, filtered against valid `behaviors_labeled` lists, and passed through lab-specific action thresholds before taking the `argmax`.\n\n## Ensembling & Stacking\nThe final submission combined an equal-weighted average of 10 CNN-Transformers (spanning three feature families and four time scales) with an XGBoost model. The XGBoost was trained on one out-of-fold prediction per family plus baseline features, and the blended result achieved a 7th place ranking.",
+  "rank": 7,
+  "competition_flow": "Raw tracking and annotation data are transformed into lab-invariant positional and kinematic features, fed into a CNN-Transformer with multi-scale sliding windows and data augmentation, then post-processed with temporal smoothing and lab-specific thresholds, and finally blended with XGBoost predictions via stacking.",
+  "data_reading": [],
+  "data_processing": [
+    "Transformed raw x,y coordinates into lab-invariant features using agent-centric coordinate systems, min-max scaling with 5%/95% quantiles, and inter-body-part distances.",
+    "Renamed inconsistent body part labels across labs to side_left and side_right.",
+    "Applied train-time augmentations including random FPS changes, rotation, x/y scaling, horizontal flips, body part relabeling, and dropout.",
+    "Post-processing included temporal probability smoothing, filtering invalid actions per triplet, and applying lab-specific action thresholds."
+  ],
+  "features_engineering": [
+    "Agent-centric coordinate transformations",
+    "Min-max scaled positions",
+    "Inter-body-part distances (vector and magnitude)",
+    "Velocity vectors/magnitudes",
+    "pixels_per_cm feature",
+    "Renamed body parts (side_left, side_right) to maximize cross-lab transfer"
+  ],
+  "models": [
+    "CNN Transformer",
+    "XGBoost"
+  ],
+  "frameworks_used": [],
+  "loss_functions": [],
+  "cv_strategy": "Leave-out validation scheme excluding labs MABe22, CalMS21, and CRIM13 from the training set to match the test distribution.",
+  "ensembling": "An equal-weighted average of 10 CNN-Transformers trained across three feature families and four time scales was computed, then blended with XGBoost predictions trained on out-of-fold NN outputs and baseline features.",
+  "insights": [
+    "Transfer learning across labs is maximized by making all input features invariant to lab-specific arena sizes and tracked body parts.",
+    "Correctly defining positive, negative, and masked targets is critical for training the multi-action output layer.",
+    "Training the same architecture across multiple time scales (2s to 16s) with corresponding dilated convolutions captures diverse temporal dynamics.",
+    "Data augmentation not only prevents overfitting but also harmonizes visual distributions across different laboratory environments."
+  ],
+  "critical_findings": [
+    "Excluding three specific labs from the validation set created a near-perfect correlation with the public leaderboard, though this correlation weakened for the private leaderboard.",
+    "Renaming anatomically distinct but functionally similar body parts (hip/lateral) to a unified label significantly improved cross-lab transfer learning.",
+    "Using inter-body-part distances and agent-centric coordinates naturally resolved arena size/shape discrepancies without explicit normalization."
+  ],
+  "what_did_not_work": [],
+  "github_repos": [],
+  "papers": [],
+  "other_solution_refs": [
+    {
+      "description": "Strong XGBoost baseline notebook referenced for features and initial performance comparison.",
+      "url": "https://www.kaggle.com/code/ravaghi/social-action-recognition-in-mice-xgboost"
+    }
+  ],
+  "source_url": "https://www.kaggle.com/competitions/MABe-mouse-behavior-detection/discussion/663029"
+}

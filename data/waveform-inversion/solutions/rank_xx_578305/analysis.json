@@ -1,0 +1,30 @@
+{
+  "summary": "The author shares a Kaggle notebook that extends an existing starter solution, focusing on training a HGNet-V2-Unet architecture for geophysical imaging. Training is conducted on dual T4 GPUs and incorporates flip augmentations alongside Exponential Moving Average (EMA) to stabilize optimization. The writeup provides a breakdown of cross-validation scores stratified by dataset type to demonstrate performance across different geological scenarios.",
+  "extensive_summary": "## Overview\nThe author presents a Kaggle notebook that builds upon a starter solution for a subsurface imaging competition. The core of the approach revolves around training a **HGNet-V2-Unet** model to predict velocity and fault structures from preprocessed seismic data.\n\n## Training Setup & Techniques\nTo maximize available compute quota, the pipeline is trained on **2x T4 GPUs**. The training regimen explicitly utilizes **flip augmentations** to improve model robustness and applies **Exponential Moving Average (EMA)** to smooth weight updates and enhance validation performance. The author provides trained model checkpoints alongside the notebook to facilitate community experimentation.\n\n## Performance Evaluation\nThe solution reports cross-validation scores segmented by dataset type (CurveFault, CurveVel, FlatFault, FlatVel, Style), highlighting varying performance characteristics across different geological regimes. The author encourages readers to fork the notebook and dataset to iterate on the provided baseline.",
+  "rank": null,
+  "competition_flow": "Loads a preprocessed 72x72 dataset, trains a HGNet-V2-Unet model with flip augmentations and EMA on dual T4 GPUs, and generates predictions evaluated across multiple dataset types.",
+  "data_reading": [],
+  "data_processing": [
+    "flip augmentations"
+  ],
+  "features_engineering": [],
+  "models": [
+    "HGNet-V2-Unet"
+  ],
+  "frameworks_used": [],
+  "loss_functions": [],
+  "cv_strategy": "",
+  "ensembling": "",
+  "insights": [],
+  "critical_findings": [],
+  "what_did_not_work": [],
+  "github_repos": [],
+  "papers": [],
+  "other_solution_refs": [
+    {
+      "description": "Starter notebook referenced by the author",
+      "url": "https://www.kaggle.com/code/brendanartley/hgnet-v2-starter-cv-65-2-lb-69-7"
+    }
+  ],
+  "source_url": "https://www.kaggle.com/competitions/waveform-inversion/discussion/578305"
+}

@@ -1,0 +1,41 @@
+{
+  "summary": "This notebook demonstrates a practical approach to visualizing NFL player tracking data by converting raw frame-by-frame coordinates into an animated GIF. It filters a single CSV dataset for a specific game and play, then plots player positions on a mathematically drawn football field. The code dynamically maps player roles to colors and highlights key entities like the quarterback and targeted receiver. Readers should take away how spatial tracking data can be transformed into an intuitive, frame-by-frame narrative of a passing play without requiring machine learning. The notebook serves as a reusable template for sports analytics visualization.",
+  "purpose": "utility",
+  "competition_flow": "Loads raw NFL tracking CSV data, filters it for a specific game and play, plots player coordinates across frames on a custom-drawn field, and compiles the static plots into an animated GIF.",
+  "data_reading": [
+    "Reads a single CSV file (`train/input_2023_w01.csv`) using pandas `read_csv`.",
+    "Filters the DataFrame by `game_id` and `play_id` to isolate a specific play."
+  ],
+  "data_processing": [
+    "Filters data to a single play and extracts unique frame IDs for iteration.",
+    "Dynamically maps categorical `player_role` values to colors using a fallback dictionary logic.",
+    "Handles missing role data and NaN values with conditional checks; no numerical scaling, augmentation, or feature transformation is applied."
+  ],
+  "features_engineering": [
+    "None; relies entirely on raw tracking coordinates (`x`, `y`) and metadata columns (`player_role`, `player_name`, `ball_land_x`, `ball_land_y`) for visualization."
+  ],
+  "models": [
+    ""
+  ],
+  "frameworks_used": [
+    "numpy",
+    "pandas",
+    "matplotlib",
+    "seaborn",
+    "PIL"
+  ],
+  "loss_functions": [
+    ""
+  ],
+  "cv_strategy": "",
+  "ensembling": "",
+  "insights": [
+    "Frame-by-frame coordinate plotting effectively translates raw tracking data into an intuitive spatial narrative of a single play.",
+    "Dynamic role-to-color mapping ensures the visualization adapts to varying categorical labels without hardcoding every possible role.",
+    "Highlighting specific entities (QB, targeted receiver, ball landing spot) with distinct markers and text labels makes complex positional data immediately actionable for analysis."
+  ],
+  "critical_findings": [],
+  "what_did_not_work": [],
+  "source_url": "https://www.kaggle.com/code/stpeteishii/nfl-2026-track-animator",
+  "votes": 25
+}

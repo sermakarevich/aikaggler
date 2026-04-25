@@ -1,0 +1,68 @@
+{
+  "summary": "The author developed a 3rd place solution for the Image Matching Challenge 2025 by combining a DINOv2-based pre-matching stage with a novel tiled-image matching strategy. Key innovations include rotation-augmented pre-matching, dividing images into four quadrants plus a half-resolution original to generate 25 matching combinations per pair, and carefully managing pycolmap reconstruction registration order. These techniques improved robustness to scale and perspective variations while preventing cluster overwriting, ultimately boosting the final score.",
+  "extensive_summary": "## Pre-matching and Feature Extraction\nThe pipeline begins with a pre-matching stage leveraging DINOv2 to identify high-similarity image pairs, optimized at a minimum of 50-60 pairs per image with a similarity threshold of 0.2. For each candidate pair, feature matching is performed using ALIKED and LightGlue (longside=960px, max_keypoints=4096), accepting pairs with >40 inlier matches. A rotation augmentation retry mechanism handles rotated images that initially fail to match. ALIKED feature extraction results are cached for efficiency.\n\n## Tiled Image Matching Strategy\nValid pairs undergo a tiling process where each image is split into four quadrants, combined with a half-resolution original to form a set of five images. This yields 25 matching combinations per pair, significantly improving robustness against scale and perspective differences. The optimal longside for tiles is 1024 or 1216px. This approach mitigates the issue of keypoints concentrating in isolated image regions.\n\n## Reconstruction and Registration\nAfter matching, keypoint coordinates are restored to original image space, and RANSAC (parameters from the 2024 1st place solution) filters outliers. The combined keypoints feed into pycolmap for reconstruction. A critical registration tweak involves sorting reconstructed maps by the number of registered images in ascending order before pose registration. This ensures larger, more robust clusters are not overwritten by smaller ones, yielding a leaderboard boost.\n\n## Failed Attempts and Lessons\nThe author explicitly notes that SIFT underperformed ALIKED in accuracy despite being faster. Pre-clustering images via keypoint match distance matrices proved unreliable and offered no score improvement. While VGGT showed promise for clustering dozens of images, it did not translate to better pose accuracy in this setup, likely due to resizing artifacts. Careful parameter tuning for ALIKED, LightGlue, and input sizes was deemed essential.",
+  "rank": 3,
+  "competition_flow": "Raw images are processed through a DINOv2-based pre-matching stage, followed by tiled-image feature extraction with ALIKED and LightGlue, RANSAC outlier filtering, and pycolmap reconstruction with a custom ascending-order map registration strategy to produce final camera poses.",
+  "data_reading": [],
+  "data_processing": [
+    "Rotation augmentation during pre-matching for pairs that initially fail to match",
+    "Tiling images into four quadrants plus a half-resolution original",
+    "Caching ALIKED feature extraction results for reuse",
+    "Restoring keypoint coordinates to original image space after matching",
+    "RANSAC outlier filtering using parameters from the 2024 1st place solution",
+    "Careful parameter tuning for ALIKED, LightGlue, and input image sizes"
+  ],
+  "features_engineering": [],
+  "models": [
+    "DINOv2",
+    "ALIKED",
+    "LightGlue",
+    "SIFT",
+    "VGGT"
+  ],
+  "frameworks_used": [
+    "pycolmap"
+  ],
+  "loss_functions": [],
+  "cv_strategy": "",
+  "ensembling": "",
+  "insights": [
+    "Tiling an image into four quadrants plus a half-resolution original creates 25 matching combinations per pair, greatly improving robustness to scale and perspective differences.",
+    "Sorting pycolmap reconstruction maps by registered image count in ascending order before registration prevents larger clusters from being overwritten, boosting the final score.",
+    "ALIKED consistently outperforms SIFT in accuracy for this challenge, despite SIFT's speed advantage.",
+    "VGGT is highly effective for clustering dozens of images contextually, but its benefits did not extend to pose accuracy in this specific pipeline."
+  ],
+  "critical_findings": [
+    "The tiling strategy effectively mitigates the problem of keypoints being concentrated in only one part of an image.",
+    "Maximizing the number of registered images in the largest cluster generally correlates with a better competition score, assuming poses are correct.",
+    "Pre-clustering images within multi-scene datasets fails to improve scores unless the subsequent matching step can reliably find enough keypoints for robust reconstruction."
+  ],
+  "what_did_not_work": [
+    "Using SIFT instead of ALIKED resulted in lower accuracy scores.",
+    "Pre-clustering images based on a keypoint match distance matrix proved unreliable and yielded no score improvement.",
+    "Pairwise matching-based clustering had low accuracy and did not help.",
+    "Using VGGT for clustering in this setup did not improve pose accuracy or final scores, likely due to resizing."
+  ],
+  "github_repos": [
+    {
+      "url": "https://github.com/MujtabaJunaid/imc-2025-naive-attempt",
+      "role": "solution"
+    }
+  ],
+  "papers": [],
+  "other_solution_refs": [
+    {
+      "description": "IMC2023 approach",
+      "url": "https://www.kaggle.com/competitions/image-matching-challenge-2023/discussion/416918"
+    },
+    {
+      "description": "2024 1st place solution",
+      "url": "https://www.kaggle.com/code/vostankovich/imc2024-1st-place-solution"
+    },
+    {
+      "description": "VGGT clustering discussion by @tmyok1984",
+      "url": "https://www.kaggle.com/competitions/image-matching-challenge-2025/discussion/582968"
+    }
+  ],
+  "source_url": "https://www.kaggle.com/competitions/image-matching-challenge-2025/discussion/583401"
+}

@@ -1,0 +1,55 @@
+{
+  "summary": "The author secured 1st place in a PhysioNet/Kaggle ECG signal prediction competition by predicting all ECG leads directly from rectified images of printed ECG strips. The pipeline leverages a custom two-stage image rectification process to standardize varying image styles, followed by high-resolution remapping strategies to preserve fine signal details. The model uses diverse vision backbones to extract features, which are partitioned and expanded to predict multiple leads simultaneously. Key innovations include Fourier-domain resampling for signal reconstruction, post-processing corrections based on Einthoven\u2019s Law, and strategic TTA with gamma adjustments.",
+  "extensive_summary": "## Overview & Data Preparation\nThe solution targets the PhysioNet ECG signal prediction competition, focusing on predicting all ECG leads directly from rectified images of printed ECG strips. To handle inconsistent image styles and perspectives, the author integrated a two-stage image rectification pipeline (Stage 0: rotation and homography; Stage 1: rectifying homography-transformed images). The first ten training samples were used as a validation set.\n\n## Preprocessing & Remapping Strategies\nTwo distinct remapping approaches were developed to maximize feature preservation. The first applies homography-based rectification at high resolution before remapping, while the second skips homography conversion and remaps directly from the rotated source. In both cases, the lower region containing ECG signals is cropped while personal information at the top is discarded. Images are converted to grayscale and concatenated with coordinate-based features to provide spatial context alongside visual intensity.\n\n## Prediction Strategies & Backbone Architecture\nThree prediction strategies were explored to extract numerical predictions from vision backbones. Strategies 1 and 2 use features from the last and second-to-last backbone blocks, partitioning them by height into four segments corresponding to the vertically stacked ECG data groups, then expanding them to four times the input width. Strategy 3 merges the height dimension via max pooling before splitting channels into four segments. The ensemble utilizes a diverse set of backbones including `convnextv2_tiny`, `convnextv2_base`, `tf_efficientnetv2_m`, `hgnetv2_b6`, `mambaout_base`, `caformer_m36`, `inception_next_small`, and `inception_next_base`.\n\n## Training, Augmentation & Post-Processing\nModels were trained with `SmoothL1Loss`, `AdamW` optimizer, batch size 1, and a cosine learning rate schedule starting at 1e-4. Augmentations included synthetic blank ECG images to handle occlusions/noise, random ground truth variations, and the introduction of Moir\u00e9 patterns, flares, and overlaid non-rectified images to boost robustness. Post-processing involves selecting the middle 10k-20k outputs and resampling them in the Fourier domain using `scipy.signal.resample`, which outperforms linear interpolation. Finally, lead blending corrections based on Einthoven\u2019s Law (`II = I + III` and `aVR + aVL + aVF = 0`) are applied to refine the signals.\n\n## TTA & Results\nTest-Time Augmentation employs gamma adjustments (1.0, 0.9, 1.1) for brightness, alongside cropping and resizing of Stage 1 inputs. An ensemble of ten models was weighted and combined, with TTA and Einthoven\u2019s Law corrections contributing 0.07 and 0.06 validation score improvements respectively. The approach demonstrates strong robustness even when ECG leads overlap or cross.",
+  "rank": 1,
+  "competition_flow": "Raw ECG strip images are rectified via homography and remapped to high-resolution grayscale inputs concatenated with coordinate features, passed through diverse vision backbones to extract and expand lead features, then refined via Fourier-domain resampling and Einthoven\u2019s Law-based lead blending before final ensemble submission.",
+  "data_reading": [],
+  "data_processing": [
+    "Homography-based and direct remapping to standardize image styles",
+    "Cropping lower ECG region and discarding top personal information",
+    "Grayscale conversion",
+    "Fourier-domain resampling via scipy.signal.resample",
+    "Synthetic blank ECG generation",
+    "Random ground truth variations",
+    "Moir\u00e9 patterns, flares, and overlaid non-rectified images as augmentations",
+    "TTA with gamma adjustments (1.0, 0.9, 1.1), cropping (1560x1248 -> 1440x1152), and resizing (1600x1280)"
+  ],
+  "features_engineering": [
+    "Coordinate-based features concatenated with grayscale images for spatial context",
+    "Partitioning backbone features by height into four segments corresponding to ECG data groups",
+    "Expanding segments to four times input width",
+    "Max pooling over height dimension in Strategy 3"
+  ],
+  "models": [
+    "convnextv2_tiny",
+    "convnextv2_base",
+    "tf_efficientnetv2_m",
+    "hgnetv2_b6",
+    "mambaout_base",
+    "caformer_m36",
+    "inception_next_small",
+    "inception_next_base"
+  ],
+  "frameworks_used": [
+    "scipy"
+  ],
+  "loss_functions": [
+    "SmoothL1Loss"
+  ],
+  "cv_strategy": "First ten training samples used as validation set; 30 images selected by taking three segments (0006, 0009, and 0012) from ten image IDs.",
+  "ensembling": "Ten models were weighted and ensembled, with post-processing applying Fourier-domain resampling to the middle 10k-20k outputs and applying lead blending corrections based on Einthoven\u2019s Law to refine the final signals.",
+  "insights": [
+    "Standardizing image styles via rectification minimizes spatial distortions and helps the model focus on essential heart patterns.",
+    "Resampling in the Fourier domain using scipy.signal.resample yields higher SNR than linear interpolation for ECG signals.",
+    "Applying Einthoven\u2019s Law constraints during post-processing significantly refines lead predictions and boosts validation scores."
+  ],
+  "critical_findings": [
+    "Remapping from high-resolution rectified images produces a noticeably higher SNR (23.834) compared to remapping from low-resolution images (21.267).",
+    "Even when ECG leads physically overlap or cross on the strip, the model maintains accurate predictions, demonstrating strong robustness to signal interference."
+  ],
+  "what_did_not_work": [],
+  "github_repos": [],
+  "papers": [],
+  "other_solution_refs": [],
+  "source_url": "https://www.kaggle.com/competitions/physionet-ecg-image-digitization/discussion/669584"
+}

@@ -1,0 +1,45 @@
+{
+  "summary": "This notebook investigates whether the public test set for the Mitsui Commodity Prediction Challenge is simply the last 90 days of the training data. It loads training labels, analyzes missing value distributions, and fits Prophet time-series models on a subset of targets to smooth predictions. By intercepting the inference server and retrieving ground truth labels for the test dates, it demonstrates that the public leaderboard is essentially a leakage probe. Readers should understand how to safely probe test distributions, use lightweight time-series models for smoothing, and recognize that public LB scores in this competition are not indicative of true generalization.",
+  "purpose": "eda",
+  "competition_flow": "Loads training labels, analyzes data quality, fits Prophet models on recent training data, and runs a custom inference server that retrieves ground truth labels for the public test dates to verify data leakage and apply Prophet smoothing.",
+  "data_reading": [
+    "Loads train_labels.csv via pd.read_csv",
+    "Converts date_id to uint16 for memory efficiency",
+    "Uses polars for test input/output DataFrames"
+  ],
+  "data_processing": [
+    "Filters targets with >90% missing values or <100 data points",
+    "Converts date_id to datetime objects for Prophet compatibility",
+    "Fills missing ground truth values with 0",
+    "Casts output predictions to Float64"
+  ],
+  "features_engineering": [],
+  "models": [
+    "Prophet"
+  ],
+  "frameworks_used": [
+    "pandas",
+    "polars",
+    "numpy",
+    "matplotlib",
+    "seaborn",
+    "prophet",
+    "kaggle_evaluation.mitsui_inference_server"
+  ],
+  "loss_functions": [],
+  "cv_strategy": "",
+  "ensembling": "Weighted ensemble of ground truth labels and Prophet predictions using a fixed weight of 0.05 for the Prophet component.",
+  "insights": [
+    "The public test set consists of the last 90 days of the training data, confirming data leakage in the public leaderboard.",
+    "Prophet smoothing can be used to generate more realistic predictions when ground truth is accessible.",
+    "Public leaderboard scores in this competition do not reflect true model generalization.",
+    "Real evaluation will occur during the forecasting phase with unseen future data."
+  ],
+  "critical_findings": [
+    "The training labels contain significant missing data across many targets, with some exceeding 50% missingness.",
+    "Volatility in the last 90 days closely correlates with overall training volatility, indicating consistent data distribution."
+  ],
+  "what_did_not_work": [],
+  "source_url": "https://www.kaggle.com/code/taylorsamarel/leaderboard-probing-with-prophet-and-more",
+  "votes": 196
+}

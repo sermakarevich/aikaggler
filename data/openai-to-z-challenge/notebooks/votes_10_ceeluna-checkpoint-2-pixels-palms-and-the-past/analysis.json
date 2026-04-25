@@ -1,0 +1,66 @@
+{
+  "summary": "This notebook outlines a reproducible spatial analysis pipeline to identify potential ancient settlement clusters in Acre, Brazil, for the OpenAI to Z Challenge. It integrates topographic (SRTM DEM), hydrological (HydroRIVERS), ecological (GBIF palm occurrences), and vertical canopy structure (GEDI L2A) datasets to filter candidate tiles and extract landscape anomalies. The author demonstrates how deterministic spatial clustering combined with elevation and river-distance constraints effectively narrows search areas. Finally, it leverages GPT-4.1 for automated triage and strategic planning, highlighting a hybrid human-AI workflow for archaeological remote sensing.",
+  "purpose": "other",
+  "competition_flow": "Loads and fuses topographic, hydrological, and ecological datasets to filter candidate tiles, applies spatial clustering on GEDI canopy anomalies to generate bounding boxes, and uses GPT-4.1 to triage and plan follow-up surveys for five landscape anomaly clusters.",
+  "data_reading": [
+    "CSV files via pandas.read_csv",
+    "GeoJSON and GDB files via geopandas.read_file",
+    "SRTM DEM via OpenTopography API downloaded as GeoTIFF and opened with rasterio",
+    "GBIF species occurrences via pygbif API",
+    "GEDI L2A metrics via pre-downloaded GeoJSON"
+  ],
+  "data_processing": [
+    "Coordinate reference system transformations (EPSG:4326 \u2194 EPSG:3857)",
+    "Spatial buffering (9 km around rivers, 20 km around palm points)",
+    "Tile grid generation and spatial joins (gpd.sjoin)",
+    "DEM masking per tile to compute mean elevation",
+    "Elevation quantile filtering (min to top 10%)",
+    "Centroid extraction, spatial clustering, convex hull/bounding box generation",
+    "Canopy height calculation (rh100 - rh95) and outlier scoring"
+  ],
+  "features_engineering": [
+    "River-to-geoglyph distance",
+    "Tile mean elevation and elevation quantile cutoffs",
+    "Palm tree proximity buffers",
+    "GEDI canopy height (rh100 - rh95)",
+    "HDBSCAN outlier scores and DBSCAN cluster labels",
+    "Bounding box coordinates and elevation values per footprint"
+  ],
+  "models": [
+    "DBSCAN",
+    "HDBSCAN"
+  ],
+  "frameworks_used": [
+    "numpy",
+    "pandas",
+    "geopandas",
+    "shapely",
+    "rasterio",
+    "contextily",
+    "pygbif",
+    "scikit-learn",
+    "hdbscan",
+    "openai",
+    "matplotlib",
+    "seaborn",
+    "scipy",
+    "fiona",
+    "earthengine-api"
+  ],
+  "loss_functions": [],
+  "cv_strategy": "",
+  "ensembling": "",
+  "insights": [
+    "Integrating ecological proxies like peach palm distributions with vertical canopy structure data significantly improves the precision of archaeological site prediction in Amazonia.",
+    "Deterministic spatial clustering and fixed random seeds ensure bit-for-bit reproducibility across pipeline runs.",
+    "GPT-4.1 can effectively triage spatial anomaly clusters and generate actionable, domain-specific follow-up strategies for remote sensing campaigns."
+  ],
+  "critical_findings": [
+    "Pre-Columbian settlements in the region strongly correlate with mid-order rivers and specific elevation ranges derived from prior machine learning predictions.",
+    "Peach palm (Bactris gasipaes) groves serve as reliable living indicators of ancient agroforestry and human activity.",
+    "GEDI-derived canopy height anomalies successfully flag potential earthworks or vegetation shifts that correlate with known geoglyph locations."
+  ],
+  "what_did_not_work": [],
+  "source_url": "https://www.kaggle.com/code/ceeluna/checkpoint-2-pixels-palms-and-the-past",
+  "votes": 35
+}

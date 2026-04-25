@@ -1,0 +1,46 @@
+{
+  "summary": "This notebook demonstrates a transformer-based approach for predicting NFL defensive coverage (Man vs. Zone) using player tracking data. It walks through preprocessing raw tracking coordinates into kinematic sequences, training a custom 4-layer transformer with PyTorch Lightning, and evaluating binary classification performance. The author emphasizes how self-attention mechanisms naturally capture spatio-temporal player interactions and handle variable player ordering. Readers should learn how to structure sequential tracking data for transformers, implement a lightweight training loop with early stopping, and interpret frame-by-frame prediction probabilities through dynamic visualization.",
+  "purpose": "tutorial",
+  "competition_flow": "Loads raw NFL tracking CSVs and supplementary labels, preprocesses coordinates into kinematic sequences, trains a custom 4-layer transformer via PyTorch Lightning, and generates frame-level and play-level Man/Zone coverage predictions with evaluation metrics and animations.",
+  "data_reading": [
+    "Raw CSVs from data/train/ and data/supplementary_data.csv are loaded via a custom prep_data.main() function.",
+    "Preprocessed splits are later read from parquet files using pandas.read_parquet and a custom load_datasets utility."
+  ],
+  "data_processing": [
+    "Converts polar to Cartesian coordinates and standardizes play directions.",
+    "Extracts kinematic features (x, y, s, a, vx, vy, ox, oy) for 22 players.",
+    "Splits data 70/15/15, pre-computes feature transforms, and packages into pickle/parquet.",
+    "Filters predictions to the last frame per play for final evaluation."
+  ],
+  "features_engineering": [
+    ""
+  ],
+  "models": [
+    "Custom transformer (LitModel_PA) with 64-dim embeddings, 4 layers, and 0.1 dropout"
+  ],
+  "frameworks_used": [
+    "torch",
+    "lightning",
+    "pandas",
+    "polars",
+    "numpy",
+    "scikit-learn",
+    "matplotlib",
+    "seaborn",
+    "plotly"
+  ],
+  "loss_functions": [
+    "BCEWithLogitsLoss"
+  ],
+  "cv_strategy": "Fixed train/val/test split (70/15/15)",
+  "ensembling": "",
+  "insights": [
+    "Transformers effectively model spatio-temporal player interactions and handle variable player ordering via self-attention.",
+    "Filtering predictions to the last frame per play aligns model outputs with play-level ground truth for accurate evaluation.",
+    "Frame-by-frame probability visualization reveals how coverage predictions evolve dynamically during a play."
+  ],
+  "critical_findings": [],
+  "what_did_not_work": [],
+  "source_url": "https://www.kaggle.com/code/vishakhsandwar/modeling-with-transformers-2026",
+  "votes": 30
+}

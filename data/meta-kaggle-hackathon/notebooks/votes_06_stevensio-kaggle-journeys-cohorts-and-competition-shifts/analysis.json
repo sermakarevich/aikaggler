@@ -1,0 +1,44 @@
+{
+  "summary": "This notebook performs a comprehensive exploratory data analysis of Kaggle competition participation trends using the Meta-Kaggle dataset. It tracks submission volumes, user engagement, and cohort behaviors from 2015 onward, focusing on shifts in team composition, accelerator usage, and competition pacing. The author demonstrates how recent cohorts (2023\u20132024) differ from earlier ones by competing more frequently, favoring Playground segments, and relying on entry-level GPUs. Readers should take away actionable insights into Kaggle's evolving user base, submission timing patterns, and the limitations of raw competition metadata.",
+  "purpose": "eda",
+  "competition_flow": "Downloads the Meta-Kaggle dataset, joins and filters submission/team/kernel/user tables via DuckDB, engineers cohort and engagement features, and generates interactive Plotly visualizations to track participation trends and cohort behaviors.",
+  "data_reading": [
+    "Loads multiple CSV files from the kaggle/meta-kaggle dataset via kagglehub and pd.read_csv.",
+    "Executes SQL queries with duckdb to join submissions, teams, kernels, and user metadata."
+  ],
+  "data_processing": [
+    "Floors dates to days, filters out benchmark/after-deadline submissions, staff users, and non-core competition segments.",
+    "Removes rows with missing performance tiers or negative competition days, drops duplicates, and maps raw accelerator/tier IDs to categorical groups."
+  ],
+  "features_engineering": [
+    "Computes user competition sequence (UserCompNumber), time gaps between competitions (UserDaysSinceLastComp), and competition duration usage percentage (CompDaysUsedPct).",
+    "Derives team size categories, proxy engagement scores (raw and log-adjusted), cumulative medal counts, and cohort assignment year."
+  ],
+  "models": [],
+  "frameworks_used": [
+    "pandas",
+    "numpy",
+    "duckdb",
+    "plotly.express",
+    "plotly.graph_objects",
+    "kagglehub"
+  ],
+  "loss_functions": [],
+  "cv_strategy": "",
+  "ensembling": "",
+  "insights": [
+    "Submission volume growth is primarily driven by Playground competitions and increased entry-level GPU adoption.",
+    "Recent user cohorts compete more frequently, favor solo participation, and submit their final versions earlier than historical cohorts.",
+    "Larger teams, medalists, and accelerator users tend to submit later in the competition timeline, while solo and non-medalists submit earlier.",
+    "Adjusted engagement metrics reveal that higher-tier users still dominate relative engagement despite overall score increases.",
+    "Most users only compete once, but a persistent minority returns, improves, and climbs performance tiers over time."
+  ],
+  "critical_findings": [
+    "Some users hold medals but remain in the Unranked tier due to missing profile engagement steps, not lack of skill.",
+    "Playground competitions rarely award ranking points, but the dataset contains rare exceptions where medals were officially granted.",
+    "Raw competition metadata may contain missing or miscounted medals compared to official Kaggle profiles, indicating potential data reliability issues."
+  ],
+  "what_did_not_work": [],
+  "source_url": "https://www.kaggle.com/code/stevensio/kaggle-journeys-cohorts-and-competition-shifts",
+  "votes": 28
+}

@@ -1,0 +1,33 @@
+{
+  "summary": "The author proposes a trajectory prediction solution centered on a Spatio-Temporal GRU architecture that integrates a Gated Cross-Attention mechanism for neighbor interactions and a hierarchical Coarse-to-Fine decoder to mitigate long-term drift. Training is guided by a custom objective combining Cauchy loss for robust outlier handling and random kernel smoothing for velocity regularization, which enforces physically plausible motion trends. To maximize generalization, the author bypasses simple averaging by employing a Genetic Algorithm to optimize ensemble weights across multiple base models, specifically targeting complementary error patterns.",
+  "extensive_summary": "## Loss Function Design\nThe training objective balances precise trajectory tracking with physically plausible motion. To handle noisy real-world tracking data, the author replaces standard MSE with a **Cauchy loss**, which grows logarithmically for large errors to effectively down-weight outliers and stabilize training. Additionally, instead of strict pointwise velocity matching, **Weak Velocity Regularization (Random Kernels)** is applied. Velocities are convolved with random kernels before error calculation, penalizing discrepancies in the overall motion trend while permitting local variations to avoid jittery predictions.\n\n## Model Architecture\nThe core backbone is a **Spatio-Temporal GRU** that processes historical motion to generate a context vector summarizing player movement and pass type. Spatial interactions with other agents are captured via a **Gated Cross-Attention** mechanism, where a learned gate dynamically adjusts neighbor influence based on contextual relevance. To prevent error accumulation over long horizons, a **Coarse-to-Fine Decoder** predicts trajectories hierarchically: starting with a low-resolution global shape at T/8, interpolating refined points at T/4 and T/2, and finally generating full-resolution residuals at T.\n\n## Ensemble Strategy\nRather than relying on uniform averaging, the author collects Out-of-Fold (OOF) predictions from multiple base models trained with varied seeds and hyperparameters. A **Genetic Algorithm (GA)** is then used to optimize ensemble weights by evolving subsets of models that maximize validation RMSE while prioritizing complementary (uncorrelated) errors. The final submission is a weighted average of the top-performing subsets identified through this evolutionary process.",
+  "rank": null,
+  "competition_flow": "Raw trajectory data is processed through a Spatio-Temporal GRU with Gated Cross-Attention and a Coarse-to-Fine decoder, trained with a custom Cauchy loss and random kernel velocity regularization, then optimized via a Genetic Algorithm ensemble before final submission.",
+  "data_reading": [],
+  "data_processing": [],
+  "features_engineering": [],
+  "models": [
+    "Spatio-Temporal GRU",
+    "Gated Cross-Attention",
+    "Coarse-to-Fine Decoder"
+  ],
+  "frameworks_used": [],
+  "loss_functions": [
+    "Cauchy loss",
+    "Weak Velocity Regularization (Random Kernels)"
+  ],
+  "cv_strategy": "Out-of-Fold (OOF) predictions collected from multiple base models trained with different seeds and hyperparameters.",
+  "ensembling": "A Genetic Algorithm optimizes ensemble weights from a pool of base models to select complementary subsets, followed by a weighted average of the top-performing subsets.",
+  "insights": [
+    "Cauchy loss effectively down-weights outliers in noisy tracking data compared to standard MSE.",
+    "Random kernel smoothing enforces overall motion trends while permitting local variations, preventing jittery predictions.",
+    "Hierarchical coarse-to-fine decoding prevents error accumulation and drift over long prediction horizons.",
+    "Optimizing for complementary (uncorrelated) errors via a Genetic Algorithm yields better generalization than simple averaging."
+  ],
+  "critical_findings": [],
+  "what_did_not_work": [],
+  "github_repos": [],
+  "papers": [],
+  "other_solution_refs": [],
+  "source_url": "https://www.kaggle.com/competitions/nfl-big-data-bowl-2026-prediction/discussion/651652"
+}

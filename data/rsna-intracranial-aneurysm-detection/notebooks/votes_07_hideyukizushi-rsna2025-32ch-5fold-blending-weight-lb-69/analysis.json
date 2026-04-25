@@ -1,0 +1,39 @@
+{
+  "summary": "This notebook provides a complete inference pipeline for the RSNA 2025 aneurysm detection competition, focusing on robust DICOM preprocessing and model ensembling. It demonstrates how to load, sort, and normalize 3D medical volumes, resize them to a fixed 32x384x384 tensor, and run predictions using a pre-trained EfficientNetV2-S model across five folds. The author emphasizes that weighted blending of fold predictions compensates for cross-validation score variance and improves final leaderboard performance. A key takeaway is the strict avoidance of test-time augmentation (TTA) to preserve left/right anatomical orientation, which is critical for this task. Readers should learn how to structure a production-ready Kaggle Inference Server with memory management, fallback mechanisms, and spatially aware preprocessing.",
+  "purpose": "inference",
+  "competition_flow": "Loads DICOM series, preprocesses them into 32x384x384 tensors, runs inference through five pre-trained EfficientNetV2-S models, blends the outputs using fold-specific weights, and submits predictions via the Kaggle Inference Server API.",
+  "data_reading": [
+    "Uses pydicom to load .dcm files, extracts ImagePositionPatient for slice sorting, and handles both single 3D and multi-slice 2D DICOM series."
+  ],
+  "data_processing": [
+    "Applies RescaleSlope/RescaleIntercept, clips pixel values using hardcoded 0-500 percentiles, resizes 3D volumes to (32, 384, 384) via linear interpolation and edge padding, and applies Albumentations Resize + Normalize during inference. Explicitly disables TTA to preserve anatomical orientation."
+  ],
+  "features_engineering": [],
+  "models": [
+    "tf_efficientnetv2_s.in21k_ft_in1k"
+  ],
+  "frameworks_used": [
+    "torch",
+    "timm",
+    "pydicom",
+    "cv2",
+    "albumentations",
+    "polars",
+    "kaggle_evaluation.rsna_inference_server"
+  ],
+  "loss_functions": [],
+  "cv_strategy": "",
+  "ensembling": "Blends predictions from five fold models using normalized weights [1.0, 1.0, 0.86, 1.1, 1.0] derived from LB scores, applied via weighted averaging.",
+  "insights": [
+    "Weighted blending of fold predictions compensates for CV/LB variance and improves final leaderboard performance.",
+    "Test-time augmentation must be avoided for left/right anatomical tasks to preserve critical spatial orientation.",
+    "Statistical percentile normalization outperforms standard CT windowing for this specific model architecture and dataset."
+  ],
+  "critical_findings": [
+    "TTA is strictly prohibited because flipping or rotating slices destroys left/right positional information required for aneurysm localization.",
+    "Cross-validation and leaderboard scores showed notable variance across folds, necessitating LB-based weight tuning rather than equal weighting."
+  ],
+  "what_did_not_work": [],
+  "source_url": "https://www.kaggle.com/code/hideyukizushi/rsna2025-32ch-5fold-blending-weight-lb-69",
+  "votes": 145
+}

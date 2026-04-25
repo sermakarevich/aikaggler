@@ -1,0 +1,33 @@
+{
+  "summary": "This notebook provides a practical exploratory data analysis tool for the MABe mouse behavior detection competition by introducing a custom visualization pipeline for skeletal tracking data. It loads training metadata and per-video Parquet files, then renders individual frames with colored outlines mapping each mouse's keypoints (ears, nose, paws, tail, hips). The tool optionally overlays action annotations to verify alignment between pose coordinates and behavioral labels. By sampling frames across multiple videos, it helps researchers inspect tracking completeness, coordinate noise, and annotation boundaries before modeling. Readers should take away a reusable visualization script for validating pose estimation inputs and understanding the spatial structure of multi-mouse tracking datasets.",
+  "purpose": "eda",
+  "competition_flow": "Loads the training CSV and corresponding Parquet tracking/annotation files, then renders and displays skeletal frames from multiple mouse videos to inspect data quality and annotation alignment.",
+  "data_reading": [
+    "Reads train.csv with pd.read_csv.",
+    "Loads per-video tracking and annotation data from Parquet files located in /kaggle/input/MABe-mouse-behavior-detection/train_tracking/ and /train_annotation/ using pd.read_parquet."
+  ],
+  "data_processing": [
+    "Pivots the tracking DataFrame on ['mouse_id', 'bodypart'] with video_frame as index to align x/y coordinates per frame.",
+    "Filters out zero-valued coordinates and dynamically handles missing body parts by checking index existence.",
+    "No explicit normalization, resizing, or augmentation is applied."
+  ],
+  "features_engineering": [],
+  "models": [],
+  "frameworks_used": [
+    "pandas",
+    "numpy",
+    "matplotlib"
+  ],
+  "loss_functions": [],
+  "cv_strategy": "",
+  "ensembling": "",
+  "insights": [
+    "The visualization pipeline clarifies how skeletal keypoints are structured across frames and mice, making it easier to verify tracking completeness and annotation boundaries.",
+    "Pivoting Parquet tracking data on mouse_id and bodypart efficiently aligns multi-keypoint coordinates per frame for direct plotting.",
+    "Inspecting raw pose data before modeling is critical to identify missing parts, coordinate noise, or misaligned action annotations."
+  ],
+  "critical_findings": [],
+  "what_did_not_work": [],
+  "source_url": "https://www.kaggle.com/code/ambrosm/mabe-eda-which-makes-sense",
+  "votes": 162
+}

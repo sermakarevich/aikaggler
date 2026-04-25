@@ -1,0 +1,27 @@
+{
+  "id": "zhudong1949/starter-notebook-select-patch-verify-ca53bc",
+  "id_no": 76597688,
+  "title": "Starter notebook - Select-Patch-Verify ca53bc",
+  "code_file": "starter-notebook-select-patch-verify-ca53bc.ipynb",
+  "language": "python",
+  "kernel_type": "notebook",
+  "is_private": false,
+  "enable_gpu": true,
+  "enable_tpu": false,
+  "enable_internet": false,
+  "keywords": [
+    "gpu"
+  ],
+  "dataset_sources": [],
+  "kernel_sources": [
+    "huikang/pip-install-kprize"
+  ],
+  "competition_sources": [
+    "konwinski-prize"
+  ],
+  "model_sources": [
+    "shelterw/deepseek-r1/Transformers/deepseek-r1-distill-qwen-32b-awq/1"
+  ],
+  "docker_image": "gcr.io/kaggle-private-byod/python@sha256:ff73f172a2ebcff8591eaae2ade447df7b6d2c6b7b4655f628e57f12fab3c687",
+  "machine_shape": "NvidiaL4"
+}

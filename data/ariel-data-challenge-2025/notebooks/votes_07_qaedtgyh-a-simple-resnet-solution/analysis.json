@@ -1,0 +1,41 @@
+{
+  "summary": "The notebook demonstrates an inference pipeline for the Ariel Data Challenge 2025, combining a physics-based transit depth estimator with two pre-trained residual MLPs. It details a complete signal processing workflow for two sensors (AIRS-CH0 and FGS1), including calibration, correlated double sampling, binning, and noise estimation. The pipeline extracts physical parameters (stellar radius, inclination) alongside the estimated transit depth to feed into the neural networks. Readers should understand how to bridge raw astronomical telemetry with machine learning by engineering domain-specific features and leveraging pre-trained models for final predictions.",
+  "purpose": "inference",
+  "competition_flow": "Loads test telemetry data, applies sensor-specific calibration and noise estimation, extracts physical parameters, feeds them into two pre-trained residual MLPs, and formats the outputs into a competition submission CSV.",
+  "data_reading": [
+    "Reads adc_info.csv and test_star_info.csv as pandas DataFrames.",
+    "Loads per-planet sensor signal, dark, dead, flat, and linear correction calibration files as parquet arrays."
+  ],
+  "data_processing": [
+    "Applies gain/offset correction, hot pixel masking via sigma clipping, linear correction, dark current subtraction, flat-field division, correlated double sampling, temporal binning, percentile clipping, and inverse-variance weighting.",
+    "Estimates per-planet noise levels using gradient-based phase detection to isolate in-transit and out-of-transit regions."
+  ],
+  "features_engineering": [
+    "Extracts transit_depth via polynomial fitting and optimization, merges with stellar radius (Rs) and inclination (i) from star info, and scales transit_depth by 10000 to form a 3D feature vector for the neural networks."
+  ],
+  "models": [
+    "ResNetMLP (80 residual blocks)",
+    "ResNetMLP2 (120 residual blocks)"
+  ],
+  "frameworks_used": [
+    "pytorch",
+    "numpy",
+    "pandas",
+    "scipy",
+    "scikit-learn",
+    "pqdm",
+    "astropy"
+  ],
+  "loss_functions": [],
+  "cv_strategy": "",
+  "ensembling": "",
+  "insights": [
+    "Custom signal calibration and correlated double sampling are critical for extracting clean photometric signals from raw telescope telemetry.",
+    "Phase detection combined with gradient analysis reliably identifies transit boundaries for accurate noise estimation.",
+    "Physical parameters like stellar radius and inclination can be effectively used as direct inputs to a residual MLP to predict refined transit depths."
+  ],
+  "critical_findings": [],
+  "what_did_not_work": [],
+  "source_url": "https://www.kaggle.com/code/qaedtgyh/a-simple-resnet-solution",
+  "votes": 186
+}

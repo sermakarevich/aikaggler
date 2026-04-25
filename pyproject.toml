@@ -5,10 +5,18 @@ description = "Toolkit to compete in Kaggle competitions."
 requires-python = ">=3.11"
 dependencies = [
     "httpx>=0.27",
+    "mcp>=1.2.0",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=8.0",
 ]
 
 [project.scripts]
 akc = "aikaggler.plugins.competition_analysis.cli:main"
+akb = "aikaggler.plugins.knowledge_base_mcp.cli:main"
+akb-mcp = "aikaggler.plugins.knowledge_base_mcp.server:main"
 
 [build-system]
 requires = ["hatchling"]

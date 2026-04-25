@@ -1,0 +1,59 @@
+{
+  "summary": "The authors developed a multi-stage pipeline for the Ariel Data Challenge 2024, beginning with a physics-inspired phase detector that identifies transit boundaries via gradient extrema and threshold scanning. They generated base wavelength predictions and physics-derived features using a custom multi-component Gaussian Process kernel and restricted polynomial baselines. A deep learning stage then applied quantile regression to predict residual wavelength differences and sigma, followed by a gradient boosting model to calibrate sigma scales. Finally, they leveraged pseudo-labeling on test data to boost the leaderboard score, guided by observations about metric stability and overfitting behavior.",
+  "extensive_summary": "## Preprocessing & Phase Detection\nThe pipeline starts by preprocessing `obs0` and `obs1` observations, heavily relying on an external notebook for initial preparation. The core transit detection mechanism uses the extrema of the signal's gradient. The process involves smoothing the signal and gradient, clipping gradient outliers beyond 5\u03c3, zeroing edges, and applying additional Gaussian smoothing. Threshold scanning identifies ingress and egress boundaries, followed by local sampling to compare baseline versus transit segment depth. A post-processing step was added to correct abnormal signals that emerged after a dataset update.\n\n## Physics-Based Modeling & Feature Extraction\nTo generate base `wl_preds` and auxiliary features, the authors adapted approaches from top-performing solutions. The primary pattern restricts the baseline polynomial degree to 2\u20133 to prevent instability, yielding a ~0.01 improvement. A custom Gaussian Process kernel is constructed with multiple components: RBF terms with varying length scales, a periodic kernel for repeating structures, a Mat\u00e9rn kernel for local smoothness, a linear kernel tied to wavelength features, and a white noise kernel for robustness. While the GP itself does not directly improve sigma prediction, it unexpectedly stabilizes downstream linear corrections and neural networks. A secondary pattern implements an alternative approach to provide independent predictions and features.\n\n## Residual Correction with Deep Learning\nInstead of predicting absolute wavelengths, the team trains neural networks to predict the residual `wl_diff` between the base predictions and ground truth. Multiple architectures are tested, including MLP, BiGRU + CNN + MLP, BiLSTM + CNN + MLP, and BiLSTM + CNN + BiLSTM. Quantile regression is employed to simultaneously predict sigma. Training incorporates time-axis flipping of signal/transit sequences and noise injection. Adversarial Weight Perturbation (AWP) is applied for regularization.\n\n## Sigma Scale Adjustment & Pseudo Labeling\nThe neural network outputs per-wavelength sigma, but systematic sample-level shifts remain. A scalar scale factor `a` is learned separately for FGS and AIRS bands using a gradient boosting model. The optimal `a` is found via bounded scalar minimization and discretized to 0.01 increments to prevent overfitting to metric noise. Finally, pseudo-labeling is applied to the test set using only `wl_diff` predictions (excluding sigma) to boost the leaderboard score. This step is justified by the observation that validation performance rarely deteriorates even when training MSE overfits, indicating robust generalization.",
+  "rank": 7,
+  "competition_flow": "Raw observation preprocessing -> physics-based phase detection and multi-component GP modeling to generate base predictions and features -> deep learning residual correction with quantile regression for wavelength difference and sigma -> gradient boosting for sigma scale adjustment -> pseudo-labeling on test data for final score boost.",
+  "data_reading": [],
+  "data_processing": [
+    "Signal and gradient smoothing, 5\u03c3 gradient clipping, edge zeroing, Gaussian smoothing, threshold scanning for ingress/egress boundaries, local sampling for baseline comparison, post-processing for abnormal signals.",
+    "Training augmentations: time-axis flipping of signal/transit sequences, noise injection."
+  ],
+  "features_engineering": [
+    "Physics-derived features including reconstructed signals, ideal transit models, and a multi-component Gaussian Process kernel (RBF with varying length scales, periodic, Mat\u00e9rn, linear wavelength-tied, and white noise).",
+    "Baseline polynomial degree restricted to 2\u20133."
+  ],
+  "models": [
+    "Multilayer Perceptron (MLP)",
+    "BiGRU + CNN + MLP",
+    "BiLSTM + CNN + MLP",
+    "BiLSTM + CNN + BiLSTM",
+    "Gradient Boosting model"
+  ],
+  "frameworks_used": [],
+  "loss_functions": [
+    "quantile regression",
+    "MSE"
+  ],
+  "cv_strategy": "",
+  "ensembling": "",
+  "insights": [
+    "The Gaussian Process kernel, while not directly improving sigma prediction, unexpectedly stabilized all downstream tasks including linear corrections and neural networks.",
+    "Quantile regression effectively enabled simultaneous prediction of wavelength residuals and uncertainty (sigma).",
+    "Pseudo-labeling was viable because validation performance remained stable even when training MSE overfitted."
+  ],
+  "critical_findings": [
+    "Using sigma estimates from top-performing solutions often reduced the final score by ~0.1, making them counterproductive.",
+    "Higher-order baseline polynomials caused signal instability, and reducing the degree to 2\u20133 yielded a ~0.01 improvement.",
+    "More complex neural network architectures failed to improve performance over simpler ones."
+  ],
+  "what_did_not_work": [
+    "More complex model architectures did not bring improvements."
+  ],
+  "github_repos": [],
+  "papers": [],
+  "other_solution_refs": [
+    {
+      "description": "External preprocessing notebook referenced for Step0",
+      "url": "https://www.kaggle.com/code/ilu000/ariel25-quick-data-prep-improved"
+    },
+    {
+      "description": "10th place solution referenced for physics-based modeling patterns",
+      "url": "https://www.kaggle.com/competitions/ariel-data-challenge-2024/writeups/xomox-10th-place-solution"
+    },
+    {
+      "description": "1st place solution referenced for physics-based modeling patterns",
+      "url": "https://www.kaggle.com/competitions/ariel-data-challenge-2024/writeups/c-number-daiwakun-1st-place-solution"
+    }
+  ],
+  "source_url": "https://www.kaggle.com/competitions/ariel-data-challenge-2025/discussion/609210"
+}

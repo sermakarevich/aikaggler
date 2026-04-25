@@ -1,0 +1,42 @@
+{
+  "summary": "This notebook implements an inference pipeline for the Konwinski Prize competition, demonstrating how to deploy and run a forked OpenHands AI coding agent within Kaggle's constrained environment. It provisions a local vLLM server to host 32B parameter coding models, configures the agent via environment variables and a TOML file, and implements a prediction function that unpacks repository archives, resolves dependencies, and executes the agent to generate code patches. The author emphasizes structured prompt engineering, including step-by-step debugging instructions and strict constraints to prevent test modification. Readers should learn how to adapt autonomous coding agents for competition inference, manage offline dependency resolution, and optimize agent prompts for reliable code generation.",
+  "purpose": "inference",
+  "competition_flow": "Unpacks competition repository and dependency archives, configures a local vLLM server and OpenHands agent, runs the agent against each GitHub issue to generate code diffs, and writes the results to a submission CSV.",
+  "data_reading": [
+    "Reads repository and pip package archives from io.BytesIO buffers provided by the competition gateway.",
+    "Parses pyproject.toml to extract project names and metadata."
+  ],
+  "data_processing": [
+    "Unpacks archives to /testbed and provisions Python virtual environments using uv.",
+    "Resolves dependencies via poetry and pip, and configures runtime environment variables for the agent."
+  ],
+  "features_engineering": [],
+  "models": [
+    "Qwen2.5-Coder-32B-Instruct",
+    "DeepSeek-R1-Distill-Qwen-32B",
+    "QwQ-32B"
+  ],
+  "frameworks_used": [
+    "vllm",
+    "poetry",
+    "uv",
+    "tomlkit",
+    "kaggle_evaluation.konwinski_prize_inference_server"
+  ],
+  "loss_functions": [],
+  "cv_strategy": "",
+  "ensembling": "",
+  "insights": [
+    "Deploying large coding models locally via vLLM is viable on Kaggle GPUs when using offline package installation.",
+    "OpenHands agents require explicit, step-by-step prompt engineering and strict constraints to avoid modifying test files or generating workarounds.",
+    "Offline dependency resolution and virtual environment management are critical for reliable agent execution in isolated competition environments."
+  ],
+  "critical_findings": [
+    "Modifying unit tests during patch generation will cause submission failures, so the agent must strictly fix library source code.",
+    "Tracebacks must be read bottom-to-top, and metaclass __call__() methods often hide the true source of configuration errors.",
+    "Internet is disabled, requiring all dependencies to be pre-packaged and resolved locally via uv and poetry."
+  ],
+  "what_did_not_work": [],
+  "source_url": "https://www.kaggle.com/code/smartmanoj/kprize-openhands-fork",
+  "votes": 77
+}

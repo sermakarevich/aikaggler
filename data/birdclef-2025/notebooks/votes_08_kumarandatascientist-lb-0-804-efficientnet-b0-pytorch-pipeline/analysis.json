@@ -1,0 +1,42 @@
+{
+  "summary": "This notebook implements an inference pipeline for the BirdCLEF-2025 audio classification competition. It loads pre-trained EfficientNet-B0 models, converts raw audio files into mel spectrograms, and generates species presence predictions for 5-second time windows. The pipeline supports test-time augmentation via spectrogram flips and applies temporal smoothing to the final submission CSV to enforce consistency across adjacent segments. Readers should learn how to structure a production-ready inference script for audio tasks, handle multi-model averaging, and apply post-processing to improve leaderboard performance.",
+  "purpose": "inference",
+  "competition_flow": "Loads pre-trained EfficientNet-B0 models and taxonomy data, processes test audio into mel spectrograms, runs inference with optional TTA and model averaging, generates a CSV submission, and applies temporal smoothing to the predictions.",
+  "data_reading": [
+    "Loads taxonomy CSV to extract species labels.",
+    "Reads test audio files (.ogg) using librosa at 32kHz.",
+    "Reads sample submission CSV for column alignment."
+  ],
+  "data_processing": [
+    "Pads audio to 5-second windows.",
+    "Computes mel spectrograms with configurable hop length and mel bins.",
+    "Normalizes spectrograms to [0,1].",
+    "Resizes spectrograms to 256x256 via OpenCV.",
+    "Applies TTA via horizontal and vertical flips of the spectrogram."
+  ],
+  "features_engineering": [],
+  "models": [
+    "EfficientNet-B0"
+  ],
+  "frameworks_used": [
+    "pytorch",
+    "timm",
+    "librosa",
+    "numpy",
+    "pandas",
+    "opencv",
+    "tqdm"
+  ],
+  "loss_functions": [],
+  "cv_strategy": "",
+  "ensembling": "Averages predictions across multiple loaded model checkpoints and across TTA variations (horizontal/vertical flips) before applying temporal smoothing.",
+  "insights": [
+    "Test-time augmentation via spectrogram flips improves prediction robustness without additional training.",
+    "Temporal smoothing of adjacent 5-second windows enforces biological plausibility and boosts leaderboard scores.",
+    "Averaging outputs from multiple pre-trained checkpoints is a straightforward method to enhance inference performance."
+  ],
+  "critical_findings": [],
+  "what_did_not_work": [],
+  "source_url": "https://www.kaggle.com/code/kumarandatascientist/lb-0-804-efficientnet-b0-pytorch-pipeline",
+  "votes": 387
+}

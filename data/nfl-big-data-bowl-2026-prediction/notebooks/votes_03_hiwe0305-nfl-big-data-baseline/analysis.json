@@ -1,0 +1,47 @@
+{
+  "summary": "The notebook implements a residual learning baseline for the NFL Big Data Bowl, predicting player positions by combining a kinematic constant-acceleration baseline with CatBoost models trained on residuals. It introduces role-specific heads for Targeted Receivers and Defensive Coverage players, blends them with a global model, and incorporates physics-based features, sequence lags, formation context, and a lightweight graph-based neighbor embedding. Readers should understand how residual learning stabilizes predictions and simplifies the regression task, how role-aware ensembling captures distinct movement patterns without degrading global performance, and how multi-GPU CatBoost can be enabled with minimal code changes. The approach demonstrates a practical, computationally efficient recipe for spatial tracking prediction.",
+  "purpose": "baseline",
+  "competition_flow": "Loads weekly NFL tracking data, engineers physics, sequence, formation, and graph-based neighbor features, trains CatBoost models on position residuals relative to a kinematic baseline using group-kfold cross-validation, blends global and role-specific predictions, and generates a submission file.",
+  "data_reading": [
+    "Reads train/input_2023_w{week_num:02d}.csv and train/output_2023_w{week_num:02d}.csv for weeks 1-18 using pd.read_csv, parallelized across 18 weeks with multiprocessing.Pool, then concatenated.",
+    "Test data loaded via pd.read_csv from test_input.csv and test.csv."
+  ],
+  "data_processing": [
+    "Converts player height to inches, computes BMI, derives heading/velocity/acceleration vectors from speed and direction.",
+    "Calculates ball-relative geometry, team formation centroids, relative coordinates, and bearing to ball.",
+    "Applies lagged features (1-5 frames), rolling mean/std (windows 3,5), and velocity deltas.",
+    "Computes weighted k-nearest neighbor embeddings based on distance and ally/opponent status.",
+    "Handles missing values with defaults/forward fills, replaces infinities with NaNs before filling with 0, and clips final predictions to field bounds."
+  ],
+  "features_engineering": [
+    "Height/BMI, heading/velocity/acceleration vectors, ball-frame projections (parallel/perpendicular components).",
+    "Physics features (momentum, kinetic energy), role/side binary flags.",
+    "Team centroid/width/length, relative coordinates, bearing to ball.",
+    "Lagged features (1-5 frames), rolling mean/std (3,5 frames), velocity deltas.",
+    "Graph-based neighbor embeddings (weighted ally/opp distance, velocity diffs, counts, min distances)."
+  ],
+  "models": [
+    "CatBoostRegressor (x-head and y-head trained separately)"
+  ],
+  "frameworks_used": [
+    "catboost",
+    "scikit-learn",
+    "numpy",
+    "pandas"
+  ],
+  "loss_functions": [
+    "RMSE"
+  ],
+  "cv_strategy": "GroupKFold(n_splits=5) grouped by game_id_play_id_nfl_id to prevent data leakage across frames of the same play/player.",
+  "ensembling": "Averages predictions across 5 folds per head, then blends global and role-specific (Targeted Receiver, Defensive Coverage) predictions using fixed 0.5 weights before adding the kinematic baseline back and clipping to field bounds.",
+  "insights": [
+    "Residual learning with a kinematic baseline stabilizes position predictions and simplifies the regression task for tree models.",
+    "Role-specific heads capture distinct movement patterns for key player types without degrading global performance.",
+    "Lightweight graph-based neighbor embeddings effectively encode spatial context without requiring heavy GNN frameworks.",
+    "Multi-GPU CatBoost can be enabled with minimal code changes by passing detected device IDs directly to the devices parameter."
+  ],
+  "critical_findings": [],
+  "what_did_not_work": [],
+  "source_url": "https://www.kaggle.com/code/hiwe0305/nfl-big-data-baseline",
+  "votes": 316
+}

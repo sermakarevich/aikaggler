@@ -1,0 +1,215 @@
+# rsna-intracranial-aneurysm-detection: cross-solution summary
+
+This Kaggle competition focused on detecting and localizing intracranial aneurysms in highly variable medical imaging data, requiring robust handling of extreme class imbalance, inconsistent DICOM orientations, and sparse positive samples. Winning approaches predominantly favored coarse-to-fine, segmentation-guided pipelines over end-to-end models, leveraging 2.5D slice stacking, targeted ROI cropping, and hybrid 2D/3D architectures to balance computational efficiency with high-resolution spatial awareness. Success hinged on strategic data cleaning, heavy test-time augmentation, label noise mitigation, and carefully weighted ensembling of detection, classification, and meta-model outputs.
+
+## Competition flows
+- Raw DICOM series converted to standardized NIfTI volumes, processed through a coarse-to-fine nnU-Net vessel segmentation pipeline to extract ROIs and masks, and finally classified by a 3D transformer-augmented model to predict 13 anatomical locations and overall aneurysm presence.
+- Raw medical imaging slices processed into 2.5D inputs, filtered via YOLO-based brain and aneurysm detection, classified using Vision Transformer models, augmented with external pseudo-labeled data, and combined into a weighted ensemble for final submission.
+- Raw DICOM slices processed into 2.5D triplets and 3D volumes, fed into YOLO 2.5D models and a 3D CenterNet-based Flayer for localization and classification, with outputs combined alongside patient metadata into parallel LightGBM, XGBoost, and CatBoost meta-classifiers to produce final averaged probabilities.
+- Raw DICOM volumes parsed into axial/sagittal/coronal planes, processed into MIPs for 2D YOLO detection, cropped into 3D ROIs, classified by 3D ResNet-18 models with per-feature-map heads, aggregated via Top-N mean scoring, and ensembled with a voxel-spacing fallback model to produce the final submission.
+- Raw CT slices processed through a DINOv3 ViT to predict ROI coordinates, which are used to extract 384x384 crops fed into a CoaT-Lite-Medium/MaxViT classifier, with final patient-level predictions obtained via max-aggregation of per-image outputs.
+- Raw multi-frame DICOMs preprocessed and resized to 224x224x224, passed through a 2D nnU-Net for tri-axial ROI extraction, then fed into a 3D multi-task nnU-Net for joint vessel/aneurysm segmentation and classification, with heavy TTA and a two-fold ensemble producing the final submission.
+- Raw CT data cropped via skull and vessel segmentation masks, sampled into 2D frames, classified by optimized CNNs, aggregated via a sequence model, and ensembled for the final submission.
+- DICOM series converted to NIfTI, cropped to a fixed superior ROI, resampled to median spacing, and normalized; ground truth encoded as multichannel EDT blobs, a 3D ResEnc U-Net trained with TopK BCE loss, and patch-based inference with channel-wise max aggregation produced the final submission.
+- DICOM files converted to NIfTI, brain masks generated and used to crop a Circle of Willis ROI, 2.5D models extract positional and aneurysm features across slices, and these features are fed into an ensemble of RNNs for final aneurysm prediction.
+
+## Data reading
+- DICOM series converted to NIfTI volumes using dcm2niix (with gdcmconv --raw fallback), standardized to consistent anatomical orientation via nnU-Net’s SimpleITKIOWithReorient, and normalized with per-volume z-score.
+- DICOM slices sorted by spatial position (SliceLocation → ImagePositionPatient → InstanceNumber), converted to 2.5D RGB triplets for YOLO, and precomputed as .npy volumes for the Flayer model.
+- DICOM volumes parsed into axial/sagittal/coronal planes; slices padded, center-cropped to 512×512, and stacked with adjacent slices to form 2.5D RGB inputs.
+- Multi-frame DICOM files parsed via pydicom (after dicom2nifti failed on deleted test fields), with spacing mapped by slice count and T2-specific orientation classification applied.
+- DICOM series converted to .nii.gz using pydicom, then loaded via a SimpleITK reader enforcing RAS orientation.
+- DICOM files converted to NIfTI using dicom2nifti; coordinates and frame indexes transformed from train_localizers.csv to align with NIfTI files.
+
+## Data processing
+- Excluded series with quality issues, orientation anomalies, corruption, or implausible spacing.
+- Filtered slices to retain majority Rows × Cols and PixelSpacing, removing outlier interslice spacing.
+- Applied per-volume/global z-score normalization and min-max normalization.
+- Resized to 512×512 or 384×384; all volumes resized to 224x224x224.
+- Computed MIPs of segmentation masks along sagittal/coronal directions.
+- Constructed 2D axis-aligned bounding boxes from mask coordinates and reconstructed 3D ROIs with fixed-size 3D bounding boxes (90×90×90 mm, 120×120×120 mm, or [200,160,160] mm).
+- Padded and center-cropped slices to 512×512; sampled 10 central slices along Z-axis and stacked with adjacent slices to form 2.5D RGB inputs.
+- Resampled to median spacing [0.70, 0.47, 0.47] mm using a custom PyTorch resampler; discarded volumes with severe artifacts and flipped mild misorientations.
+- Applied standard nnU-Net augmentations (rotations, mirroring) except left/right mirroring.
+- Ground truth encoded as EDT blobs across 14 channels.
+- 2.5D slice stacking (t-1, t, t+1) into 3-channel images without Z-axis resampling.
+- Brain region/skull/brain mask cropping via YOLO detection or TotalSegmentator; filtering masks with <1M pixels; 3D U-Net brain segmentation for ROI cropping.
+- Heuristic cropping aligned with coordinate data; fixed-ratio ROI cropping; vessel segmentation with mask dilation.
+- Left-right flips with label/mask swapping; HFlip/VFlip; rotation (±10° to ±25°); scaling/shearing; grid distortions; low-resolution simulation.
+- Gaussian noise/smoothing, intensity shift/scale, contrast adjustment, sharpening, inversion, CLAHE, HueSaturationValue, RandomBrightnessContrast.
+- Cutmix/Mixup; mosaic augmentation; heavy mixup (ratio=0.5) during RNN training.
+- Negative samples sampled evenly (10 per series); positives used all annotated slices; rare class oversampling with higher cross-entropy weights.
+- Pseudo-labeling of external datasets using detection/classification outputs; external TopCoW and TopBrain annotations merged to refine vessel masks; external data from OpenNeuro.org.
+- Training set cleaning by relabeling high-confidence negative series as positive; manual correction of left/right and anatomical label mix-ups; manual refinement of localizer labels.
+- Heavy TTA (8x flips with label swapping); TTA used left-right flipping; inference frame subsampling (halved for >64, quartered for >128).
+- Axial -> coronal augmentation; leveraging SliceSpacing for frame sampling; EMA for model stabilization; self-distillation with OOF logits to handle label noise.
+
+## Features engineering
+- Patient metadata (age, sex) concatenated with model predictions for meta-classifiers.
+- 13 vessel location classes treated as separate bounding box targets.
+- 2.5D slice stacking for YOLO inputs.
+- Ground truth aneurysms encoded as multichannel Euclidean Distance Transform (EDT) blobs (3D spheres rescaled to [0, 1]) across 14 channels, with the final channel representing the pixelwise maximum of the 13 anatomical classes.
+
+## Models
+- nnU-Net (v2/2D/3D/ResEnc/3d_fullres/nnUNetResEncUNetMPlans)
+- YOLO (v5n, v8n, v8m, v11m, v11x, custom timm backbone)
+- Vision Transformers (ViT-Large, EVA-Large, DINOv3, CoaT-Lite-Medium, MaxViT, coatnet_rmlp_2_rw_384)
+- CNNs/Backbones (EfficientNetV2-S, MiT-B4 FPN, 3D ResNet-18, 3D DynUNet, 3D-Unet, Retina U-Net, maxvit_rmlp_base_rw_384)
+- Meta-classifiers (LightGBM, XGBoost, CatBoost)
+- RNNs (Residual LSTM, Residual GRU, BiLSTM)
+- Transformers/Attention (Location-Aware Transformer, Bert)
+- MLP head
+- Custom sequence model
+- TotalSegmentator
+- 2.5D CoW Segmentation model
+- 2.5D Aneurysm model
+
+## Frameworks used
+- nnU-Net
+- SimpleITK
+- albumentations
+- timm
+- timm-3d
+- Ultralytics
+- pydicom
+- dicom2nifti
+- MONAI
+- TotalSegmentator
+
+## Loss functions
+- Dice + Cross-Entropy
+- Tversky + Cross-Entropy + SkeletonRecall
+- BCE with logits loss
+- Balanced BCE
+- Focal-Tversy++ loss
+- CenterNet-style focal loss (α=2, β=4)
+- L1 offset loss
+- Auxiliary Dice & BCE loss
+- Weighted BCE loss
+- Cross-entropy loss with heatmap weighting for aneurysm centers
+- Dice loss
+- TopK (20%) BCE loss
+- L1 loss for box regression
+- Focal loss for box class estimation
+- Classification loss
+- Segmentation loss
+- Focal loss (alpha=0.75)
+- Keypoint loss
+- Custom fitness function (0.5 × mAP@50 + 0.25 × mAP@50-95 + 0.25 × mAUC)
+
+## CV strategies
+- Multilabel-stratified 5-fold cross-validation.
+- 5-fold cross-validation for detection models; single model trained on near-full dataset for classification, selected via public leaderboard.
+- MultilabelStratifiedKFold stratified by aneurysm presence, all 13 vessel locations, and modality; K-fold protocol driven by training CSV split.
+- Multi-fold validation (specifically a two-fold ensemble mentioned in ablation), validated locally on all training cases.
+- Five cross-validation folds stratified by image modalities (not vessel classes), with hyperparameter tuning primarily on the first fold.
+- 5-fold cross-validation; OOF classification logits used for negative sampling, slice filtering, and self-distillation.
+
+## Ensembling
+- Final predictions averaged across 4 of the 5 cross-validation folds, combined with test-time augmentation (averaging original and left-right flipped volume predictions), and include a fail-safe fallback to pre-determined mean probabilities if segmentation fails.
+- Two weighted ensembles of six models (Final1 and Final2) combining detection and classification outputs, with weights and model selection guided by public leaderboard performance.
+- Final probabilities obtained by averaging outputs from the YOLO 2.5D models, the 3D CenterNet model, and the three meta-classifiers, with a parallel input structure for the meta-classifiers and Nelder-Mead optimization applied during CV.
+- Ensemble of 11 models with varying crop sizes, image resolutions, and reduced stride variants (all using a 3D ResNet-18 backbone) combined to achieve public/private LB scores of 0.86/0.84.
+- Ensembled CoaT-Lite-Medium and MaxViT models, with final patient-level predictions obtained by max-aggregating per-image outputs without TTA.
+- 3-model ensemble of the 2D CNNs and sequence model, with inference optimized by capping and subsampling frames per modality.
+- Single model without test-time augmentation or ensembling; predictions post-processed by taking the maximum per channel and max-aggregating across patches.
+- Conservative two-fold model ensemble combined with heavy test-time augmentation (8x left-right flips with label swapping) to maximize robustness and inference speed.
+- Ensemble of multiple RNN models trained on different backbone folds and feature combinations, with a secondary submission generated via self-distillation using OOF logits to improve the CV AUC.
+
+## Insights
+- Rank 1 (1st Place Solution): Pretraining the classification backbone on the vessel segmentation task is the most critical factor for performance and convergence speed.
+- Rank 2 (2nd Place Solution): Removing the 0.5 prediction fallback exposed a consistent 3–4% public-private leaderboard gap, indicating a distribution shift in abnormal cases.
+- Rank 3 (3rd Place Solution): Attaching a classification head to each feature map rather than the whole volume effectively handles multi-label prediction.
+- Rank 4 (4th Place Solution): Soft pseudo-distillation on the majority of negative samples was a critical driver for score improvement.
+- Rank 6 (6th Place Solution): Custom pooling that preserves left/right spatial information prevents feature loss before the logits layer.
+- Rank 9 (11th Place Solution): The 2.5D CoW segmentation model achieved a low Dice score (0.56) but still provided highly valuable positional features for downstream tasks.
+
+## Critical findings
+- Higher weights on classification losses led to overfitting, necessitating a heavy emphasis on the auxiliary sphere segmentation loss (weight=1.0) to stabilize training.
+- The Location-Aware Transformer and FocalTversy++ loss provided initial gains but ultimately contributed minimally to the final score compared to backbone pretraining and loss weighting.
+- An orientation correction method that perfectly fixed training set anomalies had zero measurable impact on the leaderboard score, indicating test data did not suffer from the same orientation issues.
+- Manually annotating bounding boxes within ±10 slices of provided aneurysm centroids is highly effective and requires no specialized medical knowledge.
+- Horizontal flipping images and swapping left/right artery labels surprisingly improved accuracy by ~0.01.
+- Training ConvNeXt architectures in half precision caused the loss to quickly become NaN.
+- Modifying the YOLO neck and head based on P3 feature utilization did not improve validation scores.
+- Using 3D segmentation masks to filter invalid YOLO location predictions caused a significant drop in recall.
+- Applying wavelet and log-polar transforms to YOLO-extracted patches failed to improve performance.
+- The default 3D configuration with stride 2 produces a 4×4×4 feature map that yields poor results, making stride modification and higher resolution essential.
+- Vessel segmentation is not sufficiently robust across cases compared to bounding box detection.
+- Complex architectures like MIL, LSTMs, and decoder heads underperform, favoring simpler, direct classification heads.
+- Weighted sampling failed to improve performance despite severe class imbalance.
+- Initial segmentation approach was inefficient and plateaued at a low Dice score (~0.6) under tight time constraints.
+- The provided RSNA aneurysm annotations contained systematic left/right and anatomical position mix-ups that required manual correction to prevent performance degradation.
+- Relying on a 0.5 prediction fallback masked a consistent 3–4% performance gap between public and private leaderboards, revealing a distribution shift in abnormal cases.
+- Increasing public leaderboard scores consistently translated to private leaderboard improvements, validating the chosen augmentation and annotation refinement strategies.
+- Using a simpler 2-model pipeline would have run in 7 hours and likely been sufficient, as CV improvements from the 3rd model were marginal (<0.01).
+- Sagittal stacks were ignored during training but converted to axial during inference, showing that orientation normalization can salvage data without retraining.
+- Training with larger patch sizes surprisingly did not improve scores despite expectations.
+- Resampling input series to an isometric space of [1.0, 1.0, 1.0] mm substantially worsened results and was discontinued.
+- Internal validation scores continued to improve up to 0.9 with longer training and TTA, but this gain did not translate to the public/private leaderboard, likely due to platform submission instabilities.
+- TotalSegmentator generated better brain masks from MRI data than CT data for some scans, requiring a dual-mask selection strategy.
+- There was a large, unexplained gap between public and private leaderboard scores.
+
+## What did not work
+- A single end-to-end 3D classifier with auxiliary heads detected aneurysm presence but failed to accurately predict the 13 specific anatomical locations.
+- A simpler 2-channel input model (image + binary mask) requiring 14 separate forward passes per patient was computationally too expensive.
+- Insufficient negative samples in early YOLO training caused poor classification AUROC.
+- Training ConvNeXt in half precision caused loss to quickly become NaN.
+- Modifying the YOLO neck and head yielded no validation improvement.
+- Using 3D segmentation masks to filter invalid YOLO location predictions caused recall to drop.
+- Wavelet and log-polar transforms on YOLO-extracted patches did not yield good results.
+- Keypoint-Based Dual-Graph Predictor was too time-consuming and led to timeouts.
+- Vessel segmentation proved insufficiently robust across cases.
+- Modality and plane heads for auxiliary loss did not improve performance.
+- Complicated models like MIL, LSTMs, and decoder heads failed to deliver gains.
+- Training a segmentation model initially, which plateaued at ~0.6 Dice.
+- Weighted sampling for the highly imbalanced classification task.
+- Using dicom2nifti failed on test sets with deleted fields, necessitating a switch to pydicom.
+- Implementing try-except fallbacks to 0.5 predictions reduced robustness and was removed from the final inference pipeline.
+- Training a vessel crop classification model performed poorly and was abandoned.
+- Framing the task as detection with nnDetection (Retina U-Net) underperformed on the private leaderboard and internal validation.
+- Co-training with external aneurysm datasets (ADAM, Large IA Segmentation, INSTED, Lausanne, Royal Brisbane, Jianxiaokuang) did not help and some were disallowed.
+- Processing images as whole volumes instead of cropped ROIs was less efficient and yielded worse performance.
+- Training with larger patch sizes failed to improve scores.
+- Attempting to train a 3D CoW segmentation model failed to produce a good model, leading to a pivot to a 2.5D approach.
+
+## Notable individual insights
+- Rank 1 (1st Place Solution): Pretraining the classification backbone on the vessel segmentation task is the most critical factor for performance and convergence speed.
+- Rank 2 (2nd Place Solution): Removing the 0.5 prediction fallback exposed a consistent 3–4% public-private leaderboard gap, indicating a distribution shift in abnormal cases.
+- Rank 3 (3rd Place Solution): Attaching a classification head to each feature map rather than the whole volume effectively handles multi-label prediction.
+- Rank 4 (4th Place Solution): Soft pseudo-distillation on the majority of negative samples was a critical driver for score improvement.
+- Rank 6 (6th Place Solution): Custom pooling that preserves left/right spatial information prevents feature loss before the logits layer.
+- Rank 9 (11th Place Solution): The 2.5D CoW segmentation model achieved a low Dice score (0.56) but still provided highly valuable positional features for downstream tasks.
+
+## Solutions indexed
+- #1 [[solutions/rank_01/solution|1st Place Solution]]
+- #2 [[solutions/rank_02/solution|2nd Place Solution]]
+- #3 [[solutions/rank_03/solution|3rd place solution]]
+- #4 [[solutions/rank_04/solution|4th Place Solution]]
+- #5 [[solutions/rank_05/solution|5th place solution with code]]
+- #6 [[solutions/rank_06/solution|6th Place Solution]]
+- #7 [[solutions/rank_07/solution|7th place solution - 3D nnU-Net + blob regression (again)]]
+- #9 [[solutions/rank_09/solution|9th place solution]]
+- #11 [[solutions/rank_11/solution|11th Place Solution]]
+
+## GitHub links
+- [uchiyama33/rsna2025_1st_place](https://github.com/uchiyama33/rsna2025_1st_place) _(solution)_ — from [[solutions/rank_01/solution|1st Place Solution]]
+- [hoanghuyen797/RSNA-Intracranial-Aneurysm-Detection](https://github.com/hoanghuyen797/RSNA-Intracranial-Aneurysm-Detection) _(solution)_ — from [[solutions/rank_05/solution|5th place solution with code]]
+- [HumanSignal/labelImg](https://github.com/HumanSignal/labelImg) _(library)_ — from [[solutions/rank_05/solution|5th place solution with code]]
+- [tom99763/9th-place-solution-RSNA-IAD](https://github.com/tom99763/9th-place-solution-RSNA-IAD) _(solution)_ — from [[solutions/rank_09/solution|9th place solution]]
+- [tom99763/9th-place-solution-yolo-RSNA-IAD](https://github.com/tom99763/9th-place-solution-yolo-RSNA-IAD) _(solution)_ — from [[solutions/rank_09/solution|9th place solution]]
+- [tamotamo17/RSNA2025-3rd-place-solution](https://github.com/tamotamo17/RSNA2025-3rd-place-solution) _(solution)_ — from [[solutions/rank_03/solution|3rd place solution]]
+- [PengchengShi1220/RSNA2025_Intracranial-Aneurysm-Detection](https://github.com/PengchengShi1220/RSNA2025_Intracranial-Aneurysm-Detection) _(solution)_ — from [[solutions/rank_02/solution|2nd Place Solution]]
+- [MIC-DKFZ/kaggle_BYU_Locating_Bacterial-Flagellar_Motors_2025_solution](https://github.com/MIC-DKFZ/kaggle_BYU_Locating_Bacterial-Flagellar_Motors_2025_solution) _(reference)_ — from [[solutions/rank_07/solution|7th place solution - 3D nnU-Net + blob regression (again)]]
+- [MIC-DKFZ/nnUNet](https://github.com/MIC-DKFZ/nnUNet) _(library)_ — from [[solutions/rank_07/solution|7th place solution - 3D nnU-Net + blob regression (again)]]
+- [MIC-DKFZ/nnDetection](https://github.com/MIC-DKFZ/nnDetection) _(library)_ — from [[solutions/rank_07/solution|7th place solution - 3D nnU-Net + blob regression (again)]]
+- [jinxiaokuang/RWS-MT](https://github.com/jinxiaokuang/RWS-MT) _(reference)_ — from [[solutions/rank_07/solution|7th place solution - 3D nnU-Net + blob regression (again)]]
+- [MIC-DKFZ/kaggle-rsna-intracranial-aneurysm-detection-2025-solution](https://github.com/MIC-DKFZ/kaggle-rsna-intracranial-aneurysm-detection-2025-solution) _(solution)_ — from [[solutions/rank_07/solution|7th place solution - 3D nnU-Net + blob regression (again)]]
+- [icometrix/dicom2nifti](https://github.com/icometrix/dicom2nifti) _(library)_ — from [[solutions/rank_11/solution|11th Place Solution]]
+
+## Papers cited
+- nnU-Net: a self-configuring method for deep learning-based biomedical image segmentation
+- Skeleton recall loss for connectivity conserving and resource efficient segmentation of thin tubular structures
+- Calibrating the dice loss to handle neural network overconfidence for biomedical image segmentation
+- Benchmarking the CoW with the TopCoW Challenge: Topology-Aware Anatomical Segmentation of the Circle of Willis for CTA and MRA
+- [Retina U-Net architecture](https://proceedings.mlr.press/v116/jaeger20a/jaeger20a.pdf)

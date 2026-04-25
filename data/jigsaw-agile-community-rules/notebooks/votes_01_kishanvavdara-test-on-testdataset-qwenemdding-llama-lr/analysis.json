@@ -1,0 +1,52 @@
+{
+  "summary": "The notebook demonstrates a multi-strategy pipeline for the Jigsaw Agile Community Rules competition, combining test-time fine-tuning of a small Qwen 2.5 0.5B model, direct constrained inference with a Qwen 2.5 14B model, and a semantic retrieval baseline using a Qwen 3 0.6B embedding model. It details how to construct few-shot prompts, apply LoRA fine-tuning via TRL and DeepSpeed, enforce valid Yes/No outputs with vLLM's logits processor, and compute similarity-based scores from labeled examples. The final step blends rank-normalized predictions from all three approaches using fixed weights to produce a submission. Readers should learn how to leverage test-time adaptation, quantized inference, and semantic retrieval as complementary techniques for rule-violation classification. The approach highlights how diverse modeling strategies can be unified through rank-based blending to improve robustness.",
+  "purpose": "ensemble",
+  "competition_flow": "Loads Reddit comment and rule data, fine-tunes a Qwen 2.5 0.5B model via LoRA on a sampled test subset, runs inference on a Qwen 2.5 14B model and a Qwen 3 0.6B embedding-based semantic search baseline, ranks all predictions, and blends them with fixed weights to generate a final submission.",
+  "data_reading": [
+    "pd.read_csv() for train.csv and test.csv from /kaggle/input/jigsaw-agile-community-rules/"
+  ],
+  "data_processing": [
+    "Constructs few-shot prompts with subreddit, rule, positive/negative examples, and comment body",
+    "Randomly selects example pairs for training and test-time augmentation",
+    "Cleans text with cleantext (fixes unicode, removes URLs/emails/phones)",
+    "Applies softmax to logprobs for the 14B model",
+    "Ranks raw predictions to [0,1] range for blending"
+  ],
+  "features_engineering": [
+    "Few-shot prompt construction with positive/negative rule examples",
+    "Semantic similarity scores aggregated over top-2000 matches weighted by ground truth labels",
+    "Rank-based normalization of raw predictions to [0,1] scale"
+  ],
+  "models": [
+    "Qwen2.5-0.5B-Instruct",
+    "Qwen2.5-14B-Instruct",
+    "Qwen3-Embedding-0.6B"
+  ],
+  "frameworks_used": [
+    "transformers",
+    "trl",
+    "peft",
+    "vllm",
+    "sentence_transformers",
+    "accelerate",
+    "deepspeed",
+    "pandas",
+    "numpy",
+    "scipy"
+  ],
+  "loss_functions": [
+    "Cross-entropy loss on completion tokens (via SFTConfig with completion_only_loss=True)"
+  ],
+  "cv_strategy": "",
+  "ensembling": "Blends rank-normalized predictions from three models using fixed weights (0.5 for Qwen 0.5B, 0.3 for Qwen 3 0.6B embedding, 0.2 for Qwen 2.5 14B) to produce the final submission.",
+  "insights": [
+    "Test-time fine-tuning on a sampled subset of the test set effectively adapts a small model to the target distribution without requiring external validation data.",
+    "Using a logits processor for constrained generation guarantees valid Yes/No outputs while preserving probability distributions for downstream blending.",
+    "Semantic retrieval with a fine-tuned embedding model leverages labeled examples as a dynamic corpus, providing a strong parameter-efficient baseline.",
+    "Ranking and linearly blending predictions across diverse architectures mitigates individual model biases and improves overall robustness."
+  ],
+  "critical_findings": [],
+  "what_did_not_work": [],
+  "source_url": "https://www.kaggle.com/code/kishanvavdara/test-on-testdataset-qwenemdding-llama-lr",
+  "votes": 1101
+}

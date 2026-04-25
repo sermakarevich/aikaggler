@@ -1,0 +1,19 @@
+{
+  "description": "Participants predict the three-dimensional structure of RNA molecules, addressing a fundamental problem in structural biology. Competitors work with nucleotide sequence data and must output predicted conformations or scores that maximize a custom evaluation metric. Success is measured using the Ribonanza TM-Score on a held-out test set, with submissions restricted to five per day to manage compute load.",
+  "data_modality": "text",
+  "task_type": "regression",
+  "label_structure": "single_label",
+  "metric": "Ribonanza TM-Score",
+  "test_split": "unknown",
+  "format": "code_comp",
+  "dataset_scale": "small",
+  "domain": "structural_biology",
+  "data_challenges": [
+    "limited_training_data",
+    "complex_3d_geometry"
+  ],
+  "constraints": [
+    "kernels_only",
+    "limited_daily_submissions"
+  ]
+}

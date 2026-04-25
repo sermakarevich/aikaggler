@@ -1,0 +1,50 @@
+{
+  "summary": "The author placed 20th by adapting the Caformer architecture for seismic inversion, modifying it to accept 5 input planes side-by-side as a single-channel 1000x350 image. Key techniques included physics-based velocity scaling augmentation applied during training and test-time augmentation (TTA) via median aggregation. The author also implemented a semi-supervised self-training loop using forward modeling to generate synthetic seismic data from test predictions, combined with deep supervision using a 10-class linear head on the middle UNet feature.",
+  "extensive_summary": "## Model Architecture & Input Modification\nThe solution builds on the Caformer architecture, originally shared by another competitor. The author modified the input layer to process 5 input planes side-by-side as a single-channel 1000x350 image. Deep supervision was implemented by attaching a linear head to the middle feature map of the UNet backbone (9x9 size) to predict 10 classes, which significantly improved performance.\n\n## Data Augmentation & TTA\nA physics-inspired velocity scaling technique was used for augmentation. Multiplying velocity by alpha > 1 shrinks the seismic image along the time dimension (padded with zeros), while alpha < 1 expands it (truncated to original size). During training, alpha was randomly sampled from [0.8, 1.2]. For TTA, outputs were computed across 10 alpha values and aggregated via median.\n\n## Forward Modeling & Self-Training\nLeveraging external forward modeling code, the author generated synthetic seismic data from velocity predictions. Backpropagation through the forward model proved too slow, so a semi-supervised approach was adopted: test predictions were augmented, converted to seismic data, and used as input to predict a second velocity estimate. An in-batch strategy added a test batch every 6 training batches, backpropagating the MAE between the original and re-predicted velocities. This approach was also run exclusively on test data near the deadline.\n\n## Validation & Lessons Learned\nThe validation strategy relied on 20 files from a public notebook, but the CV score stopped correlating with the LB around a CV of 12. Attempts to use other backbones failed to converge, and a mixture-of-experts routing strategy improved CV but not LB despite high routing accuracy. Frequency/location-based data generation improved LB by 1 but was computationally prohibitive.",
+  "rank": 20,
+  "competition_flow": "Raw seismic/velocity data is processed through a modified Caformer model with physics-based velocity scaling augmentation, augmented via forward modeling from test predictions, supervised with a 10-class linear head, and aggregated via median TTA for submission.",
+  "data_reading": [],
+  "data_processing": [
+    "Velocity scaling augmentation (shrink/expand/pad/truncate based on alpha)",
+    "Padding with zeros and truncation to original size",
+    "TTA with 10 alpha values taking median",
+    "Forward modeling to generate seismic data from velocity predictions",
+    "In-batch semi-supervised data generation"
+  ],
+  "features_engineering": [],
+  "models": [
+    "Caformer",
+    "UNet",
+    "linear head"
+  ],
+  "frameworks_used": [],
+  "loss_functions": [
+    "MAE"
+  ],
+  "cv_strategy": "Validation on 20 files from a public notebook; CV-LB correlation broke down around CV=12.",
+  "ensembling": "Test-time augmentation with 10 velocity scaling alpha values, aggregating outputs via median.",
+  "insights": [
+    "Physics-based velocity scaling is highly effective for both training and TTA.",
+    "Generating synthetic data from test predictions and retraining on it significantly boosts performance.",
+    "Deep supervision with a linear head on the middle UNet feature provides a substantial performance gain."
+  ],
+  "critical_findings": [
+    "The validation score stopped correlating with the leaderboard around a CV of 12.",
+    "A mixture-of-experts routing strategy improved CV but failed to improve LB despite 99.55% routing accuracy.",
+    "Frequency/location-based data generation improved LB by 1 but was too slow to be practical."
+  ],
+  "what_did_not_work": [
+    "Training other backbones did not converge sufficiently.",
+    "Mixture-of-experts routing improved CV but not LB.",
+    "Generating data using frequency and location moves took too long and only yielded a minor LB improvement."
+  ],
+  "github_repos": [
+    {
+      "url": "https://github.com/lu-group/fourier-deeponet-fwi",
+      "role": "reference"
+    }
+  ],
+  "papers": [],
+  "other_solution_refs": [],
+  "source_url": "https://www.kaggle.com/competitions/waveform-inversion/discussion/587402"
+}

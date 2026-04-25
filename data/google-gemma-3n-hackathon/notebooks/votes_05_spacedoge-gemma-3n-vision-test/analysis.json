@@ -1,0 +1,45 @@
+{
+  "summary": "This notebook demonstrates known bugs in the official Gemma-3n-E2B vision model checkpoints and provides working inference recipes. It shows that running the model in FP16 on standard GPUs causes activation overflows, while the original checkpoints contain a transposed spatial dimension bug in the MobileNetV5 vision tower that breaks OCR tasks. The author proves that using the Unsloth library resolves both issues automatically, whereas the standard `transformers` pipeline requires manual tensor transposition and FP32/CPU execution as a workaround. Readers should take away the importance of verifying model loader compatibility and being aware of checkpoint-specific spatial or precision bugs when deploying vision-language models.",
+  "purpose": "tutorial",
+  "competition_flow": "Loads OCR test images \u2192 processes them through Gemma-3n-E2B vision model \u2192 generates text predictions while demonstrating and working around FP16 overflow and spatial transposition bugs.",
+  "data_reading": [
+    "Images are loaded from a Kaggle dataset input path using PIL (`Image.open`)."
+  ],
+  "data_processing": [
+    "Resizes input images to 384x384.",
+    "For the standard `transformers` pipeline, manually transposes the `pixel_values` tensor axes (`permute(0,1,3,2)`) and forces FP32 precision on CPU to avoid FP16 activation overflows."
+  ],
+  "features_engineering": [],
+  "models": [
+    "Gemma-3n-E2B",
+    "MobileNetV5"
+  ],
+  "frameworks_used": [
+    "unsloth",
+    "transformers",
+    "torch",
+    "PIL",
+    "bitsandbytes",
+    "peft",
+    "trl"
+  ],
+  "loss_functions": [],
+  "cv_strategy": "",
+  "ensembling": "",
+  "insights": [
+    "Gemma-3n-E2B's raw activations overflow in FP16 on standard hardware like Kaggle T4 GPUs.",
+    "The official checkpoints contain a transposed width/height axis bug in the MobileNetV5 vision tower that breaks OCR.",
+    "Unsloth's optimized loader automatically resolves both precision and tensor shape bugs.",
+    "Standard `transformers` requires manual pixel value transposition and FP32/CPU execution as a reliable workaround."
+  ],
+  "critical_findings": [
+    "FP16 inference on CUDA fails completely due to activation overflow.",
+    "The official Hugging Face checkpoints have incorrectly transposed spatial dimensions in the vision tower, causing poor OCR performance."
+  ],
+  "what_did_not_work": [
+    "Standard `transformers` pipeline with FP16 on CUDA fails entirely due to activation overflow.",
+    "Running the official checkpoint without manual tensor transposition produces incorrect OCR results."
+  ],
+  "source_url": "https://www.kaggle.com/code/spacedoge/gemma-3n-vision-test",
+  "votes": 61
+}

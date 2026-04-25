@@ -1,0 +1,48 @@
+{
+  "summary": "The authors developed a physics-informed approach for NFL player trajectory prediction by adapting the STTRE architecture to handle multivariate time series data. They introduced a novel Chiral Augmentation strategy (random Y-flip) to enforce field symmetry and reduce overfitting, alongside standardizing play direction to halve the prediction space. The pipeline combined a heterogeneous ensemble of STTRE, an ESG GNN, and a Bi-GRU, aggregated using a physics-aware polar vector averaging method that preserves kinetic energy. Error analysis revealed an inertia bias limiting sharp cut predictions, highlighting the need for play-outcome classification to handle trajectory uncertainty.",
+  "extensive_summary": "## Data Engineering & Symmetry\nThe core of the solution focused on reducing problem dimensionality by exploiting the geometric symmetries of the football field. All plays were standardized to move left-to-right, effectively halving the prediction space and allowing the model to focus purely on relative motion dynamics. To enforce chiral (mirror) symmetry, the authors implemented a dynamic Random Y-Flip augmentation during training. With a 0.5 probability per epoch, the Y-axis coordinates, velocity/acceleration components, and orientation angles were inverted. This prevented the model from memorizing field hotspots and significantly improved generalization. Due to the STTRE architecture's time-series nature, context was filtered to the 4 most relevant entities per play: the target player, passer, nearest teammate, and nearest defender.\n\n## Model Architecture & Training\nThe team reproduced and adapted the STTRE (Spatio-Temporal Transformer with Relative Embeddings) architecture. Instead of standard embeddings, they used Relative Role Bias to explicitly encode query-key relationships (e.g., teammate-to-teammate vs. defender-to-target). The model utilized a three-branch encoder (temporal, spatial, spatio-temporal) fused via a Sigmoid Gating Network. Training combined a standard position loss (MSE) with an auxiliary velocity loss to penalize first-derivative errors and enforce physical continuity.\n\n## Inference & Ensemble Strategy\nDuring inference, the authors applied TTA by averaging predictions from original and Y-flipped sequences, injected Gaussian noise to smooth variance, and used linear extrapolation for missing end frames. The final submission used a heterogeneous ensemble of STTRE, an ESG GNN, and a Bi-GRU. Rather than averaging coordinates, they implemented a Polar Vector Ensemble that separately averages speed (magnitude) and direction (unit vector) to prevent kinetic energy loss. Dynamic time-decay weighting was applied to the GRU component, reducing its influence over longer prediction horizons while leveraging its strength in immediate kinematics.\n\n## Limitations & Insights\nVisual error analysis revealed a strong inertia bias: the model over-relies on momentum and struggles with sharp cuts or J-turns. The authors noted that trajectories are fundamentally conditional on play outcomes (catch, interception, incomplete), and treating tracking data as a deterministic sequence caused the model to learn an average path that physically exists in neither scenario. They conclude that a multi-task learning framework with play-outcome classification is necessary to break current performance barriers.",
+  "rank": 33,
+  "competition_flow": "Raw tracking data is standardized for field symmetry, processed through a custom data loader with chiral augmentation, fed into a heterogeneous ensemble of transformer, GNN, and RNN models trained with auxiliary velocity loss, and aggregated via polar vector averaging with TTA and noise injection for final trajectory predictions.",
+  "data_reading": [],
+  "data_processing": [
+    "Standardized all plays to move left-to-right to halve the prediction space",
+    "Implemented dynamic Random Y-Flip augmentation during training to enforce chiral symmetry",
+    "Filtered context to the 4 most relevant entities per play (target, passer, nearest teammate, nearest defender)",
+    "Applied Gaussian noise injection during inference and linear extrapolation for missing end frames"
+  ],
+  "features_engineering": [],
+  "models": [
+    "STTRE (Spatio-Temporal Transformer with Relative Embeddings)",
+    "ESG (Evolving Subgraph Graph Neural Network)",
+    "Bi-GRU (Bidirectional GRU)"
+  ],
+  "frameworks_used": [],
+  "loss_functions": [
+    "Position loss (MSE)",
+    "Auxiliary Velocity Loss"
+  ],
+  "cv_strategy": "",
+  "ensembling": "Combined STTRE, ESG GNN, and Bi-GRU predictions using a physics-aware polar vector averaging strategy that separately weights speed and direction to preserve kinetic energy, supplemented by dynamic time-decay weighting for the GRU component.",
+  "insights": [
+    "Standardizing play direction to a single axis halves the prediction space and simplifies learning relative motion dynamics.",
+    "Enforcing chiral symmetry via random Y-flip augmentation prevents the model from memorizing field hotspots and improves generalization.",
+    "Trajectories are fundamentally conditional on play outcomes, meaning deterministic sequence modeling overlooks critical uncertainty."
+  ],
+  "critical_findings": [
+    "The model exhibits a strong inertia bias, consistently overshooting trajectories during sharp cuts because it over-relies on momentum from the first few frames.",
+    "Brute-force coordinate averaging in ensembles causes kinetic energy loss, producing physically impossible trajectories that fail to match any individual model's speed."
+  ],
+  "what_did_not_work": [
+    "Treating tracking data as a deterministic sequence failed to handle sharp cuts and sudden direction changes, as it essentially learned an average path between a catch and an interception that physically exists in neither scenario."
+  ],
+  "github_repos": [],
+  "papers": [
+    {
+      "title": "STTRE: A Spatio-Temporal Transformer with Relative Embeddings for multivariate time series forecasting",
+      "url": "https://doi.org/10.1016/j.neunet.2023.09.039",
+      "arxiv_id": null
+    }
+  ],
+  "other_solution_refs": [],
+  "source_url": "https://www.kaggle.com/competitions/nfl-big-data-bowl-2026-prediction/discussion/651530"
+}

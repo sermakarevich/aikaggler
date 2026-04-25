@@ -1,0 +1,79 @@
+{
+  "summary": "The author achieved 4th place by fine-tuning Stable Diffusion 3.5 Medium using DRaFT to optimize for specific reward models, then converting the generated images to SVGs via a heuristic converter and refining them with the differentiable rasterizer diffvg. Key insights include using a combination of general preference rewards (HPSv2, PickScore) and competition-specific rewards (aesthetic score, VQA proxy, negative LPIPs) during fine-tuning, which eliminated the need for prompt engineering. The pipeline leverages a best-of-n generation strategy with adaptive timing and OCR checks to maximize the final leaderboard score.",
+  "extensive_summary": "## Overall Pipeline\nThe solution centers on a two-stage generation and refinement pipeline. First, images are generated using a fine-tuned Stable Diffusion 3.5 Medium model. These images are then heuristically converted to rough SVGs, which are subsequently refined using diffvg, a differentiable SVG rasterizer that optimizes path locations and colors via gradient descent to minimize L1 distance to the original image.\n\n## Diffusion Model & DRaFT Fine-Tuning\nThe author selected Stable Diffusion 3.5 Medium without the T5 text encoder to reduce memory footprint. The model was fine-tuned using DRaFT (specifically DRaFT-LV), which backpropagates reward signals directly into the diffusion model rather than relying on RL/DPO. Training data consisted of 1000 prompts generated via GPT-4o, structured in two stages: 50 image categories followed by prompt sampling, with heavier weighting on known evaluation categories (landscapes, abstract, fashion).\n\n## Reward Functions & Training Strategy\nThe fine-tuning leveraged a mix of general and competition-specific reward functions. General rewards included Human Preference Score v2 and PickScore, both trained on human preference data. Competition-specific rewards included the competition aesthetic score, a proxy VQA score (binary yes/no on prompt presence), and negative LPIPs distance between the generated image and its SVG conversion to encourage SVG-friendly outputs. This approach improved aesthetic scores by ~10% and VQA scores by ~5%, while removing the need for manual prompt engineering.\n\n## SVG Refinement & Inference\nInitial SVGs were created using a heuristic converter inspired by Rich Olson\u2019s work, with tweaks for visual quality and compression. The diffvg optimizer then refined these SVGs by minimizing L1 distance between the rendered SVG and the source image. During inference, the pipeline employs a \"best of n\" strategy, generating 5-6 candidates per prompt within a ~60-second adaptive time budget. The final selection is based on the highest VQA score, with an additional OCR score check to ensure validity.",
+  "rank": 4,
+  "competition_flow": "The pipeline generates images via a DRaFT-fine-tuned Stable Diffusion 3.5 Medium model, converts them to rough SVGs using a heuristic converter, refines the SVGs with diffvg gradient descent, and selects the best candidate using a VQA proxy and OCR check within an adaptive time budget.",
+  "data_reading": [],
+  "data_processing": [
+    "Training prompts generated via GPT-4o in a two-stage category sampling approach",
+    "Heuristic image-to-SVG conversion with visual quality and compression tweaks",
+    "diffvg gradient descent optimization on path locations and colors",
+    "OCR decoy trick applied to reduce hallucinations"
+  ],
+  "features_engineering": [],
+  "models": [
+    "Stable Diffusion 3.5 Medium",
+    "DRaFT",
+    "DRaFT-LV",
+    "Human Preference Score v2",
+    "PickScore",
+    "diffvg"
+  ],
+  "frameworks_used": [],
+  "loss_functions": [
+    "L1 distance between rendered SVG and original image",
+    "negative LPIPs distance"
+  ],
+  "cv_strategy": "",
+  "ensembling": "The pipeline generates 5-6 SVG candidates per prompt within an adaptive ~60-second time budget, then selects the final output based on the highest VQA score and an OCR score validation check.",
+  "insights": [
+    "Fine-tuning with DRaFT using a mix of general preference rewards and competition-specific rewards can eliminate the need for manual prompt engineering.",
+    "Using a differentiable rasterizer like diffvg allows basic heuristic SVG converters to suffice, as gradient-based refinement corrects most initial conversion artifacts.",
+    "A binary VQA proxy is faster and more effective than using the full set of evaluation questions during generation."
+  ],
+  "critical_findings": [
+    "The binary VQA proxy for scoring worked surprisingly better than using the actual set of questions for each image.",
+    "Negative LPIPs distance between the generated image and its SVG conversion effectively steers the diffusion model to produce SVG-friendly outputs without explicit architectural changes."
+  ],
+  "what_did_not_work": [],
+  "github_repos": [
+    {
+      "url": "https://github.com/BachiLi/diffvg",
+      "role": "library"
+    },
+    {
+      "url": "https://github.com/clarkkev/svg-diffusion",
+      "role": "solution"
+    },
+    {
+      "url": "https://github.com/tgxs002/HPSv2",
+      "role": "library"
+    },
+    {
+      "url": "https://github.com/yuvalkirstain/PickScore",
+      "role": "library"
+    },
+    {
+      "url": "https://github.com/richzhang/PerceptualSimilarity",
+      "role": "library"
+    }
+  ],
+  "papers": [
+    {
+      "title": "DRaFT",
+      "url": "https://arxiv.org/abs/2309.17400",
+      "arxiv_id": "2309.17400"
+    }
+  ],
+  "other_solution_refs": [
+    {
+      "description": "OCR decoy trick notebook",
+      "url": "https://www.kaggle.com/code/richolson/let-s-defeat-ocr-easy-lb-boost"
+    },
+    {
+      "description": "Image to SVG conversion notebook",
+      "url": "https://www.kaggle.com/code/richolson/stable-diffusion-svg-scoring-metric"
+    }
+  ],
+  "source_url": "https://www.kaggle.com/competitions/drawing-with-llms/discussion/581108"
+}

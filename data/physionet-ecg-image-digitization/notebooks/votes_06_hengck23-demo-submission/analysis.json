@@ -1,0 +1,42 @@
+{
+  "summary": "This notebook implements a multi-stage inference pipeline to digitize static ECG photographs into continuous time-series signals. It sequentially applies homography-based rotation, grid-point rectification, and a pixel-coordinate regression model to extract voltage values from the image. Calibration constants are used to convert pixel coordinates to physiological values, followed by lead splitting and sequence padding to match competition submission formats. Readers should understand how to deploy a staged vision model for signal extraction and handle variable-length output alignment in medical image digitization tasks.",
+  "purpose": "inference",
+  "competition_flow": "Loads ECG image metadata and PNGs, processes them through three sequential PyTorch models for rotation, rectification, and pixel regression, converts outputs to voltage series using calibration constants, and writes a padded CSV submission file.",
+  "data_reading": [
+    "Reads train.csv or test.csv for metadata (id, fs, number_of_rows, sig_len).",
+    "Loads PNG images via cv2.imread in RGB mode.",
+    "Constructs a fake dataframe for local testing by iterating over valid_df and extracting non-null counts per lead."
+  ],
+  "data_processing": [
+    "Homography-based image rotation and normalization using predicted keypoints.",
+    "Grid-point mapping for image rectification.",
+    "Fixed spatial cropping (y0:y1, x0:x1) before regression.",
+    "Pixel-to-voltage conversion using calibration constants (zero_mv, mv_to_pixel) and temporal window slicing.",
+    "Series filtering and padding/truncation to match target sampling lengths per lead."
+  ],
+  "features_engineering": [],
+  "models": [
+    "Stage0Net (custom architecture for rotation/homography)",
+    "Stage1Net (custom architecture for rectification)",
+    "Stage2Net (custom architecture for pixel regression)"
+  ],
+  "frameworks_used": [
+    "pytorch",
+    "opencv-python",
+    "pandas",
+    "numpy",
+    "matplotlib"
+  ],
+  "loss_functions": [],
+  "cv_strategy": "",
+  "ensembling": "",
+  "insights": [
+    "Multi-stage vision pipelines can effectively extract continuous physiological signals from static medical images.",
+    "Calibration constants (zero_mv, mv_to_pixel) are critical for accurate voltage conversion from pixel coordinates.",
+    "Padding and truncation logic is necessary to align model outputs with variable-length ground truth sequences for submission."
+  ],
+  "critical_findings": [],
+  "what_did_not_work": [],
+  "source_url": "https://www.kaggle.com/code/hengck23/demo-submission",
+  "votes": 243
+}

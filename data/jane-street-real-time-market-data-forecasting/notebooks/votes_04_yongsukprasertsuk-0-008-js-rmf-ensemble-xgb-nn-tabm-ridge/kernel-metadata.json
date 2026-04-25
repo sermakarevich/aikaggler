@@ -1,0 +1,34 @@
+{
+  "id": "yongsukprasertsuk/0-008-js-rmf-ensemble-xgb-nn-tabm-ridge",
+  "id_no": 73514680,
+  "title": "[0.008] JS-RMF: Ensemble (XGB+NN+TabM+Ridge)",
+  "code_file": "0-008-js-rmf-ensemble-xgb-nn-tabm-ridge.ipynb",
+  "language": "python",
+  "kernel_type": "notebook",
+  "is_private": false,
+  "enable_gpu": true,
+  "enable_tpu": false,
+  "enable_internet": false,
+  "keywords": [],
+  "dataset_sources": [
+    "",
+    "",
+    "hideyukizushi/als-e-106-pp0-40-xgb-5fold",
+    "voix97/js-with-lags-trained-xgb",
+    "voix97/js-xs-nn-trained-model",
+    "hideyukizushi/jsridgev01011635",
+    "i2nfinit3y/my-own-js"
+  ],
+  "kernel_sources": [
+    "motono0223/js24-preprocessing-create-lags",
+    "chumajin/janestreet-updated-simulator-for-time-series-api",
+    "i2nfinit3y/tabm-reference",
+    "i2nfinit3y/jane-street-import"
+  ],
+  "competition_sources": [
+    "jane-street-real-time-market-data-forecasting"
+  ],
+  "model_sources": [],
+  "docker_image": "gcr.io/kaggle-private-byod/python@sha256:141219e230dab548ccc19aa4e62bcf805ed9de0b4d5112227e28f5f1a25991f8",
+  "machine_shape": "Gpu"
+}

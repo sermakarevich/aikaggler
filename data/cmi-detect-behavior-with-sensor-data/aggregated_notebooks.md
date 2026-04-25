@@ -1,0 +1,181 @@
+# cmi-detect-behavior-with-sensor-data: top public notebooks
+
+The top-voted notebooks for this sensor-based gesture recognition competition span exploratory data analysis, baseline implementations, and complex training pipelines, heavily emphasizing physics-informed feature engineering and multi-modal sensor fusion. Contributors consistently leverage quaternion-based gravity removal, TOF region statistics, and hybrid architectures combining CNNs with RNNs or Transformers. The community's final push relies heavily on weighted and average ensembling across multiple cross-validation folds to maximize leaderboard robustness.
+
+## Common purposes
+- ensemble
+- training
+- inference
+- eda
+
+## Competition flows
+- Placeholder inference server API simulation
+- Loading pre-trained models & applying physics/statistical feature engineering
+- Averaging/blending predictions across folds
+- EDA with missingness/distribution analysis & sequence-level aggregation
+- Training pipelines with quaternion gravity removal & kinematic engineering
+- Grouping rows by sequence ID & applying scaling/signal processing
+- Training BERT-based multimodal CNNs with 5-fold CV & EMA
+- Loading precomputed CSVs & applying gravity removal/statistical engineering
+- Generating submissions via Kaggle evaluation server
+
+## Data reading
+- Loads raw sensor sequences and demographics using polars and pandas, converts sequences to pandas DataFrames, and loads pre-trained model weights/scalers from Kaggle datasets.
+- Reads CSV/Parquet data using polars and pandas, groups by sequence_id, and extracts raw IMU (acc, rot), thermal, and TOF pixel columns.
+- Reads sequence data via polars and pandas, loading precomputed artifacts (feature columns, scalers, sequence lengths, gesture classes) from Kaggle datasets using np.load and joblib.load.
+- pd.read_csv() loads train.csv, test.csv, train_demographics.csv, and test_demographics.csv from Kaggle input paths.
+- pd.read_csv for train.csv and train_demographics.csv, merged on subject column.
+- Reads train/test data via pd.read_csv, groups rows by sequence_id to form time-series sequences, and uses polars for inference dataframes.
+- Reads training data via pandas.read_csv from a precomputed CSV path. Uses polars for inference data conversion. Loads test demographics and test CSV from Kaggle input paths.
+- Reads raw sensor data via polars and pandas from /kaggle/input/cmi-detect-behavior-with-sensor-data and precomputed CSV datasets. Converts polars DataFrames to pandas for feature computation and model input.
+- Reads CSV/Parquet data via pandas/polars, groups by sequence_id, and extracts raw accelerometer, gyroscope, quaternion, TOF, and thermal columns.
+
+## Data processing
+- Forward/backward fill and zero-filling for missing values
+- StandardScaler normalization (global, per-modality, or concatenated steps)
+- Sequence padding/truncation to fixed length or 95th percentile
+- MixUp augmentation (alpha=0.4) and Gaussian noise injection
+- Custom augmentations (jitter, scaling, motion drift, sensor dropout)
+- Class weight balancing and cosine decay LR scheduling
+- Early stopping
+- Replacing -1 in ToF data with NaN
+- Grouping time-series data by sequence_id for aggregations
+- FIR filtering and LPF/HPF on IMU channels
+- Precomputed global mean/std normalization tensors
+
+## Features engineering
+- Quaternion-based gravity removal for linear acceleration (x/y/z) and magnitude
+- Linear acceleration jerk and magnitude derivatives
+- Angular velocity components and angular distance from quaternion derivatives
+- TOF region statistics (mean, std, min, max) across multiple splits/chunks
+- Sequence-level aggregations (mean, std, max) for IMU magnitude and rotation angle
+- Per-timestamp mean across 64 ToF pixels and 5 thermopile sensors, aggregated per sequence
+- Cross-sensor contrast features (range, std across TOF/thermal)
+- Acceleration/gyro magnitude, jerk, and energy/power features
+- Low-pass/high-pass (LPF/HPF) filtered IMU signals
+- Custom FIR kernel applied to IMU channels
+- Label encoding for gesture classes
+
+## Models
+- Two-branch custom architecture (IMU/TOF branches with Residual SE-CNN, Conv1D, BiLSTM, BiGRU, Dense, Attention, GaussianNoise)
+- ResNet-SE-CNN + LSTM + GRU + Attention (TensorFlow)
+- ResNet-SE-CNN + BERT (PyTorch)
+- Three-branch CNN with SE blocks + BERT encoder + Classifier (PyTorch)
+- Gated GRU with ImuFeatureExtractor (PyTorch)
+- TwoBranchModel with ImuFeatureExtractor, ResidualSECNNBlock, BiLSTM, AttentionLayer (PyTorch)
+- Custom CMIModel (IMU/Thm/ToF CNN branches + BERT encoder + Linear classifier)
+- CNN + BiLSTM + Signal Processing (PyTorch)
+- Custom TF/Keras Two-Branch CNN-LSTM/GRU with SE Blocks & Attention
+- PyTorch Two-Branch CNN-BiLSTM with Custom IMU Feature Extractor
+
+## Frameworks used
+- polars
+- pandas
+- numpy
+- scipy
+- scikit-learn
+- tensorflow
+- keras
+- torch
+- transformers
+- kagglehub
+- kaggle_evaluation.cmi_inference_server
+- joblib
+- matplotlib
+- seaborn
+- timm
+
+## Loss functions
+- CategoricalCrossentropy (label_smoothing=0.1)
+- Cross-entropy (negative log-likelihood/F.cross_entropy)
+
+## CV strategies
+- StratifiedGroupKFold
+- StratifiedKFold (n_splits=5/10, shuffle=True)
+- 10-fold splits
+- train_test_split (80/20 stratified by gesture)
+
+## Ensembling
+- Average probability distributions/logits across multiple pre-trained models
+- Weighted averaging (e.g., 0.4/0.6 or optimized weights like 0.53/0.18/0.29)
+- Median/mean averaging for specific models
+- [70x30] directed random post-processing scheme
+- Averaging softmax probabilities across 5/10+ cross-validation folds
+- Averaging raw logits from EMA-weighted checkpoints
+
+## Insights
+- The competition evaluation passes data to a user-defined predict function one sequence at a time via a custom API.
+- Predictions must be returned as strings, and each batch must be processed within a 30-minute window.
+- Polars is explicitly recommended over Pandas for handling the input DataFrames.
+- Physics-informed preprocessing (gravity removal, angular velocity/distance) significantly improves sensor data representation.
+- Blending multiple models trained with StratifiedGroupKFold provides more robust validation scores than single-model TimeSeriesSplit approaches.
+- MixUp augmentation helps regularize the neural network during training.
+- Blending heterogeneous architectures (CNN-RNN vs CNN-Transformer) can yield robust predictions.
+- Careful ensemble weight tuning often provides marginal but critical gains in final leaderboard scores.
+- Explicit gravity removal and angular feature engineering are essential for accurate IMU-based gesture recognition.
+- TOF region statistics capture spatial patterns more effectively than raw pixel sequences.
+- Quaternion-based gravity removal is critical for accurate IMU acceleration features.
+- TOF depth data benefits from both raw pixel statistics and multi-resolution region aggregations.
+- Combining CNN spatial extraction with BERT/GRU temporal modeling captures complex gesture dynamics effectively.
+- Weighted horizontal blending of diverse architectures consistently outperforms single-model baselines.
+- Gestures vary widely in duration (up to 700 steps), requiring models to handle variable-length inputs rather than fixed windows.
+- Time-of-Flight sensors exhibit ~60% missingness in training, and the hidden test set will likely have ~50% of sequences with only IMU data, necessitating robust handling of multimodal sensor dropout.
+- The target distribution spans 18 classes with moderate imbalance (top classes ~10%, tail ~1.5-2%), indicating a need for class-balanced sampling or weighted loss.
+- IMU, thermopile, and ToF sensors provide complementary signals (motion dynamics, skin contact, spatial proximity) that should be combined rather than relying on IMU alone.
+- Quaternion-based gravity removal isolates true linear acceleration, significantly improving gesture discrimination.
+- MixUp augmentation and class weighting effectively regularize the model and handle class imbalance.
+- A hybrid CNN-RNN-Attention architecture successfully captures both local spatial patterns and long-range temporal dependencies in multi-sensor time series.
+- Heavy time-series augmentations (jitter, scaling, drift, dropout) are crucial for sensor data robustness.
+- EMA weight updates improve generalization and stabilize training.
+- Combining CNN feature extraction with BiLSTM and attention effectively captures spatial-temporal dependencies in multi-sensor sequences.
+- Precomputing sequence-level mean/std normalization and using a custom FIR filter stabilizes training.
+- Gravity removal is essential for accurate IMU feature extraction.
+- Statistical aggregations (mean, std, min, max) over ToF sensor regions effectively capture spatial patterns without raw pixel overload.
+- Padding sequences to the 95th percentile optimizes the trade-off between information retention and computational cost.
+- BERT successfully models temporal dependencies when fed concatenated, scaled modality features.
+- Custom quaternion-based gravity removal and angular distance calculation effectively capture motion dynamics for gesture recognition.
+- TOF sensor data benefits from region-wise statistical aggregation rather than raw pixel input.
+- BERT can be effectively adapted for multivariate time-series sensor fusion via CLS token concatenation.
+- Ensemble averaging across diverse architectures (CNN-RNN vs CNN-Transformer) improves robustness.
+- Signal processing techniques like FIR filtering and LPF/HPF on IMU data enhance feature representation for downstream neural networks.
+- Blending heterogeneous architectures (CNN-LSTM, BERT, CNN-BiLSTM) captures complementary temporal and spatial patterns in sensor data.
+- Quaternion-based gravity removal and angular velocity calculations significantly improve IMU feature quality.
+- Region-based statistical aggregation of TOF/thermal data effectively compresses high-dimensional spatial inputs.
+- MixUp augmentation and careful sequence padding/normalization are critical for stabilizing training on variable-length time series.
+
+## Critical findings
+- Previous validation strategies using TimeSeriesSplit raised robustness concerns, prompting the switch to StratifiedGroupKFold for better generalization.
+- Gestures vary widely in duration (up to 700 steps), requiring models to handle variable-length inputs rather than fixed windows.
+- Time-of-Flight sensors exhibit ~60% missingness in training, and the hidden test set will likely have ~50% of sequences with only IMU data, necessitating robust handling of multimodal sensor dropout.
+- The target distribution spans 18 classes with moderate imbalance (top classes ~10%, tail ~1.5-2%), indicating a need for class-balanced sampling or weighted loss.
+- IMU, thermopile, and ToF sensors provide complementary signals (motion dynamics, skin contact, spatial proximity) that should be combined rather than relying on IMU alone.
+- ToF missingness is structurally encoded as -1 rather than standard NaN, requiring explicit handling to avoid skewing statistics.
+- The public test.csv is explicitly warned against using for final model decisions, as the hidden leaderboard test is entirely different and accessed via API.
+- Sequence-level missingness varies significantly by sensor type, with ToF having high partial missingness and thermopile having ~5-8% partially missing sequences, while IMU is nearly complete.
+- Older notebook versions contained a critical bug where only the last fold's model was used for submission, highlighting the importance of averaging all folds.
+- The value -1 in ToF data represents invalid measurements and must be converted to NaN before processing.
+
+## What did not work
+- Further reducing the initial learning rate to 2e-4 worsened the validation score.
+- Adjusting dropout rates provided no improvement over the baseline configuration.
+- Replacing the simpler CNN in the TOF/Thermal branch with residual SE blocks was detrimental to performance.
+
+## Notable individual insights
+- votes 483 (Sensor Pulse| Viz & EDA for BFRB Detection): ToF missingness is structurally encoded as -1 rather than standard NaN, requiring explicit handling to avoid skewing statistics.
+- votes 483 (Sensor Pulse| Viz & EDA for BFRB Detection): The public test.csv is explicitly warned against using for final model decisions, as the hidden leaderboard test is entirely different and accessed via API.
+- votes 427 (LB 0.77 | Linear Accel | TF BiLSTM+GRU+Attention): Further reducing the initial learning rate to 2e-4 worsened the validation score.
+- votes 407 (LB 0.82 | 5fold single bert model): Older notebook versions contained a critical bug where only the last fold's model was used for submission, highlighting the importance of averaging all folds.
+- votes 624 (CMI25 | IMU+THM/TOF |TF BlendingModel |LB.82): Previous validation strategies using TimeSeriesSplit raised robustness concerns, prompting the switch to StratifiedGroupKFold for better generalization.
+- votes 582 (Just Changed the Ensemble Weights): Blending heterogeneous architectures (CNN-RNN vs CNN-Transformer) can yield robust predictions.
+
+## Notebooks indexed
+- #875 votes [[notebooks/votes_01_sohier-cmi-2025-demo-submission/notebook|CMI 2025 Demo Submission]] ([kaggle](https://www.kaggle.com/code/sohier/cmi-2025-demo-submission))
+- #624 votes [[notebooks/votes_02_hideyukizushi-cmi25-imu-thm-tof-tf-blendingmodel-lb-82/notebook|CMI25 | IMU+THM/TOF |TF BlendingModel |LB.82]] ([kaggle](https://www.kaggle.com/code/hideyukizushi/cmi25-imu-thm-tof-tf-blendingmodel-lb-82))
+- #582 votes [[notebooks/votes_03_sasaleaf-just-changed-the-ensemble-weights/notebook|Just Changed the Ensemble Weights]] ([kaggle](https://www.kaggle.com/code/sasaleaf/just-changed-the-ensemble-weights))
+- #485 votes [[notebooks/votes_04_nina2025-cmi-detect-behavior-with-sensor-data/notebook|CMI - Detect Behavior with Sensor Data]] ([kaggle](https://www.kaggle.com/code/nina2025/cmi-detect-behavior-with-sensor-data))
+- #483 votes [[notebooks/votes_05_tarundirector-sensor-pulse-viz-eda-for-bfrb-detection/notebook|📉Sensor Pulse🧠| Viz & EDA for BFRB Detection]] ([kaggle](https://www.kaggle.com/code/tarundirector/sensor-pulse-viz-eda-for-bfrb-detection))
+- #427 votes [[notebooks/votes_06_rktqwe-lb-0-77-linear-accel-tf-bilstm-gru-attention/notebook|LB 0.77 | Linear Accel | TF BiLSTM+GRU+Attention]] ([kaggle](https://www.kaggle.com/code/rktqwe/lb-0-77-linear-accel-tf-bilstm-gru-attention))
+- #418 votes [[notebooks/votes_07_myso1987-cmi3-pyroch-baseline-model-add-aug-folds/notebook|CMI3 Pyroch Baseline+model_add, Aug, folds]] ([kaggle](https://www.kaggle.com/code/myso1987/cmi3-pyroch-baseline-model-add-aug-folds))
+- #407 votes [[notebooks/votes_08_wasupandceacar-lb-0-82-5fold-single-bert-model/notebook|LB 0.82 | 5fold single bert model]] ([kaggle](https://www.kaggle.com/code/wasupandceacar/lb-0-82-5fold-single-bert-model))
+- #398 votes [[notebooks/votes_09_yusuketogashi-lb0-853-fork-of-cmi-ensemble-of-3-solutions-v3/notebook|LB0.853 Fork of CMI | Ensemble of 3 solutions V3]] ([kaggle](https://www.kaggle.com/code/yusuketogashi/lb0-853-fork-of-cmi-ensemble-of-3-solutions-v3))
+- #345 votes [[notebooks/votes_10_nina2025-cmi-ensemble-of-3-solutions/notebook|CMI | Ensemble of 3 solutions]] ([kaggle](https://www.kaggle.com/code/nina2025/cmi-ensemble-of-3-solutions))

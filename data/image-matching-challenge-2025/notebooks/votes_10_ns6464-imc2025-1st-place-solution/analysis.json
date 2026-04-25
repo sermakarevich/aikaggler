@@ -1,0 +1,43 @@
+{
+  "summary": "This notebook implements a first-place solution for the Image Matching Challenge 2025 by orchestrating a complex, multi-model image matching and 3D reconstruction pipeline. It sets up a custom Python library, symlinks pre-trained vision models, and loads a YAML configuration that defines local feature extractors, descriptor matchers, and a shortlisting ensemble. The pipeline is executed via distributed torchrun to generate a final submission CSV. Readers should understand how to configure and run a unified, multi-stage computer vision workflow using a declarative pipeline system and distributed execution on Kaggle GPUs.",
+  "purpose": "inference",
+  "competition_flow": "Sets up a custom image matching library and symlinks pre-trained vision models, loads a YAML pipeline configuration defining feature extractors, matchers, and a shortlisting ensemble, then executes the pipeline via distributed torchrun to generate a submission CSV.",
+  "data_reading": [
+    "Data path is set via the DEFAULT_DATASET_DIR environment variable; actual loading and formatting are abstracted by the ns64_imc2025lib library."
+  ],
+  "data_processing": [
+    "Pipeline configuration specifies resizing functions (lg_resize: 1280, ml_resize: 1600), NMS radius (4), keypoint thresholds (0.0005), border removal (4), and match thresholds (1.001) for local feature extraction and matching."
+  ],
+  "features_engineering": [],
+  "models": [
+    "Grounding DINO Base",
+    "SAM ViT Base",
+    "VGGT-1B",
+    "SigLIP2-So400m",
+    "ALIKED",
+    "SuperPoint",
+    "LightGlue",
+    "MAST3R",
+    "DINOv2 Base",
+    "ISC"
+  ],
+  "frameworks_used": [
+    "torch",
+    "ns64_imc2025lib",
+    "pyyaml",
+    "open3d",
+    "transformers"
+  ],
+  "loss_functions": [],
+  "cv_strategy": ":[",
+  "ensembling": "The shortlist generator uses an ensemble of four retrieval methods (MAST3R-ASMK, MAST3R-SPoC, DINOv2, and ISC) with fallback thresholds and pair-swapping removal to improve matching robustness.",
+  "insights": [
+    "A unified YAML configuration can effectively orchestrate a complex, multi-model image matching and reconstruction pipeline.",
+    "Combining local feature matching with global descriptor retrieval improves shortlisting robustness across diverse scenes.",
+    "Distributed execution via torchrun is used to accelerate the pipeline on Kaggle GPUs."
+  ],
+  "critical_findings": [],
+  "what_did_not_work": [],
+  "source_url": "https://www.kaggle.com/code/ns6464/imc2025-1st-place-solution",
+  "votes": 71
+}

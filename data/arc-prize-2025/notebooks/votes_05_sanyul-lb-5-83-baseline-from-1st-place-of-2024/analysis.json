@@ -1,0 +1,40 @@
+{
+  "summary": "This notebook provides a complete training and inference pipeline for the ARC-AGI-2 competition, demonstrating how to adapt a Mistral-NeMo-Minitron model for spatial reasoning tasks under strict hardware constraints. It highlights key optimization strategies such as partial layer freezing, LoRA fine-tuning, and dynamic embedding shrinking to manage VRAM and fit within a 12-hour runtime. The code includes a custom dataset handler that applies geometric and color permutation augmentations, alongside a Turbo DFS inference engine that uses probability tracking to efficiently select solutions. Readers should learn how to efficiently fine-tune large models for grid-based ARC problems, implement custom augmentations for color/rotation invariance, and optimize inference search strategies for competition submissions.",
+  "purpose": "training",
+  "competition_flow": "Loads ARC-AGI-2 JSON queries and replies, applies geometric and color augmentations, fine-tunes a Mistral-NeMo-Minitron model with LoRA and partial layer freezing, and generates competition submissions using a custom Turbo DFS inference engine with probability-based solution selection.",
+  "data_reading": [
+    "JSON files containing ARC challenge queries and replies are loaded directly into Python dictionaries using json.loads and parsed into a custom ArcDataset object."
+  ],
+  "data_processing": [
+    "Custom ArcDataset class handles augmentations including transposition, 90-degree rotations, and color permutations; sequences are packed, filtered by length, and tokenized with a fast tokenizer; model embeddings are dynamically shrunk to reduce VRAM usage."
+  ],
+  "features_engineering": [],
+  "models": [
+    "Mistral-NeMo-Minitron"
+  ],
+  "frameworks_used": [
+    "transformers",
+    "peft",
+    "unsloth",
+    "trl",
+    "datasets",
+    "torch",
+    "tokenizers",
+    "numpy"
+  ],
+  "loss_functions": [],
+  "cv_strategy": "",
+  "ensembling": "",
+  "insights": [
+    "Partial layer freezing significantly reduces trainable parameters and training time without severely impacting performance.",
+    "Turbo DFS inference with probability tracking allows efficient exploration of the solution space under strict token limits.",
+    "Color permutation augmentations help the model generalize across different color mappings in ARC tasks.",
+    "Embedding shrinking is an effective VRAM optimization technique for large models on limited GPU memory."
+  ],
+  "critical_findings": [
+    "The author notes a significant and unexplained discrepancy between the public evaluation score (~115) and the semi-private evaluation scores ([4.17, 5, 5, 5.42, 5.83])."
+  ],
+  "what_did_not_work": [],
+  "source_url": "https://www.kaggle.com/code/sanyul/lb-5-83-baseline-from-1st-place-of-2024",
+  "votes": 348
+}

@@ -1,0 +1,38 @@
+{
+  "summary": "The notebook demonstrates a pipeline for extracting and classifying dataset citations from academic PDFs using a large language model. It first parses PDFs to locate DOI strings and their surrounding context, then uses vLLM to normalize the DOIs into standardized URLs. Next, it leverages the `logits-processor-zoo` library to constrain the LLM's output to three predefined categories (Primary, Secondary, None) based on computed logit probabilities. The pipeline generates a structured submission file and includes a manual F1 score evaluation against ground truth labels. Readers should learn how to combine PDF text extraction, constrained LLM inference, and logit-based classification for precise information extraction tasks.",
+  "purpose": "inference",
+  "competition_flow": "The notebook extracts text from academic PDFs, uses a quantized Qwen2.5 LLM via vLLM to identify and normalize DOI strings, classifies them into three categories using logits processing, and outputs a formatted submission CSV with a manual validation F1 score.",
+  "data_reading": [
+    "PDFs are loaded from a local directory using `fitz` (PyMuPDF), converted to lowercase text, and truncated at the \"references\" section if present; DOI strings are extracted via regex and paired with surrounding text chunks."
+  ],
+  "data_processing": [
+    "Text is lowercased, split at the \"references\" keyword, and truncated to a 100-character span around each DOI match; DOI URLs are lowercased and deduplicated in the final submission."
+  ],
+  "features_engineering": [
+    ""
+  ],
+  "models": [
+    "Qwen2.5 32B Instruct (AWQ)"
+  ],
+  "frameworks_used": [
+    "vllm",
+    "logits_processor_zoo",
+    "fitz",
+    "torch",
+    "pandas",
+    "numpy",
+    "re"
+  ],
+  "loss_functions": [],
+  "cv_strategy": "",
+  "ensembling": "",
+  "insights": [
+    "Using `logits-processor-zoo` allows strict categorical classification without relying on prompt formatting or post-processing regex.",
+    "Temperature 0 and logit argmax provide deterministic, probability-weighted predictions for multi-class tasks.",
+    "Truncating PDF text at the \"references\" section prevents the LLM from processing irrelevant full-text content."
+  ],
+  "critical_findings": [],
+  "what_did_not_work": [],
+  "source_url": "https://www.kaggle.com/code/aerdem4/mdc-search-llm-logits-processor-zoo",
+  "votes": 282
+}

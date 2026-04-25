@@ -1,0 +1,40 @@
+{
+  "summary": "This inference notebook demonstrates a memory-efficient pipeline for generating competition submissions using pre-trained vision models. It loads a DINOv3 backbone with a custom Mamba-based fusion block, processes paired left/right image crops, and runs inference on test data. The author shows how to ensemble predictions from multiple folds with custom weights and apply target-specific post-processing adjustments before creating the final submission. Readers should learn how to manage GPU memory during multi-model inference, implement deterministic image splitting for test data, and apply lightweight post-processing to refine regression outputs.",
+  "purpose": "inference",
+  "competition_flow": "Loads test CSV and images, processes them into resized left/right crops, runs inference through weighted ensemble of two DINOv3-based models, applies target-specific scaling, and exports a formatted submission CSV.",
+  "data_reading": [
+    "pd.read_csv loads train.csv and test.csv from /kaggle/input/csiro-biomass",
+    "Test images are loaded via PIL.Image.open and converted to RGB"
+  ],
+  "data_processing": [
+    "Images are deterministically split into left and right halves",
+    "Resized to 512x512 and normalized with ImageNet mean/std",
+    "TTA transforms (horizontal/vertical flips, rotation) are defined but disabled via USE_TTA=False"
+  ],
+  "features_engineering": [],
+  "models": [
+    "vit_huge_plus_patch16_dinov3.lvd1689m",
+    "BiomassModel (custom DINOv3 + LocalMambaBlock fusion + multi-head regression)"
+  ],
+  "frameworks_used": [
+    "torch",
+    "torchvision",
+    "timm",
+    "pandas",
+    "numpy",
+    "PIL",
+    "sklearn"
+  ],
+  "loss_functions": [],
+  "cv_strategy": "",
+  "ensembling": "Averages predictions from two weighted models (fold 1 weighted at 0.75, fold 3 at 1.25), then applies target-specific scaling adjustments (e.g., 0.8x for Dry_Clover_g, conditional scaling for Dry_Dead_g) before submission.",
+  "insights": [
+    "Loading models sequentially and clearing CUDA cache prevents OOM errors during multi-fold inference.",
+    "Deterministic image splitting into left/right crops preserves spatial context without requiring complex data augmentation.",
+    "Target-specific post-processing scaling can effectively calibrate regression outputs for submission without retraining."
+  ],
+  "critical_findings": [],
+  "what_did_not_work": [],
+  "source_url": "https://www.kaggle.com/code/mayukh18/dinov3-no-tta-postprocess",
+  "votes": 541
+}

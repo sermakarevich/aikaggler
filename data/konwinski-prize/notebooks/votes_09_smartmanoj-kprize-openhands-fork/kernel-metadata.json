@@ -1,0 +1,32 @@
+{
+  "id": "smartmanoj/kprize-openhands-fork",
+  "id_no": 75050393,
+  "title": "KPrize | Openhands Fork",
+  "code_file": "kprize-openhands-fork.ipynb",
+  "language": "python",
+  "kernel_type": "notebook",
+  "is_private": false,
+  "enable_gpu": true,
+  "enable_tpu": false,
+  "enable_internet": false,
+  "keywords": [
+    "gpu"
+  ],
+  "dataset_sources": [],
+  "kernel_sources": [
+    "smartmanoj/browser-notifications-in-a-kaggle-kernel",
+    "smartmanoj/vllm-wheels",
+    "smartmanoj/wheels-for-kprize-instances",
+    "smartmanoj/openhands-agent-wheels"
+  ],
+  "competition_sources": [
+    "konwinski-prize"
+  ],
+  "model_sources": [
+    "deepseek-ai/deepseek-r1/Transformers/deepseek-r1-distill-qwen-32b/1",
+    "qwen-lm/qwen2.5-coder/Transformers/32b-instruct/1",
+    "qwen-lm/qwq-32b/Transformers/qwq-32b/1"
+  ],
+  "docker_image": "gcr.io/kaggle-private-byod/python@sha256:57cb636a65386fd6c74fc9969211623034c487f7d483f9cd2c8456ebe2619345",
+  "machine_shape": "NvidiaL4"
+}

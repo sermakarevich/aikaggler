@@ -1,0 +1,42 @@
+{
+  "summary": "This notebook serves as an official template for the RSNA Aneurysm Detection competition, demonstrating how to structure the `predict` function required by Kaggle's evaluation API. It walks through loading DICOM series files, extracting metadata tags using `pydicom`, and formatting outputs to match the expected submission schema. The core takeaway is understanding the inference workflow and API constraints rather than model architecture or training. Readers learn how to handle multi-label DICOM data, manage disk space during evaluation, and set up the local versus competition execution environment.",
+  "purpose": "utility",
+  "competition_flow": "The notebook initializes a Kaggle inference server that receives DICOM series paths, extracts metadata tags, and returns a placeholder DataFrame of 0.5 probabilities for 14 artery locations to satisfy the competition's submission format.",
+  "data_reading": [
+    "Loads DICOM files from a provided `series_path` directory using `os.walk` and `pydicom.dcmread`, extracting specific metadata tags from a predefined allowlist."
+  ],
+  "data_processing": [
+    "None explicitly implemented; the notebook only extracts raw DICOM tags and returns placeholder predictions."
+  ],
+  "features_engineering": [
+    ""
+  ],
+  "models": [
+    ""
+  ],
+  "frameworks_used": [
+    "pydicom",
+    "polars",
+    "pandas",
+    "kaggle_evaluation.rsna_inference_server"
+  ],
+  "loss_functions": [
+    ""
+  ],
+  "cv_strategy": "",
+  "ensembling": "",
+  "insights": [
+    "The competition requires a specific `predict` function signature that processes DICOM series and returns a DataFrame matching a predefined schema.",
+    "Kaggle's evaluation environment runs inference requests sequentially and imposes strict timing and disk space constraints.",
+    "Using `pydicom` with `force=True` allows reading DICOM files even if they lack standard headers.",
+    "The template demonstrates how to safely handle both local testing and hidden test set evaluation within the same notebook."
+  ],
+  "critical_findings": [
+    ""
+  ],
+  "what_did_not_work": [
+    ""
+  ],
+  "source_url": "https://www.kaggle.com/code/ryanholbrook/rsna-aneurysm-detection-demo-submission",
+  "votes": 908
+}

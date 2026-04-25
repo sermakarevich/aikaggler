@@ -1,0 +1,15 @@
+{
+  "description": "Competitors develop physics-guided machine learning models to solve full-waveform inversion problems in geophysics. The task involves predicting continuous subsurface physical parameters from wavefield data collected at the surface. Success is measured using Mean Absolute Error on a held-out test set. The competition emphasizes integrating domain-specific wave propagation physics with modern neural network architectures.",
+  "data_modality": "image",
+  "task_type": "regression",
+  "label_structure": "single_label",
+  "metric": "Mean Absolute Error",
+  "test_split": "unknown",
+  "format": "standard",
+  "dataset_scale": "unknown",
+  "domain": "geophysics",
+  "data_challenges": [
+    "domain_shift"
+  ],
+  "constraints": []
+}

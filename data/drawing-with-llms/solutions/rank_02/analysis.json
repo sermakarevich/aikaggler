@@ -1,0 +1,34 @@
+{
+  "summary": "The author secured 2nd place by pivoting from initial Stable Diffusion-to-SVG generation to a targeted OCR manipulation strategy. Recognizing that the VQA score heavily weighted OCR and that the penalty was applied before image enhancement while the score was calculated after, they designed a dashed-line mask template to hide text pre-enhancement but reveal it post-enhancement. This allowed only specific uncovered text to be recognized by the OCR system. The pipeline then optimized letter placement, combinations, and aesthetic tweaks across multiple prompts to maximize the final score.",
+  "extensive_summary": "## Initial Approach and Pivot\nThe team initially generated images using Stable Diffusion and converted them to SVGs. However, after a week of stagnation, they shifted focus to the VQA score, which carried twice the weight of the aesthetic score in version 3 of the competition.\n\n## Core Insight and OCR Manipulation\nThe breakthrough came from analyzing the scoring pipeline: the OCR word count penalty is applied *before* image enhancement, whereas the VQA score is calculated *after* enhancement. This timing gap allowed the author to design a carefully crafted dashed-line mask template. By covering most text with the mask, the OCR would ignore it pre-enhancement. After enhancement, the mask would become invisible, revealing the text for the VQA score calculation while keeping the OCR penalty low.\n\n## Layout and Aesthetic Optimization\nThe team meticulously designed the letters, templates, and their spatial arrangement. The arrangement code prioritized keeping words within single columns to avoid splitting. This approach quickly pushed their score to 0.652. The remaining effort focused on maximizing the aesthetic score. They discovered that letters placed outside the masked area significantly influenced aesthetics. Using an A100 GPU, they brute-forced combinations of letters and numbers across 15 prompts, ultimately identifying \"Zoe\" as the optimal combination. Additional heuristic tweaks included adding heart symbols, adjusting positions, doubling shorter prompts, and randomly inserting words to select the highest-scoring aesthetic variant.\n\n## Final Adjustments\nAttempts to use DiffVG for differentiable augmentations failed due to non-differentiable components, forcing a return to heuristic methods. In the final stages, a teammate rewrote the text format to secure the 2nd place ranking.",
+  "rank": 2,
+  "competition_flow": "Generate images with Stable Diffusion, convert to SVGs, apply a dashed-line mask template to manipulate OCR recognition timing, optimize letter combinations and layout heuristically across multiple prompts, and finalize with aesthetic tweaks and text format adjustments to produce the submission.",
+  "data_reading": [],
+  "data_processing": [
+    "Initial Stable Diffusion generation converted to SVGs; later replaced by heuristic letter/template arrangement and dashed-line masking to control OCR visibility pre- and post-enhancement; aesthetic optimizations included adding symbols, adjusting positions, doubling prompts, and random word insertion."
+  ],
+  "features_engineering": [],
+  "models": [
+    "Stable Diffusion"
+  ],
+  "frameworks_used": [],
+  "loss_functions": [],
+  "cv_strategy": "",
+  "ensembling": "",
+  "insights": [
+    "The timing difference between OCR penalty application (pre-enhancement) and VQA score calculation (post-enhancement) is the critical lever for manipulating the scoring system.",
+    "Placing letters outside the masked area has a significant impact on the aesthetic score.",
+    "Heuristic brute-force search across prompt combinations can effectively optimize aesthetic metrics when differentiable methods fail."
+  ],
+  "critical_findings": [
+    "The OCR penalty is applied before enhancement while the VQA score is calculated after, creating a window where masked text can be hidden from OCR but revealed for scoring.",
+    "A100 brute-force iteration across letter/number combinations across 15 prompts successfully identified \"Zoe\" as the optimal aesthetic combination."
+  ],
+  "what_did_not_work": [
+    "DiffVG experiments failed because the required augmentations were completely non-differentiable, making it impossible to use for this specific task."
+  ],
+  "github_repos": [],
+  "papers": [],
+  "other_solution_refs": [],
+  "source_url": "https://www.kaggle.com/competitions/drawing-with-llms/discussion/581023"
+}

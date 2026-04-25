@@ -1,0 +1,42 @@
+{
+  "summary": "This notebook provides a complete calibration and data reduction pipeline for the Ariel Data Challenge 2025, targeting raw astronomical observation data from the AIRS-CH0 and FGS1 instruments. It demonstrates standard detector corrections including analog-to-digital conversion, hot/dead pixel masking, polynomial linear correction, dark current subtraction, correlated double sampling, time binning, and flat fielding. The processed data is saved as compressed .npy arrays to facilitate downstream machine learning tasks. Readers should understand that these calibration steps are flexible guidelines rather than strict rules, and can be modified or omitted based on their modeling strategy. The notebook emphasizes memory-efficient chunked processing and wavelength cropping to align with target dimensions.",
+  "purpose": "utility",
+  "competition_flow": "Reads raw instrument observation and calibration parquet files in chunks, applies a sequence of detector calibration and signal processing steps, and saves the reduced data cubes as .npy arrays for downstream modeling.",
+  "data_reading": [
+    "Loads .parquet files using pandas.read_parquet in chunks to avoid memory overflow.",
+    "Uses glob to locate training files and reads calibration metadata from axis_info.parquet.",
+    "Reshapes loaded arrays to match detector dimensions (e.g., 32x356 for AIRS, 32x32 for FGS1)."
+  ],
+  "data_processing": [
+    "ADC conversion using fixed gain (0.4369) and offset (-1000).",
+    "Masking hot/dead pixels via sigma_clip and dead pixel maps.",
+    "Polynomial linear correction using inverse polynomial coefficients.",
+    "Dark current subtraction (signal - dark * integration_time).",
+    "Correlated Double Sampling (CDS) by subtracting alternating readout frames.",
+    "Time binning via frame summation (30 frames for AIRS, 360 for FGS1).",
+    "Flat field correction by dividing by a uniform illumination map.",
+    "Wavelength axis cropping to pixels 39\u2013321 to match target dimensions."
+  ],
+  "features_engineering": [],
+  "models": [],
+  "frameworks_used": [
+    "numpy",
+    "pandas",
+    "astropy",
+    "tqdm",
+    "matplotlib"
+  ],
+  "loss_functions": [],
+  "cv_strategy": "",
+  "ensembling": "",
+  "insights": [
+    "Calibration steps should be treated as a flexible recipe rather than mandatory rules.",
+    "Time binning and wavelength cropping significantly reduce memory footprint while preserving relevant signal.",
+    "CDS effectively removes baseline drift by differencing alternating readouts.",
+    "Flat fielding corrects pixel-to-pixel quantum efficiency variations."
+  ],
+  "critical_findings": [],
+  "what_did_not_work": [],
+  "source_url": "https://www.kaggle.com/code/gordonyip/calibrating-and-binning-ariel-data",
+  "votes": 364
+}

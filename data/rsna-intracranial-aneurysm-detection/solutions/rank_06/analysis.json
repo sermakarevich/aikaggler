@@ -1,0 +1,56 @@
+{
+  "summary": "The author developed a 2.5D pipeline for aneurysm detection that combines skull cropping, vessel segmentation, 2D frame-level classification, and sequence-based aggregation. The core innovation lies in heavily optimizing 2D CNNs with clever frame sampling, relative position encoding, and custom pooling to preserve left/right spatial information. Key techniques like using adjacent frames as channels, leveraging slice spacing for sampling, and refining localizer labels significantly boosted performance. The pipeline ultimately achieved a 6th place finish with a CV score of 0.895.",
+  "extensive_summary": "## Pipeline Architecture\nThe solution employs a 2.5D pipeline consisting of four main stages: skull cropping, vessel segmentation (training-only), 2D aneurysm frame-level classification, and sequence-based aggregation. The pipeline was inspired by a previous 2nd place solution but required substantial adjustments to achieve competitive performance.\n\n## Skull Cropping & Vessel Segmentation\nSkull cropping utilizes a simple 3D-Unet trained on open-source data to ensure uniformity across orientations. Vessel segmentation, which only supports axial data, is more challenging and relies on position encoding to convey left/right information, along with mask dilation and Dice loss to address class imbalance. This stage is strictly used during training to sample high-quality negative frames for the 2D classifier.\n\n## 2D Classification & Optimization\nThe heavy lifting is done by 2D-CNN models (`coatnet_rmlp_2_rw_384` and `maxvit_rmlp_base_rw_384`). The Relative Position Encoding MLP (rmlp) is critical for distinguishing the 13 classes, and a custom pooling layer preserves left/right spatial information before the logits layer. The models process coronal and axial data, with sagittal stacks converted to axial during inference.\n\n## Frame Sampling & Augmentations\nPerformance gains of approximately +0.01 CV each were achieved through several targeted techniques: fixed-ratio ROI cropping to focus on aneurysm-rich areas, strong ShiftScaleRotate and color augmentations, Cutmix/Mixup, horizontal flips with corresponding target flips, and feeding two adjacent frames as a 3-channel input. Slice spacing information is leveraged to sample adjacent frames further apart when spacing is small. Additionally, manually refined localizer labels enabled more accurate positive frame sampling.\n\n## Sequence Aggregation & Inference Optimization\nInitial max aggregation of 2D predictions yielded a 0.87 CV score. Adding a custom sequence model pushed this to 0.88, and a 3-model ensemble reached 0.895 CV. Inference time was reduced by capping the maximum number of frames per modality and subsampling frames for larger stacks (halving for >64 frames, quartering for >128), relying on the 3-frame input window to preserve context. The authors note that a simpler 2-model pipeline would have been faster and nearly as effective, but opted for the 3-model version due to robustness and CV-LB alignment.",
+  "rank": 6,
+  "competition_flow": "Raw CT data is cropped via skull and vessel segmentation masks, sampled into 2D frames, classified by optimized CNNs, aggregated via a sequence model, and ensembled for the final submission.",
+  "data_reading": [],
+  "data_processing": [
+    "3D-Unet skull cropping",
+    "vessel segmentation with mask dilation",
+    "fixed-ratio ROI cropping",
+    "ShiftScaleRotate and color augmentations",
+    "Cutmix/Mixup",
+    "horizontal flip with target flip",
+    "converting 2 adjacent frames to 3 channels",
+    "leveraging SliceSpacing for frame sampling",
+    "manual refinement of localizer labels",
+    "external data from OpenNeuro.org",
+    "axial -> coronal augmentation",
+    "inference frame subsampling (halved for >64, quartered for >128)"
+  ],
+  "features_engineering": [],
+  "models": [
+    "3D-Unet",
+    "coatnet_rmlp_2_rw_384",
+    "maxvit_rmlp_base_rw_384",
+    "custom sequence model"
+  ],
+  "frameworks_used": [],
+  "loss_functions": [
+    "Dice loss"
+  ],
+  "cv_strategy": "",
+  "ensembling": "A 3-model ensemble of the 2D CNNs and sequence model was used, with inference optimized by capping and subsampling frames per modality.",
+  "insights": [
+    "Relative position encoding (rmlp) is crucial for distinguishing the 13 classes in 2D frame classification.",
+    "Custom pooling that preserves left/right spatial information prevents feature loss before the logits layer.",
+    "Leveraging slice spacing information allows for more effective frame sampling when spacing is small.",
+    "Manually refining localizer labels significantly improves positive frame sampling accuracy."
+  ],
+  "critical_findings": [
+    "Using a simpler 2-model pipeline would have run in 7 hours and likely been sufficient, as CV improvements from the 3rd model were marginal (<0.01).",
+    "Sagittal stacks were ignored during training but converted to axial during inference, showing that orientation normalization can salvage data without retraining."
+  ],
+  "what_did_not_work": [
+    "Training a vessel crop classification model performed poorly and was abandoned."
+  ],
+  "github_repos": [],
+  "papers": [],
+  "other_solution_refs": [
+    {
+      "description": "Inspiration for the 2.5D pipeline approach",
+      "url": "https://www.kaggle.com/competitions/rsna-2023-abdominal-trauma-detection/writeups/on-strike-2nd-place-solution"
+    }
+  ],
+  "source_url": "https://www.kaggle.com/competitions/rsna-intracranial-aneurysm-detection/discussion/611925"
+}

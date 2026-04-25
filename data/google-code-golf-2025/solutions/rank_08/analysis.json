@@ -1,0 +1,48 @@
+{
+  "summary": "The authors achieved 8th place in a code golf competition by manually crafting highly optimized Python solutions for each task. They initially experimented with LLMs but quickly abandoned them due to poor performance, shifting to manual optimization, recursion, bitwise operations, and compression techniques. Key technical strategies included implementing cellular automata-like iterations with array rotation, flattening grids for bitwise loop optimization, and leveraging regex for pattern matching. The team also discovered that code compression heavily favors DRY, unpacked code over dense lambdas, fundamentally changing their golfing approach.",
+  "extensive_summary": "## Approach & Strategy\nThe team competed in a code golf challenge where the goal was to minimize the byte count of Python solutions across multiple tasks. After an initial attempt to rely on LLMs, they realized the approach was ineffective in a saturated field and pivoted to manual, task-by-task optimization. Their workflow centered on iterative refinement, leveraging recursion templates, bitwise tricks, and external tools like `pysearch` to shrink expressions.\n\n## Task-Specific Techniques\nSeveral core patterns emerged across tasks:\n- **Recursion & Cellular Automata**: Tasks requiring grid propagation were solved using a recursive template that iterates over rotated arrays, effectively simulating cellular automata while saving bytes.\n- **Loop Flattening & Bitwise Ops**: Nested loops were collapsed into single iterations by exploiting powers of two, allowing coordinate extraction via bitwise shifts (`>>`, `&`) instead of arithmetic division/modulo.\n- **Edge Case Handling**: Instead of writing longer general solutions, the team used `hash()` on tuples to detect specific failing cases and apply targeted fixes.\n- **Raw Bytes & Bit Counting**: Lookup tables were replaced with raw byte strings, and shape sizing was achieved by initializing pixels with unique bit positions and propagating them via bitwise OR across iterations.\n- **Regex for Pattern Filling**: A regex-based approach simplified grid-filling tasks by matching repeating non-zero sequences and backreferencing them to fill gaps.\n\n## Compression & Optimization\nCompression was a major score driver. The team built a custom compression script using `zlib` and `zopfli` with varied block-splitting and iteration settings. A critical insight was that traditional golfing favors dense, clever lambdas, but compression algorithms heavily reward DRY (Do Repeat Yourself) structure. Unpacking clever one-liners into readable, repetitive code often yielded significantly smaller compressed outputs, fundamentally shifting their optimization strategy.",
+  "rank": 8,
+  "competition_flow": "Manually analyze each task's requirements, write Python functions, optimize byte count using recursion, bitwise operations, regex, and compression tools, then submit the shortest valid code for each task.",
+  "data_reading": [],
+  "data_processing": [],
+  "features_engineering": [],
+  "models": [],
+  "frameworks_used": [],
+  "loss_functions": [],
+  "cv_strategy": "",
+  "ensembling": "",
+  "insights": [
+    "LLMs are generally ineffective for competitive code golf compared to manual, iterative optimization.",
+    "Code compression rewards readable, DRY code over dense, clever one-liners.",
+    "Regex can drastically simplify pattern-matching and grid-filling tasks in code golf.",
+    "Reusing recursion parameters for counters saves bytes but significantly impacts execution speed."
+  ],
+  "critical_findings": [
+    "Flattening 2D grids into 1D arrays and using bitwise operations can replace multiple nested loops.",
+    "Using hash() on tuples allows efficient detection of specific edge cases without bloating code.",
+    "Initializing bit counters with 3<< instead of 1<< can yield shorter pysearch expressions."
+  ],
+  "what_did_not_work": [
+    "Initial reliance on LLMs failed to produce competitive solutions in a saturated field.",
+    "DFS/Flood-fill and regex approaches for task369 were too verbose.",
+    "The min(S:=sum(g,[]),key=S.count) approach failed on 3 test cases for task346."
+  ],
+  "github_repos": [
+    {
+      "url": "https://github.com/Natanaelel/GoogleCodeGolf2025",
+      "role": "solution"
+    },
+    {
+      "url": "https://github.com/lynn/pysearch",
+      "role": "library"
+    }
+  ],
+  "papers": [],
+  "other_solution_refs": [
+    {
+      "description": "compressed variable name optimization notebook",
+      "url": "https://www.kaggle.com/code/garrymoss/compressed-variable-name-optimization"
+    }
+  ],
+  "source_url": "https://www.kaggle.com/competitions/google-code-golf-2025/discussion/615039"
+}

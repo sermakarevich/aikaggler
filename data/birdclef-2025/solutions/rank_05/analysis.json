@@ -1,0 +1,85 @@
+{
+  "summary": "The author achieved 5th place in BirdCLEF 2025 by addressing the widespread issue of unlabeled secondary bird calls in the training data through an iterative self-distillation pipeline. They cleaned the raw audio by removing human voices, manually curated underrepresented classes, and truncated files to 30 or 60 seconds. A multi-stage training process using EfficientNet backbones on mel spectrograms progressively enriched labels with predicted secondary annotations, significantly boosting performance. The final submission combined overlapping predictions from multiple seed-varied models, applying frame smoothing and weighted ensemble scoring.",
+  "extensive_summary": "## Data Preparation & Cleaning\nThe solution relied exclusively on the 2025 dataset. Raw audio was first processed with Silero VAD to detect human voices, which were then manually removed. For underrepresented classes (n < ~30), the author manually selected segments containing bird calls. Files were truncated to the first 60 seconds for cleaned audio and 30 seconds for others. To address class imbalance, files in classes with fewer than 20 samples were duplicated.\n\n## Model Architecture & Training Pipeline\nThe team employed a Sound Event Detection (SED) architecture using four EfficientNet variants: 4x tf_efficientnetv2_s, 3x tf_efficientnetv2_b3, 4x tf_efficient_b3_ns, and 2x tf_efficient_b0_ns. Inputs consisted of random 10-second segments converted to mel spectrograms (sr=32000, 192 mel bins, fmin=20, fmax=15000, window_size=2048, hop_size=768), which were then log-scaled via log(melspec+1e-6). Training utilized Adam with Cosine Annealing and warmup, FocalLoss (gamma=2), and targeted both primary and secondary labels. Augmentations included Resampling, Gain, FilterAugment, FrequencyMasking, TimeMasking, and Sumix on the mel domain.\n\n## Multi-Stage Self-Distillation Strategy\nTraining occurred in three stages. Stage 1 trained 5-fold models on train_audio only. During Stage 2, the author observed that many bird calls were present but unlabeled in the training set because recorders focused on target species. To address this, they used Stage 1 predictions as teacher labels, mixing them with original annotations to enrich secondary labels. This self-distillation was repeated 4\u20135 times, re-initializing weights each iteration. Stage 3 introduced train_soundscapes, mixing train_audio and train_soundscapes at a 1:1 ratio per batch without folds, and continued self-distillation for two additional rounds. Across all backbones, iterative distillation consistently improved LB scores.\n\n## Inference & Post-Processing\nModels were split into two groups with different random seeds. Inference used a 2.5-second overlap, with scores weighted and combined (alpha=0.5). A smoothing window of [0.1, 0.8, 0.1] was applied to neighboring frames. The author experimented with power adjustment for low-ranked classes but abandoned it to prevent overfitting. Inference was accelerated using OpenVINO and ThreadPoolExecutor.",
+  "rank": 5,
+  "competition_flow": "Raw audio was cleaned of human voices and truncated, converted to mel spectrograms, and fed into a multi-stage self-distillation pipeline using EfficientNet backbones, with final predictions overlapping, smoothed, and weighted across multiple seed-varied models.",
+  "data_reading": [
+    "Mel spectrograms computed from raw audio (sr=32000, 192 mel bins, fmin=20, fmax=15000, window_size=2048, hop_size=768), converted to log scale via log(melspec+1e-6)."
+  ],
+  "data_processing": [
+    "Silero VAD used to detect and manually remove human voice segments.",
+    "Manual curation for underrepresented classes (n < ~30).",
+    "Truncation to first 60s for cleaned files and 30s for others.",
+    "Duplication for classes with <20 samples.",
+    "Augmentations: Resampling, Gain, FilterAugment, FrequencyMasking, TimeMasking, Sumix on mel domain.",
+    "Logarithmic normalization: log(melspec+1e-6)."
+  ],
+  "features_engineering": [],
+  "models": [
+    "tf_efficientnetv2_s",
+    "tf_efficientnetv2_b3",
+    "tf_efficient_b3_ns",
+    "tf_efficient_b0_ns"
+  ],
+  "frameworks_used": [
+    "PyTorch",
+    "torchaudio",
+    "OpenVINO",
+    "Streamlit",
+    "Silero VAD"
+  ],
+  "loss_functions": [
+    "FocalLoss (gamma=2)"
+  ],
+  "cv_strategy": "5-fold cross-validation for Stage 1; no folds used in Stages 2 and 3.",
+  "ensembling": "Predictions from two model groups with different random seeds were combined using 2.5-second overlap, weighted with alpha=0.5, and smoothed with a [0.1, 0.8, 0.1] window before final submission.",
+  "insights": [
+    "Many bird calls in the training data were unlabeled because recorders focused on target species, making accurate secondary label assignment the core challenge.",
+    "Iterative self-distillation effectively enriches training labels with true secondary labels that were missing from the original annotations.",
+    "Mixing train_audio and train_soundscapes at a 1:1 ratio during later distillation stages further improved performance."
+  ],
+  "critical_findings": [
+    "Power adjustment for low-ranked classes improved the LB score but was ultimately dropped due to overfitting risks.",
+    "Using the same random seeds across model groups (Group A and B) did not negatively impact the final ensemble performance.",
+    "Self-distillation proved highly effective for enriching secondary labels, with iterative rounds consistently boosting LB scores across all backbone architectures."
+  ],
+  "what_did_not_work": [
+    "CNN-based models.",
+    "1D models.",
+    "Too many data augmentations."
+  ],
+  "github_repos": [
+    {
+      "url": "https://github.com/myso1987/BirdCLEF-2025-5th-place-solution",
+      "role": "solution"
+    },
+    {
+      "url": "https://github.com/snakers4/silero-vad",
+      "role": "library"
+    }
+  ],
+  "papers": [],
+  "other_solution_refs": [
+    {
+      "description": "Sumix on mel domain reference",
+      "url": "https://www.kaggle.com/competitions/birdclef-2023/discussion/412922"
+    },
+    {
+      "description": "4th place solution from last year (weighting reference)",
+      "url": "https://www.kaggle.com/competitions/birdclef-2024/discussion/511845"
+    },
+    {
+      "description": "Post-processing notebook with power adjustment",
+      "url": "https://www.kaggle.com/code/myso1987/post-processing-with-power-adjustment-for-low-rank"
+    },
+    {
+      "description": "PyTorch to OpenVINO conversion notebook",
+      "url": "https://www.kaggle.com/code/zuoliao11/birdclef2025-convert-models-openvino/notebook"
+    },
+    {
+      "description": "Inference notebook",
+      "url": "https://www.kaggle.com/code/zuoliao11/birdclef2025-inference-openvino"
+    }
+  ],
+  "source_url": "https://www.kaggle.com/competitions/birdclef-2025/discussion/583312"
+}

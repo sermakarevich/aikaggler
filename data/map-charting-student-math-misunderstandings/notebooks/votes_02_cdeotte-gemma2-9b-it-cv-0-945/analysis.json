@@ -1,0 +1,42 @@
+{
+  "summary": "This notebook demonstrates an efficient inference pipeline for Kaggle's MAP competition using the Gemma2-9B-it large language model. It shows how to load a pre-trained base model, apply a LoRA adapter for weight-efficient updates, and generate predictions on test data. The author highlights key training tips, such as using LoRA/QLORA for VRAM efficiency and switching to fp16 for T4 GPU compatibility. Readers learn how to format tabular/text data into LLM prompts, tokenize inputs, and compute a custom MAP@3 metric for evaluation. The notebook serves as a quick submission recipe rather than a full training guide.",
+  "purpose": "tutorial",
+  "competition_flow": "Loads train/test CSVs, engineers a frequency-based correctness feature, formats prompts for Gemma2-9B-it, tokenizes inputs, loads a LoRA-wrapped model, computes top-3 class probabilities, and exports a space-separated submission CSV.",
+  "data_reading": [
+    "pd.read_csv for train.csv and test.csv; fills NaN in Misconception with 'NA'."
+  ],
+  "data_processing": [
+    "Tokenization with transformers.AutoTokenizer (max_length=256, padding=max_length, truncation=True); converts to HuggingFace Dataset with PyTorch format; uses fp16 for inference on T4 GPUs."
+  ],
+  "features_engineering": [
+    "Creates an is_correct feature by identifying the most frequently selected MC_Answer per QuestionId in the training set and merging it back; formats input prompts combining QuestionText, MC_Answer, is_correct (Yes/No), and StudentExplanation."
+  ],
+  "models": [
+    "google/gemma-2-9b-it (via AutoModelForSequenceClassification), LoRA adapter (via peft.PeftModel)"
+  ],
+  "frameworks_used": [
+    "transformers",
+    "peft",
+    "sklearn",
+    "datasets",
+    "pandas",
+    "numpy",
+    "torch"
+  ],
+  "loss_functions": [],
+  "cv_strategy": "20% holdout validation split via train_test_split",
+  "ensembling": "",
+  "insights": [
+    "Using a larger 9B parameter model yields better CV/LB scores than smaller 1B alternatives.",
+    "LoRA adapters enable efficient fine-tuning and inference of large LLMs on constrained GPU memory.",
+    "Switching to fp16 is necessary and accelerates inference on Kaggle's T4 GPUs since they lack bf16 support.",
+    "Carefully crafting the input prompt structure can significantly impact validation scores."
+  ],
+  "critical_findings": [
+    "The reported CV score is actually derived from a single 20% holdout split, not a true cross-validation process.",
+    "Kaggle's T4 GPUs do not support bf16, requiring fp16 for inference to avoid errors and improve speed."
+  ],
+  "what_did_not_work": [],
+  "source_url": "https://www.kaggle.com/code/cdeotte/gemma2-9b-it-cv-0-945",
+  "votes": 592
+}

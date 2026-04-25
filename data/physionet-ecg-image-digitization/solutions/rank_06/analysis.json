@@ -1,0 +1,40 @@
+{
+  "summary": "The author optimized Stage 2 of a baseline by shifting from a segmentation-and-post-processing pipeline to a direct signal regression approach. This design choice allows the model to learn lead signal features more effectively while avoiding cumulative errors typically introduced during post-processing. The solution relies on a custom FFT-based resampling strategy to handle diverse ECG sampling rates and a Soft-Argmax regression head to output precise voltage values.",
+  "extensive_summary": "The solution targets Stage 2 of a PhysioNet competition baseline, fundamentally changing the prediction paradigm. Instead of the traditional segmentation followed by post-processing, the author treats lead signal extraction as a direct regression task. This architectural shift is designed to capture signal features more effectively and eliminate the cumulative error inherent in multi-stage pipelines.\n\nA major focus is handling the highly variable sampling rates of the training ECG data (2.5 kHz to 10 kHz). The author benchmarks multiple resampling algorithms (polyphase, linear, cubic spline, FFT-based) by up/down-sampling and calculating SNR against the original ground truth. The key finding is that `scipy.signal.resample` (FFT-based) significantly outperforms `torch.nn.functional.interpolate` (Linear/Bilinear). Furthermore, fidelity positively correlates with intermediate sampling density, with 10250 yielding the lowest information loss. To integrate this into training, a custom `resample_torch` function using `torch.fft` is implemented.\n\nThe prediction head, `MaskEmbeddingToLeadSignalSoftArgmax`, converts 2D feature embeddings into physical voltage values. It uses a 1x1 convolution to predict logits, applies softmax with a temperature parameter, and computes a weighted sum of vertical coordinates (Soft-Argmax) to estimate precise lead positions. These pixel coordinates are then mapped to millivolt values using registered buffers. Experimental results show that increasing the signal length from 2560 to 5120 improves the LB score, and applying horizontal flip TTA provides further gains, peaking at 22.43 after 150 epochs.",
+  "rank": 6,
+  "competition_flow": "Raw ECG signals with variable sampling rates are resampled using an FFT-based method to a fixed length, passed through an unspecified backbone and a custom Soft-Argmax regression head to directly predict lead voltage values, followed by horizontal flip TTA for final submission.",
+  "data_reading": [
+    "ECG signals with diverse sampling rates (2.5 kHz to 10 kHz) loaded and resampled to fixed lengths (2560, 5120, or 10250) using FFT-based methods."
+  ],
+  "data_processing": [
+    "Resampling benchmarked across polyphase, linear, cubic spline, and FFT-based methods; scipy.signal.resample selected for highest fidelity; custom resample_torch (FFT-based) integrated into training; horizontal flip TTA applied."
+  ],
+  "features_engineering": [],
+  "models": [],
+  "frameworks_used": [
+    "torch",
+    "scipy.signal"
+  ],
+  "loss_functions": [],
+  "cv_strategy": "",
+  "ensembling": "",
+  "insights": [
+    "Direct regression bypasses cumulative error from segmentation and post-processing stages.",
+    "Fidelity is positively correlated with intermediate sampling density during resampling.",
+    "FFT-based resampling significantly outperforms linear/bilinear interpolation for ECG signal processing."
+  ],
+  "critical_findings": [
+    "scipy.signal.resample (FFT-based) yields significantly superior results compared to torch.nn.functional.interpolate (Linear/Bilinear) for this signal processing task.",
+    "Higher intermediate sampling lengths (10250 > 5120 > 2560) result in substantially lower information loss."
+  ],
+  "what_did_not_work": [],
+  "github_repos": [
+    {
+      "url": "https://github.com/GWwangshuo/Kaggle-2025-PhysioNet",
+      "role": "solution"
+    }
+  ],
+  "papers": [],
+  "other_solution_refs": [],
+  "source_url": "https://www.kaggle.com/competitions/physionet-ecg-image-digitization/discussion/669562"
+}

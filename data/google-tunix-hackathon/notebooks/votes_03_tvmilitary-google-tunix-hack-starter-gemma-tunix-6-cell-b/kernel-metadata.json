@@ -1,0 +1,25 @@
+{
+  "id": "tvmilitary/google-tunix-hack-starter-gemma-tunix-6-cell-b",
+  "id_no": 102550861,
+  "title": "Google Tunix Hack Starter \u2014 Gemma + Tunix 6\u2011Cell B",
+  "code_file": "google-tunix-hack-starter-gemma-tunix-6-cell-b.ipynb",
+  "language": "python",
+  "kernel_type": "notebook",
+  "is_private": false,
+  "enable_gpu": false,
+  "enable_tpu": false,
+  "enable_internet": false,
+  "keywords": [
+    "education",
+    "data analytics",
+    "deep learning"
+  ],
+  "dataset_sources": [],
+  "kernel_sources": [],
+  "competition_sources": [
+    "google-tunix-hackathon"
+  ],
+  "model_sources": [],
+  "docker_image": "gcr.io/kaggle-images/python@sha256:bf0b407a5ed73626191ae2259063a0090ae36666c8f00ffdfae3fb543eae750d",
+  "machine_shape": "None"
+}

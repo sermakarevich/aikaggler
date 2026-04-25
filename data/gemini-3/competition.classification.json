@@ -1,0 +1,13 @@
+{
+  "description": "Participants develop generative AI workflows using Google's Gemini 3 Pro model via the AI Studio platform. The competition centers on text-to-image generation, where competitors design prompts and refine model outputs to create high-quality images. Submissions are evaluated based on visual quality and creativity, with top performers awarded cloud computing credits.",
+  "data_modality": "multimodal",
+  "task_type": "generation",
+  "label_structure": "none",
+  "metric": "unknown",
+  "test_split": "unknown",
+  "format": "standard",
+  "dataset_scale": "unknown",
+  "domain": "image_generation",
+  "data_challenges": [],
+  "constraints": []
+}

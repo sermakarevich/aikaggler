@@ -1,0 +1,46 @@
+{
+  "summary": "This notebook demonstrates a multi-pipeline ensemble strategy for predicting biomass components from high-resolution imagery. It bridges vision-language models and traditional ML by extracting SigLIP embeddings, generating semantic text-based features, and feeding them into a supervised embedding engine (PCA, PLS, GMM) before training tabular regressors. Two custom DINOv2/v3 architectures are also implemented, utilizing tiled image processing, cross-scale fusion, and Mamba blocks to capture spatial context. The author enforces physical biomass constraints via linear algebra post-processing and combines all pipelines with weighted averaging. Readers should learn how to leverage semantic prompts for feature engineering, apply constraint-based reconciliation to improve regression metrics, and effectively ensemble diverse vision architectures.",
+  "purpose": "ensemble",
+  "competition_flow": "Loads imagery and CSV labels, extracts image and semantic embeddings, trains multiple regressors and custom CNNs via cross-validation, applies physical constraint reconciliation, and generates a weighted ensemble submission.",
+  "data_reading": [
+    "Reads CSV files for paths and labels, loads images via cv2.imread, converts BGR to RGB, handles missing images with zero-padding, and pivots/melts target columns for multi-output regression."
+  ],
+  "data_processing": [
+    "Splits images into overlapping patches, normalizes with ImageNet stats, resizes to model input size, applies TTA (horizontal/vertical flips, random rotation), scales targets by maximum values or log1p, and enforces biomass component constraints via a projection matrix."
+  ],
+  "features_engineering": [
+    "Semantic cosine similarity scores from SigLIP text prompts (bare, sparse, dense, green, dead, clover, etc.), derived ratios (greenness, clover, cover), PCA variance retention, PLS regression components, and Gaussian Mixture probability features."
+  ],
+  "models": [
+    "SigLIP-so400m-patch14-384",
+    "CrossPVT_T2T_MambaDINO (custom DINOv2 + MobileViT + PVT + Mamba)",
+    "TiledFiLMDINO (custom DINOv2/v3 + FiLM)",
+    "GradientBoostingRegressor",
+    "HistGradientBoostingRegressor",
+    "CatBoostRegressor",
+    "LGBMRegressor"
+  ],
+  "frameworks_used": [
+    "pytorch",
+    "timm",
+    "transformers",
+    "scikit-learn",
+    "xgboost",
+    "lightgbm",
+    "catboost",
+    "albumentations"
+  ],
+  "loss_functions": [],
+  "cv_strategy": "KFold(n_splits=5) using a pre-split fold column",
+  "ensembling": "Averages predictions from four tabular regressors for the first pipeline, then combines three separate model submissions with weights [0.45, 0.35, 0.2], followed by linear algebra reconciliation to enforce biomass component constraints and clipping negatives to zero.",
+  "insights": [
+    "Semantic text embeddings from vision-language models can effectively generate domain-specific features for regression tasks.",
+    "Tiling and processing left/right image halves separately captures broader spatial context than single-pass inference.",
+    "Enforcing physical summation constraints via projection matrices significantly boosts competition metrics.",
+    "Combining diverse backbones (SigLIP, DINOv2, DINOv3) with different fusion mechanisms yields complementary predictions."
+  ],
+  "critical_findings": [],
+  "what_did_not_work": [],
+  "source_url": "https://www.kaggle.com/code/antonoof/0-69-ensemble-3-models-embeddings",
+  "votes": 520
+}

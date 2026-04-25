@@ -1,0 +1,70 @@
+{
+  "summary": "The author tackled the MABe Challenge by reformulating the task into separate per-action binary classification problems for each lab. They engineered a shared feature space combining invariant geometry, kinematics, and pairwise distances, augmented with rolling temporal windows for select models. The pipeline trained multiple boosting-based models and a TABM architecture, calibrated predictions using Platt scaling with prior correction, and applied postprocessing including temporal smoothing and action-specific threshold fitting to produce the final submission.",
+  "extensive_summary": "## High-Level Formulation & Feature Engineering\nThe solution reframes the competition task into a set of per-action binary classification problems, trained independently for each lab. A shared feature space was constructed from three core groups: invariant agent-centric geometry and kinematics (relative distances, angles, approach/retreat cues, motion alignment, time since contact), single-mouse descriptors (velocities, accelerations, speed, turning rate, path curvature, motion smoothness, body length, ear gap, stability metrics), and pairwise distances between body parts (computed on raw landmarks or aggregated regions). These descriptors were normalized by agent body length. For a subset of models, the base features were augmented with windowed temporal features, specifically rolling mean summaries over three lagged windows to capture history-aware covariates.\n\n## Model Training & Negative Sampling\nThe final ensemble comprises five model families: XGBoost, LightGBM, Catboost, PyBoost, and TABM. Boosting models were trained separately per lab and action. A key technique involved negative sampling: unlabeled frames were split into \"real negatives\" (annotated with a different action or unlabeled but within a video's whitelist) and \"maybe negatives\" (unlabeled and outside the whitelist). Training sets combined all positives with negatives sampled by video from these pools. In LightGBM, positive frames were weighted inversely to action run length to prevent long events from dominating the loss. TABM models used a one-vs-rest formulation with independent sigmoid heads per action, downsampling unlabeled frames by (video, agent, target) triplets.\n\n## Calibration, Validation & Postprocessing\nCross-validation was conducted at the video level using 5 folds, generating complete out-of-fold (OOF) predictions that showed strong CV-LB correlation. Raw boosting margins were calibrated using a two-step Platt calibration with prior correction, learned from OOF predictions. At inference, frame-level predictions were filtered to the whitelist, smoothed using rolling windows sized to median action durations, and thresholded using action-specific cutoffs fitted on OOF data. Consecutive frames with the same predicted action were merged into intervals, and a single action per frame was selected via argmax to form the final submission.",
+  "rank": 12,
+  "competition_flow": "Raw video frames and track data were assembled into a shared geometric/kinematic feature space, split into video-level folds, used to train per-action models with tailored negative sampling and temporal features, calibrated via Platt scaling, and postprocessed with temporal smoothing and thresholding to generate interval-based action predictions.",
+  "data_reading": [
+    "Frames and tracks assembled per video_id and (agent_id, target_id) pair from whitelist, with behavior annotations loaded from train/test CSV files."
+  ],
+  "data_processing": [
+    "Descriptors normalized by agent body length.",
+    "Unlabeled frames partitioned into real and maybe negatives and sampled by video.",
+    "Frame-level predictions filtered to whitelist, smoothed via rolling windows sized to median action durations, thresholded using OOF-fitted cutoffs, and merged into consecutive action intervals."
+  ],
+  "features_engineering": [
+    "Invariant agent-centric geometry and kinematics.",
+    "Single-mouse kinematic descriptors.",
+    "Pairwise body part distances (raw and aggregated).",
+    "Rolling mean summaries over three lagged windows for history-aware covariates."
+  ],
+  "models": [
+    "XGBoost",
+    "LightGBM",
+    "Catboost",
+    "PyBoost",
+    "TABM"
+  ],
+  "frameworks_used": [
+    "XGBoost",
+    "LightGBM",
+    "Catboost",
+    "PyBoost",
+    "TABM"
+  ],
+  "loss_functions": [],
+  "cv_strategy": "Video-level 5-fold cross-validation with complete out-of-fold (OOF) predictions.",
+  "ensembling": "Models were weighted and combined using OOF-fitted ensemble weights, followed by temporal smoothing, per-action threshold fitting, and argmax-based action selection to produce the final submission.",
+  "insights": [
+    "Formulating the problem as per-action binary tasks per lab significantly simplified modeling and improved tractability.",
+    "Video-level cross-validation was critical for achieving strong CV-LB correlation and preventing data leakage.",
+    "Raw boosting margins require Platt calibration with prior correction to be comparable across different actions and labs.",
+    "Distinguishing between real negatives and maybe negatives during negative sampling helped control the true negative to unlabeled data ratio."
+  ],
+  "critical_findings": [
+    "Long continuous action events can dominate the loss in boosting models, necessitating inverse length weighting for positive frames.",
+    "Unlabeled frames must be carefully partitioned into real negatives and maybe negatives based on whitelist presence to avoid introducing label noise."
+  ],
+  "what_did_not_work": [],
+  "github_repos": [
+    {
+      "url": "https://github.com/T0chka/mabe_12th_place_solution",
+      "role": "solution"
+    }
+  ],
+  "papers": [],
+  "other_solution_refs": [
+    {
+      "description": "Overall data overview",
+      "url": "https://www.kaggle.com/code/antoninadolgorukova/mabe-an-exploratory-data-safari"
+    },
+    {
+      "description": "Deeper analysis of data constraints and their modeling implications",
+      "url": "https://www.kaggle.com/code/antoninadolgorukova/mabe-data-constraints-modeling-implications"
+    },
+    {
+      "description": "Data quality checks and identified issues",
+      "url": "https://www.kaggle.com/code/antoninadolgorukova/mabe-sanity-checks-data-issues"
+    }
+  ],
+  "source_url": "https://www.kaggle.com/competitions/MABe-mouse-behavior-detection/discussion/663108"
+}

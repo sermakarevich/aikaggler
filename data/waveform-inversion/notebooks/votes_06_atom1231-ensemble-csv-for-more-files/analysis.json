@@ -1,0 +1,31 @@
+{
+  "summary": "This notebook provides a memory-efficient utility for ensembling multiple Kaggle submission CSV files, directly addressing the common Out-Of-Memory crash that occurs when stacking large prediction arrays. It replaces in-memory stacking with a streaming accumulation approach for weighted means and a disk-backed numpy.memmap for median calculations, allowing users to safely aggregate dozens or hundreds of files. Readers should learn how to bypass RAM limitations during ensemble aggregation, properly align predictions across different submission formats, and manage memory explicitly in Python. The core takeaway is that disk-backed streaming and explicit garbage collection are practical, zero-dependency solutions for large-scale prediction ensembling.",
+  "purpose": "utility",
+  "competition_flow": "Reads multiple submission CSV files from Kaggle inputs, aligns them to a shared index, computes weighted mean and median ensembles using memory-mapped disk storage, and saves the aggregated predictions as new CSV files.",
+  "data_reading": [
+    "Loads submission CSVs using pd.read_csv(file_path, index_col='oid_ypos'), using the first file to establish a master index and column structure for alignment."
+  ],
+  "data_processing": [
+    "Aligns all submission files to a master index via df.reindex(), converts to NumPy arrays, and uses streaming accumulation for means and np.memmap for medians to avoid OOM. Explicitly handles memory cleanup with del and gc.collect() after each file iteration."
+  ],
+  "features_engineering": [],
+  "models": [],
+  "frameworks_used": [
+    "pandas",
+    "numpy"
+  ],
+  "loss_functions": [],
+  "cv_strategy": "",
+  "ensembling": "Computes both weighted mean and median ensembles across multiple submission CSVs, with the weighted mean calculated via streaming accumulation and the median computed via a disk-backed memory-mapped array to handle large file counts.",
+  "insights": [
+    "Streaming accumulation and numpy.memmap can effectively bypass RAM limitations when ensembling dozens or hundreds of large prediction files.",
+    "Aligning predictions to a shared master index before aggregation is critical for correct ensemble calculation across differently ordered submissions.",
+    "Explicit garbage collection after each file iteration prevents memory fragmentation and OOM crashes in long-running ensemble scripts."
+  ],
+  "critical_findings": [],
+  "what_did_not_work": [
+    "The previous approach of loading all submission files into memory at once quickly leads to Out-Of-Memory errors when handling more than a few large files."
+  ],
+  "source_url": "https://www.kaggle.com/code/atom1231/ensemble-csv-for-more-files",
+  "votes": 283
+}

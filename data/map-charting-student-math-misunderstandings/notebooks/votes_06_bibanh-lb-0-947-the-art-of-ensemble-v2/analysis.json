@@ -1,0 +1,41 @@
+{
+  "summary": "This notebook demonstrates a multi-model ensemble strategy for predicting student misconceptions in a math competition. It preprocesses tabular data by engineering a binary correctness feature derived from majority voting, then formats it into structured prompts for large language models. The author fine-tunes Gemma-2-9b-it using PEFT and runs inference on pre-trained DeepSeek-Math-7B and Qwen3-8B checkpoints. A custom MAP@3 metric is implemented to evaluate ranking performance, and predictions are aggregated via a weighted rank-based ensemble to produce the final submission. Readers should learn how to adapt LLMs for multi-class ranking tasks and effectively combine diverse model outputs without complex training pipelines.",
+  "purpose": "ensemble",
+  "competition_flow": "Loads CSV data, engineers a majority-vote correctness feature, formats prompts for three LLMs (Gemma-2, DeepSeek-Math, Qwen3-8B), extracts top-3 predictions per sample, and combines them via a weighted rank-based ensemble to generate a final submission.",
+  "data_reading": [
+    "Loads train and test datasets using pandas `read_csv` from Kaggle input paths."
+  ],
+  "data_processing": [
+    "Fills missing misconceptions with 'NA', creates a composite target label, adds an `is_correct` feature via groupby majority vote on answer choices, formats text prompts with question/answer/correctness/explanation fields, tokenizes inputs to a max length of 256 with padding/truncation, and splits training data into an 80/20 holdout set."
+  ],
+  "features_engineering": [
+    "Binary `is_correct` feature derived from majority voting of `MC_Answer` per `QuestionId`."
+  ],
+  "models": [
+    "Gemma-2-9b-it (fine-tuned via PEFT)",
+    "DeepSeek-Math-7B",
+    "Qwen3-8B"
+  ],
+  "frameworks_used": [
+    "pandas",
+    "numpy",
+    "scikit-learn",
+    "torch",
+    "transformers",
+    "peft",
+    "datasets",
+    "matplotlib"
+  ],
+  "loss_functions": [],
+  "cv_strategy": "Holdout split (80% train, 20% validation) via `train_test_split`",
+  "ensembling": "Combines top-3 predictions from three LLM submissions using a weighted rank-based scoring system where each model's predictions are weighted equally, scores are accumulated by rank position, and the top-3 overall are selected for the final submission.",
+  "insights": [
+    "LLMs can be effectively adapted for multi-class misconception prediction using simple prompt formatting and a binary correctness hint.",
+    "A custom MAP@3 metric is necessary to properly evaluate ranking-based multi-label tasks in this competition.",
+    "Rank-based ensemble aggregation leverages diverse prediction distributions to improve robustness over individual models."
+  ],
+  "critical_findings": [],
+  "what_did_not_work": [],
+  "source_url": "https://www.kaggle.com/code/bibanh/lb-0-947-the-art-of-ensemble-v2",
+  "votes": 340
+}

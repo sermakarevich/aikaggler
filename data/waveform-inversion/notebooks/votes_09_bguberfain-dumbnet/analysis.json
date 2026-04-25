@@ -1,0 +1,40 @@
+{
+  "summary": "This notebook demonstrates a minimal baseline for a seismic waveform inversion task using a custom PyTorch MLP called DumbNet. It prioritizes memory efficiency by memory-mapping large .npy files and sampling a fixed number of examples per file, avoiding RAM exhaustion during training. The architecture applies a 2D average pooling layer to reduce input dimensionality before passing it through two fully connected layers with ReLU activations and dropout. The author trains the model for 50 epochs using L1 loss and directly scales the output in the forward pass to match the target's dynamic range. Readers should take away a practical template for building fast, low-overhead regression baselines on large numerical arrays without relying on complex data pipelines or heavy architectures.",
+  "purpose": "baseline",
+  "competition_flow": "Loads seismic waveform .npy files, splits them deterministically into train and validation sets, trains a custom PyTorch MLP with L1 loss for 50 epochs, and writes predicted velocity/model values to a CSV submission file.",
+  "data_reading": [
+    "Loads .npy files from Kaggle input directories using pathlib, filters by filename patterns ('seis'/'data'), and reads arrays via numpy with mmap_mode='r' for memory efficiency."
+  ],
+  "data_processing": [
+    "Splits data deterministically by assigning every other file to training and the remaining files to validation.",
+    "Custom Dataset samples 500 examples per file, and DataLoaders use batch_size=64, shuffle, pin_memory, and drop_last.",
+    "No explicit normalization, augmentation, or resizing is applied."
+  ],
+  "features_engineering": [],
+  "models": [
+    "DumbNet (custom PyTorch MLP with AvgPool2d, two Linear layers, ReLU, Dropout(0.25), and output scaling)"
+  ],
+  "frameworks_used": [
+    "pytorch",
+    "numpy",
+    "pandas",
+    "matplotlib",
+    "pathlib",
+    "tqdm",
+    "csv"
+  ],
+  "loss_functions": [
+    "L1Loss"
+  ],
+  "cv_strategy": "Deterministic file-level split: every other file assigned to training, remaining files to validation.",
+  "ensembling": "",
+  "insights": [
+    "Memory mapping and fixed sampling per file enable efficient training on large datasets without RAM exhaustion.",
+    "A minimal MLP with initial average pooling can effectively serve as a baseline for waveform inversion regression.",
+    "Output scaling is handled directly in the forward pass rather than through data normalization."
+  ],
+  "critical_findings": [],
+  "what_did_not_work": [],
+  "source_url": "https://www.kaggle.com/code/bguberfain/dumbnet",
+  "votes": 198
+}

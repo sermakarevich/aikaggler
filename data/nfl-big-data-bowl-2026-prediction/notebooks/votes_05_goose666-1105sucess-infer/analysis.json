@@ -1,0 +1,36 @@
+{
+  "summary": "This notebook implements an inference pipeline for the NFL Big Data Bowl 2026 competition, focusing on predicting future player positions. It integrates a comprehensive suite of hand-crafted features\u2014including kinematics, opponent proximity, route clustering, GNN-style spatial embeddings, and geometric endpoint projections\u2014into a sequence model. The pipeline loads pre-trained weights across five folds, applies fold-specific scalers, and averages the outputs to generate final predictions. A key takeaway is that while extensive feature engineering and geometric constraints are powerful, the author observes overfitting and suggests that simpler models paired with deeper data exploration may yield better generalization.",
+  "purpose": "inference",
+  "competition_flow": "Loads test data, applies extensive kinematic, spatial, and geometric feature engineering, feeds sequences into a 5-fold ensemble of PyTorch transformer models to predict positional residuals, and inverts coordinates back to the original field direction for submission.",
+  "data_reading": [
+    "Reads test data via Polars, converts to pandas, and loads pre-trained model weights and scalers from local Kaggle input directories."
+  ],
+  "data_processing": [
+    "Unifies play direction by flipping coordinates and angles for left/right plays, pads short sequences and fills NaNs with group means, applies fold-specific StandardScaler, clips predictions to field boundaries, and inverts coordinates back to original direction."
+  ],
+  "features_engineering": [
+    "Kinematic features (velocity, acceleration, momentum, kinetic energy), lag/rolling/EMA temporal features, opponent proximity and mirror WR features, KMeans route pattern clustering, GNN-style weighted neighbor embeddings, geometric endpoint projections, time-based progress features, and field boundary distances."
+  ],
+  "models": [
+    "ImprovedSeqModel (custom PyTorch architecture combining SpatioTemporalTransformer with ResidualMLP blocks)"
+  ],
+  "frameworks_used": [
+    "pytorch",
+    "scikit-learn"
+  ],
+  "loss_functions": [],
+  "cv_strategy": "5-fold cross-validation (separate models and scalers per fold)",
+  "ensembling": "Averages the predicted x and y residuals from five independently trained fold-specific models.",
+  "insights": [
+    "Hand-crafted geometric and kinematic features significantly enrich the input representation for position prediction.",
+    "GNN-style weighted neighbor embeddings effectively capture spatial relationships between players.",
+    "Predicting positional residuals rather than absolute coordinates may contribute to overfitting.",
+    "Simpler models combined with robust data preprocessing might outperform complex architectures in this task."
+  ],
+  "critical_findings": [
+    "The author explicitly notes the model is overfitting and hypothesizes it stems from predicting position residuals instead of absolute positions, and that some engineered features may be redundant."
+  ],
+  "what_did_not_work": [],
+  "source_url": "https://www.kaggle.com/code/goose666/1105sucess-infer",
+  "votes": 269
+}

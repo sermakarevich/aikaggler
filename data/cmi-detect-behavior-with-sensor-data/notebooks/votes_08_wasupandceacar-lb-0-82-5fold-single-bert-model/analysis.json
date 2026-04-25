@@ -1,0 +1,50 @@
+{
+  "summary": "This notebook demonstrates a complete training recipe for a sensor-based gesture recognition competition using a single BERT model trained across five folds. It details a comprehensive preprocessing pipeline that removes gravity from accelerometer data, computes angular velocity and distance from quaternions, and extracts statistical features from Time-of-Flight (ToF) sensor data. The architecture combines modality-specific CNN branches with Squeeze-and-Excitation blocks for IMU, Thm, and ToF inputs, which are then concatenated and processed by a BERT encoder. The author emphasizes proper handling of missing values, sequence padding, and global scaling, ultimately averaging predictions from five EMA-weighted models for inference. Readers should learn how to effectively fuse heterogeneous sensor modalities and leverage pre-trained language models for time-series classification.",
+  "purpose": "training",
+  "competition_flow": "Loads precomputed sensor CSV data, applies gravity removal and statistical feature engineering, trains a custom BERT-based multimodal CNN architecture using 5-fold stratified cross-validation, and generates a submission by averaging logits from five EMA-weighted models.",
+  "data_reading": [
+    "Reads training data via pandas.read_csv from a precomputed CSV path.",
+    "Uses polars for inference data conversion.",
+    "Loads test demographics and test CSV from Kaggle input paths."
+  ],
+  "data_processing": [
+    "Removes gravity from accelerometer data using rotation quaternions.",
+    "Computes angular velocity and angular distance from quaternions.",
+    "Handles missing values with forward/backward fill and custom range-based NaN placeholders.",
+    "Pads sequences to the 95th percentile length.",
+    "Applies global or per-modality StandardScaler.",
+    "Replaces -1 in ToF data with NaN."
+  ],
+  "features_engineering": [
+    "IMU: acceleration magnitude, rotation angle, jerk features, linear acceleration magnitude, angular velocity components, and angular distance.",
+    "ToF: raw pixel values plus mean, std, min, max statistics computed over the full 64-pixel vector and split into multiple regional chunks.",
+    "Label encoding for gesture classes."
+  ],
+  "models": [
+    "Custom CMIModel (IMU/Thm/ToF CNN branches + BERT encoder + Linear classifier)"
+  ],
+  "frameworks_used": [
+    "pytorch",
+    "transformers",
+    "scikit-learn",
+    "scipy",
+    "polars",
+    "pandas"
+  ],
+  "loss_functions": [],
+  "cv_strategy": "StratifiedKFold(n_splits=5, shuffle=True, random_state=0) stratified on gesture labels",
+  "ensembling": "Averages raw logits from five independently trained models (loaded from EMA-weighted checkpoints) across all folds before taking the argmax for final predictions.",
+  "insights": [
+    "Gravity removal is essential for accurate IMU feature extraction.",
+    "Statistical aggregations (mean, std, min, max) over ToF sensor regions effectively capture spatial patterns without raw pixel overload.",
+    "Padding sequences to the 95th percentile optimizes the trade-off between information retention and computational cost.",
+    "BERT successfully models temporal dependencies when fed concatenated, scaled modality features."
+  ],
+  "critical_findings": [
+    "Older notebook versions contained a critical bug where only the last fold's model was used for submission, highlighting the importance of averaging all folds.",
+    "The value -1 in ToF data represents invalid measurements and must be converted to NaN before processing."
+  ],
+  "what_did_not_work": [],
+  "source_url": "https://www.kaggle.com/code/wasupandceacar/lb-0-82-5fold-single-bert-model",
+  "votes": 407
+}

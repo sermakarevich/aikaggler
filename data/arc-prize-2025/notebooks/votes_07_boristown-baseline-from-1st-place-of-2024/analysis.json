@@ -1,0 +1,37 @@
+{
+  "summary": "This notebook provides an open-sourced baseline for the ARC Prize competition, adapted from the 2024 winning solution. It demonstrates a complete pipeline for fine-tuning causal language models on grid-based reasoning tasks by converting ARC puzzles into text sequences. Key technical contributions include optimized multi-GPU training and inference, deterministic seeding for reproducibility, and extensive data augmentation via geometric and color permutations. Readers should understand how to efficiently format grid data for LLMs, shrink model embeddings to save VRAM, and use depth-first search inference to improve solution accuracy. The notebook emphasizes practical engineering and scalability over novel architecture design, focusing on reproducible competitive AGI research.",
+  "purpose": "baseline",
+  "competition_flow": "Loads ARC grid tasks from JSON files, converts them to text sequences via a custom formatter, fine-tunes a causal language model using PEFT and Unsloth with data augmentation, and generates predictions using a custom depth-first search inference loop with multi-guess scoring.",
+  "data_reading": [
+    "JSON files containing ARC challenge queries and replies are parsed into ArcDataset objects, which store grid inputs and outputs as NumPy arrays."
+  ],
+  "data_processing": [
+    "Grids are converted to text tokens via ArcFormatter for LLM consumption.",
+    "Data augmentation applies rotations (rot90), transpositions (transpose), and value/color permutations (permute_mod) to increase training diversity.",
+    "Sequences are truncated to fit model context windows, and training uses packing with a custom data collator."
+  ],
+  "features_engineering": [],
+  "models": [],
+  "frameworks_used": [
+    "transformers",
+    "unsloth",
+    "peft",
+    "trl",
+    "datasets",
+    "numpy",
+    "torch"
+  ],
+  "loss_functions": [],
+  "cv_strategy": "",
+  "ensembling": "Uses a multi-guess inference strategy with a custom depth-first search (turbo_dfs) algorithm to generate multiple candidate outputs per task, followed by a probability-based selection algorithm to rank and pick the best solution.",
+  "insights": [
+    "Converting grid-based ARC tasks to text sequences enables standard causal LLM fine-tuning for spatial reasoning.",
+    "Shrinking tokenizer vocabularies and embedding tables significantly reduces VRAM usage without harming performance.",
+    "Multi-GPU task distribution and deterministic seeding are critical for reproducible, scalable training.",
+    "Depth-first search inference with probability tracking outperforms standard greedy or beam decoding for ARC tasks."
+  ],
+  "critical_findings": [],
+  "what_did_not_work": [],
+  "source_url": "https://www.kaggle.com/code/boristown/baseline-from-1st-place-of-2024",
+  "votes": 270
+}

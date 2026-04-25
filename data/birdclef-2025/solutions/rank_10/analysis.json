@@ -1,0 +1,49 @@
+{
+  "summary": "The author placed 10th in the BirdCLEF competition by addressing dataset shift and the absence of a same-distribution validation set through a two-stage pseudo-labeling pipeline. They filtered unlabeled `train_soundscapes` using confidence thresholds to generate clean pseudo-labels (`pp_data_clean`), which were iteratively mixed back into training. A custom hybrid loss combining Cross-Entropy with a negative penalty was introduced to suppress false positives, and post-processing applied kernel smoothing alongside class-weighted probability averaging. The final submission ensembled 10 models (ConvNeXt Tiny and EfficientNetV2-S variants) trained on diverse data splits, achieving a private score of 0.921.",
+  "extensive_summary": "## Baseline & Architecture Selection\nThe author tackled BirdCLEF, noting that dataset shift and the lack of a same-distribution validation set made training and evaluation difficult. They established a baseline by training on the entire `train_audio` set and validating directly on the leaderboard. Initial architecture and loss comparisons revealed that `(SED + CE loss) > (SED + FocalBCE) > (CNN + FocalBCE) > (CNN + CE)`, leading to the adoption of SED + CE loss for stage1 models.\n\n## Domain Adaptation & Pseudo-Labeling\nTo leverage unlabeled `train_soundscapes`, the author implemented an iterative pseudo-labeling strategy. Stage1 models generated soft labels, which were filtered using high and low thresholds (`thresh_low`, `thresh_high`) to extract confident positives and negatives. These clean samples were added to `train_audio` to train stage2 models, which then produced updated soft labels to form `pp_data_clean`. This process was repeated to refine the pseudo-labeled dataset.\n\n## Data Processing & Spectrogram Configuration\nThe training data was cleaned by removing obvious human speech (`train_audio_clean`) and using trained models to exclude segments lacking target species, sampling at 5-second intervals to create `train_audio_clean_v2`. Mel spectrograms were extracted with four resolutions (384x160, 384x256, 320x192, 320x160) using `fmin=0`, `fmax=16000`, and `n_fft=1536/2048`. Training augmentations included Mixup (additive, frequency, and time masking), noise augmentation, label smoothing, and flips.\n\n## Loss Function & Training Details\nStandard CE loss on ConvNeXt produced excessive false positives, prompting the author to implement a modified hybrid loss. This combined CE loss with a negative penalty calculated on the top 95% of negative logits exceeding a threshold of -5: `loss = ce_loss + 0.1 * mean_penalty`. Some models also penalized low-confidence positive predictions. Training utilized AdamW with CosineAnnealingLR (LR: 2/3*e-4, WD: 1e-3/1e-4) and 10s/15s training windows with 5s inference.\n\n## Post-Processing & Ensembling\nPost-processing applied kernel smoothing with `[0.02, 0.08, 0.8, 0.08, 0.02]` and a class-weighted averaging scheme where the mixing coefficient `alpha` scaled with reference frequency to boost recall for rare classes. The final submission ensembled 10 models (ConvNeXt Tiny and EfficientNetV2-S variants) trained on different data mixes and pseudo-label proportions, yielding a private score of 0.921. Leaderboard instability prevented optimal model combination selection.",
+  "rank": 10,
+  "competition_flow": "Raw audio was converted to multi-resolution mel spectrograms, filtered for human speech and non-target segments, then used to train stage1 SED models which generated pseudo-labels on unlabeled soundscapes; these clean pseudo-labels were mixed back into training to fine-tune stage2 models (ConvNeXt/EfficientNetV2) with a custom hybrid loss, followed by kernel smoothing and class-weighted post-processing before ensembling 10 models for submission.",
+  "data_reading": [],
+  "data_processing": [
+    "Removed samples with obvious human speech (train_audio_clean)",
+    "Used trained models to remove segments lacking target species, sampling at 5-second intervals (train_audio_clean_v2)",
+    "Extracted mel spectrograms with resolutions 384x160, 384x256, 320x192, 320x160; fmin=0, fmax=16000, n_fft=1536/2048",
+    "Applied Mixup with additive, frequency, and time masking",
+    "Applied noise augmentation, label smoothing, and flip augmentations",
+    "Filtered pseudo-labels using high and low confidence thresholds on train_soundscapes"
+  ],
+  "features_engineering": [],
+  "models": [
+    "SED",
+    "CNN",
+    "ConvNeXt Tiny",
+    "EfficientNetV2-S"
+  ],
+  "frameworks_used": [],
+  "loss_functions": [
+    "Cross-Entropy (CE) loss",
+    "FocalBCE",
+    "Modified hybrid loss (CE + negative penalty on top 95% of negative logits exceeding threshold -5)",
+    "Positive confidence penalty"
+  ],
+  "cv_strategy": "Validated directly on the leaderboard due to dataset shift and lack of a same-distribution validation set.",
+  "ensembling": "Ensembled 10 models (mix of ConvNeXt Tiny and EfficientNetV2-S trained on different data splits and pseudo-label proportions) with public/private scores of 0.915/0.921, applying kernel smoothing and class-weighted probability averaging during post-processing.",
+  "insights": [
+    "Leveraging unlabeled train_soundscapes via iterative pseudo-labeling with confidence thresholds significantly boosted performance despite dataset shift.",
+    "A modified hybrid loss penalizing high-confidence negative predictions effectively reduced false positives compared to standard CE or FocalBCE.",
+    "Filtering training data to remove human speech and non-target segments improved model diversity and cleanliness.",
+    "Class-weighted post-processing averaging, scaled by reference frequency, helped balance recall across rare and common classes."
+  ],
+  "critical_findings": [
+    "Standard CE loss with ConvNeXt produced excessive false positives, necessitating a custom negative penalty loss to stabilize training.",
+    "Despite public notebooks favoring ConvNeXt, the author found SED + CE loss to be the strongest baseline architecture for this specific setup.",
+    "Leaderboard instability prevented optimal model combination selection, highlighting the risk of relying on LB metrics for ensembling decisions."
+  ],
+  "what_did_not_work": [
+    "Using standard CE loss with ConvNeXt led to a lot of noisy predictions (many false positives)."
+  ],
+  "github_repos": [],
+  "papers": [],
+  "other_solution_refs": [],
+  "source_url": "https://www.kaggle.com/competitions/birdclef-2025/discussion/583310"
+}

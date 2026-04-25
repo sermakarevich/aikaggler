@@ -1,0 +1,30 @@
+{
+  "id": "sanpier/visual-qa-for-all-stages-of-ecg-digitization",
+  "id_no": 106396555,
+  "title": "\u2764\ufe0f\ud83d\udcc8 Visual QA for all Stages of ECG Digitization",
+  "code_file": "visual-qa-for-all-stages-of-ecg-digitization.ipynb",
+  "language": "python",
+  "kernel_type": "notebook",
+  "is_private": false,
+  "enable_gpu": false,
+  "enable_tpu": false,
+  "enable_internet": false,
+  "keywords": [
+    "gpu"
+  ],
+  "dataset_sources": [
+    "kami1976/hengck23-submit-physionet",
+    "wasupandceacar/physio-test-fake-dataset"
+  ],
+  "kernel_sources": [
+    "alejopaullier/physionet-image-multi-class-train"
+  ],
+  "competition_sources": [
+    "physionet-ecg-image-digitization"
+  ],
+  "model_sources": [
+    "wasupandceacar/physio-seg-public/PyTorch/net3_009_4200/1"
+  ],
+  "docker_image": "gcr.io/kaggle-images/python@sha256:bf0b407a5ed73626191ae2259063a0090ae36666c8f00ffdfae3fb543eae750d",
+  "machine_shape": "None"
+}

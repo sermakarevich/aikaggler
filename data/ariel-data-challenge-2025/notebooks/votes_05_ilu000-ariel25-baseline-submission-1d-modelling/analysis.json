@@ -1,0 +1,51 @@
+{
+  "summary": "The notebook demonstrates a physics-informed 1D spectral modeling approach for the ARIEL data challenge. It processes raw detector frames through a multi-step calibration pipeline (ADC, dark current, linearity, CDS, flat-fielding) and spatial binning to extract 1D light curves. Instead of training a neural network, it analytically fits a polynomial with a transit shift parameter to identify ingress/egress breakpoints and derives a single scalar feature as the prediction. The author shows how domain knowledge and signal processing can yield a fast, interpretable baseline without heavy ML, achieving a competitive GLL score with minimal compute.",
+  "purpose": "baseline",
+  "competition_flow": "Reads raw detector parquet files, applies a multi-step physics-based calibration and spatial binning pipeline to extract 1D spectra, analytically fits transit breakpoints to derive a shift feature, and formats a submission with constant uncertainty.",
+  "data_reading": [
+    "Reads detector signal and calibration frames from parquet files using pyarrow",
+    "Loads star metadata and wavelength arrays from CSVs",
+    "Loads preprocessed 1D spectra from numpy arrays"
+  ],
+  "data_processing": [
+    "Applies ADC gain/offset correction",
+    "Masks hot/dead pixels via sigma clipping on dark frames",
+    "Performs polynomial linearity correction using Horner's method",
+    "Subtracts dark current scaled by integration time",
+    "Applies Correlated Double Sampling (alternating frame differencing)",
+    "Bins temporal observations (15x for AIRS-CH0, 180x for FGS1)",
+    "Divides by flat-field maps",
+    "Interpolates NaNs via convolution-based weight normalization",
+    "Averages spatial dimensions to collapse to 1D",
+    "Applies Savitzky-Golay smoothing and wavelength cropping"
+  ],
+  "features_engineering": [
+    "Detects transit ingress/egress breakpoints using the first derivative of smoothed signals",
+    "Fits a piecewise polynomial with a multiplicative shift parameter across pre-transit, transit, and post-transit regions",
+    "Extracts 1 - y_shift as the primary prediction feature"
+  ],
+  "models": [],
+  "frameworks_used": [
+    "numpy",
+    "pandas",
+    "torch",
+    "scipy",
+    "astropy"
+  ],
+  "loss_functions": [],
+  "cv_strategy": "",
+  "ensembling": "",
+  "insights": [
+    "Physics-based calibration pipelines can be efficiently implemented with vectorized tensor operations and multiprocessing.",
+    "Analytical signal processing and curve fitting can replace complex ML models for fast, interpretable baselines.",
+    "Assigning a constant uncertainty across all wavelengths is sufficient to achieve a strong initial Gaussian Log Likelihood score."
+  ],
+  "critical_findings": [
+    "Hot and dead pixels are dynamically masked using sigma clipping on dark frames rather than relying solely on provided dead pixel maps.",
+    "The detector uses Correlated Double Sampling, requiring alternating frame differencing to extract the true signal.",
+    "NaN interpolation is handled via a custom convolution-based weight normalization to preserve spatial structure during gap filling."
+  ],
+  "what_did_not_work": [],
+  "source_url": "https://www.kaggle.com/code/ilu000/ariel25-baseline-submission-1d-modelling",
+  "votes": 212
+}

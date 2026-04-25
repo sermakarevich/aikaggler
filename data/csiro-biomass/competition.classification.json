@@ -1,0 +1,13 @@
+{
+  "description": "Participants predict continuous biomass values from pasture images to support agricultural monitoring. The competition leverages biological and environmental data, requiring competitors to build models that estimate vegetation mass from visual inputs. Success is measured by the R2 Score on a held-out test set.",
+  "data_modality": "image",
+  "task_type": "regression",
+  "label_structure": "single_label",
+  "metric": "R2 Score",
+  "test_split": "unknown",
+  "format": "code_comp",
+  "dataset_scale": "unknown",
+  "domain": "agriculture",
+  "data_challenges": [],
+  "constraints": []
+}

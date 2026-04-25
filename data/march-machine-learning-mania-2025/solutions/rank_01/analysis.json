@@ -1,0 +1,44 @@
+{
+  "summary": "The author secured first place by building a gradient boosting model focused on NCAA tournament predictions, pivoting from external data sources when they proved unavailable for the 2025 season. They engineered 29 features combining provided tournament data with average statistics, team quality metrics, and Elo ratings. After finding XGBoost superior to CatBoost and LightGBM, they fine-tuned its hyperparameters and applied targeted post-processing adjustments to low-confidence early-round predictions, ultimately minimizing the Brier score.",
+  "extensive_summary": "## Approach & Data Strategy\nThe author initially planned to leverage external basketball analytics datasets (Kenpom, MassyOrdinal, and 538) but encountered availability issues for the 2025 season, specifically noting that 538 was inaccessible and MassyOrdinal arrived late. This forced a pivot to a feature engineering strategy inspired by another Kaggle user's work, focusing on derived statistics and team quality metrics alongside the provided competition data.\n\n## Feature Engineering & Model Selection\nA curated set of 29 features was constructed, including seed differentials, average team statistics (score, FGA, offensive/defensive rebounding, blocks, personal fouls, point differential), opponent-adjusted averages, Elo ratings, and team quality scores. The author experimented with multiple gradient boosting algorithms, ultimately selecting XGBoost after observing superior performance compared to CatBoost and LightGBM.\n\n## Hyperparameter Tuning & Post-Processing\nXGBoost was trained with a regression objective (`reg:squarederror`) using 704 rounds and a specific set of hyperparameters (e.g., `eta=0.0093`, `subsample=0.6`, `max_depth=4`, `grow_policy='lossguide'`). To address low-confidence predictions in the early rounds, the author applied a two-step post-processing strategy: uniformly increasing predictions below 85% by 10% for both men's and women's tournaments, and manually overriding five specific men's tournament games with higher probabilities based on the well-known early-round seed advantage and expert consensus. These adjustments collectively drove down the final Brier score.",
+  "rank": 1,
+  "competition_flow": "The pipeline ingests provided tournament data alongside derived average statistics and Elo metrics, trains a tuned XGBoost regressor to predict win probabilities, and applies targeted probability boosts and manual overrides to low-confidence early-round matchups before submitting the final predictions.",
+  "data_reading": [],
+  "data_processing": [
+    "Pivoted from unavailable external datasets to rely on provided data and derived average statistics/team quality metrics."
+  ],
+  "features_engineering": [
+    "29 features including seed differentials, average team statistics (score, FGA, OR, DR, Blk, PF, PointDiff), opponent-adjusted averages, Elo ratings, and team quality scores."
+  ],
+  "models": [
+    "XGBoost"
+  ],
+  "frameworks_used": [],
+  "loss_functions": [
+    "reg:squarederror",
+    "Brier score"
+  ],
+  "cv_strategy": "",
+  "ensembling": "Post-processing involved uniformly boosting predictions below 85% by 10% for both tournaments and manually overriding five low-confidence early-round men's games with higher probabilities based on seed advantage.",
+  "insights": [
+    "Early-round tournament outcomes heavily favor higher seeds, making manual overrides for low-confidence predictions highly effective.",
+    "Careful feature selection and targeted hyperparameter tuning can outperform broader algorithmic searches."
+  ],
+  "critical_findings": [
+    "External analytics datasets like 538 may be completely unavailable for current seasons, requiring rapid pivots to alternative feature sources.",
+    "Relying on late-arriving external data can disrupt model development timelines."
+  ],
+  "what_did_not_work": [
+    "CatBoost and LightGBM underperformed compared to XGBoost.",
+    "Initial reliance on 538 and MassyOrdinal external data failed due to 2025 availability constraints."
+  ],
+  "github_repos": [
+    {
+      "url": "https://www.kaggle.com/code/modeh7/final-solution-ncaa-2025",
+      "role": "solution"
+    }
+  ],
+  "papers": [],
+  "other_solution_refs": [],
+  "source_url": "https://www.kaggle.com/competitions/march-machine-learning-mania-2025/discussion/572717"
+}

@@ -1,0 +1,42 @@
+{
+  "summary": "This notebook demonstrates a baseline training pipeline for a multi-class sequence classification task using a pre-trained DeBERTa-v3-large model. It constructs a custom text prompt by combining question text, answer choices, correctness labels, and student explanations, then extracts lightweight regex-based features to augment the input. The author implements a custom map@3 evaluation metric and uses gradient accumulation to manage GPU memory constraints during training. Readers should learn how to adapt Hugging Face's Trainer for custom metrics, handle multi-output submission formats, and structure text inputs for transformer-based classifiers. The notebook serves as a reproducible starting point for math misconception classification competitions.",
+  "purpose": "training",
+  "competition_flow": "Loads tabular competition data, extracts regex-based text features and correctness flags, formats them into structured prompts, trains a DeBERTa-v3-large classifier with a custom map@3 metric, and generates a top-3 multi-label submission file.",
+  "data_reading": [
+    "pd.read_csv() for train and test sets; missing values in Misconception, StudentExplanation, MC_Answer, and QuestionText are filled with 'NA' or ''."
+  ],
+  "data_processing": [
+    "Fills NaNs, splits data into 95% train / 5% validation using train_test_split, tokenizes text with AutoTokenizer (max_length=256, padding=max_length, truncation=True), converts pandas DataFrames to Hugging Face Dataset objects, and sets PyTorch tensor format."
+  ],
+  "features_engineering": [
+    "explanation_len, mc_frac_count (fraction regex), number_count (digit regex), operator_count (math operator regex), mc_answer_len, question_len, explanation_to_question_ratio; is_correct flag derived from groupby count of correct answers per question/answer pair."
+  ],
+  "models": [
+    "DeBERTa-v3-large"
+  ],
+  "frameworks_used": [
+    "pandas",
+    "numpy",
+    "scikit-learn",
+    "torch",
+    "transformers",
+    "datasets",
+    "matplotlib",
+    "joblib"
+  ],
+  "loss_functions": [
+    ""
+  ],
+  "cv_strategy": "train_test_split with 5% holdout validation",
+  "ensembling": "Single model; post-processing extracts top-3 predictions per sample, decodes them via LabelEncoder, and joins them with spaces for the submission format.",
+  "insights": [
+    "Structured prompt engineering (combining question, answer, correctness, and explanation) provides explicit context for sequence classification.",
+    "Gradient accumulation with a small batch size effectively simulates larger batches while staying within GPU memory limits.",
+    "Custom metrics like map@3 require manual implementation and integration into the Trainer via compute_metrics.",
+    "Regex-based feature extraction can quickly capture domain-specific patterns without heavy NLP pipelines."
+  ],
+  "critical_findings": [],
+  "what_did_not_work": [],
+  "source_url": "https://www.kaggle.com/code/codingloading/experiment-no-1",
+  "votes": 231
+}

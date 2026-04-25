@@ -1,0 +1,59 @@
+{
+  "summary": "The author developed a three-stage pipeline to extract high-fidelity transmission spectra from Ariel instrument data, combining physics-based modeling with a machine learning-inspired post-processing framework. Stage 1 uses GPU-accelerated preprocessing with CuPy to correct instrumental systematics like non-linearity, dark current, and jitter. Stage 2 employs the batman transit modeling library and iMinuit optimizer for a hierarchical, wavelength-by-wavelength fit to derive initial spectra and uncertainties. Stage 3 refines these spectra using an ensemble of models that blend PCA-regularized and smoothed predictions, optimizing parameters directly against the competition score with Grouped K-Fold Cross-Validation.",
+  "extensive_summary": "## Stage 1: GPU-Accelerated Preprocessing\nRaw sensor data from FGS1 and AIR-CH0 instruments is processed on the GPU using CuPy for efficiency. The pipeline applies standard instrumental corrections, including ADC gain/offset correction, a 5th-degree polynomial for detector non-linearity, and scaled master dark frame subtraction. Flat-fielding corrects pixel-to-pixel sensitivity variations, while hot and dead pixels are masked. Jitter correction uses center-of-mass regression for FGS1, while a PCA-based method for AIRS was found ineffective. Signal extraction uses aperture photometry for FGS1 and central region extraction with edge-background subtraction for AIRS. A spike-cleaning algorithm removes cosmic ray hits, and frames are binned to improve SNR.\n\n## Stage 2: Physics-Based Spectral Fitting\nClean light curves are processed in parallel using pqdm. A hierarchical fitting strategy begins with a global combined fit of FGS and wavelength-averaged AIRS light curves using the batman library and iMinuit optimizer. This constrains shared orbital parameters initialized from star_info.csv, assuming a quadratic limb darkening model and modeling instrumental trends with a polynomial baseline. A refined fit follows, along with a 2D drift correction using two 4th-order polynomials for frequency and temporal axes on the out-of-transit AIRS data cube. Finally, a wavelength-by-wavelength fit measures transit depth in each channel using a moving window, fixing most orbital parameters and varying only transit depth and baseline normalization.\n\n## Stage 3: Post-Processing and Uncertainty Modeling\nThe final stage refines the raw spectra and predicts uncertainties by blending a PCA-regularized prediction (slope-corrected and projected onto a pre-defined PCA basis) with a Savitzky-Golay smoothed prediction. The weighted average is controlled by a learned parameter. Uncertainty modeling uses an empirically-derived formula combining propagated fit errors, signal magnitude terms, raw signal volatility, and disagreement between the PCA and smoothed models. Parameters are optimized via iMinuit to directly maximize the competition score. A 10-fold Grouped K-Fold Cross-Validation strategy groups by planet_id to prevent leakage. Wavelength-dependent calibration factors scale predicted sigmas to match training variance. The final submission averages calibrated predictions and sigmas across the 10 folds.",
+  "rank": 6,
+  "competition_flow": "Raw sensor data is GPU-accelerated through instrumental corrections and jitter handling, followed by a hierarchical physics-based transit fit using batman and iMinuit to extract initial spectra, which are then refined and calibrated via a cross-validated ensemble blending PCA-regularized and smoothed predictions optimized directly against the competition score.",
+  "data_reading": [],
+  "data_processing": [
+    "ADC gain/offset correction",
+    "5th-degree polynomial non-linearity correction",
+    "scaled master dark frame subtraction",
+    "flat-fielding",
+    "hot/dead pixel masking",
+    "center-of-mass jitter regression",
+    "aperture photometry",
+    "edge-background subtraction",
+    "spike-cleaning for cosmic rays",
+    "frame averaging for SNR improvement",
+    "slope correction",
+    "PCA projection",
+    "Savitzky-Golay smoothing",
+    "wavelength-dependent sigma calibration scaling"
+  ],
+  "features_engineering": [],
+  "models": [
+    "batman",
+    "PCA",
+    "Savitzky-Golay filter",
+    "Gaussian Processes",
+    "Ridge Regression"
+  ],
+  "frameworks_used": [
+    "CuPy",
+    "batman",
+    "iMinuit",
+    "pqdm"
+  ],
+  "loss_functions": [],
+  "cv_strategy": "10-fold Grouped K-Fold Cross-Validation grouped by planet_id to prevent data leakage.",
+  "ensembling": "The final submission averages the calibrated predictions and uncertainties across the 10 cross-validated models, with post-processing including wavelength-dependent sigma calibration scaling and parameter optimization directly against the competition score.",
+  "insights": [
+    "Respecting physical constraints in the initial fit while allowing flexible data-driven correction in post-processing effectively handles complex instrumental systematics.",
+    "Accurately modeling and calibrating uncertainties is critical for maximizing the competition score.",
+    "Grouping cross-validation folds by planet_id is essential to prevent data leakage in time-series/transit data.",
+    "Using specialized optimizers like iMinuit and GPU acceleration via CuPy significantly reduces pipeline runtime compared to generic SciPy routines."
+  ],
+  "critical_findings": [
+    "PSF photometry yields lower SNR than aperture photometry for FGS1 due to detector jitter.",
+    "A PCA-based jitter correction method for AIRS proved less effective than center-of-mass regression and was disabled.",
+    "Subtracting background from detector edges is suboptimal because the spectroscopic signal diffracts across the entire sensor, complicating noise isolation.",
+    "Attempts to isolate additive foreground noise in AIRS data failed to de-correlate signal from noise, yielding incorrect compensation values."
+  ],
+  "what_did_not_work": [
+    "Post-processing with Gaussian Processes and Ridge Regression yielded worse results than the PCA/smoothed blend, and attempts to isolate additive foreground noise in AIRS data failed to de-correlate signal from noise."
+  ],
+  "github_repos": [],
+  "papers": [],
+  "other_solution_refs": [],
+  "source_url": "https://www.kaggle.com/competitions/ariel-data-challenge-2025/discussion/609276"
+}

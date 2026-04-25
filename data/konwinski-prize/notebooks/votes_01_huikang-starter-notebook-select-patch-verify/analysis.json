@@ -1,0 +1,40 @@
+{
+  "summary": "This notebook implements a structured 'Select-Patch-Verify' inference pipeline for a code generation competition. It demonstrates how to use a large language model to first identify relevant repository files based on a problem statement, extract contextual code snippets, generate a git diff patch, and verify its correctness through LLM judgment and deterministic dry-run checks. The author shows how to manage large context windows, merge overlapping code snippets, and aggregate multiple LLM generations to select the most reliable patch. Readers should learn how to structure an LLM-driven code repair workflow that balances generative flexibility with deterministic validation.",
+  "purpose": "inference",
+  "competition_flow": "Unpacks a repository archive and problem statement, uses an LLM to select relevant files and extract code context, generates a git diff patch, verifies it via LLM judgment and dry-run execution, and returns the highest-scoring patch as the submission.",
+  "data_reading": [
+    "Reads problem statements and metadata from a parquet file using pandas.",
+    "Unpacks .tar and .zip archives for the repository codebase and pip packages using shutil and zipfile.",
+    "Reads file contents directly using Python's open() and os.walk() to traverse the repository directory."
+  ],
+  "data_processing": [
+    "Stringifies the repository directory structure for LLM context.",
+    "Extracts code snippets with configurable context lines around search terms and merges overlapping snippets to preserve continuity.",
+    "Parses LLM-generated XML/JSON-like outputs to extract file paths and search strings.",
+    "Validates patch syntax with unidiff and runs a deterministic patch --dry-run command to filter invalid patches."
+  ],
+  "features_engineering": [],
+  "models": [
+    "Qwen-QwQ-32B-Preview-AWQ"
+  ],
+  "frameworks_used": [
+    "vllm",
+    "pandas",
+    "polars",
+    "kaggle_evaluation",
+    "unidiff"
+  ],
+  "loss_functions": [],
+  "cv_strategy": "",
+  "ensembling": "Aggregates multiple LLM generations per step (batch size 6, validation copies 1) and combines LLM verification votes with deterministic dry-run success to score and select the best patch.",
+  "insights": [
+    "Structuring LLM inference into distinct Select-Patch-Verify stages improves code generation reliability.",
+    "Combining LLM reasoning with deterministic checks like unidiff and patch --dry-run filters out syntactically invalid or inapplicable patches.",
+    "Merging overlapping code snippets preserves context while managing token limits for large repositories.",
+    "Aggregating multiple LLM generations and voting on verification outcomes reduces hallucination and improves patch selection."
+  ],
+  "critical_findings": [],
+  "what_did_not_work": [],
+  "source_url": "https://www.kaggle.com/code/huikang/starter-notebook-select-patch-verify",
+  "votes": 680
+}

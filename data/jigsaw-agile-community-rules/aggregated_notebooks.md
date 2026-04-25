@@ -1,0 +1,174 @@
+# jigsaw-agile-community-rules: top public notebooks
+
+The community's top-voted notebooks primarily focus on LLM-based binary classification for subreddit rule enforcement, leveraging few-shot prompting, LoRA fine-tuning, and semantic search as core techniques. Authors extensively experiment with quantized large models (Qwen2.5, Qwen3, Gemma, Llama) and traditional transformers (DeBERTa, DistilRoBERTa), emphasizing constrained decoding via logits processors and rank-based ensembling to mitigate model bias. The collective work spans training baselines, test-time adaptation, and efficient inference pipelines, demonstrating that blending heterogeneous generation and embedding models yields the most robust submissions.
+
+## Common purposes
+- ensemble
+- inference
+- baseline
+- training
+
+## Competition flows
+- Loads Reddit comment and rule data, fine-tunes a Qwen 2.5 0.5B model via LoRA on a sampled test subset, runs inference on a Qwen 2.5 14B model and a Qwen 3 0.6B embedding-based semantic search baseline, ranks all predictions, and blends them with fixed weights to generate a final submission.
+- Loads the test CSV, constructs few-shot prompts for each Reddit comment, generates predictions using a LoRA-adapted Qwen2.5-32B model via vLLM, extracts log probabilities, normalizes them, and saves the binary classification results as a submission CSV.
+- Reads test CSV data, formats each row into a few-shot prompt for subreddit rule classification, runs batched inference with a pre-trained Gemma-3-1B-IT model, extracts 'True' token probabilities, and exports them as a CSV submission.
+- Loads train/test CSVs, flattens example columns into a unified dataset, extracts URL semantics, trains/fines-tunes DeBERTa-v3, DistilRoBERTa, and Qwen3 embeddings, runs inference with Qwen2.5-14B via vLLM, and combines all five prediction files using rank-based weighted averaging to produce a final submission.
+- Loads the Jigsaw train CSV, formats comments into a few-shot completion prompt, fine-tunes a quantized Qwen2.5-7B model with LoRA via KFold cross-validation, and saves the trained adapter weights.
+- Loads Reddit comment data with rules and examples, fine-tunes Qwen2.5-0.5B via LoRA and Qwen3-Embedding-0.6B, runs constrained decoding inference on both plus a Qwen2.5-14B baseline, and blends the ranked predictions into a final submission.
+- Loads train and test CSVs, samples 5% of the test set to create pseudo-labeled data, fine-tunes Llama-3.2-3B with LoRA for one epoch using DeepSpeed, and runs inference on the full test set with vLLM to produce a submission CSV.
+- Installs vLLM and dependencies offline, trains a Qwen2.5-0.5B model via LoRA, runs inference on Qwen2.5-14B and Qwen3-Embedding-0.6B, and combines the outputs into a ranked submission for the Jigsaw Agile Community Rules competition.
+- Loads test data, generates predictions via a quantized Qwen2.5 32B LLM and a Qwen3 0.6B embedding-based semantic search, then blends the ranked outputs to produce a final submission CSV.
+- Loads train and test CSVs, constructs a unified corpus with mapped labels, embeds all text using a pre-trained Qwen3 embedding model, retrieves top-K nearest neighbors per rule, computes a weighted similarity score, and outputs a submission CSV.
+
+## Data reading
+- pd.read_csv() for train.csv and test.csv from /kaggle/input/jigsaw-agile-community-rules/
+- pd.read_csv("/kaggle/input/jigsaw-agile-community-rules/test.csv")
+- Loads the test dataset from `/kaggle/input/jigsaw-agile-community-rules-enforcement/test.csv` into a pandas DataFrame using `pd.read_csv`.
+- pd.read_csv() for train.csv and test.csv, flattens positive_example_1/2 and negative_example_1/2 columns into a single body column with corresponding rule_violation labels (1 or 0)
+- pd.read_csv("/kaggle/input/jigsaw-agile-community-rules/train.csv")
+- pd.read_csv for train.csv and test.csv, randomly samples 50% of test data for training augmentation, constructs prompts by concatenating subreddit, rule, randomly selected positive/negative examples, and the target comment
+- Reads train.csv and test.csv from /kaggle/input/jigsaw-agile-community-rules/ using pandas.read_csv.
+- Loads train.csv and test.csv from /kaggle/input/jigsaw-agile-community-rules/ using pandas.read_csv.
+- Reads test.csv and train.csv from Kaggle input directories using pandas.read_csv.
+- Reads train.csv and test.csv from a Kaggle input directory using pandas, then flattens train comments and test positive/negative example columns into a single DataFrame.
+
+## Data processing
+- Constructs few-shot prompts with subreddit, rule, positive/negative examples, and comment body
+- Randomly selects example pairs for training and test-time augmentation
+- Cleans text with cleantext (fixes unicode, removes URLs/emails/phones)
+- Applies softmax to logprobs for probability calibration
+- Ranks raw predictions to [0,1] range for blending
+- Applies tokenizer chat template with padding/truncation (max length 512)
+- Extracts log probabilities for constrained tokens
+- Flattens example columns, drops duplicates, and shuffles data
+- Extracts URL domain/path keywords via regex and appends to text
+- Maps labels to 1/-1 for semantic search/scoring
+- Constructs prompts in r/{subreddit}\nComment: {body} format
+- Formats raw text into a structured chat template with a system prompt and few-shot examples
+- Tokenizes using apply_chat_template with left padding
+- Appends ground truth label ("Yes"/"No") for completion-based training
+- Uses DataCollatorForCompletionOnlyLM to mask prompt tokens during loss calculation
+- Samples a subset of the test set to create pseudo-training data
+- Normalizes predictions via rank-based scaling or average ranking
+- Normalizes embeddings and applies softmax to LLM logprobs
+- Constructs prompts by formatting subreddit, rule, and few-shot examples into a structured text template
+
+## Features engineering
+- Few-shot prompt construction with positive/negative rule examples
+- Semantic similarity scores aggregated over top-2000 matches weighted by ground truth labels
+- Rank-based normalization of raw predictions to [0,1] scale
+- Round-trip translation of rules (en -> fr/de/es -> en) to create synthetic rule variants
+- URL semantics extraction (domain and path keywords)
+- Prompt construction with subreddit context
+
+## Models
+- Qwen2.5-0.5B-Instruct
+- Qwen2.5-7B-Instruct-GPTQ-Int4
+- Qwen2.5-14B-Instruct-GPTQ-INT4
+- Qwen2.5-32B-Instruct-GPTQ-Int4
+- Qwen2.5 32B (AWQ quantized)
+- Qwen3-Embedding-0.6B
+- Qwen3 0.6B Embedding (LoRA fine-tuned)
+- Gemma-3-1B-IT
+- deberta-v3-base
+- distilroberta-base
+- llama-3.2-3b-instruct
+
+## Frameworks used
+- transformers
+- trl
+- peft
+- vllm
+- sentence_transformers
+- accelerate
+- deepspeed
+- pandas
+- numpy
+- scipy
+- torch
+- logits-processor-zoo
+- kagglehub
+- more_itertools
+- cleantext
+- googletrans-py
+- bitsandbytes
+- optimum
+- auto-gptq
+- sklearn
+- wandb
+- datasets
+- tqdm
+
+## Loss functions
+- Cross-entropy loss on completion tokens (via SFTConfig with completion_only_loss=True)
+- CrossEntropyLoss (implicit via Trainer)
+- dot product similarity (semantic search)
+- completion_only_loss (via SFTConfig)
+
+## CV strategies
+- None (commented out; uses full training data)
+- KFold(n_splits=5, shuffle=True, random_state=42)
+
+## Ensembling
+- Blends rank-normalized predictions from three models using fixed weights (0.5 for Qwen 0.5B, 0.3 for Qwen 3 0.6B embedding, 0.2 for Qwen 2.5 14B) to produce the final submission.
+- Rank-based weighted blending of five model submissions (0.5 DeBERTa, 0.1 Qwen3-Embedding, 0.1 DistilRoBERTa, 0.1 Qwen2.5-14B, 0.2 DeBERTa-AUC) to produce the final submission.
+- Combines predictions from a LoRA-finetuned Qwen2.5-0.5B, a semantic retrieval model (Qwen3-Embedding-0.6B), and a Qwen2.5-14B baseline by ranking each submission, normalizing scores, and blending them with weights 0.5, 0.3, and 0.2 respectively.
+- Implements a weighted average function to merge predictions from multiple submissions, though the final execution only applies a weight of 1.0 to the Qwen2.5-14B model output.
+- Combines two submission files by ranking their predicted probabilities, normalizing ranks to [0,1], and averaging them with equal weights (0.5 each) before saving the final submission.
+
+## Insights
+- Test-time fine-tuning on a sampled subset of the test set effectively adapts a small model to the target distribution without requiring external validation data.
+- Using a logits processor for constrained generation guarantees valid Yes/No outputs while preserving probability distributions for downstream blending.
+- Semantic retrieval with a fine-tuned embedding model leverages labeled examples as a dynamic corpus, providing a strong parameter-efficient baseline.
+- Ranking and linearly blending predictions across diverse architectures mitigates individual model biases and improves overall robustness.
+- Few-shot prompting with explicit positive/negative examples improves classification reliability for rule violation detection.
+- Using logits processors to constrain generation to specific tokens avoids sampling noise and enables direct probability estimation.
+- Quantizing the model with GPTQ and using vLLM enables efficient inference of a 32B parameter model on consumer GPUs.
+- Prompt engineering with explicit few-shot formatting can effectively guide instruction-tuned LLMs for zero-shot classification tasks.
+- Batched inference with more_itertools.batched enables efficient memory management when processing large test sets on limited GPU VRAM.
+- Extracting logits for specific target tokens and applying softmax provides a direct probability estimate for binary classification without full sequence generation.
+- Flattening positive and negative example columns into a unified training set effectively augments the dataset without manual feature engineering.
+- Extracting URL domain and path keywords via regex provides valuable contextual signals for rule violation detection.
+- Rank-based weighted blending is a robust strategy for combining heterogeneous model predictions compared to direct probability averaging.
+- Fine-tuning a lightweight embedding model with LoRA enables efficient semantic search-based scoring as a strong baseline.
+- Using vLLM with a logits processor allows efficient few-shot classification with large instruct models without full fine-tuning.
+- Framing classification as a text completion task with explicit few-shot examples improves instruction-following for causal LLMs.
+- Using GPTQ-Int4 quantization combined with 8-bit optimizers and gradient checkpointing enables fine-tuning large models on consumer GPUs.
+- LoRA should target both attention and MLP projection layers for effective adaptation.
+- Few-shot prompt formatting with randomly selected positive/negative examples improves classification consistency across different rules.
+- Constrained decoding via MultipleChoiceLogitsProcessor ensures valid Yes/No outputs without sampling overhead or hallucination.
+- Rank-based normalization and blending across models of different sizes and paradigms (generation vs. embedding) yields more robust predictions than any single model.
+- Pseudo-labeling a small fraction of the hidden test set can effectively fine-tune a base LLM without requiring a validation split.
+- Using completion_only_loss ensures the model only learns from the target Yes/No tokens during supervised fine-tuning.
+- vLLM with MultipleChoiceLogitsProcessor enables efficient, log-probability-based inference for binary classification tasks.
+- Few-shot prompting with randomly selected examples effectively adapts small LLMs for rule-based classification.
+- Using MultipleChoiceLogitsProcessor with vLLM enables efficient binary classification without full text generation.
+- Semantic search with a fine-tuned embedding model provides a strong retrieval-based baseline for rule violation tasks.
+- Quantizing a 32B LLM to AWQ INT4 enables feasible inference on available GPU memory while maintaining performance.
+- Semantic search with a fine-tuned embedding model can effectively leverage few-shot examples as a corpus for rule-based classification.
+- Rank-based blending of heterogeneous model outputs often yields more robust predictions than raw probability averaging.
+- Pre-trained embedding models combined with semantic search can achieve strong competitive performance without any fine-tuning.
+- Filtering neighbors within the same rule category significantly reduces retrieval noise.
+- Squaring similarity scores emphasizes high-confidence matches and improves ranking quality.
+- Text normalization and cleaning enhance embedding consistency across noisy social media comments.
+
+## Notable individual insights
+- votes 1101 (test-on testdataset+qwenemdding+llama lr): Test-time fine-tuning on a sampled subset of the test set effectively adapts a small model to the target distribution without requiring external validation data.
+- votes 434 (deberta-large(2epochs-1hr)): Flattening positive and negative example columns into a unified training set effectively augments the dataset without manual feature engineering.
+- votes 382 (jigsaw_pseudo_training_llama-3.2-3b-instruct): Pseudo-labeling a small fraction of the hidden test set can effectively fine-tune a base LLM without requiring a validation split.
+- votes 266 ([30 min] Just use semantic search. Qwen3-emb-0.6B): Pre-trained embedding models combined with semantic search can achieve strong competitive performance without any fine-tuning.
+- votes 267 ([QPTQ => AWQ] Qwen2.5 32B + Qwen3 Embedding): Quantizing a 32B LLM to AWQ INT4 enables feasible inference on available GPU memory while maintaining performance.
+- votes 402 (Qwen2.5-LoRA-Finetune-Baseline-Training): LoRA should target both attention and MLP projection layers for effective adaptation.
+- votes 472 (Batch Gemma3 Sample Rules Classification): Batched inference with more_itertools.batched enables efficient memory management when processing large test sets on limited GPU VRAM.
+
+## Notebooks indexed
+- #1101 votes [[notebooks/votes_01_kishanvavdara-test-on-testdataset-qwenemdding-llama-lr/notebook|test-on testdataset+qwenemdding+llama lr]] ([kaggle](https://www.kaggle.com/code/kishanvavdara/test-on-testdataset-qwenemdding-llama-lr))
+- #506 votes [[notebooks/votes_02_fuumin621-qwen2-5-lora-finetune-baseline-inference/notebook|Qwen2.5-LoRA-Finetune-Baseline-Inference]] ([kaggle](https://www.kaggle.com/code/fuumin621/qwen2-5-lora-finetune-baseline-inference))
+- #472 votes [[notebooks/votes_03_sorenj-batch-gemma3-sample-rules-classification/notebook|Batch Gemma3 Sample Rules Classification]] ([kaggle](https://www.kaggle.com/code/sorenj/batch-gemma3-sample-rules-classification))
+- #434 votes [[notebooks/votes_04_itahiro-deberta-large-2epochs-1hr/notebook|deberta-large(2epochs-1hr)]] ([kaggle](https://www.kaggle.com/code/itahiro/deberta-large-2epochs-1hr))
+- #402 votes [[notebooks/votes_05_fuumin621-qwen2-5-lora-finetune-baseline-training/notebook|Qwen2.5-LoRA-Finetune-Baseline-Training]] ([kaggle](https://www.kaggle.com/code/fuumin621/qwen2-5-lora-finetune-baseline-training))
+- #399 votes [[notebooks/votes_06_maverickss26-jigsaw-fine-tuned-solution-v1/notebook|Jigsaw Fine-tuned solution v1]] ([kaggle](https://www.kaggle.com/code/maverickss26/jigsaw-fine-tuned-solution-v1))
+- #382 votes [[notebooks/votes_07_wasupandceacar-jigsaw-pseudo-training-llama-3-2-3b-instruct/notebook|jigsaw_pseudo_training_llama-3.2-3b-instruct]] ([kaggle](https://www.kaggle.com/code/wasupandceacar/jigsaw-pseudo-training-llama-3-2-3b-instruct))
+- #285 votes [[notebooks/votes_08_hiranorm-offline-install-vllm-0-10-0-i-qwenemdding-llama/notebook|Offline install vllm=0.10.0 I qwenemdding+llama]] ([kaggle](https://www.kaggle.com/code/hiranorm/offline-install-vllm-0-10-0-i-qwenemdding-llama))
+- #267 votes [[notebooks/votes_09_bibanh-qptq-awq-qwen2-5-32b-qwen3-embedding/notebook|[QPTQ => AWQ] Qwen2.5 32B + Qwen3 Embedding]] ([kaggle](https://www.kaggle.com/code/bibanh/qptq-awq-qwen2-5-32b-qwen3-embedding))
+- #266 votes [[notebooks/votes_10_neibyr-30-min-just-use-semantic-search-qwen3-emb-0-6b/notebook|[30 min] Just use semantic search. Qwen3-emb-0.6B]] ([kaggle](https://www.kaggle.com/code/neibyr/30-min-just-use-semantic-search-qwen3-emb-0-6b))

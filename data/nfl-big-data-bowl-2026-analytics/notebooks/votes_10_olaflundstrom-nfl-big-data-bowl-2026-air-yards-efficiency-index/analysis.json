@@ -1,0 +1,48 @@
+{
+  "summary": "This notebook introduces and calculates the Air Yards Efficiency Index (AYEI), a novel metric designed to quantify a player's movement efficiency during NFL pass plays. It combines three components\u2014path efficiency, closing efficiency, and acceleration timing\u2014into a weighted score for each player-play combination. The author aggregates these play-level metrics to the player level, analyzes performance by position, role, and pass depth, and correlates the index with actual pass outcomes. Readers should understand how tracking data can be transformed into actionable efficiency metrics and how AYEI differentiates elite receivers from average players. The notebook serves as a transparent, reproducible recipe for deriving and validating a domain-specific performance index.",
+  "purpose": "feature_engineering",
+  "competition_flow": "Loads weekly NFL tracking and supplementary CSV files, computes frame-by-frame movement and distance metrics, aggregates them into a weighted Air Yards Efficiency Index per player-play, and analyzes the index across positions, roles, and pass depths.",
+  "data_reading": [
+    "pd.read_csv for input_2023_w{week}.csv, output_2023_w{week}.csv (weeks 1-18), and supplementary_data.csv",
+    "Concatenated across weeks using pd.concat(ignore_index=True)"
+  ],
+  "data_processing": [
+    "Merges input and output tracking data on game_id and play_id",
+    "Sorts by game_id, play_id, nfl_id, frame_id",
+    "Uses shift for frame-to-frame comparisons",
+    "Filters players with fewer than 15 plays",
+    "Bins pass length into depth categories using pd.cut"
+  ],
+  "features_engineering": [
+    "Euclidean distance to ball landing location",
+    "Frame-to-frame movement distance",
+    "Closing velocity (scaled by 10 for yards/sec)",
+    "Path efficiency (optimal straight-line distance / actual path distance)",
+    "Closing efficiency (avg closing velocity / avg speed)",
+    "Acceleration timing (middle-third acceleration / overall acceleration)",
+    "Weighted AYEI composite score (0.5 path + 0.3 closing + 0.2 acceleration timing)",
+    "Player-level aggregations (mean, std, count, percentile ranking)"
+  ],
+  "models": [],
+  "frameworks_used": [
+    "pandas",
+    "numpy",
+    "matplotlib",
+    "seaborn",
+    "scipy",
+    "scikit-learn"
+  ],
+  "loss_functions": [],
+  "cv_strategy": "",
+  "ensembling": "",
+  "insights": [
+    "AYEI effectively captures multi-dimensional movement efficiency by weighting path optimization, speed reduction toward the ball, and acceleration timing.",
+    "Elite receivers demonstrate substantially higher AYEI scores than average players, validating the metric's discriminative power.",
+    "AYEI correlates with pass completion outcomes, suggesting it can predict receiver success.",
+    "Defensive efficiency varies significantly by coverage type and pass depth, highlighting context-dependent performance."
+  ],
+  "critical_findings": [],
+  "what_did_not_work": [],
+  "source_url": "https://www.kaggle.com/code/olaflundstrom/nfl-big-data-bowl-2026-air-yards-efficiency-index",
+  "votes": 16
+}

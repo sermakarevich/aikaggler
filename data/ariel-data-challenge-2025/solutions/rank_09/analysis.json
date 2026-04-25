@@ -1,0 +1,59 @@
+{
+  "summary": "The author developed a 9th place solution for an exoplanet transit characterization competition by implementing an iterative light curve fitting pipeline using batman and pylightcurve-torch combined with Gaussian Processes (gpytorch) to extract planet-to-star radius ratios across 18 wavelength bins. A linear neural network was trained to calibrate these predictions and estimate uncertainty values, leveraging GLLoss instead of standard MSE. Key preprocessing steps included inverting the competition's encoding formula, scaling dark frames by sensor reset duration, removing jitter via scipy 2D interpolation, and masking cosmic ray artifacts. These targeted data corrections and the transition to GPU-accelerated curve fitting drove the final score improvement.",
+  "extensive_summary": "## Cross Validation\nThe validation strategy was straightforward: stars were split into 4 folds. Curve fitting steps were evaluated without CV since they lacked training parameters, while the neural network postprocessing underwent proper CV evaluation, resulting in strong CV/LB correlation.\n\n## Data Preprocessing\nBuilding on @ilu000's preprocessing pipeline, the team introduced several critical tweaks that collectively improved the score by over 0.005. These included inverting the encoding formula to properly decode the data, scaling the dark frame by the sensor reset duration (with sensor-specific time deltas for FGS1 and AIRS-CH0), and removing jitter by centering the signal across spatial dimensions using scipy 2D interpolation before cropping outer pixels. Frames with large center deviations caused by cosmic rays were discarded and replaced with the preceding frame. Additionally, instead of a square crop, they masked the darker regions of the averaged FGS1 signal to account for non-elliptical light distribution.\n\n## Main Approach\nThe core methodology relied on an iterative curve-fitting strategy to extract the planet-to-star radius ratio (Rp/Rs) from noisy transient light curves. The pipeline progressed through six stages: phase detection via largest gradient average over wavelengths, baseline modeling using a degree 2 polynomial on out-of-transit arms, global transit fitting with the batman model, FGS-specific refinement, wavelength binning across 18 buckets, and finally, wavelength binning combined with a 2D polynomial plus Gaussian Process (GP) model to capture systematic trends and correlated noise.\n\n## Postprocessing\nPredictions and sigma estimates from the fitting steps were combined into 18 prediction values and 283 sigma values. These were fed into a simple linear neural network that expanded the predictions back to 283 values and weighted the sigma estimates. The network was trained using a GLLoss rather than standard MSE to better handle the uncertainty calibration.",
+  "rank": 9,
+  "competition_flow": "Raw light curve data was preprocessed with sensor-specific corrections and jitter removal, then passed through an iterative transit curve-fitting pipeline using batman and pylightcurve-torch with Gaussian Processes across 18 wavelength bins, followed by a linear neural network calibrated with GLLoss to output final predictions and uncertainty estimates.",
+  "data_reading": [],
+  "data_processing": [
+    "Inverted the competition's encoding formula to correctly decode raw data",
+    "Scaled dark frame by sensor reset duration with sensor-specific time deltas",
+    "Removed jitter by centering signal via scipy 2D interpolation and cropping outer pixels",
+    "Replaced cosmic ray corrupted frames with the preceding valid frame",
+    "Masked darker regions of averaged FGS1 signal instead of using square cropping"
+  ],
+  "features_engineering": [],
+  "models": [
+    "batman",
+    "pylightcurve-torch",
+    "gpytorch",
+    "linear NN",
+    "2D polynomial",
+    "Gaussian Process"
+  ],
+  "frameworks_used": [
+    "torch",
+    "scipy",
+    "batman",
+    "pylightcurve-torch",
+    "gpytorch"
+  ],
+  "loss_functions": [
+    "GLLoss"
+  ],
+  "cv_strategy": "4-fold split by star; curve fitting evaluated without CV, NN postprocessing with proper CV",
+  "ensembling": "No explicit ensembling was used; predictions from multiple curve-fitting stages were combined and processed through a single linear neural network for calibration and uncertainty estimation.",
+  "insights": [
+    "Inverting the competition's encoding formula was necessary to correctly decode the raw data.",
+    "Scaling the dark frame by the sensor reset duration significantly impacts signal accuracy.",
+    "Using a GLLoss instead of MSE for the calibration network better handles uncertainty estimation."
+  ],
+  "critical_findings": [
+    "The FGS1 sensor does not produce a clean elliptical light spot, requiring dark-region masking instead of standard square cropping.",
+    "Some frames exhibit large center deviations due to cosmic rays, necessitating frame replacement with the preceding valid frame.",
+    "Dispersion changes caused by jitter remain significant and were not fully corrected, affecting signal variance across spatial axes."
+  ],
+  "what_did_not_work": [],
+  "github_repos": [],
+  "papers": [],
+  "other_solution_refs": [
+    {
+      "description": "Ariel25 quick data prep",
+      "url": "https://www.kaggle.com/code/ilu000/ariel25-quick-data-prep-improved"
+    },
+    {
+      "description": "Demonstrate apparent label issue",
+      "url": "https://www.kaggle.com/code/jeroencottaar/demonstrate-apparent-label-issue"
+    }
+  ],
+  "source_url": "https://www.kaggle.com/competitions/ariel-data-challenge-2025/discussion/609443"
+}

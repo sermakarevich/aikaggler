@@ -1,0 +1,51 @@
+{
+  "summary": "This notebook demonstrates a memory-efficient pipeline for social action recognition in mice, addressing five core competition challenges including variable mouse counts, missing labels, and out-of-memory tracking data. It converts raw Cartesian coordinates into rotation- and translation-invariant distance features, handles sparse multi-label targets via independent binary classifiers, and processes data in streaming batches. Readers learn how to adapt tree-based models to complex video tracking data while strictly adhering to submission constraints and memory limits.",
+  "purpose": "baseline",
+  "competition_flow": "Reads training and test CSVs alongside parquet tracking/annotation files, generates batched distance-based features for single-mouse and mouse-pair interactions, trains per-action binary LightGBM classifiers using GroupKFold cross-validation, and outputs a rule-compliant submission CSV.",
+  "data_reading": [
+    "Loads metadata via pd.read_csv for train.csv and test.csv",
+    "Reads tracking and annotation data via pd.read_parquet from Kaggle input directories, gracefully skipping files with missing annotations"
+  ],
+  "data_processing": [
+    "Subsamples training data to 100k samples via a custom TrainOnSubsetClassifier wrapper",
+    "Processes test data in memory-efficient generators to avoid OOM errors",
+    "Normalizes coordinates to centimeters using pix_per_cm_approx",
+    "Drops noisy headpiece and tail body parts when more than five are tracked",
+    "Imputes missing values with SimpleImputer and applies a post-processing step to enforce non-overlapping predictions and full video coverage"
+  ],
+  "features_engineering": [
+    "Computes Euclidean distances between all pairs of tracked body parts for translation and rotation invariance",
+    "Adds speed features by comparing coordinates shifted by 10 frames",
+    "Separates features into single-mouse and mouse-pair interaction sets"
+  ],
+  "models": [
+    "LightGBM (LGBMClassifier)"
+  ],
+  "frameworks_used": [
+    "pandas",
+    "numpy",
+    "lightgbm",
+    "scikit-learn",
+    "polars",
+    "tqdm",
+    "itertools",
+    "json"
+  ],
+  "loss_functions": [],
+  "cv_strategy": "GroupKFold by video_id for out-of-fold binary classifier evaluation",
+  "ensembling": "",
+  "insights": [
+    "Distance-based features provide necessary translation and rotation invariance for recognizing animal behaviors across varying positions.",
+    "Missing multi-class labels can be effectively handled by training independent binary classifiers per action and applying a probability threshold.",
+    "Highly redundant 30 FPS tracking data can be safely subsampled without losing predictive signal, enabling out-of-memory processing.",
+    "Submission robustness requires strict deduplication of overlapping frame predictions and explicit coverage of all test videos."
+  ],
+  "critical_findings": [
+    "Videos tracked with more than five body parts contain noisy headpiece and tail components that degrade performance and should be filtered.",
+    "Certain lab datasets (e.g., MABe22) lack annotation files entirely and must be excluded during training to prevent crashes.",
+    "The competition scoring metric requires careful handling of sparse labels, as predictions for unlabelled agent-target pairs must be ignored."
+  ],
+  "what_did_not_work": [],
+  "source_url": "https://www.kaggle.com/code/ambrosm/mabe-nearest-neighbors-the-original",
+  "votes": 381
+}

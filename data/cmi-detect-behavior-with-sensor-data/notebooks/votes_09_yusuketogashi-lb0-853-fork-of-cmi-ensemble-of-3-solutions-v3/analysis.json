@@ -1,0 +1,50 @@
+{
+  "summary": "This notebook implements an inference pipeline that ensembles three distinct sensor-fusion models for gesture recognition. It combines a TensorFlow CNN-RNN architecture, a PyTorch CNN-BERT model, and a PyTorch CNN-BiLSTM model with explicit signal processing. Each model family is loaded across multiple cross-validation folds, and their output probabilities are averaged to produce the final prediction. The pipeline emphasizes custom quaternion-based motion dynamics, region-wise TOF statistics, and sequence padding to capture temporal patterns in multi-modal sensor data.",
+  "purpose": "ensemble",
+  "competition_flow": "Loads pre-trained models from Kaggle datasets, applies custom sensor-derived features and sequence padding to input data, generates predictions from each model, averages them, and outputs gesture probabilities.",
+  "data_reading": [
+    "Reads raw sensor data via polars and pandas from /kaggle/input/cmi-detect-behavior-with-sensor-data and precomputed CSV datasets.",
+    "Converts polars DataFrames to pandas for feature computation and model input."
+  ],
+  "data_processing": [
+    "Pads sequences to the 95th percentile length.",
+    "Applies StandardScaler normalization across IMU, thermal, and TOF channels.",
+    "Handles missing values with forward/backward fill and scaled NaN placeholders.",
+    "Applies MixUp augmentation (alpha=0.4) and Gaussian noise injection during training.",
+    "Removes gravity from accelerometer data using quaternion rotation matrices."
+  ],
+  "features_engineering": [
+    "Linear acceleration (gravity removed), linear acceleration magnitude, and linear acceleration jerk.",
+    "Angular velocity (x, y, z) and angular distance computed from rotation quaternions.",
+    "TOF region statistics (mean, std, min, max) across 5 sensors and multiple region splits.",
+    "IMU magnitude, jerk, and energy/power features.",
+    "LPF/HPF filtered IMU signals and FIR filtered IMU signals."
+  ],
+  "models": [
+    "ResNet-SE-CNN + BiLSTM/GRU + Attention (TensorFlow)",
+    "CNN + BERT (PyTorch)",
+    "CNN + BiLSTM + Signal Processing (PyTorch)"
+  ],
+  "frameworks_used": [
+    "tensorflow",
+    "pytorch",
+    "scikit-learn",
+    "polars",
+    "transformers",
+    "scipy"
+  ],
+  "loss_functions": [],
+  "cv_strategy": "StratifiedKFold(n_splits=5) and StratifiedGroupKFold(n_splits=10) across different model folds",
+  "ensembling": "Averages prediction probabilities from three distinct model families (TensorFlow CNN-RNN, PyTorch CNN-BERT, PyTorch CNN-BiLSTM) loaded across multiple folds, with no additional post-processing.",
+  "insights": [
+    "Custom quaternion-based gravity removal and angular distance calculation effectively capture motion dynamics for gesture recognition.",
+    "TOF sensor data benefits from region-wise statistical aggregation rather than raw pixel input.",
+    "BERT can be effectively adapted for multivariate time-series sensor fusion via CLS token concatenation.",
+    "Ensemble averaging across diverse architectures (CNN-RNN vs CNN-Transformer) improves robustness.",
+    "Signal processing techniques like FIR filtering and LPF/HPF on IMU data enhance feature representation for downstream neural networks."
+  ],
+  "critical_findings": [],
+  "what_did_not_work": [],
+  "source_url": "https://www.kaggle.com/code/yusuketogashi/lb0-853-fork-of-cmi-ensemble-of-3-solutions-v3",
+  "votes": 398
+}

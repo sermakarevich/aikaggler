@@ -1,0 +1,90 @@
+{
+  "id": 95282,
+  "competitionName": "google-code-golf-2025",
+  "title": "NeurIPS 2025 - Google Code Golf Championship",
+  "briefDescription": "Implement a variety of programs using the fewest number of characters!",
+  "dateEnabled": "2025-07-31T23:34:31.590Z",
+  "deadline": "2025-10-30T23:59:00Z",
+  "hasLeaderboard": true,
+  "leaderboardPercentage": 100,
+  "maxDailySubmissions": 100,
+  "numScoredSubmissions": 1,
+  "hasSolution": true,
+  "numPrizes": 10,
+  "forumId": 7155893,
+  "finalLeaderboardHasBeenVerified": true,
+  "userRankMultiplier": 1,
+  "publicLeaderboardDisclaimerMessage": "",
+  "dateCreated": "2025-03-06T23:15:47.867854900Z",
+  "competitionHostSegmentId": 2,
+  "maxTeamSize": 5,
+  "medalsAllowed": true,
+  "enableTeamFiles": true,
+  "teamFileDeadline": "2025-11-22T00:00:00Z",
+  "totalSolutionRows": 3,
+  "teamMergerExplicitDeadline": "2025-10-23T23:59:00Z",
+  "prohibitNewEntrantsExplicitDeadline": "2025-10-23T23:59:00Z",
+  "kernelsPublishingDisabledDeadline": "2025-10-23T23:59:00Z",
+  "organizationId": 3823,
+  "hasCoverImageUrl": true,
+  "showPrivateLeaderboard": true,
+  "hasScripts": true,
+  "totalTeams": 1142,
+  "totalCompetitors": 1414,
+  "totalSubmissions": 41315,
+  "rulesRequired": true,
+  "maxCpuRuntimeMinutes": 540,
+  "maxGpuRuntimeMinutes": 540,
+  "rowIdColumnName": "row_id",
+  "requiredSubmissionFilename": "submission.zip",
+  "evaluationAlgorithm": {
+    "id": 3818,
+    "name": "Code Golf Metric",
+    "isMax": true,
+    "environmentRenderType": "ENVIRONMENT_RENDER_TYPE_JSON",
+    "kernelId": 81376142,
+    "latestCompetitionMetricVersionId": 47276,
+    "state": "AVAILABLE"
+  },
+  "categories": [
+    {
+      "id": 15002,
+      "name": "optimization",
+      "fullPath": "technique > optimization",
+      "datasetCount": 294,
+      "competitionCount": 26,
+      "scriptCount": 1585,
+      "slug": "optimization",
+      "displayName": "Optimization"
+    },
+    {
+      "name": "custom metric",
+      "description": "This competition's metric is defined under the 'Evaluation' tab",
+      "displayName": "Custom Metric"
+    }
+  ],
+  "organization": {
+    "slug": "deepmind",
+    "name": "Google DeepMind",
+    "thumbnailImageUrl": "https://storage.googleapis.com/kaggle-organizations/3823/thumbnail.png",
+    "profileUrl": "/organizations/deepmind"
+  },
+  "launched": true,
+  "createdByUserId": 25050929,
+  "license": {
+    "id": 30,
+    "name": "Apache 2.0",
+    "url": "https://www.apache.org/licenses/LICENSE-2.0",
+    "agreementRequired": false
+  },
+  "hostName": "Google DeepMind",
+  "scoreTruncationNumDecimals": 3,
+  "locked": true,
+  "totalJoinedUsers": 6306,
+  "requiresIdentityVerification": true,
+  "submissionSizeLimitMb": 20480,
+  "reward": {
+    "id": "USD",
+    "quantity": 100000
+  }
+}

@@ -1,0 +1,25 @@
+{
+  "id": "cdeotte/ettin-encoder-1b-cv-0-943",
+  "id_no": 87440840,
+  "title": "Ettin-Encoder-1B - CV 0.943",
+  "code_file": "ettin-encoder-1b-cv-0-943.ipynb",
+  "language": "python",
+  "kernel_type": "notebook",
+  "is_private": false,
+  "enable_gpu": true,
+  "enable_tpu": false,
+  "enable_internet": false,
+  "keywords": [
+    "gpu"
+  ],
+  "dataset_sources": [
+    "cdeotte/ettin-encoder-1b-cv943"
+  ],
+  "kernel_sources": [],
+  "competition_sources": [
+    "map-charting-student-math-misunderstandings"
+  ],
+  "model_sources": [],
+  "docker_image": "gcr.io/kaggle-private-byod/python@sha256:320043e14c68293f1c946585b9257123385205a58af4b94b17d31868cae4e868",
+  "machine_shape": "NvidiaTeslaT4"
+}

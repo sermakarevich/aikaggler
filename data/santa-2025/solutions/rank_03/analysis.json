@@ -1,0 +1,48 @@
+{
+  "summary": "The team secured third place by combining a rectangle combination algorithm with a heavily modified Sparrow optimizer and a fast C++ simulated annealing pipeline. Key innovations included modifying Sparrow to directly minimize both width and height, enforcing symmetry constraints, applying a center-aware orientation bias to encourage lattice-like structures, and implementing warm starts via up/down-sampling across different N values. The workflow leveraged distributed compute and automated Slack reporting to efficiently iterate across team members.",
+  "extensive_summary": "## Rectangle Combination & Seeding\nEarly in the competition, the team built a library of rectangle bands with diverse aspect ratios using lattice generation and the vanilla Sparrow algorithm. These rectangles were recursively combined to form larger rectangles and squares, achieving a baseline score of roughly 70.0. While not used directly in the final submission, this library provided valuable seed layouts for subsequent optimization steps.\n\n## Simulated Annealing & Compression\nThe team translated publicly available SA notebooks into highly optimized C++ with multi-threading. They implemented a post-processing \"push\" procedure that simulates shaking a tray of polygons, iteratively moving trees in predefined directions to compress the bounding square. Combining the rectangle combiner with SA and compression yielded scores around 69.50.\n\n## Customizing the Sparrow Algorithm\nThe core of the solution was a heavily modified Sparrow optimizer (written in Rust) tailored with several inductive biases. Key modifications included:\n- **Direct Square Optimization:** Changed the objective to minimize both width and height simultaneously, aligning with the competition metric.\n- **Warm Starts:** Allowed the solver to initialize from previously obtained layouts, seeding it with rectangle combination outputs.\n- **Symmetry Constraints:** Enforced 2-way and 4-way symmetry for divisible N values to reduce the search space and accelerate convergence.\n- **Orientation Biases:** Applied a soft penalty encouraging alignment with a dominant axis, with center-aware weighting that strengthens constraints near the container center. The bias strength dynamically adapted during optimization.\n- **Seed Generation & Kicking:** Implemented up/down-sampling routines across different N values to generate initial solutions. Initial layouts were also \"kicked\" via global rotations and slight scaling to escape local optima.\n\n## Workflow & Collaboration\nThe team leveraged a distributed workflow using Kaggle notebooks with automatic submissions and a Slackbot to report scores and parameters. AI tools assisted in translating Python prototypes to C++ and modifying the Rust Sparrow codebase. Final solutions exhibited a clear lattice structure with median angles around 22-24\u00b0 and 202-204\u00b0.",
+  "rank": 3,
+  "competition_flow": "The pipeline generates diverse rectangle seeds via lattice generation and vanilla Sparrow, recursively combines them into larger shapes, refines layouts using a custom Rust Sparrow optimizer with symmetry and orientation biases, and applies a fast C++ simulated annealing and compression step to minimize the bounding square size.",
+  "data_reading": [],
+  "data_processing": [
+    "Lattice generation for rectangle bands",
+    "Recursive combination of rectangles into larger shapes",
+    "Up/down-sampling across different N values for seed generation",
+    "Global rotations and slight scaling to 'kick' initial solutions",
+    "C++ 'push' procedure to compress layouts by iteratively moving trees in predefined directions"
+  ],
+  "features_engineering": [],
+  "models": [
+    "Sparrow algorithm",
+    "simulated annealing (SA)"
+  ],
+  "frameworks_used": [],
+  "loss_functions": [],
+  "cv_strategy": "",
+  "ensembling": "",
+  "insights": [
+    "Aligning the optimizer's objective directly with the competition metric (minimizing both width and height) is crucial for performance.",
+    "Enforcing symmetry constraints significantly reduces the search space and helps converge to strong seeds early in optimization.",
+    "A soft orientation bias with center-aware weighting stabilizes global structure and reduces rotational noise during placement.",
+    "Up/down-sampling solutions across different N values provides highly effective initial layouts for the optimizer."
+  ],
+  "critical_findings": [
+    "Optimal solutions consistently exhibit a lattice-like structure with median tree angles clustering around 22-24\u00b0 and 202-204\u00b0.",
+    "Plotting the minimum and maximum dimensions of generated rectangles revealed a surprising bird/sparrow shape pattern.",
+    "Kicking initial solutions with global rotations and slight scaling effectively helps escape local optima."
+  ],
+  "what_did_not_work": [],
+  "github_repos": [],
+  "papers": [],
+  "other_solution_refs": [
+    {
+      "description": "Public notebook referenced for SA algorithm translation",
+      "url": "https://www.kaggle.com/code/crodoc/87-38-hybrid-optimization-strategy"
+    },
+    {
+      "description": "Public notebook referenced for adaptive SA algorithm",
+      "url": "https://www.kaggle.com/code/blueshyy/adaptive-sa"
+    }
+  ],
+  "source_url": "https://www.kaggle.com/competitions/santa-2025/discussion/671181"
+}

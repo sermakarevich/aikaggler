@@ -1,0 +1,23 @@
+{
+  "id": "yusuketogashi/lb-0-339-very-fast-with-hot-pixels-enabled-v2",
+  "id_no": 90369543,
+  "title": "LB:0.339 Very fast with hot pixels enabled V2",
+  "code_file": "lb-0-339-very-fast-with-hot-pixels-enabled-v2.ipynb",
+  "language": "python",
+  "kernel_type": "notebook",
+  "is_private": false,
+  "enable_gpu": false,
+  "enable_tpu": false,
+  "enable_internet": false,
+  "keywords": [],
+  "dataset_sources": [
+    "vitalykudelya/ariel-2024-pqdm"
+  ],
+  "kernel_sources": [],
+  "competition_sources": [
+    "ariel-data-challenge-2025"
+  ],
+  "model_sources": [],
+  "docker_image": "gcr.io/kaggle-images/python@sha256:20d75b6c2a67c98a3a9f199ea97d51168548b4eb54898f30849e11d68ee06ea1",
+  "machine_shape": "None"
+}

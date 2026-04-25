@@ -1,0 +1,30 @@
+[
+  {
+    "topic_id": 587419,
+    "title": "3rd place solution",
+    "owner": "tascj",
+    "repo": "kaggle-waveform-inversion",
+    "url": "https://github.com/tascj/kaggle-waveform-inversion"
+  },
+  {
+    "topic_id": 587402,
+    "title": "20th solution - Caformer + data generation",
+    "owner": "lu-group",
+    "repo": "fourier-deeponet-fwi",
+    "url": "https://github.com/lu-group/fourier-deeponet-fwi"
+  },
+  {
+    "topic_id": 587500,
+    "title": "4th place solution for the GWI competition  ",
+    "owner": "tensorflow",
+    "repo": "models",
+    "url": "https://github.com/tensorflow/models"
+  },
+  {
+    "topic_id": 587500,
+    "title": "4th place solution for the GWI competition  ",
+    "owner": "shlomoron",
+    "repo": "GWI-solution",
+    "url": "https://github.com/shlomoron/GWI-solution"
+  }
+]

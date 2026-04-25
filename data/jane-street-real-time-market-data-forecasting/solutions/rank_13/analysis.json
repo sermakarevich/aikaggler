@@ -1,0 +1,65 @@
+{
+  "summary": "The authors transitioned from gradient boosting trees to deep learning for a financial time-series prediction task, ultimately achieving a public LB score of 0.0096. They built an MLP with online training, augmented inputs with cross-symbol means and z-scores, added temporal feature differences, and incorporated responder targets. Key insights include the necessity of cross-symbol information to break early score plateaus and the effectiveness of online learning for temporal data. The journey highlights iterative experimentation, feature engineering, and architectural adjustments over traditional tabular baselines.",
+  "extensive_summary": "## The Dark Days of GBDT\nThe authors initially relied on LightGBM (LGBM) and Ridge models, achieving around 0.0045 on the LB. They found that training LGBM on partitions 6-9 improved results and that incorporating drift in symbol-specific responders added a small but meaningful boost. XGBoost and CatBoost were tested but underperformed or lacked efficiency compared to LGBM.\n\n## The Enlightenment of Online Training\nTo handle temporal dynamics, they implemented online training by building new LGBM models every 5 days on lookback windows and averaging ~4 models. This approach reduced variance and forced them to split training across `time_id`s, a lesson that later translated well to neural networks.\n\n## The Deep Learning Revolution & Feature Augmentation\nUpon securing GPU access, they shifted to PyTorch, starting with a simple MLP. They structured data into 3D tensors `[symbol_id, time_id, feature_id]` in one-day chunks. The major breakthrough came from augmenting features: they computed cross-symbol means and normalized features to z-scores globally, feeding these directly into the network instead of raw features. They also added temporal differences `f'(t) = f(t) - f(t-1)` for non-categorical features, which significantly improved performance.\n\n## Responders, Smoothing, and Encoding\nThey expanded targets to include responders and derived `responder_6` values, increasing network depth to `[1024, 512, 256]` with higher dropout. They experimented with time-dimension smoothing based on ACF but abandoned it as simpler models matched performance. Finally, they one-hot encoded categorical features and replaced one-hot time encoding with sin/cos positional encoding, which improved validation scores.\n\n## Bottlenecks & Takeaways\nThe authors identified two main LB bottlenecks: crossing the 0.88-0.90 plateau required cross-symbol information, while surpassing 0.94-0.96 demanded adaptive time dimension treatment (e.g., recurrent models or transformers). They concluded that GBDTs are not universally SOTA for tabular data and emphasized the value of iterative exploration and online learning.",
+  "rank": 13,
+  "competition_flow": "Raw financial tabular data is organized into daily 3D tensors, augmented with cross-symbol means, z-scores, and temporal differences, then fed into an online-trained MLP with responder targets, ensembled, and submitted.",
+  "data_reading": [],
+  "data_processing": [
+    "Data organized into 3D tensors [symbol_id, time_id, feature_id] cut into one-day chunks",
+    "Global normalization to N(0,1)",
+    "Computation of cross-symbol means and symbol-specific z-scores",
+    "Addition of temporal differences for non-categorical/intraday constant features",
+    "One-hot encoding of categorical features",
+    "Sin/cos positional encoding for time_id"
+  ],
+  "features_engineering": [
+    "Cross-symbol means",
+    "Symbol-specific z-scores",
+    "Temporal feature differences",
+    "Derived responder_6 values",
+    "Cross-symbol mean responder_6",
+    "Symbol-specific diff of responder_6"
+  ],
+  "models": [
+    "LightGBM",
+    "Ridge",
+    "XGBoost",
+    "CatBoost",
+    "MLP",
+    "LSTM",
+    "GRU"
+  ],
+  "frameworks_used": [
+    "torch",
+    "lightgbm",
+    "xgboost",
+    "catboost"
+  ],
+  "loss_functions": [],
+  "cv_strategy": "",
+  "ensembling": "Averaged multiple online LGBM models initially, later ensembled neural network models trained with different training weights, random seeds, and start dates to improve LB performance.",
+  "insights": [
+    "GBDTs are not always the best baseline for tabular data.",
+    "Online learning is essential for temporal financial datasets.",
+    "Cross-symbol information is required to break early score plateaus.",
+    "Adaptive time dimension treatment is necessary to surpass mid-0.90s bottlenecks.",
+    "Providing pre-computed z-scores and cross-symbol means as direct inputs improves network performance."
+  ],
+  "critical_findings": [
+    "Training LGBM on partitions 6-9 yielded better LB results initially.",
+    "Providing cross-symbol means and z-scores as direct inputs improved performance more than letting the network compute them from raw features.",
+    "One-hot encoding time_id initially boosted LB but was later replaced by sin/cos positional encoding for better validation results.",
+    "Time-based smoothing improved performance temporarily but simpler models eventually matched it."
+  ],
+  "what_did_not_work": [
+    "XGBoost was much slower with identical results to LightGBM.",
+    "CatBoost could not match LightGBM's results.",
+    "LSTM and GRU models did not yield significant improvements.",
+    "Time-based smoothing implementation was abandoned because simpler models matched performance.",
+    "One-hot encoding of time_id yielded worse LB results than sin/cos positional encoding."
+  ],
+  "github_repos": [],
+  "papers": [],
+  "other_solution_refs": [],
+  "source_url": "https://www.kaggle.com/competitions/jane-street-real-time-market-data-forecasting/discussion/556701"
+}

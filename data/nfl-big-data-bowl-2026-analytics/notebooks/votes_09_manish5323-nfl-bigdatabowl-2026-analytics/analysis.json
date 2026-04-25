@@ -1,0 +1,41 @@
+{
+  "summary": "The notebook introduces and operationalizes a custom defensive metric called Air-Time Defense Closure (ATDC), which quantifies how quickly defenders close the gap to receivers during a pass. It demonstrates the metric's calculation using synthetically generated tracking data, visualizes its distribution and spatial-temporal relationships, and builds baseline regression models to predict defensive effectiveness. The author shows that features like initial separation and speed differentials are strong predictors of ATDC, providing a reproducible framework for evaluating defensive coverage in NFL passing plays. Readers should understand how to translate spatial-temporal tracking data into actionable performance metrics and validate them with simple machine learning baselines.",
+  "purpose": "tutorial",
+  "competition_flow": "Generates synthetic NFL tracking data, calculates a custom Air-Time Defense Closure metric, visualizes spatial-temporal relationships, engineers predictive features, and trains baseline regression models to evaluate defensive coverage effectiveness.",
+  "data_reading": [],
+  "data_processing": [
+    "Feature scaling via `StandardScaler` before modeling",
+    "Categorical binning of ATDC scores into performance tiers"
+  ],
+  "features_engineering": [
+    "Speed differential between defender and receiver",
+    "Distance ratio (final distance / initial distance)",
+    "Pursuit efficiency (closure distance normalized by air time and defender speed)",
+    "Binned ATDC performance categories (Poor, Average, Good, Excellent)"
+  ],
+  "models": [
+    "LinearRegression",
+    "RandomForestRegressor",
+    "GradientBoostingRegressor"
+  ],
+  "frameworks_used": [
+    "pandas",
+    "numpy",
+    "matplotlib",
+    "seaborn",
+    "scikit-learn"
+  ],
+  "loss_functions": [],
+  "cv_strategy": "5-fold cross-validation using `cross_val_score` with `scoring='neg_mean_squared_error'`",
+  "ensembling": "None. The notebook trains and compares individual models without combining them.",
+  "insights": [
+    "ATDC effectively quantifies defensive coverage by combining initial separation, final separation, and ball flight time.",
+    "Defender-receiver speed differential and initial distance are the strongest predictors of defensive closure success.",
+    "Tree-based models capture non-linear relationships in tracking data better than linear regression.",
+    "Cross-validation confirms that baseline regression models generalize reasonably well to unseen synthetic plays."
+  ],
+  "critical_findings": [],
+  "what_did_not_work": [],
+  "source_url": "https://www.kaggle.com/code/manish5323/nfl-bigdatabowl-2026-analytics",
+  "votes": 16
+}

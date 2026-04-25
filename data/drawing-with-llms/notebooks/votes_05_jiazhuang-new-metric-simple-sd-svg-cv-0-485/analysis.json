@@ -1,0 +1,45 @@
+{
+  "summary": "This notebook demonstrates a complete pipeline for converting text descriptions into SVG drawings using Stable Diffusion as an intermediate bitmap generator. It introduces a custom metric package to evaluate both the generated bitmaps and final SVGs against multiple-choice QA pairs, OCR, and aesthetic scores. The author shows how to adapt Stable Diffusion prompts with specific prefixes, suffixes, and negative prompts to enforce a flat, minimalistic style suitable for vector conversion. Key takeaways include the effectiveness of targeted prompt engineering for style control, the viability of contour-based SVG generation from diffusion outputs, and how the custom metric decomposes visual quality into granular components.",
+  "purpose": "tutorial",
+  "competition_flow": "Loads text descriptions and QA data, generates intermediate bitmaps via Stable Diffusion, converts them to SVGs using contour extraction and simplification, and evaluates them using a custom multi-component scoring metric.",
+  "data_reading": [
+    "Loads train.csv and questions.parquet via kagglehub.competition_download.",
+    "Parses JSON fields in the parquet file into lists/dicts and merges them into a single pandas DataFrame."
+  ],
+  "data_processing": [
+    "Resizes images to 384x384 for metric evaluation.",
+    "Converts PIL images to numpy arrays.",
+    "Applies k-means color quantization and contour detection.",
+    "Simplifies polygon coordinates via rounding and point reduction."
+  ],
+  "features_engineering": [
+    "Hierarchical contour extraction, k-means color quantization, and importance-weighted polygon simplification for SVG generation."
+  ],
+  "models": [
+    "Stable Diffusion v2"
+  ],
+  "frameworks_used": [
+    "torch",
+    "diffusers",
+    "transformers",
+    "numpy",
+    "pandas",
+    "cv2",
+    "matplotlib",
+    "kagglehub",
+    "PIL",
+    "svg-image-fidelity"
+  ],
+  "loss_functions": [],
+  "cv_strategy": "",
+  "ensembling": "",
+  "insights": [
+    "Prompt engineering with specific prefixes, suffixes, and negative prompts effectively controls Stable Diffusion to produce flat, minimalistic images ideal for SVG conversion.",
+    "Contour-based SVG generation with importance-weighted simplification preserves visual fidelity while managing file size constraints.",
+    "The custom metric successfully decomposes image quality into VQA, OCR, and aesthetic components, providing a granular evaluation of generative outputs."
+  ],
+  "critical_findings": [],
+  "what_did_not_work": [],
+  "source_url": "https://www.kaggle.com/code/jiazhuang/new-metric-simple-sd-svg-cv-0-485",
+  "votes": 575
+}

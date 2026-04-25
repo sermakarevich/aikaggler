@@ -1,0 +1,27 @@
+{
+  "id": "fnands/search-the-amazon-with-remote-sensing-and-ai",
+  "id_no": 83645741,
+  "title": "\ud83d\udef0\ufe0fSearch the Amazon with Remote Sensing and AI\ud83e\udd16",
+  "code_file": "search-the-amazon-with-remote-sensing-and-ai.ipynb",
+  "language": "python",
+  "kernel_type": "notebook",
+  "is_private": false,
+  "enable_gpu": false,
+  "enable_tpu": false,
+  "enable_internet": true,
+  "keywords": [],
+  "dataset_sources": [
+    "fnands/archaeoblog-amazon-geoglyphs",
+    "fnands/geographical-boundaries-of-amazonia-by-eva-et-al",
+    "fnands/nasa-amazon-lidar-2008-2018"
+  ],
+  "kernel_sources": [
+    "fnands/major-tom-embedding-search"
+  ],
+  "competition_sources": [
+    "openai-to-z-challenge"
+  ],
+  "model_sources": [],
+  "docker_image": "gcr.io/kaggle-images/python@sha256:3223337db7786b068bfeac3a1b741bf0d572a4bf309735b45692de873b7758db",
+  "machine_shape": "None"
+}

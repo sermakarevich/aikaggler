@@ -1,0 +1,56 @@
+{
+  "summary": "The author developed a trajectory prediction model for a football competition using an ST-Transformer encoder and a TXP-CNN decoder. The core innovation was a confidence head that predicts variance alongside coordinates, trained with Gaussian Log Negative Likelihood (NLL) loss to dynamically model uncertainty and act as a regularizer. The pipeline involved passer-centric coordinate normalization, field alignment, and specialized training strategies like transition sequence prediction and non-target prediction. Inference leveraged Test Time Training on an auxiliary task and Test Time Augmentation via player permutation averaging.",
+  "extensive_summary": "## Architecture & Core Design\nThe solution centers on a two-part architecture: an ST-Transformer encoder and a TXP-CNN decoder. The encoder alternates between spatial and temporal attention blocks, with the temporal block using a CNN to capture local dependencies. Domain knowledge is injected as learnable attention biases, including collision risk, inverse distance decay, field of view, and teammate/opponent status. The decoder treats time as channels and convolves over features, which proved significantly more effective than a standard Transformer decoder for this task.\n\n## Uncertainty Modeling & Loss\nA critical component is the Confidence Head, which predicts variance (\u03c3\u00b2) alongside coordinates. The model is optimized using Gaussian Log Negative Likelihood (NLL) Loss, which dynamically weights predictions based on estimated difficulty. This approach outperformed RMSE, Laplacian NLL, and Huber loss by acting as a robust regularizer that prevents overfitting to highly uncertain trajectories.\n\n## Training & Inference Strategy\nPreprocessing normalizes coordinates to a passer-centric origin and aligns all plays to attack left. Training incorporates auxiliary tasks: predicting pre-pass + post-pass trajectories (30% of data) and predicting pre-pass trajectories for random players (30%) to learn motion dynamics. During inference, Test Time Training is applied using only the pre-pass auxiliary task, and Test Time Augmentation is performed by averaging predictions across player permutation orders.\n\n## Experiments & Lessons\nSeveral architectural variants were tested, including GNNs, Social-LSTM, BERT-like models, CVAEs, and a Cluster-Based Mixture of Experts. While some showed promise in specific metrics or required ensemble integration, explicit task routing and unimodal VAE approaches underperformed. The author also notes that relying on a broad feature set without rigorous selection may have been suboptimal for the final model size, as smaller proxies likely required more raw information to learn effectively.",
+  "rank": 19,
+  "competition_flow": "Raw trajectory data is normalized to a passer-centric coordinate system and aligned to a unified left direction, fed into an ST-Transformer encoder with domain-biased attention, decoded by a TXP-CNN to predict future coordinates and variance, and finally averaged across player permutations during inference.",
+  "data_reading": [],
+  "data_processing": [
+    "Passer-centric coordinate normalization (passer at origin)",
+    "Field alignment ('Unify Left' so offense attacks left)",
+    "Transition sequences training (predicting pre-pass + post-pass)",
+    "Non-target prediction training (predicting last N frames of pre-pass for random player)",
+    "Test Time Augmentation via player permutation averaging"
+  ],
+  "features_engineering": [],
+  "models": [
+    "ST-Transformer",
+    "TXP-CNN",
+    "Social-LSTM",
+    "GNN",
+    "BERT-like Models",
+    "CVAE",
+    "Cluster-Based Mixture of Experts",
+    "Temporal U-Net"
+  ],
+  "frameworks_used": [],
+  "loss_functions": [
+    "Gaussian Log Negative Likelihood (NLL) Loss",
+    "RMSE",
+    "Laplacian NLL",
+    "Huber with temporal decay"
+  ],
+  "cv_strategy": "",
+  "ensembling": "Combined multiple models including a GNN-replaced Spatial Transformer, a BERT-like model, and a CVAE, though specific weighting or voting strategy isn't detailed.",
+  "insights": [
+    "Modeling uncertainty directly via a confidence head and Gaussian NLL loss acts as a robust regularizer and outperforms standard metrics like RMSE.",
+    "Injecting domain knowledge as learnable attention biases (collision risk, inverse distance, field of view, team/opponent status) softly prioritizes relevant interactions.",
+    "Treating time as channels in a CNN decoder (TXP-CNN) works better than a standard Transformer decoder for this trajectory prediction task."
+  ],
+  "critical_findings": [
+    "The TXP-CNN decoder, which convolves over features while treating time as channels, performed significantly better than a standard Transformer decoder despite being counterintuitive.",
+    "Test Time Training on the test set showed optimization behavior resembling a random walk, raising doubts about its generalization across different years.",
+    "Relying on a rich feature set without rigorous selection might have been suboptimal for the larger model, as the smaller proxy model likely needed more raw information to learn effectively."
+  ],
+  "what_did_not_work": [
+    "GNNs & Social-LSTM did not perform well on their own.",
+    "Cluster-Based Mixture of Experts did not yield better performance than a single model.",
+    "CVAE struggled with unimodal (mean) prediction.",
+    "Temporal U-Net ran out of time to fine-tune before the deadline.",
+    "BERT-like Models performed comparably but not better.",
+    "Previous Years' Data was realized too late to incorporate."
+  ],
+  "github_repos": [],
+  "papers": [],
+  "other_solution_refs": [],
+  "source_url": "https://www.kaggle.com/competitions/nfl-big-data-bowl-2026-prediction/discussion/651520"
+}

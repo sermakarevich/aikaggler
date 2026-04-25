@@ -1,0 +1,72 @@
+[
+  {
+    "topic_id": 651671,
+    "title": "NVARC solution",
+    "owner": "Le-Gris",
+    "repo": "h-arc",
+    "url": "https://github.com/Le-Gris/h-arc"
+  },
+  {
+    "topic_id": 651671,
+    "title": "NVARC solution",
+    "owner": "xu3kev",
+    "repo": "BARC",
+    "url": "https://github.com/xu3kev/BARC"
+  },
+  {
+    "topic_id": 651671,
+    "title": "NVARC solution",
+    "owner": "KSB21ST",
+    "repo": "MINI-ARC",
+    "url": "https://github.com/KSB21ST/MINI-ARC"
+  },
+  {
+    "topic_id": 651671,
+    "title": "NVARC solution",
+    "owner": "victorvikram",
+    "repo": "ConceptARC",
+    "url": "https://github.com/victorvikram/ConceptARC"
+  },
+  {
+    "topic_id": 651671,
+    "title": "NVARC solution",
+    "owner": "michaelhodel",
+    "repo": "re-arc",
+    "url": "https://github.com/michaelhodel/re-arc"
+  },
+  {
+    "topic_id": 651671,
+    "title": "NVARC solution",
+    "owner": "NVIDIA-NeMo",
+    "repo": "RL",
+    "url": "https://github.com/NVIDIA-NeMo/RL"
+  },
+  {
+    "topic_id": 651671,
+    "title": "NVARC solution",
+    "owner": "1ytic",
+    "repo": "NVARC",
+    "url": "https://github.com/1ytic/NVARC"
+  },
+  {
+    "topic_id": 651671,
+    "title": "NVARC solution",
+    "owner": "thinking-machines-lab",
+    "repo": "batch_invariant_ops",
+    "url": "https://github.com/thinking-machines-lab/batch_invariant_ops"
+  },
+  {
+    "topic_id": 651671,
+    "title": "NVARC solution",
+    "owner": "SamsungSAILMontreal",
+    "repo": "TinyRecursiveModels",
+    "url": "https://github.com/SamsungSAILMontreal/TinyRecursiveModels"
+  },
+  {
+    "topic_id": 575595,
+    "title": "ARC 2024 Solutions and Key Takeaways",
+    "owner": "zoenguyenramirez",
+    "repo": "arc-prize-2024",
+    "url": "https://github.com/zoenguyenramirez/arc-prize-2024"
+  }
+]

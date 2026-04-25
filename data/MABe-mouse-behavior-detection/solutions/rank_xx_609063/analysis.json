@@ -1,0 +1,26 @@
+{
+  "summary": "The author provides a placeholder writeup for a competition solution focused on a 1D object detection approach. The post briefly describes the method as straightforward and indicates that more detailed technical updates will follow. No specific implementation steps, model architectures, or experimental results are shared in this initial entry.",
+  "extensive_summary": "This writeup currently functions as a placeholder for a solution centered on 1D object detection. The author notes that the proposed approach is straightforward and promises to add more comprehensive updates and technical details in subsequent posts.\n\nAs of this publication, the entry contains no information regarding the data pipeline, model architecture, training strategy, or performance metrics. The post serves primarily as a notification that a full breakdown is pending.\n\nReaders are directed to the linked repository for further context, though the complete solution details remain unposted at this time.",
+  "rank": null,
+  "competition_flow": "",
+  "data_reading": [],
+  "data_processing": [],
+  "features_engineering": [],
+  "models": [],
+  "frameworks_used": [],
+  "loss_functions": [],
+  "cv_strategy": "",
+  "ensembling": "",
+  "insights": [],
+  "critical_findings": [],
+  "what_did_not_work": [],
+  "github_repos": [
+    {
+      "url": "https://github.com/neuroethology/MARS",
+      "role": "reference"
+    }
+  ],
+  "papers": [],
+  "other_solution_refs": [],
+  "source_url": "https://www.kaggle.com/competitions/MABe-mouse-behavior-detection/discussion/609063"
+}

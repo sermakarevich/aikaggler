@@ -1,0 +1,46 @@
+{
+  "summary": "The author shares observations from a financial market forecasting competition, emphasizing the non-stationary nature of the data and the necessity of online learning for significant score gains. They highlight architectural preferences for combining stateless/stateful gates with attention mechanisms, and stress the importance of mimicking the exact submission API during training to avoid data leakage. The writeup also details data quirks like ragged tensors and unstable feature availability, advocating for masking and careful normalization, while noting that zero-mean R\u00b2 is a more suitable loss function than MSE for this competition's metric.",
+  "extensive_summary": "The author reflects on their experience in a financial market forecasting competition, noting they placed around 30th to 40th in the public rankings. They emphasize that financial data is inherently non-stationary, meaning patterns emerge and disappear unpredictably, which heavily influences model architecture and training schedules. A major takeaway is the critical importance of online learning, which yielded a substantial score gain of ~0.0030 points. The author argues that top models likely retrain during test submissions, making traditional lags ineffective as direct inputs since past prices/returns poorly predict future outcomes.\n\nRegarding validation, the author initially found that holding out the last 120 days hurt performance but later adopted it to gain control over blind submissions, accepting the trade-off of needing to retrain on the full dataset to avoid bias. They stress maintaining strict temporal order and designing metrics that track momentum over time. The data itself is described as \"ragged\" and messy, with unstable axes for steps, symbols, and features. Non-NaN feature counts fluctuate across dates and symbols, necessitating robust masking strategies and careful normalization.\n\nArchitecturally, the author suggests that successful models likely combine stateless and stateful gates to capture temporal patterns with attention mechanisms to model interdependencies across symbols and features. They strongly advise mimicking the exact submission API during training, particularly regarding input formats and gradient update frequency. Past mistakes included using shifted true responders as decoder inputs in an MLM-like encoder-decoder setup and updating weights at every timestep during training, both of which caused sky-high training metrics but zero hidden test performance. Finally, they recommend zero-mean R\u00b2 as the loss function due to its distinct behavior around zero values compared to MSE, and note that extensive clipping/post-processing was less effective than allowing the network to learn the solution directly.",
+  "rank": null,
+  "competition_flow": "Raw financial market data is processed with masking and careful normalization to handle ragged, non-stationary tensors, then fed into a neural network combining stateful gates and attention mechanisms, trained with online updates and zero-mean R\u00b2 loss while strictly mimicking the submission API's input frequency and format, with validation managed via a temporal holdout.",
+  "data_reading": [],
+  "data_processing": [
+    "Applying masking and careful normalization to handle ragged, messy data with unstable axes (steps, symbols, features) and fluctuating non-NaN feature counts across dates and symbols."
+  ],
+  "features_engineering": [],
+  "models": [
+    "Neural networks with stateless and stateful gates for temporal patterns",
+    "Attention mechanisms for interdependencies across symbols and features",
+    "MLM-like encoder-decoder architecture (attempted but failed)"
+  ],
+  "frameworks_used": [],
+  "loss_functions": [
+    "Zero-mean R\u00b2"
+  ],
+  "cv_strategy": "Temporal holdout of the last 120 days for validation, with strict maintenance of temporal order and momentum-tracking metrics.",
+  "ensembling": "",
+  "insights": [
+    "Online learning is crucial for financial forecasting and yields significant score gains.",
+    "Mimicking the exact submission API during training is essential to prevent data leakage and performance drops.",
+    "Financial data is non-stationary, making traditional lags ineffective as direct model inputs.",
+    "Zero-mean R\u00b2 behaves distinctly from MSE around zero and is better suited as a loss function for this competition's metric."
+  ],
+  "critical_findings": [
+    "Using shifted true responders as inputs in an MLM-like encoder-decoder architecture caused sky-high training metrics but zero hidden test performance.",
+    "Updating model weights on every single timestep during training was a dead end that failed to generalize to the hidden test.",
+    "Holding out the last 120 days for validation initially hurt performance but later provided necessary control over blind submissions, despite requiring full-dataset retraining."
+  ],
+  "what_did_not_work": [
+    "Using shifted true responders as inputs to a decoder in an MLM-like encoder-decoder architecture.",
+    "Updating weights on each time step during training."
+  ],
+  "github_repos": [],
+  "papers": [],
+  "other_solution_refs": [
+    {
+      "description": "Kaggle discussion link referenced for a critique on using zero-mean R\u00b2 as a loss function.",
+      "url": "https://www.kaggle.com/competitions/jane-street-real-time-market-data-forecasting/discussion/547060#3050169"
+    }
+  ],
+  "source_url": "https://www.kaggle.com/competitions/jane-street-real-time-market-data-forecasting/discussion/547060"
+}

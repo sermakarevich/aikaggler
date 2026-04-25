@@ -1,0 +1,112 @@
+{
+  "overall_summary": "This competition focused on high-precision ECG image digitization, requiring robust pipelines to extract accurate 12-lead time-series signals from varied, often degraded, printed ECG strips. Winning approaches consistently combined advanced image rectification and grid alignment with high-resolution vision backbones, leveraging diverse architectures and specialized loss functions to maximize signal-to-noise ratio (SNR). Success heavily relied on strategic data augmentation, sub-pixel mask generation, FFT-based resampling, and physics-informed post-processing like Einthoven\u2019s Law corrections.",
+  "competition_flows": [
+    "Raw ECG strip images rectified via homography/remapping, passed through vision backbones, refined via Fourier-domain resampling & Einthoven\u2019s Law blending",
+    "Raw ECG images processed through rotation correction, lead detection/segmentation, digitized via ViT/MaxViT models, combined via mean ensemble with OOD filter",
+    "Raw ECG images processed through baseline stage 0/1, fed into sparse mask segmentation models, reconstructed via weighted averaging & scipy resampling",
+    "Raw ECG images rectified via two-step high-res mapping, fed into ConvNeXt V2/HRNet segmentation, refined via parabolic interpolation & Lead II fusion",
+    "Raw ECG signals resampled via FFT, passed through backbone & Soft-Argmax regression head, output via TTA",
+    "Raw ECG images preprocessed, passed through differentiable UNet for soft masks, converted via weighted centroid extraction, refined by 1D ResUNet, combined via model/resampling ensemble",
+    "Raw ECG images processed through grid detection, coordinate indexing, rectification, vertical splitting, followed by regression & resampling",
+    "Raw ECG images orientation-corrected, processed through heatmap keypoint detection, iterative registration, piecewise homography cropping, dual-encoder UNet prediction, fused & refined",
+    "Raw ECG images normalized/rectified via Stage 0/1, fed into HRNet-W48, processed with TTA & Einthoven's Law correction, converted via softmax weighted-centroid extraction",
+    "Raw ECG images oriented/warped, grid points refined via CNN cascade, signals extracted from patches via coordinate-injected ensemble, corrected via lead ensembling & Einthoven error correction"
+  ],
+  "data_reading": [],
+  "data_processing": [
+    "Image rectification & warping (homography, piecewise homography, grid unwarping, coordinate indexing)",
+    "Rotation correction & orientation alignment",
+    "Grid detection & keypoint refinement (sliding window, cascade CNNs, soft labels)",
+    "Lead detection & segmentation (two-pass cropping, min dimensions 16x64px, probability maps)",
+    "Image preprocessing (cropping headers/margins, grayscale conversion, longest resize + padding, resizing/padding to fixed resolutions like 1536x1536 or 5600x1280, vertical splitting into segments)",
+    "High-resolution training & scaling (1696x4352, 1440x1152, 2400x1920, 2x length scaling, Lanczos4 interpolation)",
+    "Signal resampling (Fourier-domain/FFT-based via scipy.signal.resample, polyphase, linear/cubic spline, custom resample_torch)",
+    "Synthetic data & mask generation (blank ECG templates, wrinkled data, sparse masks with fractional y-coordinates, one-pixel-wide masks, soft labels, truncated normal noise on keypoints)",
+    "Augmentations (Moir\u00e9 patterns, flares, overlays, color/distortion/blur/noise/shadow/JPEG artifacts, GridDropout, CoarseDropout, ElasticTransform, horizontal/vertical flips, affine/perspective shifts, memory-mapped caching for heavy augmentations)",
+    "TTA & post-processing corrections (gamma adjustments, cropping/resizing, horizontal/vertical flips, Einthoven's Law physics-based correction, softmax weighted-centroid extraction, weighted averaging windows)",
+    "Memory & optimization techniques (gradient checkpointing, memory-mapped caching)"
+  ],
+  "features_engineering": [
+    "Coordinate-based features concatenated with grayscale images for spatial context",
+    "Partitioning backbone features by height into four segments corresponding to ECG data groups",
+    "Expanding segments to four times input width",
+    "Max pooling over height dimension in Strategy 3"
+  ],
+  "models": [
+    "ConvNeXt V2",
+    "EfficientNet (B3/B4/B6/B7/V2 L/M/S)",
+    "U-Net (incl. 1D ResUNet, 2D UNet)",
+    "HRNet (W48)",
+    "ResNet (18/34)",
+    "ViT (Dinov3)",
+    "MaxViT",
+    "HGNet-V2",
+    "MambaOut",
+    "CaFormer",
+    "InceptionNeXt",
+    "CoaT",
+    "VGG19",
+    "EfficientViT",
+    "MINIMA-RoMa",
+    "LoFTR",
+    "FCMAE",
+    "CoordConv",
+    "PixelShuffle",
+    "Deformable Convolution",
+    "BiLSTM",
+    "Multi-head Regression",
+    "Conv2d/Conv3d Fusion Modules",
+    "MyCoordUnetDecoder",
+    "UnetDecoder",
+    "Stage 0/1/2 Networks",
+    "Heatmap CNNs"
+  ],
+  "frameworks_used": [
+    "PyTorch/torch",
+    "SciPy/scipy.signal",
+    "timm",
+    "Albumentations",
+    "OpenCV (cv2)",
+    "SMP (segmentation-models-pytorch)",
+    "NumPy"
+  ],
+  "loss_functions": [
+    "SmoothL1Loss",
+    "SNR Loss (incl. SNR-based loss, optimized SNR/Mean terms)",
+    "MAE/L1 Loss",
+    "ArcFace Loss",
+    "BCE/BCEWithLogitsLoss (with positive class weighting, e.g., pos_weight=10/20)",
+    "Channel-Masked JSD / Column-wise JSD Loss",
+    "MSELoss (on DSNT predictions)",
+    "GLS (Geometric Loss Strategy)",
+    "Combined Scheduled Loss"
+  ],
+  "cv_strategies": [
+    "First ten samples as validation (with segmented image selection)",
+    "k-fold cross-validation (with lightweight/expensive model split validation)",
+    "5-fold cross-validation with OOF predictions for pseudo-labeling",
+    "100/0 train/validation split (full data usage)",
+    "no validation split (relying on scheduled loss weighting & gradient accumulation)"
+  ],
+  "ensembling": [
+    "Weighted/mean/median ensembles of diverse backbones (EfficientNet, ConvNeXt, HRNet, U-Net variants)",
+    "Signal-level vs. probability-level averaging",
+    "Resampling ensembles (averaging outputs from decimate_fir, polyphase, linear methods)",
+    "Lead II fusion & Einthoven's Law corrections",
+    "OOD detection filters for masking predictions",
+    "TTA with horizontal/vertical flips",
+    "Refinement models for out-of-range predictions"
+  ],
+  "insights": [],
+  "critical_findings": [],
+  "what_did_not_work": [],
+  "notable_individual_insights": [
+    "rank 1 (1st place solution): Resampling in the Fourier domain using scipy.signal.resample yields higher SNR than linear interpolation for ECG signals.",
+    "rank 2 (2nd place solution): Sparse masks with fractional y-coordinate distribution enable sub-pixel precision and higher reconstruction SNR than dense masks.",
+    "rank 3 (3rd place solution): Signal-level ensembling (averaging post-processed signals) outperformed probability-level ensembling.",
+    "rank 5 (5th place solution: Multi-stages Heatmap-based Modeling): Prioritizing input image resolution over model complexity is critical for preserving fine-grained details and reducing sub-pixel error.",
+    "rank 6 (6th place solution): Direct regression bypasses cumulative error from segmentation and post-processing stages.",
+    "rank 13 (13th Place Solution): Horizontal flip augmentation unexpectedly delivered a +0.6 dB improvement, likely due to doubling effective training data and promoting orientation invariance.",
+    "rank 14 (14th Place Solution): High resolution (1696\u00d74352) provided the largest single performance boost (~3 SNR)."
+  ]
+}

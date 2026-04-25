@@ -1,0 +1,27 @@
+{
+  "id": "verracodeguacas/semantically-aware-mention-classification-stack",
+  "id_no": 87802917,
+  "title": "\ud83e\udeacSemantically-Aware Mention Classification Stack",
+  "code_file": "semantically-aware-mention-classification-stack.ipynb",
+  "language": "python",
+  "kernel_type": "notebook",
+  "is_private": false,
+  "enable_gpu": true,
+  "enable_tpu": false,
+  "enable_internet": false,
+  "keywords": [
+    "gpu"
+  ],
+  "dataset_sources": [],
+  "kernel_sources": [
+    "mccocoful/latest-mdc-whls"
+  ],
+  "competition_sources": [
+    "make-data-count-finding-data-references"
+  ],
+  "model_sources": [
+    "qwen-lm/qwen2.5/Transformers/32b-instruct-awq/1"
+  ],
+  "docker_image": "gcr.io/kaggle-private-byod/python@sha256:320043e14c68293f1c946585b9257123385205a58af4b94b17d31868cae4e868",
+  "machine_shape": "NvidiaTeslaT4"
+}

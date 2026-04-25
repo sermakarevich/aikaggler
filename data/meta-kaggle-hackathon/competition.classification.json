@@ -1,0 +1,13 @@
+{
+  "description": "Participants explore Kaggle\u2019s internal platform data, which combines tabular records of competitions, users, and submissions with textual metadata. The goal is to conduct meta-analyses or build applications that uncover insights about the Kaggle ecosystem. Success is evaluated through community voting and judge review rather than an automated scoring metric.",
+  "data_modality": "tabular",
+  "task_type": "other",
+  "label_structure": "none",
+  "metric": "unknown",
+  "test_split": "unknown",
+  "format": "code_comp",
+  "dataset_scale": "medium",
+  "domain": "platform_analytics",
+  "data_challenges": [],
+  "constraints": []
+}

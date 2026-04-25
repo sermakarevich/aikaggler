@@ -1,0 +1,26 @@
+{
+  "summary": "This notebook provides a minimal template for implementing the inference server required by the Mitsui Commodity Prediction Challenge. It demonstrates how to structure the `predict` function to receive batched test data and label lags, and how to initialize and run Kaggle's evaluation gateway locally or in the competition environment. Readers learn the expected input/output formats, batch processing constraints, and environment variable checks needed to submit valid predictions.",
+  "purpose": "inference",
+  "competition_flow": "The notebook initializes a Kaggle inference server that receives batched test features and label lags, generates dummy predictions for 424 target columns, and returns them as a DataFrame for evaluation.",
+  "data_reading": [],
+  "data_processing": [],
+  "features_engineering": [],
+  "models": [],
+  "frameworks_used": [
+    "pandas",
+    "polars",
+    "kaggle_evaluation.mitsui_inference_server"
+  ],
+  "loss_functions": [],
+  "cv_strategy": "",
+  "ensembling": "",
+  "insights": [
+    "The inference server must handle batched inputs and return predictions within strict time limits (5 minutes per batch, 15 minutes startup).",
+    "The first `predict` call can be used for heavy model loading without the usual 1-minute deadline.",
+    "Both Pandas and Polars DataFrames are acceptable for outputs, though Polars is recommended for performance."
+  ],
+  "critical_findings": [],
+  "what_did_not_work": [],
+  "source_url": "https://www.kaggle.com/code/sohier/mitsui-demo-submission",
+  "votes": 656
+}

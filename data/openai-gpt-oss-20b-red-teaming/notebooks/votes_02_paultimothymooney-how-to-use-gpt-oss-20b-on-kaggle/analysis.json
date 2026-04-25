@@ -1,0 +1,29 @@
+{
+  "summary": "This notebook demonstrates how to run the GPT-OSS-20b large language model on Kaggle's GPU runtime by resolving environment dependency conflicts. It walks through uninstalling pre-installed packages and installing specific compatible versions of PyTorch, Transformers, and Triton before downloading the model via Kaggle Hub. The author then initializes a Hugging Face text-generation pipeline and executes a sample inference call to verify functionality. Readers learn how to navigate package versioning challenges on Kaggle to successfully deploy large open-weight models for inference.",
+  "purpose": "tutorial",
+  "competition_flow": "Installs compatible dependencies, downloads the GPT-OSS-20b model via Kaggle Hub, runs a text-generation inference pipeline, and prints the generated response.",
+  "data_reading": [],
+  "data_processing": [],
+  "features_engineering": [],
+  "models": [
+    "GPT-OSS-20b"
+  ],
+  "frameworks_used": [
+    "torch",
+    "transformers",
+    "kagglehub",
+    "triton"
+  ],
+  "loss_functions": [],
+  "cv_strategy": "",
+  "ensembling": "",
+  "insights": [
+    "Resolving package version conflicts is often necessary when running large models on Kaggle's pre-configured environments.",
+    "Kaggle Hub provides a straightforward way to download and cache large model weights directly in notebook cells.",
+    "Hugging Face's pipeline API abstracts away complex inference boilerplate, enabling quick deployment of open-weight LLMs."
+  ],
+  "critical_findings": [],
+  "what_did_not_work": [],
+  "source_url": "https://www.kaggle.com/code/paultimothymooney/how-to-use-gpt-oss-20b-on-kaggle",
+  "votes": 156
+}

@@ -1,0 +1,70 @@
+{
+  "summary": "This notebook provides a comprehensive feature engineering and exploratory data analysis pipeline for the NFL Big Data Bowl 2026 competition. It transforms raw player tracking CSVs into a rich feature set by integrating physical attributes, kinematic physics, play context, and spatial awareness metrics. The author demonstrates how domain-specific knowledge\u2014such as trigonometric directional encoding, momentum calculations, and ball-landing proximity\u2014can be systematically derived from frame-by-frame tracking data. Readers should take away a reusable architectural pattern for merging input/output tracking data, structuring feature generation by dependency order, and validating new features through baseline model importance and targeted visualizations. The notebook emphasizes that spatial relationships and role-based behavior are more predictive than raw movement statistics alone.",
+  "purpose": "feature_engineering",
+  "competition_flow": "Loads weekly NFL Big Data Bowl 2026 tracking CSVs, merges input and output data on game/play/player/frame identifiers, applies a multi-stage feature engineering pipeline combining physics, spatial, and contextual metrics, and outputs engineered features as Parquet files alongside comprehensive EDA visualizations and baseline feature importance scores.",
+  "data_reading": [
+    "Reads weekly input and output CSV files via pd.read_csv() from the competition input directory.",
+    "Merges input tracking data with output target coordinates on game_id, play_id, nfl_id, and frame_id.",
+    "Persists engineered features as .parquet files with accompanying JSON metadata for reproducibility."
+  ],
+  "data_processing": [
+    "Filters rows to player_to_predict == True.",
+    "Converts height strings to inches and one-hot encodes categorical positions and roles.",
+    "Applies sin/cos trigonometric transformations to orientation and direction columns to handle circular continuity.",
+    "Bins yardline numbers into field thirds and computes Euclidean distances to ball landing spots, sidelines, and endzones.",
+    "Groups tracking data by play and player to calculate maximum kinematic metrics per sequence.",
+    "Imputes missing values with medians for baseline modeling."
+  ],
+  "features_engineering": [
+    "position one-hot encodings",
+    "role one-hot encodings",
+    "height in inches",
+    "weight",
+    "is_offense flag",
+    "velocity_x/y components",
+    "speed_squared",
+    "is_moving flag",
+    "momentum_x/y/magnitude",
+    "kinetic_energy",
+    "yardline",
+    "field_third (binned)",
+    "moving_left flag",
+    "ball_land_x/y",
+    "dist_to_ball_land",
+    "frames_to_predict",
+    "is_targeted_receiver",
+    "is_passer",
+    "is_wide_receiver",
+    "dist_to_sideline",
+    "dist_to_endzone",
+    "eyes_on_qb",
+    "eyes_on_receiver",
+    "max_speed_this_play",
+    "max_acceleration_this_play",
+    "max_kinetic_energy_this_play",
+    "max_momentum_this_play"
+  ],
+  "models": [],
+  "frameworks_used": [
+    "pandas",
+    "numpy",
+    "matplotlib",
+    "seaborn",
+    "scikit-learn"
+  ],
+  "loss_functions": [],
+  "cv_strategy": "",
+  "ensembling": "",
+  "insights": [
+    "Trigonometric encoding of orientation and direction prevents artificial discontinuities at 0\u00b0/360\u00b0 boundaries.",
+    "Distance to the ball landing spot strongly correlates with receiver and defender route adjustments.",
+    "Player awareness metrics (orientation toward QB or targeted receiver) provide actionable spatial context beyond raw coordinates.",
+    "Momentum and kinetic energy features capture physical constraints that raw speed and acceleration miss.",
+    "Field position (yardline/third) fundamentally shifts route concepts and target location distributions.",
+    "Grouping tracking data by play to extract maximum kinematic metrics reveals player capability ceilings that frame-level data obscures."
+  ],
+  "critical_findings": [],
+  "what_did_not_work": [],
+  "source_url": "https://www.kaggle.com/code/ajaysamp/physics-football-features-eda-updated",
+  "votes": 21
+}

@@ -1,0 +1,59 @@
+{
+  "summary": "The notebook benchmarks four OCR and multimodal LLM approaches on the SROIE receipt dataset to extract total amounts, comparing their accuracy and inference latency. It implements a resilient API fallback chain for Gemini models, traditional Tesseract OCR with regex parsing, EasyOCR, and a pre-finetuned LayoutLMv3 transformer. The author demonstrates that while traditional OCR and standard deep learning OCR struggle with accuracy, a pre-finetuned LayoutLMv3 model significantly outperforms them, and Gemini's zero-shot capability shows strong potential despite API rate limits. A key takeaway is the practical trade-off between inference speed, computational cost, and extraction accuracy when selecting OCR tools for financial documents. The notebook also includes a Streamlit application to deploy the Gemini inference pipeline and discusses the risk of model memorization on benchmark datasets.",
+  "purpose": "other",
+  "competition_flow": "Loads SROIE receipt images and ground truth labels, processes them through Tesseract, EasyOCR, LayoutLMv3, and Gemini APIs, normalizes the extracted totals, and outputs accuracy/latency benchmarks alongside a Streamlit deployment script.",
+  "data_reading": [
+    "Reads `.jpg` images from the SROIE test directory using `cv2.imread` and `PIL.Image.open`.",
+    "Loads corresponding `.txt` label files using `json.load` with a fallback to raw text reading for malformed files."
+  ],
+  "data_processing": [
+    "Converts BGR to RGB.",
+    "Normalizes currency strings by stripping symbols (`$`, `RM`, commas, spaces) and converting to floats.",
+    "Applies regex patterns to extract monetary values from OCR text.",
+    "Uses a tolerance threshold (<0.05 or <0.01) to compare predicted vs. ground truth totals."
+  ],
+  "features_engineering": [],
+  "models": [
+    "gemini-3-pro-preview",
+    "gemini-2.0-flash",
+    "gemini-1.5-flash",
+    "gemini-1.5-flash-8b",
+    "Tesseract v4",
+    "EasyOCR",
+    "LayoutLMv3ForTokenClassification"
+  ],
+  "frameworks_used": [
+    "google.generativeai",
+    "pytesseract",
+    "easyocr",
+    "transformers",
+    "torch",
+    "pandas",
+    "matplotlib",
+    "seaborn",
+    "altair",
+    "streamlit",
+    "pyngrok",
+    "kaggle_secrets"
+  ],
+  "loss_functions": [],
+  "cv_strategy": "",
+  "ensembling": "",
+  "insights": [
+    "Pre-finetuned LayoutLMv3 achieves significantly higher accuracy than traditional OCR or standard deep learning OCR baselines on SROIE.",
+    "API rate limits make large-scale Gemini benchmarking impractical without local deployment or quota management.",
+    "Currency normalization and tolerance-based matching are critical for fair evaluation across different OCR outputs.",
+    "Zero-shot multimodal LLMs can outperform specialized OCR models on structured financial documents but require careful prompt engineering and fallback strategies."
+  ],
+  "critical_findings": [
+    "The author explicitly questions whether Gemini's high accuracy might stem from memorizing the SROIE dataset rather than genuine OCR capability, highlighting a potential data leakage risk.",
+    "EasyOCR achieved only ~22% accuracy despite GPU acceleration, while Tesseract showed low accuracy but high speed.",
+    "PaddleOCR was dropped due to frequent errors and poor efficiency compared to EasyOCR."
+  ],
+  "what_did_not_work": [
+    "PaddleOCR was explicitly dropped due to numerous errors, low speed, and poor efficiency compared to EasyOCR.",
+    "Hitting the 2 requests/minute API limit made direct Gemini 2.5 Pro/3 Pro benchmarking impractical for full dataset evaluation."
+  ],
+  "source_url": "https://www.kaggle.com/code/valentintosetchi/ocr-models-judge",
+  "votes": 36
+}

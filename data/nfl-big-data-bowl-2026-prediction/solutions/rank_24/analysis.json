@@ -1,0 +1,54 @@
+{
+  "summary": "The author entered the competition late and adapted a spatio-temporal transformer architecture originally designed for 3D human motion prediction to predict player trajectories. The core innovation was a virtual pre/post pass-cut data augmentation technique that generated approximately 200k additional training samples, significantly improving model robustness. Training was stabilized using a modified TemporalHuber loss with time-decay weighting, and the final submission combined 48 models across different output horizons via a weighted mean. The author also noted that feature count yields diminishing returns and that validation metrics often misalign with the leaderboard, requiring careful trust calibration.",
+  "extensive_summary": "## Model Architecture\nThe solution centers on an **ST-transformer play-level model** adapted from a paper on 3D human motion prediction. The model takes input tensors of shape `(WINDOW, NUM_PLAYERS, FEATURES)` and predicts output shapes of `(HORIZON, NUM_PLAYERS, 2)`. Key hyperparameters include a hidden dimension of 64, 8 temporal and spatial attention heads, 4 layers, 0.05 dropout, and a feedforward dimension of 256. The author also injected edge biases (sameteam_ij, distance_ij, closing_speed_ij) into the spatial attention output, though noted the gain was marginal.\n\n## Feature Engineering & Processing\nRaw play-by-play data is transformed into a curated set of kinematic, spatial, and temporal features. The author observed diminishing returns from feature complexity and pruned the set down to basic relative distances, velocities, and frame-count context markers. Player role and position are embedded as 8-dimensional vectors. The most critical processing step is **virtual pre&post pass cut augmentation**, which shifts the pass event window forward or backward in time. This generates ~200k extra samples, with the pre-pass variant being crucial for exposing all player roles to the output targets. Augmented data is merged with original data and trained with a 0.5 loss weight.\n\n## Training & Validation\nTraining utilizes a modified **TemporalHuber Loss** that applies a time-decay exponential weight (`exp(-time_decay * t)`) and masks invalid frames, which the author found highly stabilizing. Data is split by week across 18 weeks into 6 specific folds, with two random seeds per fold yielding 12 models per run. The author observed frequent misalignment between CV and LB scores, noting that late-stage CV improvements often indicate overfitting rather than genuine gains, and thus prioritized LB performance.\n\n## Submission\nThe final submission aggregates **48 models** across 4 distinct training trials (each targeting different output horizons). Models are combined using a simple weighted mean to produce the final trajectory predictions.",
+  "rank": 24,
+  "competition_flow": "Raw play-by-play data is processed into kinematic and spatial features, augmented via virtual pass-cut shifting to generate ~200k extra samples, fed into an ST-transformer trained with a time-decayed TemporalHuber loss, validated via a week-based 6-fold split, and submitted as a weighted ensemble of 48 models across different output horizons.",
+  "data_reading": [],
+  "data_processing": [
+    "Virtual pre/post pass cut augmentation generates ~200k additional samples",
+    "Augmented data merged with original data at a 0.5 loss weight",
+    "Feature set pruned to basic relative distances/velocities and frame counts",
+    "Player role and position embedded as 8-dim vectors"
+  ],
+  "features_engineering": [
+    "Coordinates (x, y), orientation (o), direction (dir)",
+    "Physical stats (player_height_feet, player_weight)",
+    "Kinematics (s, velocity_x/y, accel_x/y)",
+    "Ball metrics (ball_land_x/y, ball_dx/dy, distance_to_ball, ball_dir_x/y, ball_closing_speed)",
+    "Spatial relationships (dist_from_right, distance_to_goal, passer/receiver alignment/distance)",
+    "Temporal markers (post_pass, frame_to_pass, input/output_frame_count)",
+    "8-dim embeddings for player_role and player_position"
+  ],
+  "models": [
+    "ST-transformer play-level model"
+  ],
+  "frameworks_used": [
+    "pytorch"
+  ],
+  "loss_functions": [
+    "TemporalHuber Loss"
+  ],
+  "cv_strategy": "Week-based split across 18 weeks into 6 specific folds; two random seeds per fold; 12 models per training run.",
+  "ensembling": "Final submission combined 48 models across 4 training trials (each with different output horizons) using a simple weighted mean.",
+  "insights": [
+    "Adding features beyond a certain point yields diminishing returns, making basic relative distances and frame context sufficient.",
+    "Time-decay weighting in the TemporalHuber loss significantly stabilizes training dynamics.",
+    "Late-stage CV improvements often signal overfitting rather than genuine generalization, making LB trust more reliable.",
+    "Virtual pre-pass cut augmentation is critical because it forces the model to predict for all player roles, drastically improving robustness."
+  ],
+  "critical_findings": [
+    "Virtual pre-pass cut augmentation is more impactful than post-pass cut because it forces the model to predict outputs for all player roles, not just the primary ones.",
+    "CV and LB scores frequently misalign (CV drops while LB rises), indicating that validation metrics can be misleading for this specific data distribution and time-split structure."
+  ],
+  "what_did_not_work": [],
+  "github_repos": [],
+  "papers": [
+    {
+      "title": "A Spatio-temporal Transformer for 3D Human Motion Prediction",
+      "url": "https://arxiv.org/abs/2004.08692",
+      "arxiv_id": "2004.08692"
+    }
+  ],
+  "other_solution_refs": [],
+  "source_url": "https://www.kaggle.com/competitions/nfl-big-data-bowl-2026-prediction/discussion/651651"
+}

@@ -1,0 +1,135 @@
+# arc-prize-2025: top public notebooks
+
+The top-voted notebooks primarily focus on inference optimization and baseline fine-tuning pipelines for the ARC-AGI competition, with strong emphasis on dynamic resource scheduling, VRAM management, and custom decoding strategies. Several entries demonstrate how to adapt causal LLMs for grid-based reasoning through text formatting, PEFT/LoRA, and geometric/color augmentations, while others highlight efficient parallel execution and memory-aware task profiling. The community also provides foundational EDA and visualization tools to understand dataset structure before modeling.
+
+## Common purposes
+- inference
+- training
+- tutorial
+- utility
+- baseline
+- eda
+
+## Competition flows
+- Loads ARC challenge JSONs, dynamically profiles memory and time per puzzle, parallelizes execution across GPUs/CPUs to maximize steps within a 12-hour budget, and outputs a formatted submission.json.
+- Reads test puzzles from JSON, dynamically profiles memory and time per task, parallelizes inference across GPUs/CPU within a 12-hour budget, and outputs a submission.json file.
+- Loads ARC JSON data, formats grids into text sequences, fine-tunes a causal LLM with PEFT and custom embedding shrinking, and generates submissions via a custom Turbo DFS beam search decoder.
+- Loads ARC test challenges, computes a simplicity score per task, profiles GPU memory usage, schedules multiprocessing jobs across GPUs with dynamic iteration allocation based on remaining time, runs the CompressARC solver, and outputs a submission.json.
+- Loads ARC-AGI-2 JSON queries and replies, applies geometric and color augmentations, fine-tunes a Mistral-NeMo-Minitron model with LoRA and partial layer freezing, and generates competition submissions using a custom Turbo DFS inference engine with probability-based solution selection.
+- Loads ARC-AGI 2025 training and evaluation JSON files, then iterates through all 1120 tasks to render and display their input/output grid pairs using custom matplotlib plotting functions.
+- Loads ARC grid tasks from JSON files, converts them to text sequences via a custom formatter, fine-tunes a causal language model using PEFT and Unsloth with data augmentation, and generates predictions using a custom depth-first search inference loop with multi-guess scoring.
+- Loads ARC challenge JSON files, constructs few-shot prompts with training examples, feeds them to a quantized Qwen-3 model via a custom chatbot wrapper, parses the generated text into grid predictions, and saves them in the required Kaggle submission format.
+- Loads ARC JSON challenge files, computes statistical and visual metrics on grid sizes and color usage, and outputs a dummy all-zero submission for the test set.
+- Loads ARC-AGI test puzzles from JSON, runs the CompressARC model in parallel with dynamic memory/time scheduling to generate predictions, and outputs a formatted submission.json with optional visualization and accuracy metrics.
+
+## Data reading
+- Reads puzzle definitions and ground truth solutions from local JSON files (arc-agi_{split}_challenges.json, arc-agi_training_solutions.json) using Python's json module.
+- Loads test challenges from ../input/arc-prize-2025/arc-agi_{split}_challenges.json using Python's json module.
+- Parses challenge and solution data from JSON files into Python dictionaries/lists, then formats them into train/query/reply text sequences.
+- Reads task definitions from ../input/arc-prize-2025/arc-agi_{split}_challenges.json using json.load(), extracting input matrices as numpy arrays.
+- JSON files containing ARC challenge queries and replies are loaded directly into Python dictionaries using json.loads and parsed into a custom ArcDataset object.
+- Reads nested JSON files (arc-agi_training_challenges.json, arc-agi_training_solutions.json, and corresponding evaluation files) from /kaggle/input/arc-prize-2025/ using Python's built-in json.load() function.
+- JSON files containing ARC challenge queries and replies are parsed into ArcDataset objects, which store grid inputs and outputs as NumPy arrays.
+- JSON files loaded via json.load() from /kaggle/input/arc-prize-2025/, including training/evaluation challenges, solutions, and sample submission templates.
+- JSON files are loaded via Python's json module into dictionaries, then parsed into an ARCDataset class that maps task IDs to train/test/eval input-output grid lists.
+- Reads puzzle inputs and metadata from ../input/arc-prize-2025/arc-agi_{split}_challenges.json using Python's json module. Loads ground truth solutions from arc-agi_training_solutions.json and arc-agi_evaluation_solutions.json for visualization and accuracy calculation.
+
+## Data processing
+- No explicit preprocessing or cleaning is shown in this notebook; it delegates task-specific processing to external modules (preprocessing.py, solve_task.py). Mentions a minor code modification to layers.direction_share() for a 5-10% speedup.
+- Custom text formatting for ARC grids, dataset augmentations (rot90, transpose, frequency-based color permutations), sequence length capping, packing during training, and embedding/tokenizer shrinking to reduce VRAM usage.
+- Custom ArcDataset class handles augmentations including transposition, 90-degree rotations, and color permutations; sequences are packed, filtered by length, and tokenized with a fast tokenizer; model embeddings are dynamically shrunk to reduce VRAM usage.
+- Grids are converted to text tokens via ArcFormatter for LLM consumption. Data augmentation applies rotations (rot90), transpositions (transpose), and value/color permutations (permute_mod) to increase training diversity. Sequences are truncated to fit model context windows, and training uses packing with a custom data collator.
+- Text is tokenized via the Qwen tokenizer; prompts are constructed by concatenating training examples; model outputs are stripped of whitespace/newlines, parsed for [[...]] delimiters, and converted to lists via ast.literal_eval; grid validity is verified row-by-row.
+- No explicit preprocessing or cleaning in this notebook; relies on external imported modules (preprocessing.py, solve_task.py, etc.) for task handling. The notebook itself focuses on scheduling, memory/time budgeting, and JSON serialization for submission.
+
+## Models
+- CompressARC
+- Causal LLM (via transformers/unsloth)
+- Mistral-NeMo-Minitron
+- Qwen-3 (0.6B via Kaggle Hub, fallback to 7B)
+
+## Frameworks used
+- torch
+- numpy
+- transformers
+- peft
+- unsloth
+- trl
+- datasets
+- huggingface_hub
+- tokenizers
+- pandas
+- matplotlib
+- seaborn
+- scikit-learn
+- kagglehub
+- multiprocessing
+
+## Loss functions
+- Cross-entropy (via trl.DataCollatorForCompletionOnlyLM)
+
+## Ensembling
+- Generates two prediction attempts per puzzle for the final submission, but no explicit ensemble weighting or voting strategy is detailed.
+- Uses a multi-guess inference strategy with a custom depth-first search (turbo_dfs) algorithm to generate multiple candidate outputs per task, followed by a probability-based selection algorithm to rank and pick the best solution.
+- Generates two attempts per puzzle via parallel execution; no explicit ensembling or post-processing is applied.
+
+## Insights
+- Dynamically profiling memory and time per task enables safe, greedy GPU scheduling that prevents out-of-memory errors while maximizing throughput.
+- Setting global seeds and disabling CUDA non-deterministic algorithms ensures full reproducibility across parallel processes.
+- Visualizing predictions against ground truth immediately after submission helps quickly verify solution correctness and debug failures.
+- Parallelizing puzzle solving across multiple GPUs and CPUs drastically improves throughput compared to sequential execution.
+- Dynamic memory and time profiling per puzzle enables optimal resource allocation and prevents OOM errors or idle hardware.
+- A simple modification to layers.direction_share() can yield a 5-10% inference speedup without architectural changes.
+- Shrinking the tokenizer vocabulary and model embeddings to only keep used tokens significantly reduces VRAM requirements without harming performance.
+- Custom color permutation augmentations based on frequency counts help improve model generalization across ARC tasks.
+- Turbo DFS beam search with probability tracking enables efficient exploration of multiple candidate solutions during inference.
+- Prioritizing simpler tasks with longer training times yields better overall leaderboard scores than uniform training budgets.
+- Dynamically distributing compute based on task complexity and remaining wall-clock time maximizes GPU utilization.
+- Profiling per-task GPU memory usage is essential for stable multi-GPU multiprocessing scheduling without OOM errors.
+- Partial layer freezing significantly reduces trainable parameters and training time without severely impacting performance.
+- Turbo DFS inference with probability tracking allows efficient exploration of the solution space under strict token limits.
+- Color permutation augmentations help the model generalize across different color mappings in ARC tasks.
+- Embedding shrinking is an effective VRAM optimization technique for large models on limited GPU memory.
+- Visualizing the complete task set reveals the structural diversity and scale of ARC-AGI challenges more effectively than statistical summaries alone.
+- Custom matplotlib colormaps and grid overlays significantly improve the interpretability of small integer-based grids.
+- A modular plotting function can be easily repurposed for inspecting custom task inputs or debugging model predictions.
+- Converting grid-based ARC tasks to text sequences enables standard causal LLM fine-tuning for spatial reasoning.
+- Shrinking tokenizer vocabularies and embedding tables significantly reduces VRAM usage without harming performance.
+- Multi-GPU task distribution and deterministic seeding are critical for reproducible, scalable training.
+- Depth-first search inference with probability tracking outperforms standard greedy or beam decoding for ARC tasks.
+- In-context learning with a causal LLM can solve abstract reasoning tasks without parameter updates or fine-tuning.
+- Managing context window limits via history truncation is necessary to prevent token overflow during multi-example prompting.
+- Parsing raw LLM text output requires robust delimiter detection and type validation to ensure compatibility with competition submission formats.
+- The notebook demonstrates how to systematically quantify structural properties like grid dimensions, color diversity, and identity mappings in ARC tasks to guide model design.
+- It shows a reusable pattern for loading and visualizing ARC's nested JSON format with a custom colormap and normalization.
+- Readers learn how to quickly profile dataset statistics to identify potential modeling biases or data distribution patterns.
+- Dynamic memory and time-aware scheduling prevents GPU underutilization and fits within strict competition time budgets.
+- Parallelizing puzzle solving across multiple GPUs and CPUs significantly increases the number of steps per puzzle compared to sequential execution.
+- Automated visualization and accuracy calculation streamline the evaluation of grid-based reasoning model outputs.
+
+## Critical findings
+- The author notes a significant and unexplained discrepancy between the public evaluation score (~115) and the semi-private evaluation scores ([4.17, 5, 5, 5.42, 5.83]).
+
+## What did not work
+- Solving puzzles sequentially in series vastly underutilized the GPU and exceeded the time budget, prompting a shift to parallel execution.
+
+## Notable individual insights
+- votes 918 ([暗黑AGI]CompressARC): Dynamically profiling memory and time per task enables safe, greedy GPU scheduling that prevents out-of-memory errors while maximizing throughput.
+- votes 830 (ARC-AGI Without Pretraining): Parallelizing puzzle solving across multiple GPUs and CPUs drastically improves throughput compared to sequential execution.
+- votes 438 ([LB 2.08] baseline from 1st place of 2024): Shrinking the tokenizer vocabulary and model embeddings to only keep used tokens significantly reduces VRAM requirements without harming performance.
+- votes 370 (ARC | CompressARC + Easiest-First Strategy): Prioritizing simpler tasks with longer training times yields better overall leaderboard scores than uniform training budgets.
+- votes 348 ([LB 5.83] baseline from 1st place of 2024): The author notes a significant and unexplained discrepancy between the public evaluation score (~115) and the semi-private evaluation scores.
+- votes 287 (ARC-AGI 2025: Visualization all 1000+120 tasks): Visualizing the complete task set reveals the structural diversity and scale of ARC-AGI challenges more effectively than statistical summaries alone.
+- votes 262 (Solving ARC Prize 2025 with Qwen-3 Transformer): In-context learning with a causal LLM can solve abstract reasoning tasks without parameter updates or fine-tuning.
+
+## Notebooks indexed
+- #918 votes [[notebooks/votes_01_boristown-agi-compressarc/notebook|[暗黑AGI]CompressARC]] ([kaggle](https://www.kaggle.com/code/boristown/agi-compressarc))
+- #830 votes [[notebooks/votes_02_iliao2345-arc-agi-without-pretraining/notebook|ARC-AGI Without Pretraining]] ([kaggle](https://www.kaggle.com/code/iliao2345/arc-agi-without-pretraining))
+- #438 votes [[notebooks/votes_03_octaviograu-lb-2-08-baseline-from-1st-place-of-2024/notebook|[LB 2.08] baseline from 1st place of 2024]] ([kaggle](https://www.kaggle.com/code/octaviograu/lb-2-08-baseline-from-1st-place-of-2024))
+- #370 votes [[notebooks/votes_04_kerta27-arc-compressarc-easiest-first-strategy/notebook|ARC | CompressARC + Easiest-First Strategy]] ([kaggle](https://www.kaggle.com/code/kerta27/arc-compressarc-easiest-first-strategy))
+- #348 votes [[notebooks/votes_05_sanyul-lb-5-83-baseline-from-1st-place-of-2024/notebook|[LB 5.83] baseline from 1st place of 2024]] ([kaggle](https://www.kaggle.com/code/sanyul/lb-5-83-baseline-from-1st-place-of-2024))
+- #287 votes [[notebooks/votes_06_allegich-arc-agi-2025-visualization-all-1000-120-tasks/notebook|ARC-AGI 2025: Visualization all 1000+120 tasks]] ([kaggle](https://www.kaggle.com/code/allegich/arc-agi-2025-visualization-all-1000-120-tasks))
+- #270 votes [[notebooks/votes_07_boristown-baseline-from-1st-place-of-2024/notebook|baseline from 1st place of 2024]] ([kaggle](https://www.kaggle.com/code/boristown/baseline-from-1st-place-of-2024))
+- #262 votes [[notebooks/votes_08_jocelyndumlao-solving-arc-prize-2025-with-qwen-3-transformer/notebook|Solving ARC Prize 2025 with Qwen-3 Transformer]] ([kaggle](https://www.kaggle.com/code/jocelyndumlao/solving-arc-prize-2025-with-qwen-3-transformer))
+- #206 votes [[notebooks/votes_09_mehmetakifciftci-breaking-arc-prize-the-first-50-solution/notebook|Breaking ARC Prize: The First 50% Solution]] ([kaggle](https://www.kaggle.com/code/mehmetakifciftci/breaking-arc-prize-the-first-50-solution))
+- #180 votes [[notebooks/votes_10_itahiro-agi-compressarc-visualization/notebook|[暗黑AGI]CompressARC Visualization]] ([kaggle](https://www.kaggle.com/code/itahiro/agi-compressarc-visualization))

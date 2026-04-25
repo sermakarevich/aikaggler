@@ -1,0 +1,54 @@
+{
+  "summary": "This notebook provides a complete pipeline for the MABe mouse behavior detection competition, combining exploratory data analysis with a hybrid machine learning baseline. It processes 2D tracking coordinates from single-mouse and mouse-pair videos, engineering spatial and temporal features such as squared distances, frame-shifted speeds, and orientation angles. The core model uses LightGBM trained separately for each behavior action, with predictions combined across single and pair configurations. The pipeline includes custom frame-level scoring, threshold-based prediction extraction, and robust post-processing to handle overlapping or missing annotations. Readers should understand how to structure a video tracking baseline, manage memory constraints via downsampling and configuration grouping, and implement competition-specific evaluation metrics.",
+  "purpose": "baseline",
+  "competition_flow": "Loads CSV metadata and parquet tracking files, groups videos by body-part configuration, extracts spatial/temporal features for single and pair mice, trains per-action LightGBM classifiers, generates frame-level predictions with thresholding and post-processing, and outputs a CSV submission.",
+  "data_reading": [
+    "pd.read_csv for train/test metadata",
+    "pd.read_parquet for tracking coordinates and annotations",
+    "polars for some DataFrame manipulations"
+  ],
+  "data_processing": [
+    "Filters out MABe22_ lab videos",
+    "Drops specific headpiece/tail body parts for memory efficiency",
+    "Pivots tracking data and normalizes coordinates by pix_per_cm_approx",
+    "Handles missing values with SimpleImputer",
+    "Downsamples training data via a custom TrainOnSubsetClassifier",
+    "Merges overlapping predictions and fills gaps in post-processing"
+  ],
+  "features_engineering": [
+    "Squared Euclidean distances between tracked body parts",
+    "Shifted frame speed features (10-frame lag)",
+    "Elongation ratio (nose-to-tail vs ear-to-ear)",
+    "Cosine of body orientation angle",
+    "Cross-mouse squared distances, cross-mouse speed, and relative orientation cosine for pair configurations"
+  ],
+  "models": [
+    "LightGBM"
+  ],
+  "frameworks_used": [
+    "lightgbm",
+    "scikit-learn",
+    "polars",
+    "pandas",
+    "numpy",
+    "matplotlib",
+    "seaborn"
+  ],
+  "loss_functions": [],
+  "cv_strategy": "",
+  "ensembling": "Combines predictions from separate single-mouse and pair-mouse LightGBM models per action, applies a 0.27 probability threshold, extracts frame transitions, and uses a custom post-processing function to merge overlapping predictions and fill temporal gaps.",
+  "insights": [
+    "Processing data separately by body_parts_tracked configuration is necessary due to varying feature dimensions.",
+    "Single-mouse and pair-mouse tracking data provide complementary signals for behavior recognition.",
+    "Temporal features like speed and orientation significantly enhance spatial coordinate representations.",
+    "Memory constraints require strategic downsampling and dropping less informative body parts."
+  ],
+  "critical_findings": [
+    "Some tracking videos contain missing coordinate values that must be handled during pivoting.",
+    "The MABe22_ laboratory videos are excluded from processing.",
+    "Memory limits necessitate dropping specific headpiece and tail body parts and downsampling training data to 100k samples."
+  ],
+  "what_did_not_work": [],
+  "source_url": "https://www.kaggle.com/code/taylorsamarel/mabe-challenge-eda-starter-model",
+  "votes": 156
+}

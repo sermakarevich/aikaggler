@@ -1,0 +1,51 @@
+{
+  "summary": "The authors secured 3rd place in the \"Drawing with LLMs\" competition by generating Scalable Vector Graphics (SVGs) from text prompts while strictly adhering to size and content constraints. Their pipeline begins with the Flux.1-schnell diffusion model to create high-quality bitmap candidates, which are then vectorized using vtracer. The core innovation is a differentiable SVG optimization stage using pydiffvg, where path parameters are refined via custom losses combining aesthetic scoring, SigLIP text-image similarity, and MSE fidelity to the original bitmap. A differentiable ImageProcessorTorch bridges the gap between optimization and the competition's evaluation pipeline, ensuring gradients flow correctly through simulated JPEG compression, filtering, and resizing.",
+  "extensive_summary": "## Overall Approach\nThe solution tackles the \"Drawing with LLMs\" competition by generating SVGs that maximize visual fidelity and aesthetic appeal while strictly adhering to size and content constraints. Rather than relying on text embedding hacks, the authors designed a multi-stage pipeline that bridges generative AI, vectorization, and differentiable graphics rendering.\n\n## Bitmap Generation & Vectorization\nThe pipeline begins with the `flux.1-schnell` diffusion model to generate candidate bitmap images. To boost diversity and quality, multiple prompt templates were used, including raw descriptions and stylized variations like \"Beautiful illustration of...\" or \"Simple svg illustration of...\". Eight initial bitmaps were produced per prompt. These were converted to SVGs using `vtracer`, which the authors found effective for clean polygonal vector graphics. Since `vtracer` lacks direct size control, a binary search over input PNG resolution was implemented to ensure the output SVG met the competition's size constraints.\n\n## Candidate Selection & Pre-Optimization\nInitial SVGs were rendered back to PNGs and ranked using `google/siglip-so400m-patch14-384` to measure similarity to the text prompt. The top two candidates underwent a brief 10-iteration optimization using a `pydiffvg`-based optimizer. The candidate with the highest aesthetic score after this stage was selected for the main refinement loop.\n\n## Differentiable SVG Optimization\nThe core refinement stage optimizes SVG parameters (path control points, fill/stroke colors, stroke widths) via `pydiffvg` with an Adam optimizer and cosine annealing with warmup. The total loss combines three components: negative aesthetic predictor scores, negative cosine similarity between SigLIP embeddings of the rendered SVG and the target bitmap, and MSE loss between the processed rendered SVG and the target bitmap. Crucially, the authors implemented `ImageProcessorTorch`, a differentiable PyTorch module that simulates the competition's evaluation pipeline (random crop & resize, JPEG compression, median filter, FFT low-pass filter, bilateral filter) using straight-through estimators where needed. This allows gradients to flow back to the SVG parameters, aligning optimization directly with the evaluation metric.\n\n## Post-Processing & Constraints\nFinal SVGs underwent compression and formatting to meet the 10KB limit, including removing opacity, converting RGB to hex, rounding values, merging paths, optimizing path commands, and pruning paths via binary search on rendering size. A consistent watermark-like signature was also added to match observed patterns in the solution space.",
+  "rank": 3,
+  "competition_flow": "Text prompts are fed into Flux.1-schnell to generate bitmap candidates, which are vectorized via vtracer, ranked by SigLIP similarity, and iteratively refined through differentiable SVG optimization using pydiffvg and custom losses before final compression and formatting to meet size constraints.",
+  "data_reading": [],
+  "data_processing": [
+    "Prompt engineering with multiple templates to generate diverse bitmaps",
+    "Differentiable ImageProcessorTorch simulating evaluation transforms (random crop & resize, JPEG compression, median filter, FFT low-pass filter, bilateral filter)",
+    "Post-processing: removing opacity, converting RGB to hex, rounding values, merging paths, optimizing path commands, binary search for rendering size to meet 10KB constraint"
+  ],
+  "features_engineering": [],
+  "models": [
+    "flux.1-schnell",
+    "vtracer",
+    "google/siglip-so400m-patch14-384",
+    "google/siglip2-base-patch16-224",
+    "pydiffvg"
+  ],
+  "frameworks_used": [
+    "pytorch",
+    "pydiffvg",
+    "vtracer"
+  ],
+  "loss_functions": [
+    "negative aesthetic predictor score",
+    "negative cosine similarity (SigLIP embedding)",
+    "MSE loss"
+  ],
+  "cv_strategy": "",
+  "ensembling": "The pipeline selects the top 2 candidates based on SigLIP similarity, runs a short pre-optimization on both, and chooses the one with the highest aesthetic score for the final 200-iteration optimization, followed by deterministic post-processing and compression to meet the 10KB size constraint.",
+  "insights": [
+    "Implementing a differentiable ImageProcessorTorch that simulates the competition's evaluation pipeline allows gradients to flow correctly to SVG parameters, aligning optimization directly with the scoring metric.",
+    "Using multiple prompt templates with the diffusion model significantly increases candidate diversity and quality without requiring complex sampling strategies.",
+    "A short pre-optimization phase combined with SigLIP-based candidate selection effectively filters out poor initial vectorizations before committing to expensive full optimization."
+  ],
+  "critical_findings": [
+    "vtracer lacks direct control over output SVG size, necessitating a binary search over input PNG resolution to reliably meet the 10KB constraint.",
+    "The competition's evaluation pipeline applies specific transforms (random crop, JPEG compression, filters) that must be simulated in the optimization loop to prevent gradient mismatch and ensure score improvements translate to actual metric gains."
+  ],
+  "what_did_not_work": [],
+  "github_repos": [],
+  "papers": [],
+  "other_solution_refs": [
+    {
+      "description": "Final submission code",
+      "url": "https://www.kaggle.com/code/cnumber/fork-of-flux-baseline-75c113?scriptVersionId=242056669"
+    }
+  ],
+  "source_url": "https://www.kaggle.com/competitions/drawing-with-llms/discussion/581024"
+}

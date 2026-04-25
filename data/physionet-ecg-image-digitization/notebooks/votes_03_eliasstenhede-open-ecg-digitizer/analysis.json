@@ -1,0 +1,37 @@
+{
+  "summary": "This notebook demonstrates a complete inference pipeline for digitizing ECG images into time-series voltage values. It chains together a segmentation UNet, perspective correction, pixel-size estimation, and a lead-identification UNet to extract and align ECG traces from raw PNG files. The author emphasizes that the pipeline relies entirely on pre-trained weights without competition-specific tuning, making it a reproducible baseline. A key takeaway is that adding synthetic noise to input images significantly improves segmentation robustness on generated or synthetic ECGs. Readers should understand how modular computer vision components can be orchestrated to solve a complex medical image digitization task.",
+  "purpose": "inference",
+  "competition_flow": "Loads ECG PNG images and test metadata, processes them through a multi-stage segmentation and alignment pipeline to extract voltage values per lead, and writes the results to a CSV submission file.",
+  "data_reading": [
+    "Reads PNG images using torchvision.io.read_image, normalizes pixel values to [0, 1], and unsqueezes to (1, C, H, W) tensors.",
+    "Loads test metadata and lead specifications from a CSV file using pandas."
+  ],
+  "data_processing": [
+    "Resizes images via bilinear interpolation to a maximum dimension of 3000 pixels to balance accuracy and VRAM usage.",
+    "Adds synthetic Gaussian-like noise to input images to improve segmentation robustness on generated/fake ECGs.",
+    "Replaces NaN signal values with the lead's mean voltage before saving."
+  ],
+  "features_engineering": [],
+  "models": [
+    "UNet"
+  ],
+  "frameworks_used": [
+    "pytorch",
+    "torchvision"
+  ],
+  "loss_functions": [],
+  "cv_strategy": "",
+  "ensembling": "",
+  "insights": [
+    "Adding synthetic noise to input images improves segmentation performance on generated or synthetic ECG images compared to real ones.",
+    "Decoupling digitization into modular stages (segmentation, perspective correction, pixel scaling, lead identification) allows flexible handling of varying image qualities and layouts.",
+    "Pre-trained model weights can be directly applied to the competition dataset without retraining or hyperparameter tuning if the input distribution is reasonably aligned."
+  ],
+  "critical_findings": [
+    "The segmentation UNet was trained on real images but performs better on generated images when synthetic noise is added.",
+    "No hyperparameters were tuned on the competition training set; the author only verified visual output on a single folder."
+  ],
+  "what_did_not_work": [],
+  "source_url": "https://www.kaggle.com/code/eliasstenhede/open-ecg-digitizer",
+  "votes": 313
+}

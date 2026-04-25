@@ -1,0 +1,21 @@
+{
+  "id": "sohier/cmi-2025-demo-submission",
+  "id_no": 83969988,
+  "title": "CMI 2025 Demo Submission",
+  "code_file": "cmi-2025-demo-submission.ipynb",
+  "language": "python",
+  "kernel_type": "notebook",
+  "is_private": false,
+  "enable_gpu": false,
+  "enable_tpu": false,
+  "enable_internet": false,
+  "keywords": [],
+  "dataset_sources": [],
+  "kernel_sources": [],
+  "competition_sources": [
+    "cmi-detect-behavior-with-sensor-data"
+  ],
+  "model_sources": [],
+  "docker_image": "gcr.io/kaggle-images/python@sha256:3223337db7786b068bfeac3a1b741bf0d572a4bf309735b45692de873b7758db",
+  "machine_shape": "None"
+}

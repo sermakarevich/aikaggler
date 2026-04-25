@@ -1,0 +1,99 @@
+{
+  "summary": "The author secured 2nd place by focusing on stage 2 segmentation and post-processing for ECG image digitization. Key innovations included replacing competition data with original 500Hz PTB-XL signals to ensure consistent sampling, designing sparse masks with fractional y-coordinate distribution for sub-pixel precision, and building a 2.5D series model alongside a whole-image model. The pipeline leveraged timm encoders with a custom decoder, fused multi-lead features via conv2d, and optimized post-processing with weighted averaging and scipy resampling to maximize SNR.",
+  "extensive_summary": "## Data Strategy & Mask Creation\nThe solution builds on @hengck23's baseline for stages 0 and 1, focusing primarily on stage 2 segmentation. A major data insight was replacing the competition's resampled signals with the original 500Hz PTB-XL time-series data, which standardized sampling positions and improved CV/LB scores. To handle potential private-set difficulties, a small amount of synthetic `0015` wrinkled data was injected per epoch. Crucially, the author abandoned dense masks in favor of sparse masks (max 2 pixels per column), distributing labels to integer and integer+1 pixels based on fractional y-coordinates. This enabled sub-pixel reconstruction via weighted averaging during post-processing.\n\n## Model Architectures\nTwo complementary models were developed. The **whole model** uses timm encoders paired with @hengck23's `MyCoordUnetDecoder`, cropping the top image portion and resizing to (1280, 5600). The **series model** is a 2.5D architecture that takes four ECG series as input, crops each to a \u00b13mV (240px) range around zero, and processes them through a shared U-Net encoder. Features are fused across leads in the decoder paths using three tested modules: conv2d, shared conv2d, and conv3d. The conv2d fusion module proved most effective for mixing depth information and recovering masked/artifacted regions by leveraging inter-lead correlations.\n\n## Training & Post-Processing\nTraining utilized BCEWithLogitsLoss(pos_weight=20), AdamW, CosineAnnealingLR, and gradient checkpointing for memory efficiency. Augmentations included brightness/contrast shifts, shadows, Gaussian blur, coarse dropout, grayscale conversion, and horizontal flips for masks. During inference, horizontal flip TTA was applied. Post-processing converted mask predictions to time-series data by computing weighted y-coordinate averages per column, followed by `scipy.signal.resample`, which outperformed alternative resampling methods. Final submissions ensembled 6 to 11 models across various EfficientNet/EfficientNetV2 encoders and architectures.",
+  "rank": 2,
+  "competition_flow": "Raw ECG images are processed through a baseline stage 0/1 pipeline, then fed into sparse mask segmentation models (whole and 2.5D series) to predict pixel-wise signal positions, followed by weighted averaging and scipy resampling to reconstruct time-series data for SNR-based evaluation.",
+  "data_reading": [],
+  "data_processing": [
+    "Replaced competition data with original 500Hz PTB-XL signals",
+    "Added small amount of synthetic `0015` wrinkled data per epoch",
+    "Created sparse masks (max 2 pixels/column) with fractional y-coordinate distribution",
+    "Cropped images to (1280, 5600) or \u00b13mV (240px) ranges",
+    "Applied image augmentations (brightness/contrast, shadows, blur, dropout, grayscale) and mask augmentations (horizontal flip)",
+    "Used gradient checkpointing for memory optimization"
+  ],
+  "features_engineering": [],
+  "models": [
+    "MyCoordUnetDecoder",
+    "U-Net",
+    "2.5D segmentation model",
+    "timm encoders (EfficientNet B7, EfficientNetV2 L, EfficientNetV2 M, EfficientNet B6, EfficientNet B4)",
+    "conv2d fusion module",
+    "shared conv2d fusion module",
+    "conv3d fusion module"
+  ],
+  "frameworks_used": [
+    "timm",
+    "scipy",
+    "albumentations",
+    "torch"
+  ],
+  "loss_functions": [
+    "BCEWithLogitsLoss(pos_weight=20)"
+  ],
+  "cv_strategy": "",
+  "ensembling": "Ensembled 6 to 11 models using various EfficientNet/EfficientNetV2 encoders with whole or series architectures, applied horizontal flip TTA, and used weighted averaging with scipy resampling for mask-to-series conversion.",
+  "insights": [
+    "Pushing medium-to-high SNR images higher improves the final score more than focusing on low-SNR cases.",
+    "Sparse masks with fractional y-coordinate distribution enable sub-pixel precision and higher reconstruction SNR than dense masks.",
+    "Fusing features across ECG leads via conv2d effectively shares phase and amplitude information, improving predictions on masked/artifacted regions.",
+    "Gradient checkpointing is highly effective for reducing activation memory consumption with high-resolution images."
+  ],
+  "critical_findings": [
+    "Replacing competition data with original 500Hz PTB-XL signals improved consistency in sampling positions and boosted LB score by ~0.8dB.",
+    "Dense masks covering the entire signal line did not yield high reconstruction SNR, whereas sparse masks annotated at most 2 pixels per column performed significantly better.",
+    "LSTM fusion modules performed poorly, likely due to parameter settings, while conv2d outperformed conv3d for mixing depth information in the 2.5D model."
+  ],
+  "what_did_not_work": [
+    "LSTM fusion modules performed poorly (possibly due to poor parameter settings)",
+    "Synthetic data provided only marginal improvements beyond competition data alone"
+  ],
+  "github_repos": [
+    {
+      "url": "https://github.com/someya-takashi/physionet-image-digitization",
+      "role": "solution"
+    }
+  ],
+  "papers": [
+    {
+      "title": "ECG-Image-Kit: a synthetic image generation toolbox to facilitate deep learning-based electrocardiogram digitization",
+      "url": "https://doi.org/10.1088/1361-6579/ad4954",
+      "arxiv_id": null
+    },
+    {
+      "title": "ECG-Image-Database: A dataset of ECG images with real-world imaging and scanning artifacts; a foundation for computerized ECG image digitization and analysis",
+      "url": "https://doi.org/10.48550/arXiv.2409.16612",
+      "arxiv_id": "2409.16612"
+    },
+    {
+      "title": "PTB-XL, a large publicly available electrocardiography dataset (version 1.0.3)",
+      "url": "https://doi.org/10.13026/kfzx-aw45",
+      "arxiv_id": null
+    },
+    {
+      "title": "PTB-XL: A Large Publicly Available ECG Dataset",
+      "url": "https://doi.org/10.1038/s41597-020-0495-6",
+      "arxiv_id": null
+    },
+    {
+      "title": "PhysioBank, PhysioToolkit, and PhysioNet: Components of a new research resource for complex physiologic signals",
+      "url": "https://doi.org/10.1161/01.CIR.101.23.e215",
+      "arxiv_id": null
+    }
+  ],
+  "other_solution_refs": [
+    {
+      "description": "Baseline notebook for stages 0 and 1",
+      "url": "https://www.kaggle.com/code/hengck23/demo-submission"
+    },
+    {
+      "description": "Metric discussion thread",
+      "url": "https://www.kaggle.com/competitions/physionet-ecg-image-digitization/discussion/663901"
+    },
+    {
+      "description": "Inference code notebook",
+      "url": "https://www.kaggle.com/code/takashisomeya/physionet-2nd-place-submission"
+    }
+  ],
+  "source_url": "https://www.kaggle.com/competitions/physionet-ecg-image-digitization/discussion/669871"
+}

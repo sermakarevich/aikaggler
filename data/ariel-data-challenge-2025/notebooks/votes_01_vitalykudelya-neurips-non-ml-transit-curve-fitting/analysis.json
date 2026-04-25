@@ -1,0 +1,37 @@
+{
+  "summary": "This notebook demonstrates a physics-informed, non-machine learning baseline for predicting planetary transit spectra in the Ariel Data Challenge. It processes raw sensor data by applying calibration corrections (gain, offset, dark current, flat fielding, and linear correction), cropping to relevant wavelengths, and aggregating spatial/temporal dimensions. The core algorithm detects transit ingress/egress phases via signal gradients and uses scipy.optimize.minimize with the Nelder-Mead method to find a single scaling constant that minimizes the residual error of a cubic polynomial fit across the transit window. The author shows that a simple optimization-based approach can generate valid submissions without training neural networks or tree models. Readers should note the importance of careful sensor calibration, phase detection heuristics, and the assumption that the spectral scaling factor is wavelength-independent in this simplified recipe.",
+  "purpose": "baseline",
+  "competition_flow": "Loads raw FGS1 and AIRS-CH0 sensor parquet files alongside calibration masks, applies gain/offset/dark/flat corrections and temporal binning, detects transit phases via gradient analysis, optimizes a constant spectral scaling factor using Nelder-Mead to minimize cubic polynomial residuals, and outputs a CSV submission with repeated predictions and a fixed uncertainty value.",
+  "data_reading": [
+    "Reads *_signal_0.parquet and *_calibration_0/{dark,dead,flat,linear_corr}.parquet files per planet, converts to numpy arrays, and loads adc_info.csv and test_star_info.csv for metadata."
+  ],
+  "data_processing": [
+    "Applies ADC gain/offset scaling, subtracts dark current scaled by time step, divides by flat field (masking dead/hot pixels), applies linear correction polynomials per pixel, crops to wavelengths 40-321, crops spatial ROI (center pixels), aggregates spatial dimensions via mean, computes differential photometry (alternating mean subtraction), and bins time steps by averaging."
+  ],
+  "features_engineering": [],
+  "models": [],
+  "frameworks_used": [
+    "numpy",
+    "pandas",
+    "scipy.optimize",
+    "scipy.stats",
+    "scipy.signal",
+    "sklearn.metrics",
+    "pqdm",
+    "astropy.stats",
+    "plotly.express"
+  ],
+  "loss_functions": [],
+  "cv_strategy": "",
+  "ensembling": "",
+  "insights": [
+    "Careful sensor calibration (dark, flat, linear correction) is essential to extract meaningful transit signals from raw detector data.",
+    "Transit ingress and egress phases can be robustly detected using gradient analysis on smoothed, binned photometric data.",
+    "A single optimized scaling constant can approximate the full multi-wavelength spectrum in this simplified physics-based baseline.",
+    "Temporal binning and spatial region-of-interest cropping drastically reduce computation while preserving the core transit morphology."
+  ],
+  "critical_findings": [],
+  "what_did_not_work": [],
+  "source_url": "https://www.kaggle.com/code/vitalykudelya/neurips-non-ml-transit-curve-fitting",
+  "votes": 390
+}

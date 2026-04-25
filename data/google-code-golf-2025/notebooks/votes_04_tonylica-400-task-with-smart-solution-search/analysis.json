@@ -1,0 +1,33 @@
+{
+  "summary": "This notebook automates the selection of the smallest working Python solution for 400 code golf tasks by searching multiple provided datasets and submission archives. It verifies each candidate by executing the code against task examples and numerically comparing outputs using NumPy. The pipeline demonstrates a practical, programmatic approach to optimizing submissions in code golf competitions where file size directly dictates scoring. Readers learn how to safely execute, verify, and compare external code solutions while handling binary files and JSON task data. The script also generates a metadata CSV tracking improvements and an estimated final score.",
+  "purpose": "utility",
+  "competition_flow": "Scans multiple input datasets and submission archives for tasks 001-400, verifies candidate Python solutions against task examples, selects the smallest working code for each task, and packages them into optimized submission and metadata files.",
+  "data_reading": [
+    "Loads task examples from JSON files containing test/train/arc-gen categories",
+    "Reads candidate solutions as text or binary files",
+    "Auto-detects Kaggle vs local environment to set input paths"
+  ],
+  "data_processing": [
+    "Extracts/copies files from submission.zip archives or direct directories",
+    "Cleans working directories and leftover files",
+    "Sorts candidates by file size (smallest first)",
+    "Verifies outputs by executing code via exec() and comparing JSON results to expected arrays using numpy.array_equal"
+  ],
+  "features_engineering": [],
+  "models": [],
+  "frameworks_used": [
+    "numpy"
+  ],
+  "loss_functions": [],
+  "cv_strategy": "",
+  "ensembling": "",
+  "insights": [
+    "Executing external code safely requires verifying function existence and output format before comparing results.",
+    "File size is a direct proxy for code golf scoring, making it a reliable optimization target.",
+    "Binary file copying preserves exact byte counts, ensuring accurate size comparisons across different sources."
+  ],
+  "critical_findings": [],
+  "what_did_not_work": [],
+  "source_url": "https://www.kaggle.com/code/tonylica/400-task-with-smart-solution-search",
+  "votes": 215
+}

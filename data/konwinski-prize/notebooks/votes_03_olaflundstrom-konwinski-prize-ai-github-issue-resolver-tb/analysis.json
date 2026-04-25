@@ -1,0 +1,39 @@
+{
+  "summary": "This notebook implements an autonomous AI agent pipeline for resolving GitHub issues by parsing Python codebases into syntax trees, indexing them in Elasticsearch, and orchestrating a local LLM with custom tools via LangGraph. It demonstrates a complete inference recipe that unpacks repository archives, performs structural code analysis, executes iterative tool calls to locate and modify code, and outputs a validated git diff patch. Readers should understand how to integrate tree-sitter parsing, Elasticsearch retrieval, and LangGraph state machines for codebase manipulation tasks. The architecture emphasizes precise code navigation over raw text matching and uses vLLM with RoPE scaling and prefix caching to handle long context windows efficiently.",
+  "purpose": "inference",
+  "competition_flow": "Unpacks a repository archive, parses its Python files into a flattened syntax tree, indexes the structure in Elasticsearch, runs a LangGraph agent with a local Qwen2.5-14B model to search and edit code based on a problem statement, and returns a validated git diff patch.",
+  "data_reading": [
+    "Unpacks a `.tar` archive from a BytesIO buffer into a local `repo/` directory.",
+    "Reads Python files via `os.walk` and binary file handles for tree-sitter parsing."
+  ],
+  "data_processing": [
+    "Parses Python source code using `tree-sitter` to generate syntax trees.",
+    "Filters for `function_definition` and `class_definition` nodes and flattens hierarchical data into dictionaries with UUIDs, parent-child links, file paths, types, text snippets, and line/column coordinates.",
+    "Indexes the flattened data into Elasticsearch with custom mappings for structured retrieval."
+  ],
+  "features_engineering": [],
+  "models": [
+    "Qwen2.5-14B-Instruct"
+  ],
+  "frameworks_used": [
+    "vllm",
+    "langgraph",
+    "langchain",
+    "elasticsearch",
+    "tree-sitter",
+    "pydantic",
+    "unidiff"
+  ],
+  "loss_functions": [],
+  "cv_strategy": "",
+  "ensembling": "",
+  "insights": [
+    "Integrating tree-sitter syntax parsing with Elasticsearch enables precise, hierarchical codebase search beyond simple text matching.",
+    "Using LangGraph to orchestrate tool calls allows the LLM to iteratively explore and modify code without hallucinating file paths.",
+    "Prefix caching and RoPE scaling in vLLM are critical for handling long context windows efficiently during inference."
+  ],
+  "critical_findings": [],
+  "what_did_not_work": [],
+  "source_url": "https://www.kaggle.com/code/olaflundstrom/konwinski-prize-ai-github-issue-resolver-tb",
+  "votes": 167
+}

@@ -1,0 +1,38 @@
+{
+  "summary": "This notebook implements a rule-based pipeline to extract scientific dataset accession IDs from PDF documents. It first converts PDFs to plain text using either PyMuPDF or the Marker model, then applies extensive Polars string operations and regex patterns to identify, clean, and validate database identifiers. The pipeline filters out false positives, extracts contextual windows around matches, assigns primary or secondary labels, and generates a formatted submission CSV. Readers learn how to leverage vectorized Polars operations for complex text extraction and validation without training a machine learning model.",
+  "purpose": "inference",
+  "competition_flow": "Converts PDF papers to text, extracts and validates dataset accession IDs using regex and Polars string operations, filters false positives, and outputs a formatted submission CSV.",
+  "data_reading": [
+    "Loads PDF files from input directories and converts them to .txt files using pymupdf or marker.",
+    "Reads .txt/.md files into a Polars DataFrame by iterating over file paths.",
+    "Loads ground truth labels from a CSV file for optional evaluation."
+  ],
+  "data_processing": [
+    "PDF-to-text conversion via pymupdf or marker.",
+    "Text normalization (NFKC), ASCII filtering, and paragraph splitting/joining.",
+    "Regex-based extraction of database accession IDs (CHEMBL, GEO, EMPIAR, ENSEMBL, EPI_ISL, EPI, HPA, CP, IPR, PF, KEGG, PRJNA, PXD, SAMN, dryad, pasta).",
+    "ID cleaning (whitespace removal, trailing punctuation stripping), DOI URL reconstruction, and bracket/parenthesis balancing checks.",
+    "Context window extraction, deduplication, and type assignment (Primary/Secondary)."
+  ],
+  "features_engineering": [],
+  "models": [
+    "marker"
+  ],
+  "frameworks_used": [
+    "polars",
+    "pymupdf",
+    "marker-pdf"
+  ],
+  "loss_functions": [],
+  "cv_strategy": "",
+  "ensembling": "",
+  "insights": [
+    "Vectorized Polars string operations can efficiently handle complex regex extraction, cleaning, and validation pipelines without explicit Python loops.",
+    "Context windows around extracted IDs can be preserved for downstream verification or model training.",
+    "DOI and accession ID formats vary widely across databases, requiring custom regex patterns and post-processing rules to avoid false positives."
+  ],
+  "critical_findings": [],
+  "what_did_not_work": [],
+  "source_url": "https://www.kaggle.com/code/mccocoful/notebook2d0b45c244",
+  "votes": 269
+}

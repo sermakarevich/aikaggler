@@ -1,0 +1,52 @@
+{
+  "summary": "The author achieved 2nd place by training a modality-specific CNN architecture with phase-aware attention to predict composite behavioral labels from sensor data. A key innovation was handling missing sensor data by training four separate model variants and applying subject-specific coordinate corrections for misaligned training subjects. The most significant score boost came from a novel post-processing step that maximizes conditional joint probability across sequences per subject under a no-repeat constraint, effectively solving an assignment problem. Additionally, phase-aligned mixup and online pseudo-labeling during test-time inference further improved robustness.",
+  "extensive_summary": "## Data Handling & Feature Engineering\nThe solution addresses significant data quirks, including missing sensor readings and subject-specific coordinate misalignments. The author trained four separate model variants depending on whether IMU rotation and THM/TOF sensors were present or absent. For left-handed subjects, specific channels were multiplied by \u22121 and TOF grids were horizontally flipped. Two training subjects (SUBJ_019262 and SUBJ_045235) had data rotated by 180\u00b0 around the z-axis, requiring channel-wise sign flips, though their TOF data was set to NaN due to unreliable correction. Features include IMU acceleration, quaternion 6D representation, angular velocity, and linear acceleration. THM/TOF values were filled with zero, and THM was ultimately excluded.\n\n## Architecture & Training\nThe core model uses modality-specific stems with independent 1D CNN branches for each IMU feature and each TOF channel, concatenated after a 2D CNN processes the TOF grids per frame. A phase-aware attention mechanism replaces plain temporal attention to prevent over-focusing on long phases. An auxiliary 3-class phase predictor (Relaxes/Moves to target, Hand at target, Performs gesture) weights three separate attention maps. The model predicts a composite label combining initial behavior, orientation, and gesture. Training uses Adam with cosine annealing, batch size 32, 50 epochs, and 10 folds. Mixup is applied linearly but strictly within phase-aligned segments, synchronizing the end of the \"moves to target\" phase.\n\n## Post-Processing & Inference Innovations\nThe most impactful technique was a post-processing step leveraging the dataset's structure: each subject has exactly 51 valid (orientation, gesture) pairs, each recorded with two initial behaviors, totaling 102 classes. Instead of independent argmax predictions, the author maximizes the conditional joint probability across all sequences for a subject under a strict no-repeat constraint. This assignment problem is solved efficiently using negative log-probabilities as costs. Additionally, online pseudo-labeling was applied during test-time inference via the submission API, fine-tuning the model one step at a time with a small learning rate as batches of test sequences accumulated.",
+  "rank": 2,
+  "competition_flow": "Raw sensor data is split into four variants based on missing sensors, processed with subject-specific coordinate corrections and phase-aligned mixup, fed into a modality-specific CNN with phase-aware attention, and finally post-processed via a no-repeat joint probability assignment before submission.",
+  "data_reading": [],
+  "data_processing": [
+    "Filled NaN and -1 in THM/TOF with zero",
+    "Applied subject-specific coordinate corrections (sign flips, TOF NaN for misaligned subjects)",
+    "Horizontally flipped TOF grids and adjusted IMU channels for left-handed subjects",
+    "Applied phase-aligned linear mixup during training",
+    "Used online pseudo-labeling with test-time fine-tuning (LR 5e-5) during inference"
+  ],
+  "features_engineering": [
+    "IMU features: acc(x/y/z), quaternion 6D representation, angular velocity(x/y/z), linear acceleration(x/y/z)",
+    "TOF features: tof1~5 grids",
+    "Composite label prediction combining initial behavior, orientation, and gesture"
+  ],
+  "models": [
+    "Residual SE-CNN Block + Attention model",
+    "1D CNN branches",
+    "2D CNN for TOF grids"
+  ],
+  "frameworks_used": [],
+  "loss_functions": [],
+  "cv_strategy": "10 folds",
+  "ensembling": "The final model is an ensemble of 3 variants with different 1D CNN depths/layers, combined with a post-processing step that maximizes conditional joint probability across sequences per subject under a no-repeat constraint using an assignment algorithm.",
+  "insights": [
+    "Training separate models for different missing sensor configurations yields better accuracy than handling missingness within a single model.",
+    "Plain temporal attention can over-focus on long phases, so phase-aware attention weighted by an auxiliary phase predictor prevents this bias.",
+    "Predicting a composite label (initial behavior, orientation, gesture) rather than individual components enables effective joint post-processing."
+  ],
+  "critical_findings": [
+    "The dataset contains exactly 51 valid (orientation, gesture) pairs per subject across two initial behaviors, totaling 102 classes, which enables a strict no-repeat constraint during inference.",
+    "Two training subjects had data rotated by 180\u00b0 around the z-axis, requiring channel-wise sign flips, but their TOF data was too unreliable to correct.",
+    "Maximizing conditional joint probability with a no-repeat constraint across sequences per subject significantly boosts scores compared to independent per-sequence predictions."
+  ],
+  "what_did_not_work": [],
+  "github_repos": [
+    {
+      "url": "https://github.com/AshwinAshok3/cmi-detect-behavior-with-sensor-data",
+      "role": "reference"
+    },
+    {
+      "url": "https://github.com/Yamato-Arai/kaggle-cmi-detect-behavior-2nd-place-solution",
+      "role": "solution"
+    }
+  ],
+  "papers": [],
+  "other_solution_refs": [],
+  "source_url": "https://www.kaggle.com/competitions/cmi-detect-behavior-with-sensor-data/discussion/603594"
+}

@@ -1,0 +1,24 @@
+{
+  "summary": "This notebook serves as a verification utility for the Google Code Golf Championship, allowing participants to load example input-output pairs for a specific task, visualize them, and test candidate code snippets against all competition benchmarks. It demonstrates how to interact with the official `code_golf_utils` library to validate program correctness before submission. Readers should take away the importance of functional verification as a foundational step in code golf competitions, ensuring their solutions handle edge cases and match expected outputs across all test cases.",
+  "purpose": "utility",
+  "competition_flow": "Loads example input-output pairs for a specified task, visualizes them, writes a candidate code snippet to a file, and runs a built-in verification function to check correctness against all benchmarks.",
+  "data_reading": [
+    "Uses `load_examples(task_num)` from the `code_golf_utils` package to load training and test example pairs."
+  ],
+  "data_processing": [],
+  "features_engineering": [],
+  "models": [],
+  "frameworks_used": [
+    "code_golf_utils"
+  ],
+  "loss_functions": [],
+  "cv_strategy": "",
+  "ensembling": "",
+  "insights": [
+    "The notebook demonstrates how to use the official competition utility library to validate code solutions against provided examples and hidden benchmarks."
+  ],
+  "critical_findings": [],
+  "what_did_not_work": [],
+  "source_url": "https://www.kaggle.com/code/mmoffitt/neurips-2025-google-code-golf-championship",
+  "votes": 269
+}

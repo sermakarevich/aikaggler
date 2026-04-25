@@ -1,0 +1,191 @@
+# rsna-intracranial-aneurysm-detection: top public notebooks
+
+The community's top-voted notebooks for this competition span a spectrum from foundational exploratory data analysis and official inference templates to robust training pipelines and production-ready deployment scripts. Contributors heavily emphasize modality-aware DICOM preprocessing, 2.5D multi-channel volume construction, and strategic metadata fusion to handle heterogeneous medical imaging data. The prevailing consensus favors patient-grouped cross-validation, weighted model ensembling, and strict spatial orientation preservation to align cross-validation scores with leaderboard performance.
+
+## Common purposes
+- inference
+- training
+- baseline
+- eda
+- utility
+
+## Competition flows
+- Placeholder inference server returning 0.5 probabilities for 14 artery locations
+- DICOM loading with 32-channel 384x384 preprocessing and 5-fold EfficientNetV2-S inference
+- DICOM loading with 3-channel projection/metadata processing and weighted ensemble with TTA
+- DICOM series parsing with 3-channel image/metadata processing and CNN/Transformer inference
+- 5-fold stratified CV training with OOF prediction saving and per-label probability calibration
+- DICOM/metadata loading with 2.5D multi-channel conversion and 5-Fold CV training with BCE loss
+- DICOM loading with 32x384x384 tensor preprocessing and LB-derived weight blending
+- Raw DICOM/CSV loading with 3D volume normalization and lightweight 3D CNN training
+- CSV/DICOM loading with modality windowing/CLAHE and metadata-augmented EfficientNetV2-S training
+- DICOM/NIfTI loading with extensive metadata parsing and modality/plane/anatomy visualization for downstream prep
+
+## Data reading
+- Loads DICOM files from a provided `series_path` directory using `os.walk` and `pydicom.dcmread`, extracting specific metadata tags from a predefined allowlist.
+- Uses pydicom.dcmread to load .dcm files and extracts pixel_array, ImagePositionPatient, InstanceNumber, RescaleSlope, and RescaleIntercept from DICOM metadata.
+- Reads DICOM files using pydicom, extracts pixel arrays and metadata (modality, age, sex, rescale slope/intercept), and handles multi-frame/color images by converting to grayscale.
+- Uses pydicom.dcmread to parse .dcm files from a series directory, extracting pixel arrays and DICOM tags (Modality, PatientAge, PatientSex, RescaleSlope/Intercept).
+- Uses a placeholder PyTorch Dataset expecting a pandas DataFrame and numpy labels; inference script scans `/kaggle/input` and `/kaggle/working` for directories containing `.dcm` files.
+- Reads DICOM files using `pydicom`, extracts pixel arrays, and applies rescale slope/intercept. Parses patient metadata (modality, age, sex) directly from DICOM tags with robust fallbacks. Uses `polars` and `pandas` to load the tabular `train.csv` metadata file.
+- Uses pydicom to load .dcm files, extracts ImagePositionPatient for slice sorting, and handles both single 3D and multi-slice 2D DICOM series.
+- Reads train.csv and train_localizers.csv via pandas. Parses DICOM series by walking directories, sorting files by InstanceNumber, and extracting pixel_array, RescaleSlope, RescaleIntercept, PixelSpacing, and SliceThickness using pydicom.
+- Reads train.csv, series_index_mapping.csv, and train_localizers_with_relative.csv via pandas. Loads DICOM files using pydicom.dcmread (stopping before pixels for metadata, then reading pixel arrays) or pre-converted PNGs via cv2.imread.
+- pydicom.dcmread for DICOM files (handling both single-frame and multi-frame series), nibabel.load for NIfTI files, pandas.read_csv for train/label CSVs. Parses specific DICOM tags including ImagePositionPatient, ImageOrientationPatient, PixelSpacing, SliceThickness, WindowWidth, WindowCenter, and RescaleSlope/Intercept
+
+## Data processing
+- None explicitly implemented; the notebook only extracts raw DICOM tags and returns placeholder predictions.
+- Sorts slices by z-position, applies statistical normalization (1-99 percentile clipping) with min-max fallback, handles RescaleSlope/Intercept, resizes 3D volumes using scipy.ndimage.zoom with linear interpolation, pads with edge mode, and applies Albumentations Resize + Normalize + ToTensorV2 during inference. Explicitly skips TTA to prevent left/right anatomical flipping.
+- Applies modality-specific DICOM windowing, rescales pixel values, resizes slices to 512x512, samples or pads to exactly 32 slices, creates 3-channel inputs (middle slice, MIP, std projection), normalizes metadata (age/100, sex 0/1), and applies Albumentations transforms including TTA (original, H-flip, V-flip, 90-rot).
+- Applies modality-specific DICOM windowing (CT, CTA, MRA, MRI) and rescales pixel values using RescaleSlope/Intercept. Resizes each slice to 512x512, samples or pads exactly 32 slices per series, and constructs a 3-channel input from the middle slice, maximum intensity projection (MIP), and standard deviation projection. Normalizes channels to [0, 255] and applies ImageNet normalization via Albumentations during inference. Implements Test-Time Augmentation (TTA) with horizontal flip, vertical flip, and 90-degree rotation, averaging predictions across 4 transforms.
+- No explicit preprocessing or augmentation shown; relies on a placeholder `predict()` function for DICOM handling and resizes inputs to 384x384.
+- Applies modality-specific DICOM windowing (center/width) and clips to [0, 255]. Resizes slices to 512x512, samples or pads to a fixed depth of 32 slices. Constructs a 3-channel 2.5D image per series: middle slice, Maximum Intensity Projection (MIP), and Standard Deviation Projection. Normalizes age to [0, 1] and encodes sex as binary. Applies ImageNet normalization via Albumentations and uses 4-view TTA (original, H-flip, V-flip, 90° rotation) during inference.
+- Applies RescaleSlope/RescaleIntercept, clips pixel values using hardcoded 0-500 percentiles, resizes 3D volumes to (32, 384, 384) via linear interpolation and edge padding, and applies Albumentations Resize + Normalize during inference. Explicitly disables TTA to preserve anatomical orientation.
+- Clips volumes to 1st–99th percentiles to handle outliers. Normalizes pixel values to [0, 1]. Resizes volumes to 64³ using scipy.ndimage.zoom. Returns zero tensors for invalid or empty series to prevent pipeline crashes.
+- Modality-specific DICOM windowing (CTA: 50/350, MRA: 600/1200, MRI: 40/80). CLAHE contrast adaptation with modality-specific clip limits. Robust 1st-99th percentile normalization to handle outliers. Smart 8-frame sampling (skipping every other frame starting at 10% of the volume). 3-channel volume creation from middle slice, Maximum Intensity Projection, and standard deviation projection. Strong augmentations: 15° rotation, elastic/grid distortion, brightness/contrast, gamma, Gauss/ISO noise, blur, coarse dropout. ImageNet mean/std normalization.
+- Resizes all DICOM slices to a fixed 512x512 target shape using cv2.resize. Normalizes aneurysm localization coordinates by dividing pixel values by image dimensions. Converts NIfTI volumes to canonical orientation and resamples to 1.0mm isotropic spacing using scipy.ndimage.zoom. Sorts slices by ImagePositionPatient to ensure correct 3D volume reconstruction.
+
+## Features engineering
+- 
+- Domain-derived image projections (middle slice, MIP, standard deviation across slices) and normalized patient metadata (age, sex).
+- Extracts patient age and sex from DICOM headers, normalizes age to [0, 1], and feeds them as a 2D metadata tensor through a small 2-layer MLP before concatenating with image features.
+- Fuses patient metadata (age, sex) with vision features via a small MLP to provide holistic clinical context alongside imaging data.
+- Normalized localization coordinates (x_norm, y_norm) derived from raw pixel coordinates and image dimensions
+- Derived imaging plane (axial, coronal, sagittal) by computing the cross product of ImageOrientationPatient direction cosines
+- Extracted and aggregated per-series DICOM metadata (spacing, thickness, window/center, rescale factors) into structured DataFrames
+
+## Models
+- 
+- tf_efficientnetv2_s.in21k_ft_in1k
+- tf_efficientnetv2_s
+- convnext_small
+- swin_small_patch4_window7_224
+- EfficientNetV2-S
+- ConvNeXt-Small
+- Swin Transformer-Small
+- Simple3DCNN (custom lightweight 3D CNN with 4 Conv3d blocks, BatchNorm, MaxPool3d, AdaptiveAvgPool3d, and 3 FC layers)
+
+## Frameworks used
+- pydicom
+- polars
+- pandas
+- kaggle_evaluation.rsna_inference_server
+- pytorch
+- timm
+- albumentations
+- numpy
+- scipy
+- torch
+- opencv
+- cv2
+- scikit-learn
+- joblib
+- nibabel
+- matplotlib
+- seaborn
+- plotly
+
+## Loss functions
+- 
+- BCEWithLogitsLoss
+- Weighted Binary Cross-Entropy (BCE) loss for multi-label classification
+- BCELoss
+- Combined Weighted BCE (aneurysm weight=3.0) and Focal Loss (gamma=2, alpha=1, weight=0.3)
+
+## CV strategies
+- 
+- StratifiedKFold(n_splits=5, shuffle=True, random_state=42) stratified on the 'Aneurysm Present' column
+- 5-Fold Cross-Validation
+- GroupKFold(n_splits=5) stratified by modality and aneurysm presence, using DICOM StudyInstanceUID for true patient-level separation
+
+## Ensembling
+- 
+- Averages predictions equally across 5 trained model folds without applying fold-specific weights.
+- Weighted average of predictions from three models (EfficientNetV2: 0.4, ConvNeXt: 0.3, Swin: 0.3) with TTA applied per model.
+- Combines predictions from EfficientNetV2-S, ConvNeXt-Small, and Swin-Small using weighted averaging (0.4, 0.3, 0.3 respectively) when the ensemble mode is enabled.
+- Blends predictions from five fold models using normalized weights [1.0, 1.0, 0.86, 1.1, 1.0] derived from LB scores, applied via weighted averaging.
+
+## Insights
+- The competition requires a specific `predict` function signature that processes DICOM series and returns a DataFrame matching a predefined schema.
+- Kaggle's evaluation environment runs inference requests sequentially and imposes strict timing and disk space constraints.
+- Using `pydicom` with `force=True` allows reading DICOM files even if they lack standard headers.
+- The template demonstrates how to safely handle both local testing and hidden test set evaluation within the same notebook.
+- Statistical percentile normalization is preferred over traditional CT windowing for robustness across varying DICOM metadata.
+- Test-time augmentation is explicitly prohibited to preserve left/right anatomical orientation required by the task labels.
+- DICOM series can arrive as either single 3D files or multiple 2D slices, necessitating flexible loading and z-position sorting.
+- Memory cleanup and shared directory management are critical for preventing disk and OOM errors in Kaggle competition inference servers.
+- Variable-length DICOM series can be standardized by sampling or padding to a fixed slice count without losing critical anatomical context.
+- Combining spatial projections (MIP, std) with the middle slice provides complementary features for detecting subtle vascular anomalies.
+- Metadata (age, sex) can be effectively fused with vision features via a separate FC branch rather than raw concatenation.
+- TTA with geometric flips and rotations improves prediction stability for medical imaging tasks.
+- A production inference server requires robust error handling, memory cleanup, and fallback mechanisms to avoid Kaggle environment limits.
+- Modality-specific DICOM windowing parameters are critical for preserving diagnostic contrast across different scan types.
+- Stacking a middle slice, MIP, and standard deviation projection creates a highly informative 3-channel representation that captures both anatomical detail and volumetric distribution.
+- Integrating lightweight patient metadata via a separate MLP branch improves model calibration without adding significant computational overhead.
+- TTA with geometric flips and rotations effectively reduces prediction variance and stabilizes outputs during inference.
+- Out-of-fold predictions should be saved during training to enable reliable per-label probability calibration.
+- Platt scaling (logistic regression) is preferred for calibration, with isotonic regression as a robust fallback for degenerate cases.
+- Inference pipelines must gracefully handle failed DICOM series predictions to guarantee a complete submission file.
+- Converting 3D volumes to 2.5D multi-channel inputs effectively captures both local anatomical detail and global volumetric context without heavy 3D compute costs.
+- Fusing patient metadata with vision features via a lightweight MLP improves holistic prediction by providing clinical priors.
+- Test-Time Augmentation significantly boosts robustness to spatial variations and orientation inconsistencies in medical imaging.
+- Weighted blending of fold predictions compensates for CV/LB variance and improves final leaderboard performance.
+- Test-time augmentation must be avoided for left/right anatomical tasks to preserve critical spatial orientation.
+- Statistical percentile normalization outperforms standard CT windowing for this specific model architecture and dataset.
+- Aneurysms show strong spatial clustering in specific brain regions, with notable co-occurrence patterns across arteries.
+- Imaging modality preference (CTA vs MRA) varies significantly by anatomical location, indicating potential diagnostic workflow biases.
+- DICOM series exhibit high variability in slice count and voxel spacing, necessitating robust normalization and resizing for 3D models.
+- Only a small fraction of scans include vessel segmentation masks, limiting supervised segmentation approaches.
+- True patient-level separation via DICOM metadata prevents data leakage and significantly improves CV/LB alignment.
+- Strategic 8-frame sampling and 3-channel projections (MIP, std) effectively capture vascular structures without processing full volumes.
+- Modality-specific windowing and CLAHE are critical for handling diverse scanner protocols (CTA/MRA/MRI).
+- Integrating patient age and sex as auxiliary features provides useful clinical context for classification.
+- DICOM metadata attributes like IOP, IPP, and PixelSpacing are critical for accurate 3D reconstruction and cross-modality alignment.
+- The dataset exhibits significant heterogeneity in imaging modalities (CTA, MRA, MRI) and acquisition planes, necessitating modality-aware preprocessing strategies.
+- Aneurysm localization coordinates are provided in raw pixel space and must be normalized relative to image dimensions for consistent model input.
+- Multi-frame DICOMs consolidate all slices into a single file with shared metadata, whereas single-frame DICOMs use separate files, directly impacting I/O and parsing efficiency.
+
+## Critical findings
+- 
+- The official metric heavily weights the global `Aneurysm Present` label (weight 13) compared to location-specific labels (weight 1), prioritizing overall detection over precise localization.
+- DICOM metadata parsing requires robust fallbacks for missing age/sex/modality tags to prevent pipeline crashes in production inference.
+- TTA is strictly prohibited because flipping or rotating slices destroys left/right positional information required for aneurysm localization.
+- Cross-validation and leaderboard scores showed notable variance across folds, necessitating LB-based weight tuning rather than equal weighting.
+- The dataset exhibits significant class imbalance, with far fewer positive aneurysm cases than negatives.
+- Minor label mismatches exist between train.csv and train_localizers.csv, suggesting potential annotation noise or underreporting.
+- Many scans contain very few slices, which may lack sufficient anatomical context for reliable 3D detection.
+- Using standard StratifiedKFold instead of patient-grouped CV causes severe data leakage and inflates CV scores artificially.
+- The competition metric heavily weights the average of individual location AUCs alongside the aneurysm AUC, requiring balanced performance across all 14 classes.
+- Class imbalance is addressed by assigning a 3.0 weight to the 'Aneurysm Present' class in the loss function.
+
+## What did not work
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+
+## Notable individual insights
+- votes 908 (RSNA Aneurysm Detection Demo Submission): Kaggle's evaluation environment runs inference requests sequentially and imposes strict timing and disk space constraints.
+- votes 730 (RSNA2025 32ch img infer [LB 0.69] share): Test-time augmentation is explicitly prohibited to preserve left/right anatomical orientation required by the task labels.
+- votes 149 (RSNA Notebook): Out-of-fold predictions should be saved during training to enable reliable per-label probability calibration.
+- votes 146 (RSNA Intracranial Aneurysm Detection / DTU Bioeng.): The official metric heavily weights the global `Aneurysm Present` label (weight 13) compared to location-specific labels (weight 1), prioritizing overall detection over precise localization.
+- votes 145 (RSNA2025 32ch|5Fold Blending Weight|LB.69+): Cross-validation and leaderboard scores showed notable variance across folds, necessitating LB-based weight tuning rather than equal weighting.
+- votes 127 (Train 224x224 DICOM->PNGs EfficientNetV2S): Using standard StratifiedKFold instead of patient-grouped CV causes severe data leakage and inflates CV scores artificially.
+
+## Notebooks indexed
+- #908 votes [[notebooks/votes_01_ryanholbrook-rsna-aneurysm-detection-demo-submission/notebook|RSNA Aneurysm Detection Demo Submission]] ([kaggle](https://www.kaggle.com/code/ryanholbrook/rsna-aneurysm-detection-demo-submission))
+- #730 votes [[notebooks/votes_02_yosukeyama-rsna2025-32ch-img-infer-lb-0-69-share/notebook|RSNA2025 32ch img infer [LB 0.69] share]] ([kaggle](https://www.kaggle.com/code/yosukeyama/rsna2025-32ch-img-infer-lb-0-69-share))
+- #373 votes [[notebooks/votes_03_zshashz-rsna-iad-ensemble-lb-1/notebook|RSNA-IAD | Ensemble | LB #1 ]] ([kaggle](https://www.kaggle.com/code/zshashz/rsna-iad-ensemble-lb-1))
+- #202 votes [[notebooks/votes_04_zshashz-rsna-iad-efficientnetv2-lb/notebook|RSNA-IAD | EfficientNetV2 | LB ]] ([kaggle](https://www.kaggle.com/code/zshashz/rsna-iad-efficientnetv2-lb))
+- #149 votes [[notebooks/votes_05_nikitagajbhiye30-rsna-notebook/notebook|RSNA Notebook ]] ([kaggle](https://www.kaggle.com/code/nikitagajbhiye30/rsna-notebook))
+- #146 votes [[notebooks/votes_06_olaflundstrom-rsna-intracranial-aneurysm-detection-dtu-bioeng/notebook|RSNA Intracranial Aneurysm Detection / DTU Bioeng.]] ([kaggle](https://www.kaggle.com/code/olaflundstrom/rsna-intracranial-aneurysm-detection-dtu-bioeng))
+- #145 votes [[notebooks/votes_07_hideyukizushi-rsna2025-32ch-5fold-blending-weight-lb-69/notebook|RSNA2025 32ch|5Fold Blending Weight|LB.69+]] ([kaggle](https://www.kaggle.com/code/hideyukizushi/rsna2025-32ch-5fold-blending-weight-lb-69))
+- #131 votes [[notebooks/votes_08_ahsuna123-voxel-by-voxel-3d-cnn-intracranial-aneurysms/notebook|Voxel by Voxel: 3D CNN Intracranial Aneurysms]] ([kaggle](https://www.kaggle.com/code/ahsuna123/voxel-by-voxel-3d-cnn-intracranial-aneurysms))
+- #127 votes [[notebooks/votes_09_ichigoe-train-224x224-dicom-pngs-efficientnetv2s/notebook|Train 224x224 DICOM->PNGs EfficientNetV2S]] ([kaggle](https://www.kaggle.com/code/ichigoe/train-224x224-dicom-pngs-efficientnetv2s))
+- #109 votes [[notebooks/votes_10_amirmmahdavikia-rsna2025-explore-and-gain-insights/notebook|RSNA2025 - Explore and Gain Insights]] ([kaggle](https://www.kaggle.com/code/amirmmahdavikia/rsna2025-explore-and-gain-insights))

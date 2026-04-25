@@ -1,0 +1,21 @@
+{
+  "id": "sohier/mitsui-target-calculation-example",
+  "id_no": 87086183,
+  "title": "Mitsui Target Calculation Example",
+  "code_file": "mitsui-target-calculation-example.ipynb",
+  "language": "python",
+  "kernel_type": "notebook",
+  "is_private": false,
+  "enable_gpu": false,
+  "enable_tpu": false,
+  "enable_internet": false,
+  "keywords": [],
+  "dataset_sources": [],
+  "kernel_sources": [],
+  "competition_sources": [
+    "mitsui-commodity-prediction-challenge"
+  ],
+  "model_sources": [],
+  "docker_image": "gcr.io/kaggle-images/python@sha256:20d75b6c2a67c98a3a9f199ea97d51168548b4eb54898f30849e11d68ee06ea1",
+  "machine_shape": "None"
+}

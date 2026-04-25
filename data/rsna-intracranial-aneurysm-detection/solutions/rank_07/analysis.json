@@ -1,0 +1,95 @@
+{
+  "summary": "The authors formulated the intracranial aneurysm detection task as a multichannel blob regression problem using a 3D U-Net architecture built on the nnU-Net framework. They converted DICOM series to NIfTI format, cropped a fixed superior ROI to reduce compute, and resampled all volumes to a median spacing with global z-score normalization. Ground truth aneurysms were encoded as Euclidean Distance Transform (EDT) spheres across 14 channels, and the model was trained with a TopK (20%) BCE loss. The final submission relied on a single model with patch-based inference and channel-wise max aggregation, achieving a public/private leaderboard score of 0.83.",
+  "extensive_summary": "## Task Formulation & Data Preparation\nThe team approached the intracranial aneurysm detection challenge as a multichannel heatmap regression task. Raw DICOM series were converted to `.nii.gz` format using `pydicom`, with spacing, origin, and direction metadata extracted. To manage computational constraints, they defined a fixed `[200, 160, 160]` mm cubic Region of Interest (ROI) centered on the superior brain region, ensuring all training aneurysms were captured. Volumes with severe artifacts (e.g., empty images) were discarded, while mild misorientations were corrected via flipping. All images were resampled to a median spacing of `[0.70, 0.47, 0.47]` mm and normalized using global z-score statistics.\n\n## Model Architecture & Training\nLeveraging the self-configurable `nnU-Net` framework, they utilized the `ResEnc` configuration (a U-Net with a residual encoder and lightweight convolutional decoder) with six stages and feature channels `[32, 64, 128, 256, 320, 320]`. Instead of standard segmentation masks, ground truth aneurysms were encoded as `EDT blobs` (3D spheres transformed via Euclidean Distance Transform and rescaled to `[0, 1]`) across 14 separate channels, with the 14th channel representing the pixelwise maximum of the 13 anatomical classes. The model was trained from scratch for 3000 epochs using SGD with a polyLR schedule, a batch size of 32, and a patch size of `96x160x128` voxels. The optimization objective was a binary cross-entropy loss computed only on the 20% worst voxels per batch.\n\n## Inference & Results\nInference was performed using nnU-Net\u2019s patch-based infrastructure, processing each ROI patch independently and taking the maximum per channel as the class probability. Patches were max-aggregated across the volume for final predictions. The team submitted a single model without test-time augmentation due to time constraints, achieving a public/private leaderboard score of 0.83. Internal validation suggested that longer training, TTA, and Gaussian patch weighting could have further improved results, but platform instabilities prevented later submissions.",
+  "rank": 7,
+  "competition_flow": "DICOM series were converted to NIfTI, cropped to a fixed superior ROI, resampled to median spacing, and normalized; ground truth was encoded as multichannel EDT blobs, a 3D ResEnc U-Net was trained with TopK BCE loss, and patch-based inference with channel-wise max aggregation produced the final submission.",
+  "data_reading": [
+    "DICOM series converted to `.nii.gz` using `pydicom`, then loaded via a SimpleITK reader enforcing RAS orientation."
+  ],
+  "data_processing": [
+    "Cropped to a `[200, 160, 160]` mm cubic ROI",
+    "Discarded volumes with severe artifacts (10 total) and flipped mild misorientations",
+    "Resampled to median spacing `[0.70, 0.47, 0.47]` mm using a custom PyTorch resampler",
+    "Applied global z-score normalization",
+    "Applied standard nnU-Net augmentations (rotations, mirroring) except left/right mirroring",
+    "Ground truth encoded as EDT blobs across 14 channels"
+  ],
+  "features_engineering": [
+    "Ground truth aneurysms encoded as multichannel Euclidean Distance Transform (EDT) blobs (3D spheres rescaled to [0, 1]) across 14 channels, with the final channel representing the pixelwise maximum of the 13 anatomical classes."
+  ],
+  "models": [
+    "nnU-Net ResEnc",
+    "3D U-Net with residual encoder",
+    "Retina U-Net"
+  ],
+  "frameworks_used": [
+    "nnU-Net",
+    "pydicom",
+    "SimpleITK",
+    "PyTorch",
+    "nnDetection"
+  ],
+  "loss_functions": [
+    "TopK (20%) BCE loss",
+    "L1 loss for box regression",
+    "focal loss for box class estimation"
+  ],
+  "cv_strategy": "Five cross-validation folds stratified by image modalities (not vessel classes), with hyperparameter tuning primarily on the first fold.",
+  "ensembling": "The final submission used a single model without test-time augmentation or ensembling; predictions were post-processed by taking the maximum per channel and max-aggregating across patches.",
+  "insights": [
+    "Formulating detection as multichannel blob regression with EDT spheres effectively leverages 3D segmentation frameworks for localization tasks.",
+    "Cropping to a fixed superior ROI significantly improved performance and reduced compute time compared to processing full volumes.",
+    "Platform submission constraints and timeout instabilities can severely limit model development and checkpoint utilization in Kaggle competitions."
+  ],
+  "critical_findings": [
+    "Training with larger patch sizes surprisingly did not improve scores despite expectations.",
+    "Resampling input series to an isometric space of `[1.0, 1.0, 1.0]` mm substantially worsened results and was discontinued.",
+    "Internal validation scores continued to improve up to 0.9 with longer training and TTA, but this gain did not translate to the public/private leaderboard, likely due to platform submission instabilities."
+  ],
+  "what_did_not_work": [
+    "Framing the task as detection with nnDetection (Retina U-Net) underperformed on the private leaderboard and internal validation.",
+    "Co-training with external aneurysm datasets (ADAM, Large IA Segmentation, INSTED, Lausanne, Royal Brisbane, Jianxiaokuang) did not help and some were disallowed.",
+    "Processing images as whole volumes instead of cropped ROIs was less efficient and yielded worse performance.",
+    "Training with larger patch sizes failed to improve scores."
+  ],
+  "github_repos": [
+    {
+      "url": "https://github.com/MIC-DKFZ/kaggle_BYU_Locating_Bacterial-Flagellar_Motors_2025_solution",
+      "role": "reference"
+    },
+    {
+      "url": "https://github.com/MIC-DKFZ/nnUNet",
+      "role": "library"
+    },
+    {
+      "url": "https://github.com/MIC-DKFZ/nnDetection",
+      "role": "library"
+    },
+    {
+      "url": "https://github.com/jinxiaokuang/RWS-MT",
+      "role": "reference"
+    },
+    {
+      "url": "https://github.com/MIC-DKFZ/kaggle-rsna-intracranial-aneurysm-detection-2025-solution",
+      "role": "solution"
+    }
+  ],
+  "papers": [
+    {
+      "title": "Retina U-Net architecture",
+      "url": "https://proceedings.mlr.press/v116/jaeger20a/jaeger20a.pdf",
+      "arxiv_id": null
+    }
+  ],
+  "other_solution_refs": [
+    {
+      "description": "Previous competition solution by the same team",
+      "url": "https://www.kaggle.com/competitions/byu-locating-bacterial-flagellar-motors-2025/writeups/mic-dkfz-2nd-place-solution-3d-nnu-net-blob-regres"
+    },
+    {
+      "description": "Kaggle discussion forum link regarding submission constraints",
+      "url": "https://www.kaggle.com/competitions/rsna-intracranial-aneurysm-detection/discussion/611778"
+    }
+  ],
+  "source_url": "https://www.kaggle.com/competitions/rsna-intracranial-aneurysm-detection/discussion/612039"
+}

@@ -1,0 +1,27 @@
+{
+  "id": "shujun717/ribonanzanet-3d-finetune",
+  "id_no": 77492132,
+  "title": "RibonanzaNet 3D Finetune",
+  "code_file": "ribonanzanet-3d-finetune.ipynb",
+  "language": "python",
+  "kernel_type": "notebook",
+  "is_private": false,
+  "enable_gpu": true,
+  "enable_tpu": false,
+  "enable_internet": true,
+  "keywords": [
+    "gpu"
+  ],
+  "dataset_sources": [
+    "shujun717/ribonanzanet-weights",
+    "shujun717/ribonanzanet2d-final",
+    "shujun717/rnet-data-scaling-weights"
+  ],
+  "kernel_sources": [],
+  "competition_sources": [
+    "stanford-rna-3d-folding"
+  ],
+  "model_sources": [],
+  "docker_image": "gcr.io/kaggle-private-byod/python@sha256:d8674e13fab653bf7fb8d9a102f2ae94036771ccb5c73f51888d881421e1f937",
+  "machine_shape": "Gpu"
+}

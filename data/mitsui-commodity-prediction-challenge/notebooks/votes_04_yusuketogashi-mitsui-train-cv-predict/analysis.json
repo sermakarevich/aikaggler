@@ -1,0 +1,36 @@
+{
+  "summary": "This notebook provides a baseline pipeline for a multi-target commodity prediction competition, demonstrating how to efficiently handle 424 separate regression tasks. It trains independent LightGBM models per target while sharing a common feature set, using a target-index encoding trick to unify the training loop. The author implements a custom RankCorr-Sharpe cross-validation metric to align with the competition's scoring methodology. Readers learn how to structure multi-output regression workflows, manage type conversions for tabular data, and integrate custom evaluation metrics into a Kaggle inference server. The approach prioritizes simplicity and reproducibility over complex model architectures.",
+  "purpose": "baseline",
+  "competition_flow": "Reads train/test CSVs via Polars, trains 424 independent LightGBM regressors with a target-index feature and basic type casting, evaluates them using a custom RankCorr-Sharpe metric via TimeSeriesSplit, and exports a Kaggle-compatible inference server for prediction generation.",
+  "data_reading": [
+    "polars.read_csv for train.csv, test.csv, and train_labels.csv"
+  ],
+  "data_processing": [
+    "Casts object-type columns to numeric via pd.to_numeric(errors='coerce')",
+    "Converts categorical columns to integer codes",
+    "Injects a constant target_name_encoded column mapping each target to its index"
+  ],
+  "features_engineering": [],
+  "models": [
+    "LGBMRegressor"
+  ],
+  "frameworks_used": [
+    "polars",
+    "pandas",
+    "lightgbm",
+    "scikit-learn",
+    "joblib"
+  ],
+  "loss_functions": [],
+  "cv_strategy": "TimeSeriesSplit(n_splits=3)",
+  "ensembling": "",
+  "insights": [
+    "Training separate regressors per target with a shared feature set and a target-index encoding allows efficient multi-output prediction without complex multi-task architectures.",
+    "A custom RankCorr-Sharpe metric effectively captures both ranking accuracy and consistency across rows, aligning with competition scoring requirements.",
+    "Using Polars for data I/O and pandas for in-memory processing provides a practical hybrid workflow for large tabular datasets."
+  ],
+  "critical_findings": [],
+  "what_did_not_work": [],
+  "source_url": "https://www.kaggle.com/code/yusuketogashi/mitsui-train-cv-predict",
+  "votes": 274
+}

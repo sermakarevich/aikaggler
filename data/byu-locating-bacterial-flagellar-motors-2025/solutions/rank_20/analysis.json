@@ -1,0 +1,63 @@
+{
+  "summary": "The author adapted a keypoint-based dual-graph prediction approach originally developed for an industrial HBM anomaly detection project to locate bacterial flagellar motors in 3D tomography data. Instead of traditional object detectors, they used YOLO11 as a feature extractor and keypoint generator, extracting C3K2 feature maps and augmenting them with RandomWalk positional encodings. They constructed a dual graph (k-NN + Delaunay triangulation) over these keypoints and trained GraphSAGE models with a weighted binary cross-entropy loss to predict motor locations, leveraging a custom label generation strategy based on feature similarity and spatial radius.",
+  "extensive_summary": "## Core Idea & Origin\nThe solution originates from an industrial partnership project focused on anomaly detection in HBM scanned images under strict data privacy constraints. The author shifted away from traditional object detectors (like YOLO for direct detection) and vision-language prompting concepts, instead focusing on generating dense keypoints and modeling their spatial/semantic relationships via graph neural networks.\n\n## Keypoint Generation & Feature Engineering\nYOLO11 was used strictly as a feature extractor and keypoint generator. By setting a low confidence threshold (conf=0.05), the model outputs abundant candidate object locations from the C3K2 feature map. To address the sparsity of these keypoints in 3D space, the author uniformly samples additional points within a specified radius around each prediction. The node features combine the C3K2 embeddings with `AddRandomWalkPE` (walk_length=8) from PyTorch Geometric, which implicitly models point positions and caused an immediate score boost.\n\n## Graph Construction & Labeling\nVarious graph structures were tested, with the combination of k-NN and Delaunay triangulation yielding the best results by balancing local density with long-range connections. Labels are not taken directly from annotations; instead, a point is labeled positive if its feature similarity to the ground truth exceeds a threshold (thr_sim=0.5) AND it falls within a 3D spatial radius (thr=10) of the annotated motor location. This dynamic labeling better captures the semantic tolerance of the competition metric.\n\n## Training & Inference\nTwo GraphSAGE models are trained per fold using Binary Cross Entropy with a positive class weight of 8. The author explicitly avoided external datasets to prevent annotator bias mismatch. For inference, predictions are aggregated using a maximum ensemble function, though HDBSCAN clustering was noted as superior in certain scenarios. The author also highlights that YOLO11L produced more false positives but achieved a higher private score than YOLO11X, underscoring the importance of recall over precision in this context.",
+  "rank": 20,
+  "competition_flow": "Raw 3D tomography images are processed through YOLO11 to extract C3K2 feature maps and generate candidate keypoints, which are augmented with RandomWalk positional encodings and densified via radius sampling; these keypoints form a dual k-NN/Delaunay graph that is fed into a fold-wise GraphSAGE model trained with weighted BCE, with final predictions aggregated via a maximum ensemble function.",
+  "data_reading": [],
+  "data_processing": [
+    "No external datasets used to prevent annotator bias mismatch.",
+    "YOLO11 outputs filtered with low confidence threshold (conf=0.05).",
+    "Sparse keypoints densified by uniformly sampling additional points within a specified radius around each prediction."
+  ],
+  "features_engineering": [
+    "C3K2 feature maps extracted from YOLO11 spatial positions.",
+    "AddRandomWalkPE (walk_length=8) for implicit positional encoding.",
+    "Feature similarity metrics and spatial radius filtering for dynamic label generation."
+  ],
+  "models": [
+    "YOLO11",
+    "GraphSAGE"
+  ],
+  "frameworks_used": [
+    "PyTorch Geometric"
+  ],
+  "loss_functions": [
+    "Binary Cross Entropy (positive_weight=8)"
+  ],
+  "cv_strategy": "Fold-wise training (exact fold count not specified)",
+  "ensembling": "Predictions from multiple models/folds are combined using a maximum ensemble function, though the author notes HDBSCAN clustering performed better in certain scenarios.",
+  "insights": [
+    "Using a low confidence threshold on YOLO11 to generate abundant candidate keypoints significantly boosts downstream graph model performance.",
+    "Adding RandomWalk positional encodings to node features is critical for 3D spatial tasks, as it implicitly models point positions.",
+    "Combining k-NN and Delaunay triangulation graphs balances local density with long-range connections, yielding better generalization than either graph alone.",
+    "Avoiding external datasets prevents annotator bias mismatch, which is crucial when label semantics depend on specific human experts."
+  ],
+  "critical_findings": [
+    "Pure keypoints generation or larger models failed to improve scores, whereas the specific combination of C3K2 features and RandomWalkPE caused an instant score boost.",
+    "YOLO11L produced more false positives but achieved a higher private score (0.843) than YOLO11X, which had a better public score but lower private score, highlighting the risk of overfitting to public LB.",
+    "Labeling points based on feature similarity within a spatial radius (rather than exact point matches) better captures the semantic tolerance provided by the competition metric."
+  ],
+  "what_did_not_work": [
+    "All segmentation models",
+    "Pure keypoints generation",
+    "Larger models"
+  ],
+  "github_repos": [
+    {
+      "url": "https://github.com/tom99763/21th-place-solution-BYU",
+      "role": "solution"
+    }
+  ],
+  "papers": [],
+  "other_solution_refs": [
+    {
+      "description": "Initial idea notebook for keypoint extraction",
+      "url": "https://www.kaggle.com/code/tom99763/first-idea-to-extract-keypoints-byu/notebook"
+    },
+    {
+      "description": "Discussion thread where the pipeline was refined",
+      "url": "https://www.kaggle.com/competitions/byu-locating-bacterial-flagellar-motors-2025/discussion/573491"
+    }
+  ],
+  "source_url": "https://www.kaggle.com/competitions/byu-locating-bacterial-flagellar-motors-2025/discussion/583128"
+}

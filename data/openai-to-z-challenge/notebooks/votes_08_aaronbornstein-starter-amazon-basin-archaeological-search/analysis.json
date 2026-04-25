@@ -1,0 +1,48 @@
+{
+  "summary": "This notebook demonstrates a semi-automated archaeological prospecting pipeline that scans Amazon Basin satellite imagery for potential earthworks using open-source geospatial and multimodal tools. It downloads Sentinel-2 data, computes NDVI, tiles the region into 1km\u00b2 patches, and filters candidates based on vegetation density and empty tile thresholds. The filtered tiles are then processed in batches using a quantized Gemma-3 vision-language model to generate natural language descriptions of potential archaeological features. The workflow concludes by mapping the model's outputs to an interactive Folium map for human review. Readers should learn how to combine geospatial filtering with modern VLMs for efficient large-scale remote sensing triage, and how to leverage quantization and batch processing to run multimodal models cost-effectively on limited hardware.",
+  "purpose": "tutorial",
+  "competition_flow": "Downloads Sentinel-2 satellite imagery over a defined AOI, tiles and filters it using NDVI thresholds, runs batched inference with a quantized Gemma-3 vision-language model to identify potential earthworks, and maps the results for interactive exploration.",
+  "data_reading": [
+    "pystac_client queries AWS Earth Search for Sentinel-2 L2A scenes",
+    "rasterio reads B08, B04, B03 bands as float32 arrays, scales reflectance to uint8, and writes a false-color composite GeoTIFF"
+  ],
+  "data_processing": [
+    "NDVI calculation from NIR and Red bands",
+    "1km\u00b2 tiling into PNGs",
+    "Filtering by mean NDVI < 0.2 and >2% black pixel threshold",
+    "UTM to WGS84 coordinate conversion",
+    "Batched image loading and prompt construction for VLM inference"
+  ],
+  "features_engineering": [],
+  "models": [
+    "Gemma-3-4B-Vision (4-bit quantized via Unsloth)"
+  ],
+  "frameworks_used": [
+    "unsloth",
+    "transformers",
+    "bitsandbytes",
+    "accelerate",
+    "torch",
+    "datasets",
+    "pystac-client",
+    "rasterio",
+    "folium",
+    "geopandas",
+    "shapely",
+    "pillow"
+  ],
+  "loss_functions": [],
+  "cv_strategy": "",
+  "ensembling": "",
+  "insights": [
+    "NDVI-based filtering effectively reduces the search space by excluding dense vegetation and empty tiles before running expensive VLM inference.",
+    "Quantized open-source vision-language models can serve as cost-effective, local alternatives to proprietary APIs for large-scale remote sensing triage.",
+    "Batch processing with HuggingFace Datasets significantly improves GPU throughput for multimodal inference pipelines."
+  ],
+  "critical_findings": [],
+  "what_did_not_work": [
+    "DEM and Hillshade analysis was abandoned because it required external API credentials that were not available."
+  ],
+  "source_url": "https://www.kaggle.com/code/aaronbornstein/starter-amazon-basin-archaeological-search",
+  "votes": 42
+}

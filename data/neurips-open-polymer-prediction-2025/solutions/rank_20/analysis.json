@@ -1,0 +1,53 @@
+{
+  "summary": "The author achieved 20th place in the Open Polymer Prediction 2025 competition by prioritizing robust cross-validation and extensive molecular feature engineering. They implemented a stratified K-fold validation scheme tailored to each of the five regression targets, using equal-frequency binning to align validation with the public leaderboard. The pipeline leveraged a diverse ensemble of gradient boosting and tree-based models, with target-specific weights automatically determined based on validation performance. Post-processing involved aligning predictions to the training distribution via mean and standard deviation matching, which proved crucial for public leaderboard gains.",
+  "extensive_summary": "## Validation Strategy\nThe author prioritized validation robustness due to the public leaderboard's reliance on only 8% of the test set. After experimenting with multiple schemes, they settled on Stratified K-Fold CV (k=5) for each of the five targets. To ensure the validation correlated strongly with the public LB, they stratified by binning each target into five equal-frequency bins (20% each). A separate model was trained for each target with its own dedicated validation fold.\n\n## Feature Engineering\nThe feature set was heavily inspired by the POINT2 paper. The author incorporated a wide range of molecular and polymer descriptors, including MACCS Keys, Morgan fingerprints, RDKit fingerprints, Atom pair fingerprints, Topological torsion fingerprints, Graph-based descriptors, Polymer structural features, and AUTOCORR2D. After initial construction, features were filtered by removing constant columns and highly correlated features, resulting in a final set of 1,072 columns.\n\n## Modeling & Ensembling\nThe modeling phase involved incrementally adding models that improved both CV and LB scores. The final approach used a weighted ensemble of six models: xgb, knn, cat, hist, et, and lgb. Weights were determined automatically per target based on validation performance. For example, Tg relied heavily on xgb (0.789), while FFV distributed weight across xgb, hist, lgb, and knn. Tc and Rg were dominated by lgb and cat respectively.\n\n## Post-processing\nTo bridge the gap between validation and the public leaderboard, the author applied distribution alignment to the predictions for each target. This involved matching the mean or standard deviation of the predictions to the training distribution. Mean matching was used for Tg, while both mean and standard deviation matching were applied to FFV. Other adjustments were tested but ultimately degraded performance.",
+  "rank": 20,
+  "competition_flow": "Raw polymer data was processed into 1,072 molecular and structural features, which were fed into a target-specific weighted ensemble of tree-based and KNN models using stratified 5-fold CV, followed by distribution alignment of predictions to match the training set before final submission.",
+  "data_reading": [],
+  "data_processing": [
+    "Removed constant and highly correlated features",
+    "Aligned prediction distributions to the training set via mean and standard deviation matching"
+  ],
+  "features_engineering": [
+    "MACCS Keys",
+    "Morgan fingerprints",
+    "RDKit fingerprints",
+    "Atom pair fingerprints",
+    "Topological torsion fingerprints",
+    "Graph-based descriptors",
+    "Polymer structural features",
+    "AUTOCORR2D"
+  ],
+  "models": [
+    "xgb",
+    "knn",
+    "cat",
+    "hist",
+    "et",
+    "lgb"
+  ],
+  "frameworks_used": [],
+  "loss_functions": [],
+  "cv_strategy": "Stratified K-Fold CV (k=5) with stratification by binning each target into five equal-frequency bins (20% each).",
+  "ensembling": "Target-specific weighted ensembles of six models were automatically weighted based on validation performance, followed by mean and/or standard deviation alignment of predictions to the training distribution.",
+  "insights": [
+    "Focusing on robust cross-validation is critical when the public leaderboard relies on a small fraction of the test set.",
+    "Stratifying validation folds by equal-frequency bins per target strongly correlates with public leaderboard performance.",
+    "Automatically determining model weights per target based on validation scores yields better results than fixed weighting."
+  ],
+  "critical_findings": [
+    "Aligning prediction distributions to the training set via mean or standard deviation matching significantly improved public leaderboard scores for specific targets.",
+    "Different targets required different distribution alignment strategies (e.g., mean-only for Tg vs. mean and std for FFV)."
+  ],
+  "what_did_not_work": [],
+  "github_repos": [],
+  "papers": [
+    {
+      "title": "POINT2: A Polymer Informatics Training and Testing Database",
+      "url": "https://arxiv.org/abs/2503.23491",
+      "arxiv_id": "2503.23491"
+    }
+  ],
+  "other_solution_refs": [],
+  "source_url": "https://www.kaggle.com/competitions/neurips-open-polymer-prediction-2025/discussion/607803"
+}

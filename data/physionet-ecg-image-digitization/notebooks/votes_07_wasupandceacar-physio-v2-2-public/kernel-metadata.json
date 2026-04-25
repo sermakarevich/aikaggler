@@ -1,0 +1,28 @@
+{
+  "id": "wasupandceacar/physio-v2-2-public",
+  "id_no": 102982693,
+  "title": "physio-v2.2-public",
+  "code_file": "physio-v2-2-public.ipynb",
+  "language": "python",
+  "kernel_type": "notebook",
+  "is_private": false,
+  "enable_gpu": true,
+  "enable_tpu": false,
+  "enable_internet": false,
+  "keywords": [
+    "gpu"
+  ],
+  "dataset_sources": [
+    "kami1976/hengck23-submit-physionet",
+    "wasupandceacar/physio-test-fake-dataset"
+  ],
+  "kernel_sources": [
+    "wasupandceacar/deterministic"
+  ],
+  "competition_sources": [
+    "physionet-ecg-image-digitization"
+  ],
+  "model_sources": [],
+  "docker_image": "gcr.io/kaggle-private-byod/python@sha256:7a9d2a6b13b3566aa6cc5a22447f3b3f99acf55dce44408deb90584b6d4b0dde",
+  "machine_shape": "Gpu"
+}

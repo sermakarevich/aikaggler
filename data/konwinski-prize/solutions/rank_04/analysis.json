@@ -1,0 +1,86 @@
+{
+  "summary": "The author achieved a top-4 public leaderboard finish in the Konwinski Prize competition by leveraging open-source LLMs for code patch generation and verification. Rather than relying on cross-validation, they focused heavily on the public leaderboard distribution and implemented a rigorous skip mechanism to minimize incorrect answers under a high-penalty scoring system. Key technical choices included filtering inputs by problem statement length and file count, applying an edit-distance-based candidate selection method, and dynamically adjusting challenge counts to optimize winning probabilities via hypergeometric simulation.",
+  "extensive_summary": "## Validation & Data Strategy\nThe competition featured a very small training set (6 instances) and a high penalty for incorrect answers, making traditional cross-validation unreliable. The team ignored CV, trusted the public leaderboard (71 instances), and incorporated ~6,400 external instances with a slightly different distribution. They focused on maximizing `correct - incorrect` rather than raw accuracy.\n\n## Model & Inference Configuration\nThe pipeline relied on `deepseek-r1-distill-qwen-32b-awq`. AWQ quantization proved essential, as non-AWQ versions and QwQ-32B performed poorly. Inference parameters were tuned per stage: temperature 0.6 for reading and patching, and 0.0 for verification. A modified prompt was tested to allow a \"None\" confidence output, but it was ultimately dropped for the final submission.\n\n## Candidate Selection & Filtering\nTo refine patch candidates, the team implemented **Edit Distance Selection**, calculating the sum of edit distances to all other candidates and selecting the most representative one. They filtered out patches exceeding 1,000 characters. Crucially, they applied strict skip mechanisms based on empirical analysis: skipping issues outside 1802\u20133400 characters and those with more than 388 file contents dramatically reduced incorrect answers while preserving correct ones.\n\n## Skip Mechanism & Meta-Optimization\nGiven the scoring function, the team simulated winning probabilities using the hypergeometric distribution. They targeted a `challenges=5` strategy, deliberately ensuring odd challenge counts to avoid losing even splits (e.g., 2 correct, 2 incorrect). Dynamic contingency plans adjusted `max_challenge_num` if turn limits were reached. Strict interval (7/15/19 min) and global (8/23 hours) time limits prevented inference overruns.\n\n## Development & Testing\nThe team divided roles across Kaggle, development, and research, utilizing GitHub code reviews. They mitigated strict submission limits by writing 12 modular scripts with 98 test cases (80% coverage), leveraging parallelized testing, fixtures, and parameterization to ensure stability.",
+  "rank": 4,
+  "competition_flow": "Raw problem statements and file contents are filtered by length and file count, then processed through a three-stage LLM pipeline (reading, patching, verifying) with temperature scheduling and edit-distance candidate selection, followed by a hypergeometric-simulated skip mechanism and strict time limits to produce a final submission.",
+  "data_reading": [],
+  "data_processing": [
+    "Filtered problem statements by character length (1802-3400 chars)",
+    "Skipped instances with >388 file contents",
+    "Filtered generated patches >1000 chars",
+    "Applied Edit Distance Selection to choose representative candidates",
+    "Implemented dynamic skip mechanisms based on turn limits and time constraints"
+  ],
+  "features_engineering": [],
+  "models": [
+    "deepseek-r1-distill-qwen-32b-awq"
+  ],
+  "frameworks_used": [],
+  "loss_functions": [],
+  "cv_strategy": "Ignored cross-validation; relied entirely on the 71-instance public leaderboard and ~6,400 external instances for tuning and methodology validation.",
+  "ensembling": "",
+  "insights": [
+    "High penalty for incorrect answers makes an effective skip mechanism more valuable than raw accuracy.",
+    "Odd-numbered challenge counts statistically outperform even counts due to hypergeometric distribution properties.",
+    "Problem length and file content count are strong, actionable predictors of solvability.",
+    "Strict time management and modular testing are critical when submission limits are extremely tight."
+  ],
+  "critical_findings": [
+    "AWQ quantization was strictly necessary for model performance while non-AWQ versions failed completely.",
+    "Issues exceeding 3400 characters never yielded correct answers in their trials.",
+    "Even-numbered challenge counts inherently include losing tie scores (e.g., 2 correct, 2 incorrect), making odd counts a statistically superior target.",
+    "Shorter issues under 1200 characters performed poorly due to insufficient information or noise."
+  ],
+  "what_did_not_work": [
+    "Non-AWQ quantized model versions.",
+    "QwQ-32B (both AWQ and non-AWQ).",
+    "Prompt engineering that allowed the model to output \"None\" for uncertainty (yielded no significant improvement)."
+  ],
+  "github_repos": [],
+  "papers": [
+    {
+      "title": "SWE-bench paper",
+      "url": "https://arxiv.org/abs/2310.06770",
+      "arxiv_id": "2310.06770"
+    }
+  ],
+  "other_solution_refs": [
+    {
+      "description": "External data discussion",
+      "url": "https://www.kaggle.com/competitions/konwinski-prize/discussion/552605"
+    },
+    {
+      "description": "Private LB discussion",
+      "url": "https://www.kaggle.com/competitions/konwinski-prize/discussion/564884#3142741"
+    },
+    {
+      "description": "CV strategy reference",
+      "url": "https://www.kaggle.com/competitions/prostate-cancer-grade-assessment/discussion/169230"
+    },
+    {
+      "description": "LLM Prompt Recovery competition reference",
+      "url": "https://www.kaggle.com/competitions/llm-prompt-recovery/discussion/494438"
+    },
+    {
+      "description": "LLM 20 Questions competition reference",
+      "url": "https://www.kaggle.com/competitions/llm-20-questions/discussion/529525"
+    },
+    {
+      "description": "Winning probability sweet spot discussion",
+      "url": "https://www.kaggle.com/competitions/konwinski-prize/discussion/564639"
+    },
+    {
+      "description": "Starter notebook reference",
+      "url": "https://www.kaggle.com/code/huikang/starter-notebook-select-patch-verify?scriptVersionId=223324126"
+    },
+    {
+      "description": "Starter notebook comments",
+      "url": "https://www.kaggle.com/code/huikang/starter-notebook-select-patch-verify/comments#3132127"
+    },
+    {
+      "description": "AIMO1 competition reference",
+      "url": "https://www.kaggle.com/competitions/ai-mathematical-olympiad-prize/discussion/516936"
+    }
+  ],
+  "source_url": "https://www.kaggle.com/competitions/konwinski-prize/discussion/568799"
+}

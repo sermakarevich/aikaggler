@@ -1,0 +1,47 @@
+{
+  "summary": "The author achieved 6th place by focusing on robust pairwise matching and strategic pair filtering rather than relying on global features. They aligned image orientations, then used ALIKED and LightGlue for keypoint detection and matching across multiple scales. A novel pair filtering strategy based on match counts and a logarithmic ratio was applied, complemented by local high-density crop matching and global image 4-splitting to maximize keypoint coverage. Results from different scales were merged and fed into COLMAP for final reconstruction.",
+  "extensive_summary": "The solution prioritizes accurate pairwise matching and strategic pair selection to improve mAA scores in a structure-from-motion pipeline. The pipeline begins by detecting and rotating all images to a consistent orientation using an external orientation-checking tool. Keypoint detection and matching are performed using ALIKED paired with LightGlue. Instead of relying on global descriptors, the author matches all image pairs and filters them using a logarithmic ratio formula: `top k * log(n)/(n-1)%` pairs, where `n` is the dataset size and `k` is a tuned parameter.\n\nTwo complementary strategies are employed to boost match density: globally, each image is split into four quadrants to capture keypoints across the entire frame; locally, regions with high match density are cropped and re-matched. To handle scale variations, all matching steps are executed at four resolutions (1024, 1280, 1536, 2048) and the results are merged. Two distinct submission strategies were tested: Notebook 1 filters pairs globally before multi-scale matching, while Notebook 2 builds a match-count graph, clusters it via Louvain (resolution=0.1), and filters pairs within clusters before multi-scale matching. Both approaches ultimately feed the merged matches into COLMAP for final reconstruction.",
+  "rank": 6,
+  "competition_flow": "Images are orientation-aligned, matched at multiple scales using ALIKED and LightGlue, filtered via a logarithmic pair-selection formula or graph clustering, enhanced with 4-split and high-density crop strategies, and finally reconstructed using COLMAP.",
+  "data_reading": [],
+  "data_processing": [
+    "Orientation detection and rotation for consistent alignment",
+    "Resizing to multiple scales (1024, 1280, 1536, 2048)",
+    "Splitting images into four quadrants",
+    "Cropping high-match-density regions",
+    "Merging multi-scale match results"
+  ],
+  "features_engineering": [],
+  "models": [
+    "ALIKED",
+    "LightGlue"
+  ],
+  "frameworks_used": [],
+  "loss_functions": [],
+  "cv_strategy": "CV used all training datasets; no specific fold or holdout strategy mentioned.",
+  "ensembling": "Results from four matching scales (1024, 1280, 1536, 2048) were merged and filtered before being passed to COLMAP; two separate notebook pipelines were submitted and compared.",
+  "insights": [
+    "Multi-scale matching effectively mitigates score fluctuations caused by varying image scales.",
+    "Pair filtering using a logarithmic ratio significantly improves mAA by focusing on high-confidence matches.",
+    "Combining global image splitting with local high-density crop matching yields complementary gains in keypoint coverage."
+  ],
+  "critical_findings": [
+    "Clustering images purely based on match counts fails on certain scenes like fbk_vineyard and stairs.",
+    "Tuning COLMAP parameters did not improve the final score.",
+    "Detector-free matchers like OmniGlue and DKM were slower than the ALIKED + LightGlue combination."
+  ],
+  "what_did_not_work": [
+    "Clustering completely based on the number of matches.",
+    "Tuning COLMAP parameters.",
+    "Using detector-free matchers such as OmniGlue or DKM."
+  ],
+  "github_repos": [
+    {
+      "url": "https://github.com/ternaus/check_orientation",
+      "role": "library"
+    }
+  ],
+  "papers": [],
+  "other_solution_refs": [],
+  "source_url": "https://www.kaggle.com/competitions/image-matching-challenge-2025/discussion/583076"
+}

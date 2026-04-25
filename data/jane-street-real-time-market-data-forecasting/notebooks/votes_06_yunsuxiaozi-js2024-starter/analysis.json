@@ -1,0 +1,45 @@
+{
+  "summary": "This notebook provides a GPU-accelerated baseline for the Jane Street 2024 market forecasting competition. It demonstrates loading partitioned parquet data, engineering periodic time features, and training three gradient boosting regressors on a single concatenated dataset. The author highlights a counterintuitive preprocessing quirk regarding missing values that surprisingly improved the leaderboard score. Readers should take away a reproducible recipe for rapid prototyping and a cautionary note about verifying data distribution shifts or leakage artifacts in time-series forecasting.",
+  "purpose": "baseline",
+  "competition_flow": "Loads partitioned training and test parquet files, engineers trigonometric time features, trains LightGBM, CatBoost, and XGBoost on GPU, ensembles their predictions with fixed weights, clips the output, and runs the model via the official Kaggle inference server.",
+  "data_reading": [
+    "Reads partitioned parquet files using Polars, converts to Pandas, and concatenates partitions 6-9.",
+    "Uses a custom `Yunbase` utility for memory reduction."
+  ],
+  "data_processing": [
+    "Fills missing values with -1 in the test set only (training set retains NaNs).",
+    "Clips final predictions to the range [-5, 5].",
+    "Reduces memory usage via a custom utility function."
+  ],
+  "features_engineering": [
+    "Adds four trigonometric time features (`sin_time_id`, `cos_time_id`, `sin_time_id_halfday`, `cos_time_id_halfday`) derived from `time_id`.",
+    "Selects `symbol_id` plus `feature_00` through `feature_79` as model inputs."
+  ],
+  "models": [
+    "LightGBM",
+    "CatBoost",
+    "XGBoost"
+  ],
+  "frameworks_used": [
+    "lightgbm",
+    "catboost",
+    "xgboost",
+    "polars",
+    "pandas",
+    "numpy",
+    "kaggle_evaluation"
+  ],
+  "loss_functions": [],
+  "cv_strategy": "",
+  "ensembling": "Combines predictions from LightGBM, CatBoost, and XGBoost using fixed weights (0.55, 0.20, 0.25) and clips the final output to the range [-5, 5].",
+  "insights": [
+    "A simple GPU-accelerated gradient boosting ensemble can serve as an effective starting point for this competition.",
+    "Periodic time features can be effectively captured using sine/cosine transformations."
+  ],
+  "critical_findings": [
+    "Leaving missing values unfilled in the training set while imputing -1 in the test set unexpectedly yielded a strong leaderboard score, suggesting a potential data distribution shift or leakage artifact."
+  ],
+  "what_did_not_work": [],
+  "source_url": "https://www.kaggle.com/code/yunsuxiaozi/js2024-starter",
+  "votes": 691
+}

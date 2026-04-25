@@ -1,0 +1,25 @@
+{
+  "id": "hemanthreganti/tunix-hack-winner-trajectory-reward-training",
+  "id_no": 100050197,
+  "title": "Tunix Hack WINNER - Trajectory Reward Training",
+  "code_file": "tunix-hack-winner-trajectory-reward-training.ipynb",
+  "language": "python",
+  "kernel_type": "notebook",
+  "is_private": false,
+  "enable_gpu": false,
+  "enable_tpu": true,
+  "enable_internet": true,
+  "keywords": [],
+  "dataset_sources": [
+    "thedevastator/grade-school-math-8k-q-a"
+  ],
+  "kernel_sources": [],
+  "competition_sources": [
+    "google-tunix-hackathon"
+  ],
+  "model_sources": [
+    "google/gemma-2/Flax/gemma2-2b-it/1"
+  ],
+  "docker_image": "gcr.io/kaggle-private-byod/python-tpuvm@sha256:faf5c1271481db7d75ee51028e9c7e458d5fe12ff48b138fe38cd60f4b9b7b68",
+  "machine_shape": "TpuV5E8"
+}

@@ -1,0 +1,39 @@
+{
+  "summary": "This notebook provides a complete baseline pipeline for the MABe mouse behavior detection competition, focusing on converting variable-frame-rate tracking data into actionable behavioral events. It demonstrates how to handle heterogeneous video frame rates by scaling all temporal windows and lags proportionally, ensuring features represent consistent physical durations. The author implements extensive FPS-aware temporal and interaction features for both single-mouse and pair-mouse contexts, then trains a weighted ensemble of gradient boosting models per action. Finally, it applies adaptive temporal thresholding and robust gap-filling to convert frame-wise probabilities into clean submission events. Readers should take away the importance of duration-invariant feature engineering and adaptive post-processing for variable-rate video tracking tasks.",
+  "purpose": "baseline",
+  "competition_flow": "Loads CSV metadata and parquet tracking data, generates FPS-aware temporal and interaction features for single and pair mice, trains a weighted ensemble of LightGBM, XGBoost, and CatBoost per action, applies adaptive temporal thresholding to convert frame-wise probabilities to events, and robustifies the output into a final submission.",
+  "data_reading": [
+    "Reads train.csv and test.csv with pandas, loads per-video tracking coordinates from parquet files, parses behaviors_labeled JSON strings, pivots tracking data to wide format, and normalizes pixel coordinates to centimeters using pix_per_cm_approx."
+  ],
+  "data_processing": [
+    "Drops redundant headpiece and tail tracking parts, pivots and reorders coordinate data, normalizes spatial units to centimeters, scales all temporal windows and lags by the video's FPS to maintain duration invariance, and filters videos with missing tracking values."
+  ],
+  "features_engineering": [
+    "FPS-aware temporal features (curvature, speed, state transitions, long-range means/stds), interaction features (inter-mouse distance, velocity alignment, facing direction, chase/approach rates), body part distances (nose-tail, ear distance), binary long-distance features, and duration-aware lags/offsets for all features."
+  ],
+  "models": [
+    "LightGBM, XGBoost, CatBoost"
+  ],
+  "frameworks_used": [
+    "lightgbm, xgboost, catboost, scikit-learn, polars, scipy, torch"
+  ],
+  "loss_functions": [
+    ""
+  ],
+  "cv_strategy": "",
+  "ensembling": "Weighted average of per-action binary classifiers from LightGBM, XGBoost, and CatBoost (weights: 0.20, 0.15, 0.25, 0.22, 0.18), followed by adaptive temporal thresholding and gap-filling post-processing.",
+  "insights": [
+    "FPS-aware scaling of temporal windows and lags is necessary to maintain consistent physical durations across videos with different frame rates.",
+    "Per-action binary classification with a weighted ensemble outperforms single multi-class models for this event detection task.",
+    "Adaptive thresholding combined with temporal smoothing effectively converts noisy frame-wise probabilities into clean event boundaries."
+  ],
+  "critical_findings": [
+    "The model explicitly underperforms on 'single' targets, prompting the author to train on more samples to improve coverage.",
+    "Specific headpiece and tail tracking parts are identified as noisy or redundant and are systematically dropped during preprocessing."
+  ],
+  "what_did_not_work": [
+    ""
+  ],
+  "source_url": "https://www.kaggle.com/code/kerta27/mabe-lgb-xgb-catboost",
+  "votes": 257
+}

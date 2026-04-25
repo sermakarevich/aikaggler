@@ -1,0 +1,43 @@
+{
+  "summary": "This notebook implements a production-ready inference pipeline for multi-class intracranial aneurysm detection. It standardizes variable-length DICOM series into fixed 32-slice inputs by applying modality-specific windowing and rescaling, then constructs a 3-channel image tensor from the middle slice, maximum intensity projection, and standard deviation projection. Patient metadata (age, sex) is normalized and fused with vision features through a custom multi-backbone architecture. The pipeline runs an ensemble of three pre-trained models with test-time augmentation and weighted averaging to generate robust predictions. Readers should learn how to handle heterogeneous medical imaging data, integrate tabular metadata with CNN/Transformer backbones, and structure a fault-tolerant inference server for Kaggle competitions.",
+  "purpose": "inference",
+  "competition_flow": "Loads raw DICOM series, processes them into 3-channel image projections and patient metadata, runs predictions through a weighted ensemble of three pre-trained vision models with TTA, and outputs a submission DataFrame via the Kaggle inference server.",
+  "data_reading": [
+    "Reads DICOM files using pydicom, extracts pixel arrays and metadata (modality, age, sex, rescale slope/intercept), and handles multi-frame/color images by converting to grayscale."
+  ],
+  "data_processing": [
+    "Applies modality-specific DICOM windowing, rescales pixel values, resizes slices to 512x512, samples or pads to exactly 32 slices, creates 3-channel inputs (middle slice, MIP, std projection), normalizes metadata (age/100, sex 0/1), and applies Albumentations transforms including TTA (original, H-flip, V-flip, 90-rot)."
+  ],
+  "features_engineering": [
+    "Domain-derived image projections (middle slice, MIP, standard deviation across slices) and normalized patient metadata (age, sex)."
+  ],
+  "models": [
+    "tf_efficientnetv2_s",
+    "convnext_small",
+    "swin_small_patch4_window7_224"
+  ],
+  "frameworks_used": [
+    "torch",
+    "timm",
+    "albumentations",
+    "pydicom",
+    "opencv",
+    "polars",
+    "pandas",
+    "kaggle_evaluation.rsna_inference_server"
+  ],
+  "loss_functions": [],
+  "cv_strategy": "",
+  "ensembling": "Weighted average of predictions from three models (EfficientNetV2: 0.4, ConvNeXt: 0.3, Swin: 0.3) with TTA applied per model.",
+  "insights": [
+    "Variable-length DICOM series can be standardized by sampling or padding to a fixed slice count without losing critical anatomical context.",
+    "Combining spatial projections (MIP, std) with the middle slice provides complementary features for detecting subtle vascular anomalies.",
+    "Metadata (age, sex) can be effectively fused with vision features via a separate FC branch rather than raw concatenation.",
+    "TTA with geometric flips and rotations improves prediction stability for medical imaging tasks.",
+    "A production inference server requires robust error handling, memory cleanup, and fallback mechanisms to avoid Kaggle environment limits."
+  ],
+  "critical_findings": [],
+  "what_did_not_work": [],
+  "source_url": "https://www.kaggle.com/code/zshashz/rsna-iad-ensemble-lb-1",
+  "votes": 373
+}

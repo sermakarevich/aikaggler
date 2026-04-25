@@ -1,0 +1,45 @@
+{
+  "summary": "This notebook implements a complete inference pipeline for the Image Matching Challenge 2025, demonstrating how to generate a dummy submission using modern feature extractors and classical structure-from-motion tools. It shortlists image pairs using DINOv2 global descriptors, extracts ALIKED keypoints and descriptors, matches them with LightGlue, and runs PyColmap for RANSAC and incremental mapping. The pipeline outputs predicted camera poses and cluster assignments per image in the required CSV format. Readers learn how to integrate vision foundation models with traditional SfM pipelines for competition baselines. The notebook also includes timing benchmarks and a local scoring function for training data validation.",
+  "purpose": "inference",
+  "competition_flow": "Loads image paths from a CSV, shortlists pairs using DINOv2 global descriptors, extracts ALIKED keypoints and descriptors, matches them with LightGlue, runs PyColmap for RANSAC and incremental mapping, and outputs a CSV with predicted camera poses and cluster assignments.",
+  "data_reading": [
+    "Parses image paths and metadata from `train_labels.csv` or `sample_submission.csv`.",
+    "Loads images using `kornia.io.load_image` and `PIL.Image`."
+  ],
+  "data_processing": [
+    "Resizes inputs to 1024 for ALIKED feature extraction.",
+    "Normalizes DINOv2 global descriptors using L2 normalization.",
+    "Converts images to float32 tensors on GPU.",
+    "Formats rotation and translation arrays as semicolon-separated strings for the submission CSV."
+  ],
+  "features_engineering": [],
+  "models": [
+    "ALIKED",
+    "LightGlue",
+    "DINOv2-Giant",
+    "PyColmap"
+  ],
+  "frameworks_used": [
+    "torch",
+    "kornia",
+    "transformers",
+    "pycolmap",
+    "numpy",
+    "pandas",
+    "h5py",
+    "opencv",
+    "tqdm"
+  ],
+  "loss_functions": [],
+  "cv_strategy": "",
+  "ensembling": "",
+  "insights": [
+    "DINOv2 global descriptors effectively reduce computational overhead by shortlisting plausible image pairs before feature extraction.",
+    "ALIKED paired with LightGlue provides a robust, modern feature detection and matching pipeline suitable for image matching challenges.",
+    "PyColmap's incremental mapping can be adapted for smaller scenes by lowering the `min_model_size` threshold."
+  ],
+  "critical_findings": [],
+  "what_did_not_work": [],
+  "source_url": "https://www.kaggle.com/code/liuhaixu/fork-of-lb-28-12-first-dummy-submission-25aea8",
+  "votes": 121
+}

@@ -1,0 +1,39 @@
+{
+  "summary": "This notebook demonstrates a baseline approach for the Mitsui Commodity Prediction Challenge using a simple multi-layer perceptron trained with a custom listwise ranking loss. It provides a complete inference pipeline that loads pre-trained weights, processes test data using Polars and Pandas, and integrates with Kaggle's evaluation server for local testing and submission. The author emphasizes a strict chronological holdout split and explicitly avoids lag features and date-based leakage. Readers should learn how to implement a custom listwise ranking loss for multi-output targets and structure a submission-ready inference script that handles missing values and unscored rows correctly.",
+  "purpose": "baseline",
+  "competition_flow": "Loads pre-trained MLP weights, processes test data by dropping unscored rows and filling missing values with -1, runs inference, and serves predictions via Kaggle's evaluation server.",
+  "data_reading": [
+    "Reads train and label CSVs using pandas pd.read_csv.",
+    "Test data is passed as Polars DataFrames and converted to Pandas via .to_pandas() before tensor conversion."
+  ],
+  "data_processing": [
+    "Fills all missing values with -1.",
+    "Drops the is_scored column.",
+    "Applies a fixed chronological split (first 1827 rows for training, remainder for validation) as shown in the commented training section."
+  ],
+  "features_engineering": [],
+  "models": [
+    "MLP (Multi-Layer Perceptron with BatchNorm1d, Linear, and ReLU)"
+  ],
+  "frameworks_used": [
+    "torch",
+    "polars",
+    "pandas",
+    "kaggle_evaluation"
+  ],
+  "loss_functions": [
+    "MSELoss",
+    "Custom listwise ranking loss (softmax-based cross-entropy over masked targets)"
+  ],
+  "cv_strategy": "Fixed chronological holdout (split at index 1827)",
+  "ensembling": "",
+  "insights": [
+    "A simple MLP combined with a custom listwise ranking loss can effectively capture ordinal relationships in multi-output commodity prediction tasks.",
+    "Filling missing values with -1 and filtering out unscored rows is sufficient for this competition's data format without complex imputation.",
+    "Kaggle's evaluation server can be seamlessly integrated with a custom inference function to validate submission formats locally before hidden test submission."
+  ],
+  "critical_findings": [],
+  "what_did_not_work": [],
+  "source_url": "https://www.kaggle.com/code/hengck23/lb0-456-no-leak-no-lag-no-date-mlp-list-rank-loss",
+  "votes": 174
+}

@@ -1,0 +1,21 @@
+{
+  "id": "columbia2131/sample-code-for-vggt-inference",
+  "id_no": 82149311,
+  "title": "Sample Code for VGGT Inference",
+  "code_file": "sample-code-for-vggt-inference.ipynb",
+  "language": "python",
+  "kernel_type": "notebook",
+  "is_private": false,
+  "enable_gpu": false,
+  "enable_tpu": false,
+  "enable_internet": false,
+  "keywords": [],
+  "dataset_sources": [],
+  "kernel_sources": [],
+  "competition_sources": [
+    "image-matching-challenge-2025"
+  ],
+  "model_sources": [],
+  "docker_image": "gcr.io/kaggle-images/python@sha256:36bd91c0e9248f9f2748be5cf354e070f2f93034099b1c02932530ef1e928303",
+  "machine_shape": "None"
+}

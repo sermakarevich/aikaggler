@@ -1,0 +1,45 @@
+{
+  "summary": "This notebook provides an introductory baseline for the Ariel Data Challenge 2025, demonstrating a complete pipeline from raw satellite imaging data to a cross-validated regression model and submission. It shows how to extract 1D time-series signals from 2D FGS1 and AIRS-CH0 sensor frames by differencing even and odd exposures, then derives two physically motivated features representing relative flux reduction during planetary transits. A simple Ridge regression is trained on these features, achieving a high out-of-fold R\u00b2 score (~0.97) and proving that basic transit photometry features are highly predictive. Readers should learn how to process raw imaging data, construct domain-specific features, and evaluate models using the competition's Gaussian Log Likelihood metric.",
+  "purpose": "tutorial",
+  "competition_flow": "Reads raw FGS1 and AIRS-CH0 parquet signal files and metadata, extracts 1D time-series and computes relative flux reduction features, trains a Ridge regression via cross-validation, and generates a submission with mean predictions and uncertainty estimates.",
+  "data_reading": [
+    "Loads metadata via pd.read_csv and pd.read_parquet.",
+    "Reads per-planet signal data from nested parquet files using pl.read_parquet and pd.read_parquet."
+  ],
+  "data_processing": [
+    "Computes pixel-wise mean over 2D sensor frames (32x32 for FGS1, 32x356 for AIRS).",
+    "Calculates net signal by subtracting even-indexed frames from odd-indexed frames to isolate the transit signal.",
+    "Flattens the result into 1D time series (67,500 steps for FGS1, 5,625 for AIRS)."
+  ],
+  "features_engineering": [
+    "Calculates relative flux reduction during transit by averaging flux in predefined in-transit windows and comparing it to out-of-transit baseline windows for both FGS1 and AIRS-CH0 sensors, yielding two scalar features per planet."
+  ],
+  "models": [
+    "Ridge regression"
+  ],
+  "frameworks_used": [
+    "scikit-learn",
+    "pandas",
+    "polars",
+    "numpy",
+    "scipy",
+    "matplotlib",
+    "seaborn"
+  ],
+  "loss_functions": [],
+  "cv_strategy": "5-fold cross-validation via sklearn's cross_val_predict",
+  "ensembling": "",
+  "insights": [
+    "Differencing even and odd sensor frames effectively isolates the transit signal from raw imaging data.",
+    "Two simple relative flux reduction features capture nearly all predictive variance, achieving an R\u00b2 of 0.97 with Ridge regression.",
+    "The competition metric is a normalized Gaussian Log Likelihood score that penalizes uncertainty calibration as well as point predictions."
+  ],
+  "critical_findings": [
+    "All 1100 training planets map to exactly one unique star each, with no repeated observations.",
+    "A significant portion of the dataset lacks required calibration files (2200 sets missing).",
+    "Flux values exhibit very low variability across the training set (mean ~0.0146, std ~0.0105)."
+  ],
+  "what_did_not_work": [],
+  "source_url": "https://www.kaggle.com/code/ahsuna123/neurips-adc-25-intro-training",
+  "votes": 257
+}

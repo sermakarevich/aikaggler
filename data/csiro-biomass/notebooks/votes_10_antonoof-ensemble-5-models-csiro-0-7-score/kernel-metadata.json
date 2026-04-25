@@ -1,0 +1,39 @@
+{
+  "id": "antonoof/ensemble-5-models-csiro-0-7-score",
+  "id_no": 105324131,
+  "title": "ensemble 5 models CSIRO | 0.7 score",
+  "code_file": "ensemble-5-models-csiro-0-7-score.ipynb",
+  "language": "python",
+  "kernel_type": "notebook",
+  "is_private": false,
+  "enable_gpu": true,
+  "enable_tpu": false,
+  "enable_internet": false,
+  "keywords": [
+    "gpu"
+  ],
+  "dataset_sources": [
+    "",
+    "antonoof/csiro-mvp-models",
+    "takahitomizunobyts/csiro-exp3",
+    "samu2505/csiro-image-embeddings"
+  ],
+  "kernel_sources": [
+    "samu2505/csiro-datasplit",
+    "",
+    "packagemanager/pm-105324131-at-01-12-2026-22-34-23"
+  ],
+  "competition_sources": [
+    "csiro-biomass"
+  ],
+  "model_sources": [
+    "",
+    "gothamjocker/csiro/PyTorch/default/12",
+    "jiazhuang/csiro-local-trained/PyTorch/default/10",
+    "metaresearch/dinov2/PyTorch/giant/1",
+    "metaresearch/dinov2/PyTorch/large/1",
+    "aishikai/google-siglip-so400m-patch14-384/Transformers/default/1"
+  ],
+  "docker_image": "gcr.io/kaggle-private-byod/python@sha256:7a9d2a6b13b3566aa6cc5a22447f3b3f99acf55dce44408deb90584b6d4b0dde",
+  "machine_shape": "NvidiaTeslaT4"
+}

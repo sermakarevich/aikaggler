@@ -1,0 +1,105 @@
+{
+  "overall_summary": "This biomass regression competition challenged participants to predict pasture biomass from limited, artifact-prone imagery using self-supervised vision models. Winning approaches predominantly leveraged DINOv3 backbones with innovative architectural adaptations like multi-stream processing, visual prompt tuning, and multi-modal tabular fusion. Success hinged on aggressive data cleaning, synthetic/pseudo-label augmentation, carefully engineered cross-validation splits, and robust post-processing rather than complex loss functions or external data.",
+  "competition_flows": [
+    "Left/right view splitting with shared backbone & attention fusion",
+    "Timestamp artifact removal & multi-stream ViT with MoE heads",
+    "Stratified CV with pseudo-labeled synthetic data & DPT density estimation",
+    "Two-stage multi-modal pipeline fusing visual/tabular features with auxiliary tabular prediction",
+    "Two-stage pipeline with Stage 1 regression & Stage 2 Test-Time Training (TTT) using pseudo-labels",
+    "Frozen backbone with visual prompt tuning & multi-crop tiling for dense prediction"
+  ],
+  "data_reading": [],
+  "data_processing": [
+    "Splitting images into left/right views",
+    "HSV timestamp removal via cv2.inpaint",
+    "Manual cropping of cardboard edges",
+    "Synthetic data generation (Qwen Image Edit) & pseudo-labeling",
+    "Multi-crop training & random cropping (448x448, 1024x1024, 1280x1280, 2048x1024, 800x800)",
+    "HorizontalFlip, VerticalFlip, RandomRotate90, RandomGamma, RandomBrightnessContrast, HueSaturationValue, CLAHE/Equalize, Sharpen/Emboss, RandAugment, RandomErasing, Mixup, CutMix",
+    "Random scaling with black padding",
+    "ImageNet normalization (mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225])",
+    "StandardScaler normalization for targets/features",
+    "State-based range clipping & WA-state constraint enforcement",
+    "Empirical scaling adjustments (e.g., Clover * 0.8, thresholding <0.2)",
+    "TTA (horizontal/vertical flips, mean aggregation)"
+  ],
+  "features_engineering": [
+    "Auxiliary regression targets (NDVI, average pasture height)",
+    "Auxiliary classification targets (species, state)",
+    "Meta feature embeddings for state/species",
+    "Pre_GSHH_NDVI",
+    "Height_Ave_cm"
+  ],
+  "models": [
+    "DINOv3 (ViT-Large, ViT-Huge, DINO-Large, DINO-Base, DINO-Huge, vit_large_patch16_dinov3_qkvb, vit_huge_plus_patch16_dinov3.lvd1689m)",
+    "DINOv2",
+    "ConvNeXt-Large",
+    "XCiT",
+    "SigLIP",
+    "EVA02",
+    "SAM 2",
+    "Depth Anything v3",
+    "SegDINO DPT head",
+    "PE spatial (Perception Encoder)",
+    "BiomassModelBasic",
+    "BiomassModelWithStateSpecies",
+    "BiomassModelWithMetaEmbedding",
+    "MetaMoE",
+    "_AuxHead",
+    "Multi-Modal Regression Network",
+    "2-layer MLP",
+    "Hybrid Texture Pooling",
+    "DETR-style query tokens",
+    "Visual Prompt Tuning"
+  ],
+  "frameworks_used": [
+    "pytorch/torch",
+    "albumentations",
+    "opencv/cv2",
+    "numpy",
+    "pandas",
+    "timm",
+    "schedule-free",
+    "ThreadPoolExecutor"
+  ],
+  "loss_functions": [
+    "SmoothL1Loss",
+    "CrossEntropyLoss",
+    "EpsilonInsensitiveLoss",
+    "GaussianNLLLoss",
+    "PhysicsConsistencyLoss",
+    "WeightedSmoothL1Loss",
+    "MSELoss",
+    "r^2 loss",
+    "orthogonality loss"
+  ],
+  "cv_strategies": [
+    "3-fold CV jointly by state and sampling date",
+    "Full-dataset training (no CV)",
+    "Stratified 5-fold CV by state with seed selection for label distribution matching",
+    "5-fold CV with specific seeds per stage",
+    "StratifiedGroupKFold with subdivided virtual dates and brute-force seed search (10M seeds)",
+    "State-stratified GroupKFold over sampling dates"
+  ],
+  "ensembling": [
+    "SWA ensemble of pseudo-labeled models",
+    "Weighted fusion of multiple models (e.g., 0.4/0.6 splits)",
+    "Weighted ensemble of six models with TTA averaging",
+    "Ensemble of separate target models trained at different convergence points",
+    "5-fold CV prediction aggregation",
+    "Weighted blend of multi-stage outputs (e.g., 0.2 Stage 1 + 0.8 Stage 2)",
+    "Checkpoint ensembling with EMA/SWA testing",
+    "Heuristic scaling/mixing of species outputs"
+  ],
+  "insights": [],
+  "critical_findings": [],
+  "what_did_not_work": [],
+  "notable_individual_insights": [
+    "rank 1 (1st Place Solution): Interval-based classification heads significantly improve regression performance by constraining predictions to learned biomass ranges.",
+    "rank 2 ((2nd) Weakly supervised semantic segmentation + Synthetic data): Synthetic data initially dropped public scores due to ground truth mismatch, which was resolved by pseudo-labeling the synthetic images with a model trained on original data.",
+    "rank 4 (4th Place Solution: ViT-Huge DINOv3 & Multi-Modal Feature Fusion with AUX predic): Manually removing background artifacts like cardboard backing from images provides a significant and consistent score boost.",
+    "rank 5 (Rank 5th Solution): Public LB scores poorly correlate with Private LB due to distribution shifts and small dataset size, making submission selection highly uncertain.",
+    "rank 7 (7th Place Solution - single/dual+TTT): Subdividing the original three dates into seven virtual dates and brute-forcing 10 million seeds was essential for achieving a balanced CV split.",
+    "rank 37 (37st Place Solution: Self Prompt Tuning with DINOv3): Allowing training R\u00b2 to rise to 0.95 while validation R\u00b2 plateaued at 0.72 still yielded incremental leaderboard gains, proving the model wasn't unlearning generalizable features."
+  ]
+}

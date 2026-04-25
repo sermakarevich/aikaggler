@@ -1,0 +1,21 @@
+{
+  "id": "dolbokostya/lb-0-261-rna-3d-noise-changed",
+  "id_no": 78821887,
+  "title": "[LB 0.261] RNA 3D Noise Changed",
+  "code_file": "lb-0-261-rna-3d-noise-changed.ipynb",
+  "language": "python",
+  "kernel_type": "notebook",
+  "is_private": false,
+  "enable_gpu": false,
+  "enable_tpu": false,
+  "enable_internet": false,
+  "keywords": [],
+  "dataset_sources": [],
+  "kernel_sources": [],
+  "competition_sources": [
+    "stanford-rna-3d-folding"
+  ],
+  "model_sources": [],
+  "docker_image": "gcr.io/kaggle-images/python@sha256:f4b6dd72d4ac48c76fbb02bce0798b80b284102886ad37e6041e9ab721dc8873",
+  "machine_shape": "None"
+}

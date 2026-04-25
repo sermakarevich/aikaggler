@@ -1,0 +1,61 @@
+{
+  "summary": "The author secured 1st place in the NFL Big Data Bowl 2026 by training a custom play-level model to predict player trajectories using only the provided dataset. The solution hinges on a hybrid architecture combining Depthwise Conv1d encoders for dynamic and static features, a Transformer-based inter-player interaction layer, and a Conv1d decoder. Training stability and accuracy were driven by GaussianNLLLoss for both primary and auxiliary objectives, alongside aggressive data augmentation strategies like uniform rotation and early-frame prediction. The final submission leverages a massive ensemble of over 100 models averaged together, with diversity sourced from varied feature configurations and cross-validation splits.",
+  "extensive_summary": "## Feature Engineering & Data Handling\nThe author engineered both dynamic and static features per player across up to 20 input frames. Dynamic features capture positional and directional data (x, y, sin/cos of orientation and direction, relative coordinates to ball landing and receiver), while static features include one-hot player roles, frame counts, and final-frame coordinates for the passer, ball, and player. The target is defined as the displacement (\u0394x, \u0394y) from the final input frame, with the full trajectory reconstructed by adding this displacement to the final coordinates. Data cleaning involved removing plays with abnormal lengths or missing passers, and standardizing direction by rotating plays 180 degrees when `play_direction == left`.\n\n## Model Architecture\nThe core model is a play-level network that reshapes the player dimension into the batch axis to handle variable player counts. Dynamic features are processed through a Depthwise Conv1d encoder (kernel size 3, no padding) to emphasize the final frame, projecting 10 dimensions per frame into a 640-dimensional concatenated output. Static features pass through a Conv1d (kernel 1) with BatchNorm and SiLU. These are merged and projected to 256 dimensions, then fed into a Transformer Encoder with 3 layers and SwiGLU FFNs to model inter-player interactions. The decoder reshapes the 256-dimensional player features into a temporal sequence and applies multiple Conv1d layers to output 48-frame xy predictions plus 4 auxiliary terms.\n\n## Training & Loss Design\nOptimization used RAdam with EMA (decay 0.9995) over 210 epochs. The primary loss is GaussianNLLLoss, which predicts both mean and variance, automatically downweighting high-variance samples and improving robustness over SmoothL1. Variance is constrained via softplus(var) + 1e-3. An auxiliary GaussianNLLLoss is computed on predicted velocity and acceleration to stabilize and accelerate learning. Frame-wise weighting was tested but yielded no meaningful improvements.\n\n## Augmentation & Ensemble\nData augmentation includes vertical flips and uniform rotation (0\u2013360\u00b0) around the mean player position, chosen over a Gaussian distribution after experiments showed higher variance improved performance. A key insight is predicting from up to 20 frames earlier than the pass attempt, which significantly boosts long-trajectory accuracy. The final submission averages predictions from 100+ models that share the same architecture but differ in feature configurations and CV splits, with diversity primarily driven by the repeated 3-fold group 5-fold CV strategy on `game_id`.",
+  "rank": 1,
+  "competition_flow": "Raw play data is cleaned and directionally standardized, dynamic and static features are engineered per player across up to 20 input frames, processed through a custom Transformer-Conv1d architecture trained with GaussianNLLLoss, and aggregated via a simple average of 100+ models for the final submission.",
+  "data_reading": [],
+  "data_processing": [
+    "Outlier removal for abnormal length or missing passer plays",
+    "180-degree rotation if play_direction == left",
+    "Uniform rotation augmentation (0-360\u00b0)",
+    "Vertical flip augmentation",
+    "Shifting prediction start up to 20 frames earlier than pass attempt"
+  ],
+  "features_engineering": [
+    "Dynamic: x, y, sin(o), cos(o), sin(dir)*s, cos(dir)*s, relative x/y to ball landing, relative x/y to receiver (10 dims/frame)",
+    "Static: one-hot player_role, num prediction frames, num input frames, passer final coords, ball landing coords, player final coords (12 dims total)",
+    "Target: displacement (\u0394x, \u0394y) from final frame"
+  ],
+  "models": [
+    "Depthwise Conv1d dynamic encoder",
+    "Conv1d static encoder",
+    "Transformer Encoder (3 layers, SwiGLU FFN)",
+    "Conv1d decoder"
+  ],
+  "frameworks_used": [],
+  "loss_functions": [
+    "GaussianNLLLoss (main)",
+    "GaussianNLLLoss (auxiliary on velocity/acceleration)",
+    "softplus(var) + 1e-3 constraint"
+  ],
+  "cv_strategy": "Group 5-fold CV using game_id, repeated 3 times with different splits",
+  "ensembling": "Simple average of 100+ models sharing the same architecture but differing in feature configurations and CV splits.",
+  "insights": [
+    "Rotation augmentation and early-frame prediction help reduce overfitting.",
+    "Auxiliary loss stabilizes training and accelerates learning.",
+    "GaussianNLLLoss improves accuracy by automatically downweighting samples with large variance.",
+    "Target depends on rotation-invariant relative positions, making uniform rotation augmentation highly beneficial."
+  ],
+  "critical_findings": [
+    "Increasing rotation variance from Gaussian to uniform improved performance.",
+    "Predicting from earlier frames significantly improves long trajectory predictions.",
+    "Frame-wise weighting provided no meaningful improvements."
+  ],
+  "what_did_not_work": [
+    "Frame-wise weighting provided no meaningful improvements.",
+    "Initial Gaussian rotation distribution (\u03c3 = 5\u00b0) was outperformed by uniform rotation."
+  ],
+  "github_repos": [],
+  "papers": [],
+  "other_solution_refs": [
+    {
+      "description": "Inference notebook",
+      "url": "https://www.kaggle.com/code/chack3/nfl2026-1st-place-inference"
+    },
+    {
+      "description": "Training notebook",
+      "url": "https://www.kaggle.com/code/chack3/nfl2026-1st-place-train"
+    }
+  ],
+  "source_url": "https://www.kaggle.com/competitions/nfl-big-data-bowl-2026-prediction/discussion/651604"
+}

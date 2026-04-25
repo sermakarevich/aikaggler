@@ -1,0 +1,44 @@
+{
+  "summary": "This notebook demonstrates a multi-stage pipeline for discovering potential pre-Columbian archaeological sites in the Amazon using remote sensing and large language models. It starts by filtering pre-computed Sentinel-2 embeddings to the Amazon biome, then spatially joins them with known geoglyph locations to predict new candidate sites. These candidates are cross-referenced with NASA lidar coverage, and the corresponding digital terrain models are converted into hillshade and false-color images. The notebook then uses the OpenAI o3 model to automatically evaluate these terrain images for anthropogenic features and rate their confidence. Finally, it exports the notebook itself to an LLM for critical review and methodological suggestions, showcasing a recursive, AI-assisted research workflow.",
+  "purpose": "tutorial",
+  "competition_flow": "Loads pre-filtered satellite embeddings and known site coordinates, spatially joins them with NASA lidar coverage, processes terrain data into hillshade images, and uses an OpenAI vision model to automatically detect and rank potential archaeological features, followed by an LLM-based critique of the methodology.",
+  "data_reading": [
+    "GeoJSON and Shapefile inputs loaded via geopandas.read_file",
+    "DEM tiles loaded via rasterio.open",
+    "All geometries reprojected to EPSG:3857"
+  ],
+  "data_processing": [
+    "Spatial buffering (5km) and inner spatial join to match predicted sites with lidar tiles",
+    "DEM normalization using 2nd/98th percentiles",
+    "Hillshade generation via gradient/slope/aspect calculations",
+    "NaN replacement and image encoding to base64 JPEGs for API ingestion"
+  ],
+  "features_engineering": [],
+  "models": [
+    "Major TOM (pre-trained encoder)",
+    "OpenAI o3"
+  ],
+  "frameworks_used": [
+    "geopandas",
+    "matplotlib",
+    "contextily",
+    "rasterio",
+    "numpy",
+    "openai",
+    "kaggle_secrets",
+    "kaggle_session",
+    "nbconvert"
+  ],
+  "loss_functions": [],
+  "cv_strategy": "",
+  "ensembling": "",
+  "insights": [
+    "Pre-computed satellite embeddings drastically reduce storage and compute requirements compared to raw imagery.",
+    "Spatial filtering combined with terrain visualization enables efficient large-scale archaeological screening.",
+    "LLMs can effectively automate expert-level feature detection and methodological critique when provided with properly formatted visual and textual context."
+  ],
+  "critical_findings": [],
+  "what_did_not_work": [],
+  "source_url": "https://www.kaggle.com/code/fnands/search-the-amazon-with-remote-sensing-and-ai",
+  "votes": 37
+}

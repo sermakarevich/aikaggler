@@ -1,0 +1,53 @@
+{
+  "summary": "The author secured 8th place by leveraging an external dataset (POINT2) to identify and correct a systematic ~20\u00b0C temperature bias in the training data before training. They engineered molecular features using Mordred descriptors and Morgan/MACCS fingerprints, carefully reducing dimensionality per target. To prevent data leakage, they implemented a strict cross-validation scheme using Butina clustering and Tanimoto similarity filtering. Ultimately, they found that a single TabM architecture with target-specific hyperparameters outperformed tree-based models, making complex ensembling unnecessary.",
+  "extensive_summary": "## External Data & Bias Correction\nThe author discovered an external dataset (POINT2) containing overlapping SMILES with the organizers' data. By comparing the two, they identified a consistent ~20\u00b0C offset in the target values, which they attributed to differences in simulation duration and parameters. This led to a critical pre-processing step: adding 20 to the `Tg` column of the external data before training.\n\n## Feature Engineering\nMolecular representations were constructed using Mordred descriptors, Morgan fingerprints (512 bits) for `Tg`, `FFV`, and `Rg`, and MACCS fingerprints for `Tc` and `Density`. After feature selection, the final feature counts per target were: `Tg`: 789, `FFV`: 836, `Tc`: 520, `Density`: 423, and `Rg`: 654.\n\n## Cross-Validation Strategy\nTo prevent data leakage, the author implemented a highly conservative validation scheme. They generated Morgan fingerprints (radius 2, size 2048) for all training SMILES, computed pairwise distances, and clustered them using Butina clustering. During CV, they filtered out any training samples that shared a Tanimoto similarity >0.9 with validation samples. This was combined with `RandomGroupKFold` across 5 folds.\n\n## Model Selection & Training\nThe author tested multiple architectures but ultimately relied on TabM for all targets. Tree-based models (CatBoost and LGBM) were abandoned due to high fold-to-fold variance and negligible performance gains compared to TabM. TabM was trained with target-specific hyperparameters (varying `k`, `n_blocks`, `d_block`, and `dropout`) and linear learning schedulers. The author notes that the test set likely uses a different temperature scale/modeling approach, explaining the distribution bias observed in external data.",
+  "rank": 8,
+  "competition_flow": "Raw polymer SMILES data is processed with molecular descriptors and fingerprints, filtered via strict similarity-based group CV, trained on a TabM architecture with target-specific hyperparameters, and submitted after applying a discovered temperature bias correction to external data.",
+  "data_reading": [],
+  "data_processing": [
+    "Adjusted external data target values by adding 20 to `Tg` to correct for a simulation bias.",
+    "Performed feature selection to reduce dimensionality per target.",
+    "Applied strict Tanimoto similarity filtering (>0.9) during CV to prevent leakage."
+  ],
+  "features_engineering": [
+    "Mordred molecular descriptors",
+    "Morgan fingerprints (512 bits) for `Tg`, `FFV`, `Rg`",
+    "MACCS fingerprints for `Tc` and `Density`",
+    "Feature selection reduced counts to `Tg`: 789, `FFV`: 836, `Tc`: 520, `Density`: 423, `Rg`: 654"
+  ],
+  "models": [
+    "TabM"
+  ],
+  "frameworks_used": [
+    "rdkit"
+  ],
+  "loss_functions": [],
+  "cv_strategy": "5-fold RandomGroupKFold based on Butina clusters, with strict filtering of training samples having >0.9 Tanimoto similarity to validation samples to prevent leakage.",
+  "ensembling": "",
+  "insights": [
+    "Leveraging external data with overlapping SMILES can reveal systematic target biases that must be corrected before training.",
+    "TabM significantly outperformed tree-based models across most targets, making complex ensembling unnecessary.",
+    "Conservative CV via molecular similarity filtering is essential to prevent data leakage in polymer property prediction."
+  ],
+  "critical_findings": [
+    "The test data appears to be modeled on a different temperature scale than the training data, causing a consistent distribution bias that external datasets also exhibit.",
+    "Tree models (CatBoost and LGBM) exhibited high variance across folds and provided minimal score improvement over TabM, leading to their exclusion."
+  ],
+  "what_did_not_work": [
+    "CatBoost and LGBM were tried but rejected due to high standard deviation between folds and negligible performance gains compared to TabM."
+  ],
+  "github_repos": [
+    {
+      "url": "https://github.com/Jiaxin-Xu/POINT2",
+      "role": "reference"
+    }
+  ],
+  "papers": [],
+  "other_solution_refs": [
+    {
+      "description": "Baseline kernel with external data",
+      "url": "https://www.kaggle.com/code/dmitryuarov/neurips-baseline-external-data"
+    }
+  ],
+  "source_url": "https://www.kaggle.com/competitions/neurips-open-polymer-prediction-2025/discussion/608069"
+}

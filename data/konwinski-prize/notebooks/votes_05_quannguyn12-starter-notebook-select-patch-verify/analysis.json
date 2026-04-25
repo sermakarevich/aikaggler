@@ -1,0 +1,36 @@
+{
+  "summary": "This notebook implements an end-to-end inference pipeline for a code generation competition using a 'Select-Patch-Verify' strategy. It first uses an LLM to identify relevant repository files and search terms, then fetches contextual code snippets. Next, it generates multiple candidate git diff patches and verifies them through a combination of LLM self-evaluation and a deterministic dry-run patch command. The pipeline selects the highest-scoring patch based on verification results and applies it. Readers should understand how to structure LLM prompts for file selection and patch generation, manage large context windows, and implement a robust verification loop for code generation tasks.",
+  "purpose": "inference",
+  "competition_flow": "Unpacks a repository archive and reads a problem statement from a parquet file, uses an LLM to select relevant files, generate candidate git diff patches, verify them via LLM judgment and dry-run execution, and returns the best patch as the final submission.",
+  "data_reading": [
+    "Reads problem statements and instance IDs from a parquet file using pandas/polars.",
+    "Extracts repository archives from zip/tar files into a local directory for processing."
+  ],
+  "data_processing": [
+    "Stringifies directory trees and parses LLM-generated XML queries to extract file paths and search terms.",
+    "Fetches file contents with configurable context lines, merges overlapping code snippets, and formats strict XML/diff prompts for LLM consumption."
+  ],
+  "features_engineering": [],
+  "models": [
+    "DeepSeek-R1-Distill-Qwen-32B-AWQ"
+  ],
+  "frameworks_used": [
+    "vllm",
+    "pandas",
+    "polars",
+    "unidiff",
+    "kaggle_evaluation"
+  ],
+  "loss_functions": [],
+  "cv_strategy": "",
+  "ensembling": "Generates 3 candidate patches per problem, verifies each via LLM judgment and a dry-run `patch` command, and selects the best patch based on a scoring system that prioritizes dry-run success and LLM 'Yes' votes.",
+  "insights": [
+    "LLMs can be effectively guided to perform multi-step code repair by structuring prompts for file selection, patch generation, and self-verification.",
+    "Combining LLM-based evaluation with deterministic dry-run checks improves patch reliability and reduces hallucinated diffs.",
+    "Managing context windows and merging overlapping code snippets is crucial for handling large repositories without exceeding token limits."
+  ],
+  "critical_findings": [],
+  "what_did_not_work": [],
+  "source_url": "https://www.kaggle.com/code/quannguyn12/starter-notebook-select-patch-verify",
+  "votes": 146
+}

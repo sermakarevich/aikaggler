@@ -1,0 +1,34 @@
+{
+  "summary": "This notebook demonstrates a zero-shot classification pipeline for a subreddit rules enforcement competition using the Gemma-3-1B-IT language model. It constructs a structured prompt that provides the subreddit context, the specific rule, and a few-shot example format before presenting the target comment. The model processes these prompts in batches, extracts logits for the 'True' and 'False' tokens, and converts them to probabilities to predict rule violations. The approach highlights how lightweight instruction-tuned LLMs can be deployed efficiently for text classification tasks without fine-tuning. Readers should understand how to leverage prompt engineering and batched inference to generate competitive submissions quickly.",
+  "purpose": "inference",
+  "competition_flow": "Reads test CSV data, formats each row into a few-shot prompt for subreddit rule classification, runs batched inference with a pre-trained Gemma-3-1B-IT model, extracts 'True' token probabilities, and exports them as a CSV submission.",
+  "data_reading": [
+    "Loads the test dataset from `/kaggle/input/jigsaw-agile-community-rules-enforcement/test.csv` into a pandas DataFrame using `pd.read_csv`."
+  ],
+  "data_processing": [
+    "Constructs custom prompts by concatenating subreddit name, rule description, and example/comment bodies with specific formatting; applies padding, truncation, and tokenization via the Hugging Face AutoTokenizer with a max length of 512."
+  ],
+  "features_engineering": [],
+  "models": [
+    "Gemma-3-1B-IT"
+  ],
+  "frameworks_used": [
+    "torch",
+    "transformers",
+    "pandas",
+    "kagglehub",
+    "more_itertools"
+  ],
+  "loss_functions": [],
+  "cv_strategy": "",
+  "ensembling": "",
+  "insights": [
+    "Prompt engineering with explicit few-shot formatting can effectively guide instruction-tuned LLMs for zero-shot classification tasks.",
+    "Batched inference with `more_itertools.batched` enables efficient memory management when processing large test sets on limited GPU VRAM.",
+    "Extracting logits for specific target tokens and applying softmax provides a direct probability estimate for binary classification without full sequence generation."
+  ],
+  "critical_findings": [],
+  "what_did_not_work": [],
+  "source_url": "https://www.kaggle.com/code/sorenj/batch-gemma3-sample-rules-classification",
+  "votes": 472
+}

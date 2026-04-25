@@ -1,0 +1,39 @@
+{
+  "summary": "The author achieved 22nd place by fine-tuning a QWEN3-14B model using QLoRA across four KFold splits. They engineered a structured prompt template that concatenated the question, possible answers, misconceptions, student response, and ground truth label. To mitigate noisy labels caused by annotator disagreement, they bagged eight models trained with different random seeds. The final submission averaged predictions from all eight models, and the author emphasized trusting out-of-fold validation over the public leaderboard due to closely packed scores.",
+  "extensive_summary": "## Model & Training Configuration\nThe author fine-tuned a `QWEN3-14B` model using QLoRA. The training loop ran for 2 epochs with a learning rate of `2e-4`, a batch size of `16`, `lora_alpha = 16`, and `r = 8`.\n\n## Prompt Engineering & Data Formatting\nA custom `preprocess` function constructs a highly structured prompt template for each sample. The template concatenates the `QuestionText`, four `Possible Answer` fields, `Possible_Misconception`, `MC_Answer`, `StudentExplanation`, and the `is_correct` label. The tokenizer is called with `add_special_tokens = True`, `padding = False`, `truncation = True`, and a configurable `max_length`. The resulting token IDs are converted to PyTorch tensors.\n\n## Validation & Ensembling Strategy\nThe pipeline relies on a 4 KFold cross-validation strategy. To combat noisy labels stemming from annotator disagreement, the author employed a bagging approach by training two independent runs with different random seeds, yielding a total of 8 models. The final submission consists of the averaged predictions across all 8 models.\n\n## Key Insights & Lessons\nThe author notes that public leaderboard scores were extremely close, making out-of-fold validation the only reliable guide for submission selection. They also highlight that Adversarial Weight Perturbation (AWP) significantly boosted CV scores, though time constraints prevented its inclusion in the final submission. Bagging proved particularly valuable for simulating the label noise inherent in the dataset.",
+  "rank": 22,
+  "competition_flow": "Raw tabular/text data is formatted into a structured prompt template, tokenized, and fed into a QWEN3-14B model fine-tuned via QLoRA across 4 KFold splits with two different seeds, after which predictions from all 8 models are averaged for submission.",
+  "data_reading": [],
+  "data_processing": [
+    "Custom prompt template construction concatenating question text, possible answers, misconceptions, student answer, explanation, and ground truth label.",
+    "Tokenization with `add_special_tokens=True`, `padding=False`, `truncation=True`, and configurable `max_length`.",
+    "Conversion of token IDs to PyTorch long tensors."
+  ],
+  "features_engineering": [
+    "Structured prompt template incorporating `QuestionText`, `pos_answer1` through `pos_answer4`, `Possible_Misconception`, `MC_Answer`, `StudentExplanation`, and `is_correct` label."
+  ],
+  "models": [
+    "QWEN3-14B"
+  ],
+  "frameworks_used": [
+    "torch",
+    "Trainer",
+    "qlora"
+  ],
+  "loss_functions": [],
+  "cv_strategy": "4 KFold",
+  "ensembling": "Bagging 8 models (4 folds \u00d7 2 seeds) and averaging their predictions.",
+  "insights": [
+    "Bagging effectively simulates annotator disagreement and mitigates label noise.",
+    "Adversarial Weight Perturbation (AWP) can significantly boost CV scores but requires careful time management."
+  ],
+  "critical_findings": [
+    "The dataset labels are noisy due to annotator disagreement, making bagging a highly effective regularization technique.",
+    "Public leaderboard scores were so close that relying on them for submission selection would be unreliable."
+  ],
+  "what_did_not_work": [],
+  "github_repos": [],
+  "papers": [],
+  "other_solution_refs": [],
+  "source_url": "https://www.kaggle.com/competitions/map-charting-student-math-misunderstandings/discussion/611985"
+}

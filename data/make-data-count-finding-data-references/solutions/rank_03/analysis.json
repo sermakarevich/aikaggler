@@ -1,0 +1,43 @@
+{
+  "summary": "The author achieved 3rd place by splitting the task into citation retrieval and type classification. Retrieval relied on regex rules matched against external dumps (DataCite, Crossref, EUPMC) with targeted heuristics to minimize false positives. Type classification combined simple probability-based heuristics with a 6-fold DeBERTa-v3 Large ensemble trained on contextual text snippets, stabilized by gradient clipping and EMA. The pipeline prioritized high recall in retrieval and precise threshold tuning in classification to maximize F1 score.",
+  "extensive_summary": "## Citation Retrieval\nThe solution begins with a straightforward retrieval pipeline using regex patterns to extract candidate DOIs and accession IDs from PDF text. These candidates are cross-referenced against the 2024 DataCite annual dump, Crossref 2025 dump, and a mined terms corpus from EUPMC. The regex approach achieved nearly 100% recall for DOIs with minimal false positives. When PDF parsing fails, the pipeline falls back to XML parsing. Targeted heuristics were applied to filter persistent false positives, such as `figshare` DOIs, `GCA_` accessions, and `HGNC:*` or `rs*` patterns. A key discovery was that ignoring DOIs when multiple accessions and DOIs appear in the same article improved LB scores.\n\n## Type Classification\nRecognizing that misclassifying a correctly retrieved citation incurs a double penalty under the F1 metric, the author focused heavily on accurate type classification. This stage combines rule-based heuristics with a machine learning model. Heuristics assign \"primary\" status to all `dryad` DOIs and `SAMN` accessions, while probability checks based on citation counts (e.g., >5 citations in EUPMC or paper citations) flag others as \"secondary\". String edit distance between citation titles/authors and the paper is also used to infer primary status.\n\n## Model Training & Stabilization\nThe remaining citations are classified using a 6-fold DeBERTa-v3 Large ensemble with a binary classification head. Training prompts are constructed from the 1k-character context around the citation, the first 500 characters of the article text, and available paper/dataset titles. The validation strategy uses `StratifiedGroupKFold` stratified by `type` and grouped by `article_id`. Training was stabilized using gradient clipping and an Exponential Moving Average (EMA) of model weights, implemented via a custom `Trainer` class inheriting from `transformers`. The author notes that fine-tuning larger LLMs like Qwen2.5 7B was unstable and slower, making DeBERTa the superior choice. At inference, predictions from the 6 models are averaged, and thresholds are tuned via quantiles to optimize F1.",
+  "rank": 3,
+  "competition_flow": "Raw PDF/XML text is parsed via regex to extract candidate DOIs and accessions, which are validated against external dumps and filtered with heuristics, followed by a 6-fold DeBERTa-v3 ensemble with threshold tuning to classify dataset types and generate the final submission.",
+  "data_reading": [],
+  "data_processing": [
+    "Regex extraction of DOIs and accessions from PDF/XML text",
+    "Cross-referencing against 2024 DataCite dump, Crossref 2025 dump, and EUPMC mined corpus",
+    "Filtering persistent false positives (figshare DOIs, GCA_ accessions, HGNC:*, rs*)",
+    "Prompt construction using 1k-character citation context, 500-character article text, and paper/dataset titles",
+    "Threshold tuning via quantiles for classification"
+  ],
+  "features_engineering": [],
+  "models": [
+    "DeBERTa-v3 Large"
+  ],
+  "frameworks_used": [
+    "transformers",
+    "ema_pytorch"
+  ],
+  "loss_functions": [],
+  "cv_strategy": "6-fold StratifiedGroupKFold stratified by type and grouped by article_id",
+  "ensembling": "Predictions from the 6 DeBERTa-v3 Large models are averaged at inference, with final thresholds tuned via quantiles to optimize F1 score.",
+  "insights": [
+    "Misclassifying a correctly retrieved citation incurs a double F1 penalty, making type classification the most critical stage.",
+    "Simple regex matching against external dumps (DataCite, Crossref, EUPMC) is highly effective for citation retrieval.",
+    "Exponential Moving Average (EMA) of weights combined with gradient clipping significantly stabilizes training on small, noisy datasets.",
+    "Smaller models like DeBERTa-v3 Large are more stable and performant than larger LLMs like Qwen2.5 7B for this specific classification task."
+  ],
+  "critical_findings": [
+    "Ignoring DOIs when multiple accession and DOI IDs appear in the same article provided a measurable LB boost.",
+    "GCA_ accessions consistently generated false positives and should be filtered out.",
+    "Fine-tuning larger LLMs like Qwen2.5 7B proved highly unstable compared to DeBERTa."
+  ],
+  "what_did_not_work": [
+    "Fine-tuning Qwen2.5 7B with classification heads proved highly unstable during training."
+  ],
+  "github_repos": [],
+  "papers": [],
+  "other_solution_refs": [],
+  "source_url": "https://www.kaggle.com/competitions/make-data-count-finding-data-references/discussion/606879"
+}

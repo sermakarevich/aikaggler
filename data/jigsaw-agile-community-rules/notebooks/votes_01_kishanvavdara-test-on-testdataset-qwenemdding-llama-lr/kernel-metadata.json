@@ -1,0 +1,35 @@
+{
+  "id": "kishanvavdara/test-on-testdataset-qwenemdding-llama-lr",
+  "id_no": 90995342,
+  "title": "test-on testdataset+qwenemdding+llama lr",
+  "code_file": "test-on-testdataset-qwenemdding-llama-lr.ipynb",
+  "language": "python",
+  "kernel_type": "notebook",
+  "is_private": false,
+  "enable_gpu": true,
+  "enable_tpu": false,
+  "enable_internet": false,
+  "keywords": [
+    "gpu"
+  ],
+  "dataset_sources": [
+    "bibanh/qwen2-5-32b-gptq-int4-batch4-full",
+    "bibanh/qwen3-8b-embedding"
+  ],
+  "kernel_sources": [
+    "mks2192/jigsaw-llama3-1-8b-instruct-training-one-epoch",
+    "fuumin621/qwen2-5-32b-instruct-gptq-int4",
+    "packagemanager/pm-90995342-at-09-01-2025-08-14-30"
+  ],
+  "competition_sources": [
+    "jigsaw-agile-community-rules"
+  ],
+  "model_sources": [
+    "yangjiahua/lora_14b_gptq_1epoch_r32/Keras/default/1",
+    "qwen-lm/qwen-3-embedding/Transformers/0.6b/1",
+    "qwen-lm/qwen2.5/Transformers/0.5b-instruct-gptq-int4/1",
+    "qwen-lm/qwen2.5/Transformers/14b-instruct-gptq-int4/1"
+  ],
+  "docker_image": "gcr.io/kaggle-private-byod/python@sha256:5de7f3337f4166df89b2d68f886fb08b30c4260df90e55e6587be5fd7648cf3f",
+  "machine_shape": "NvidiaTeslaT4"
+}

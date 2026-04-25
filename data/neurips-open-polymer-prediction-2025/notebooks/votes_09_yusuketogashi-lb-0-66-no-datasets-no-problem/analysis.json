@@ -1,0 +1,41 @@
+{
+  "summary": "The notebook demonstrates a minimalist, robust baseline for the NeurIPS 2025 Open Polymer competition by training a single CatBoost regressor for each of the five polymer property targets. It emphasizes stability over complexity, using automated Mordred molecular descriptors and implementing a skew-aware median/mean imputation strategy for missing values. The author shows that careful handling of distributional skew and simple physical clipping of predictions can yield a competitive leaderboard score without ensembling or advanced weighting. Readers should take away the value of keeping pipelines simple, validating locally with holdouts, and respecting domain constraints during post-processing.",
+  "purpose": "baseline",
+  "competition_flow": "Loads raw CSV target files and test SMILES, computes Mordred descriptors, trains a unified CatBoost regressor per target with skew-aware imputation, applies physical/clipping post-processing, and exports a multi-target submission CSV.",
+  "data_reading": [
+    "Reads target CSVs (desc_tg.csv, desc_tc.csv, desc_rg.csv, desc_ffv.csv, desc_de.csv) and test CSV with pd.read_csv(low_memory=False).",
+    "Converts test SMILES strings to RDKit Mol objects for descriptor calculation."
+  ],
+  "data_processing": [
+    "Drops constant columns and filters for numeric types only.",
+    "Replaces infinities with NaNs across train and test sets.",
+    "Imputes missing values using median (for features with skew > 1.0) or mean (otherwise).",
+    "Converts arrays to float32 and clips predictions to training 1-99% percentiles and physical bounds (FFV: [0,1], Density: [0, inf))."
+  ],
+  "features_engineering": [],
+  "models": [
+    "CatBoostRegressor"
+  ],
+  "frameworks_used": [
+    "catboost",
+    "rdkit",
+    "mordred",
+    "scikit-learn",
+    "pandas",
+    "numpy"
+  ],
+  "loss_functions": [
+    "MAE"
+  ],
+  "cv_strategy": "",
+  "ensembling": "",
+  "insights": [
+    "Using a skew-aware imputation strategy (median for highly skewed features, mean otherwise) improves robustness over naive filling methods.",
+    "Clipping predictions to the training distribution's 1-99% percentile prevents extreme outliers without requiring complex post-processing.",
+    "A unified, minimal CatBoost configuration across all targets simplifies tuning and maintains training stability."
+  ],
+  "critical_findings": [],
+  "what_did_not_work": [],
+  "source_url": "https://www.kaggle.com/code/yusuketogashi/lb-0-66-no-datasets-no-problem",
+  "votes": 228
+}

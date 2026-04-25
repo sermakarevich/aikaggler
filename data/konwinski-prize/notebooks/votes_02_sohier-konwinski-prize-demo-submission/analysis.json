@@ -1,0 +1,32 @@
+{
+  "summary": "This notebook provides a scaffolding template for the Konwinski Prize competition, demonstrating how to implement the required inference server and `predict` function. It shows how to unpack incoming repository and dependency archives, execute environment setup commands, and return a code patch. The author emphasizes the API contract, including the 15-minute initialization window for the first request and the local testing workflow using `run_local_gateway`. Readers should take away the exact structure needed to pass data between the gateway and their model, as well as constraints around modifying unit tests and managing inference time.",
+  "purpose": "utility",
+  "competition_flow": "Sets up a local inference gateway to simulate the competition environment, unpacks repository and dependency archives, runs environment setup, and returns a dummy response to validate the API contract.",
+  "data_reading": [
+    "Unpacks `repo_archive` and `pip_packages_archive` from `io.BytesIO` buffers to temporary and local directories using `shutil.unpack_archive`."
+  ],
+  "data_processing": [
+    "Runs shell commands for environment setup via `subprocess.run` after unpacking dependencies."
+  ],
+  "features_engineering": [],
+  "models": [],
+  "frameworks_used": [
+    "pandas",
+    "polars",
+    "kaggle_evaluation.konwinski_prize_inference_server"
+  ],
+  "loss_functions": [],
+  "cv_strategy": "",
+  "ensembling": "",
+  "insights": [
+    "The competition gateway passes codebases and dependencies as tar archives in memory, requiring explicit unpacking before execution.",
+    "The first inference call allows up to 15 minutes for model loading, bypassing the standard 30-minute response deadline.",
+    "Local testing is supported via `run_local_gateway`, which simulates the hidden test set using provided Kaggle input paths."
+  ],
+  "critical_findings": [
+    "Modifying unit tests in the provided repository will cause the submission to be flagged as a failure, and running the full test suite may exceed the inference time limit."
+  ],
+  "what_did_not_work": [],
+  "source_url": "https://www.kaggle.com/code/sohier/konwinski-prize-demo-submission",
+  "votes": 616
+}

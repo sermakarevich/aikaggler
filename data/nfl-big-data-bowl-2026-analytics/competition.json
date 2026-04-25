@@ -1,0 +1,74 @@
+{
+  "id": 114250,
+  "competitionName": "nfl-big-data-bowl-2026-analytics",
+  "title": "NFL Big Data Bowl 2026 - Analytics",
+  "briefDescription": "Understand player movement while the ball is in the air",
+  "dateEnabled": "2025-09-25T14:40:18.100Z",
+  "deadline": "2025-12-17T23:59:00Z",
+  "leaderboardPercentage": 30,
+  "maxDailySubmissions": 5,
+  "numScoredSubmissions": 2,
+  "numPrizes": 1,
+  "forumId": 8743826,
+  "finalLeaderboardHasBeenVerified": true,
+  "dateCreated": "2025-09-04T19:22:03.118543Z",
+  "competitionHostSegmentId": 1,
+  "maxTeamSize": 4,
+  "organizationId": 2177,
+  "hasCoverImageUrl": true,
+  "showPrivateLeaderboard": true,
+  "hasScripts": true,
+  "totalTeams": 277,
+  "totalCompetitors": 404,
+  "totalSubmissions": 277,
+  "rulesRequired": true,
+  "categories": [
+    {
+      "id": 2603,
+      "name": "football",
+      "fullPath": "subject > health and fitness > exercise > sports > football",
+      "description": "Some call it association football, some call it soccer, most call it sport ball. Come analyze the teams and players of the beautiful game.",
+      "datasetCount": 5486,
+      "competitionCount": 25,
+      "scriptCount": 1099,
+      "slug": "association-football",
+      "displayName": "Football"
+    },
+    {
+      "id": 4141,
+      "name": "sports",
+      "fullPath": "subject > health and fitness > exercise > sports",
+      "description": "The sports tag covers the whole spectrum of sports around the world. We've got tennis, we've got football, and we've even got kitefoil racing.",
+      "datasetCount": 11670,
+      "competitionCount": 44,
+      "scriptCount": 3737,
+      "slug": "sports",
+      "displayName": "Sports"
+    }
+  ],
+  "organization": {
+    "slug": "nfl",
+    "name": "The National Football League",
+    "thumbnailImageUrl": "https://storage.googleapis.com/kaggle-organizations/2177/thumbnail.png",
+    "profileUrl": "/organizations/nfl"
+  },
+  "launched": true,
+  "createdByUserId": 1095143,
+  "license": {
+    "id": 14,
+    "name": "Attribution-NonCommercial 4.0 International (CC BY-NC 4.0)",
+    "url": "https://creativecommons.org/licenses/by-nc/4.0/",
+    "agreementRequired": false
+  },
+  "hostName": "The National Football League",
+  "scoreTruncationNumDecimals": 5,
+  "locked": true,
+  "totalJoinedUsers": 4496,
+  "requiresIdentityVerification": true,
+  "submissionSizeLimitMb": 20480,
+  "reward": {
+    "id": "USD",
+    "quantity": 50000
+  },
+  "hackathon": true
+}

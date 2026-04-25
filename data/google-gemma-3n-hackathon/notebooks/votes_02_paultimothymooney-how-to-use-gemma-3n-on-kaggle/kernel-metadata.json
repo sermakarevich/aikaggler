@@ -1,0 +1,26 @@
+{
+  "id": "paultimothymooney/how-to-use-gemma-3n-on-kaggle",
+  "id_no": 85907059,
+  "title": "How to use Gemma-3n on Kaggle",
+  "code_file": "how-to-use-gemma-3n-on-kaggle.ipynb",
+  "language": "python",
+  "kernel_type": "notebook",
+  "is_private": false,
+  "enable_gpu": true,
+  "enable_tpu": false,
+  "enable_internet": true,
+  "keywords": [
+    "gpu"
+  ],
+  "dataset_sources": [],
+  "kernel_sources": [],
+  "competition_sources": [
+    "google-gemma-3n-hackathon"
+  ],
+  "model_sources": [
+    "google/gemma-3n/Transformers/gemma-3n-e2b-it/2",
+    "google/gemma-3n/Transformers/gemma-3n-e2b-it/1"
+  ],
+  "docker_image": "gcr.io/kaggle-private-byod/python@sha256:5de7f3337f4166df89b2d68f886fb08b30c4260df90e55e6587be5fd7648cf3f",
+  "machine_shape": "Gpu"
+}

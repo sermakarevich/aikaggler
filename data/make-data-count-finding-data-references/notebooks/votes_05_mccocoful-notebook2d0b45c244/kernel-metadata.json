@@ -1,0 +1,25 @@
+{
+  "id": "mccocoful/notebook2d0b45c244",
+  "id_no": 86479816,
+  "title": "notebook2d0b45c244",
+  "code_file": "notebook2d0b45c244.ipynb",
+  "language": "python",
+  "kernel_type": "notebook",
+  "is_private": false,
+  "enable_gpu": true,
+  "enable_tpu": false,
+  "enable_internet": false,
+  "keywords": [],
+  "dataset_sources": [],
+  "kernel_sources": [
+    "ducnh279/parse-pdfs-marker-is-all-you-need",
+    "",
+    "mccocoful/latest-mdc-whls"
+  ],
+  "competition_sources": [
+    "make-data-count-finding-data-references"
+  ],
+  "model_sources": [],
+  "docker_image": "gcr.io/kaggle-private-byod/python@sha256:5de7f3337f4166df89b2d68f886fb08b30c4260df90e55e6587be5fd7648cf3f",
+  "machine_shape": "NvidiaTeslaT4"
+}

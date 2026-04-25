@@ -1,0 +1,46 @@
+{
+  "summary": "The notebook implements a deterministic extraction pipeline combined with a quantized LLM to identify and classify data references within scientific PDFs. It parses PDFs to text, uses regex to split bodies from references, and extracts DOIs and accession codes. A quantized Qwen2.5-32B model via vLLM classifies DOIs as data repositories or literature using constrained decoding and context windows. The pipeline includes a post-filtering step to remove false positives from publisher DOIs based on local text signals. Readers learn how to blend rule-based parsing with constrained LLM inference for high-precision information extraction tasks.",
+  "purpose": "baseline",
+  "competition_flow": "Parses PDFs to text, extracts DOIs and accession codes via regex, classifies DOIs using a quantized Qwen2.5-32B LLM with constrained decoding, applies context-based post-filtering, and outputs a CSV submission.",
+  "data_reading": [
+    "Loads PDFs from `/kaggle/input/make-data-count-finding-data-references/{train,test}/PDF/`",
+    "Reads `train_labels.csv` for evaluation",
+    "Resolves paths via `kagglehub` or environment variables"
+  ],
+  "data_processing": [
+    "PDF text extraction via `pymupdf`",
+    "Removal of soft hyphens/word joiners and line-break hyphens",
+    "String normalization (NFKC, ASCII-only, Zenodo URL mapping)",
+    "Context window extraction around matched IDs",
+    "Regex-based filtering of bad/self-referencing IDs"
+  ],
+  "features_engineering": [
+    "Hand-crafted regex patterns for reference headers, citation formats, DOI prefixes, and biological/database accession codes",
+    "Context windows (100 chars) around extracted IDs used as LLM prompts"
+  ],
+  "models": [
+    "Qwen2.5-32B-Instruct (AWQ)"
+  ],
+  "frameworks_used": [
+    "vllm",
+    "polars",
+    "pymupdf",
+    "logits-processor-zoo"
+  ],
+  "loss_functions": [],
+  "cv_strategy": "",
+  "ensembling": "",
+  "insights": [
+    "Combining regex extraction with constrained LLM decoding improves precision for structured reference parsing.",
+    "Context windows around extracted IDs provide crucial signals for LLM classification.",
+    "Publisher DOIs can be filtered effectively using local context keywords rather than relying solely on the DOI prefix."
+  ],
+  "critical_findings": [
+    "Publisher DOIs (e.g., 10.1038) often appear in data sections but are literature; local context keywords are necessary to distinguish them.",
+    "Soft hyphens and word joiners in PDFs cause text extraction artifacts that break regex matching if not cleaned.",
+    "Self-referencing DOIs (where the DOI contains the article ID) must be explicitly filtered to avoid false positives."
+  ],
+  "what_did_not_work": [],
+  "source_url": "https://www.kaggle.com/code/yusuketogashi/lb-0-598-mdc-fork-of-solution-ed608a",
+  "votes": 187
+}

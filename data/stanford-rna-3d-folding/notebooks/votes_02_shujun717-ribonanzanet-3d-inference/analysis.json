@@ -1,0 +1,34 @@
+{
+  "summary": "This notebook demonstrates how to perform inference for RNA 3D structure prediction using a pretrained RibonanzaNet model. It tokenizes RNA sequences, passes them through a custom finetuned architecture that outputs 3D atomic coordinates, and applies test-time averaging to stabilize predictions. The author explicitly shows how to toggle `model.train()` during inference to leverage dropout for stochastic prediction averaging. Readers learn how to adapt a pretrained sequence-to-structure model for submission generation and visualize the resulting 3D conformations.",
+  "purpose": "inference",
+  "competition_flow": "Loads test RNA sequences, tokenizes them, runs them through a pretrained RibonanzaNet model with a 3D coordinate prediction head, averages predictions across 5 stochastic forward passes, and exports the coordinates to a CSV submission file.",
+  "data_reading": [
+    "pd.read_csv on test_sequences.csv"
+  ],
+  "data_processing": [
+    "Tokenizes 'ACGU' characters to integer indices",
+    "Applies test-time averaging via 5 forward passes (4 with dropout enabled, 1 with it disabled) to stabilize predictions"
+  ],
+  "features_engineering": [],
+  "models": [
+    "RibonanzaNet (finetuned with a linear 3D coordinate predictor head)"
+  ],
+  "frameworks_used": [
+    "torch",
+    "pandas",
+    "numpy",
+    "yaml",
+    "plotly"
+  ],
+  "loss_functions": [],
+  "cv_strategy": "",
+  "ensembling": "Averages predictions across 5 forward passes per sequence, using 4 stochastic passes (with dropout active) and 1 deterministic pass to mitigate variance.",
+  "insights": [
+    "Using `model.train()` during inference enables dropout-based test-time averaging, which can stabilize predictions for stochastic models.",
+    "Directly predicting 3D coordinates from sequence embeddings bypasses the need for intermediate contact map or pairwise feature extraction during inference."
+  ],
+  "critical_findings": [],
+  "what_did_not_work": [],
+  "source_url": "https://www.kaggle.com/code/shujun717/ribonanzanet-3d-inference",
+  "votes": 549
+}

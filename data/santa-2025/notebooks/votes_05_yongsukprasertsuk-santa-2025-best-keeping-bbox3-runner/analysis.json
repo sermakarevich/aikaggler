@@ -1,0 +1,34 @@
+{
+  "summary": "This notebook implements a time-constrained optimization runner that orchestrates an external binary solver (bbox3) across phased parameter sweeps. It applies geometric post-processing to tighten bounding box angles and repair overlapping placements, validates each candidate against a custom scoring function, and retains the best valid submission within a strict 3-hour wall-time budget. The approach demonstrates a practical strategy for efficiently exploring hyperparameter spaces of external solvers while enforcing geometric constraints and computational limits. Readers should learn how to structure phased searches, implement fast geometric validation and repair, and manage Kaggle compute budgets effectively.",
+  "purpose": "utility",
+  "competition_flow": "Loads a baseline submission CSV, runs an external binary solver (bbox3) across phased parameter sweeps, applies geometric post-processing and overlap repair, validates against a custom scoring function, and outputs the best valid submission within a 3-hour budget.",
+  "data_reading": [
+    "Loads a baseline CSV, strips the 's' prefix from x/y/deg columns, and splits the id column into group_id and item_id."
+  ],
+  "data_processing": [
+    "Constructs shapely polygons from coordinates, applies rotation and translation, detects overlaps via STRtree, tightens bounding box angles using scipy.optimize.minimize_scalar, repairs overlaps by swapping in baseline groups, and enforces a strict wall-time budget."
+  ],
+  "features_engineering": [],
+  "models": [
+    "bbox3"
+  ],
+  "frameworks_used": [
+    "shapely",
+    "scipy",
+    "decimal",
+    "pandas",
+    "numpy"
+  ],
+  "loss_functions": [],
+  "cv_strategy": "",
+  "ensembling": "",
+  "insights": [
+    "Phased hyperparameter sweeps (short \u2192 medium \u2192 long runs) effectively balance exploration with limited computational budgets.",
+    "Geometric post-processing (rotation tightening and overlap repair) is essential for validating and improving solver-generated placements.",
+    "Early stopping and strict time budgeting prevent wasted compute on non-promising candidate configurations."
+  ],
+  "critical_findings": [],
+  "what_did_not_work": [],
+  "source_url": "https://www.kaggle.com/code/yongsukprasertsuk/santa-2025-best-keeping-bbox3-runner",
+  "votes": 377
+}

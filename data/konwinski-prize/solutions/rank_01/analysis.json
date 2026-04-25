@@ -1,0 +1,42 @@
+{
+  "summary": "The author adapted the Agentless 1.5 framework for a code repair competition, specifically optimizing it for a 32B local model. Key innovations included a two-stage context retrieval process to generate robust First-to-Pass (F2P) reproduction tests, a SEARCH/REPLACE diff format to prevent line-counting errors, and strict runtime management. By combining diverse test generation strategies with dual validation against both F2P and pre-existing unit tests, the pipeline achieved high patch validity and a robust 1st place finish.",
+  "extensive_summary": "## Base Framework & Core Adaptation\nThe solution builds upon Agentless 1.5, specifically adapting it to work effectively with a \"weaker\" 32B local model (Qwen2.5 Coder 32B) rather than relying on massive frontier models. The primary challenge was compensating for the smaller model's lack of memorization by restructuring the prompt engineering and context retrieval pipeline.\n\n## Enhanced Test Generation & Context Retrieval\nInstead of relying solely on the issue description, the author implemented a two-stage context retrieval process to generate First-to-Pass (F2P) reproduction tests. First, the model identifies relevant unit test files; second, it receives the skeletons of all functions/classes in those files and requests specific imports or methods to inspect. To maximize diversity, the pipeline varies context levels across 5 generation requests (some with full skeletons/imports, some with only imports, some with none) and mixes greedy decoding with temperature/top_p/min_p sampling. A retry mechanism triggers a second batch of tests at higher temperature if the initial batch fails to reproduce the issue.\n\n## Context Localization & Patch Generation\nOnce an F2P test successfully reproduces the issue, the pipeline localizes relevant files, classes, methods, and precise line numbers. The author refactored the repo structure generation to occur only once at the start, saving significant runtime. For patch generation, the model produces 4 repair samples per edit location (1 greedy, 3 sampled), totaling 8 candidates. Crucially, the author switched from direct git diff generation to a SEARCH/REPLACE format (similar to VSCode), which drastically reduced invalid patches caused by line-counting errors.\n\n## Evaluation & Runtime Management\nCandidate patches undergo a dry-run `git apply` validation, followed by parallel execution against both the generated F2P tests and pre-existing repository unit tests (P2P). Patches are only submitted if they fix at least one F2P test and do not degrade P2P test results relative to the baseline. The pipeline enforces strict global (20 hours) and per-sample (12 minutes) time limits, with package installation and test execution run concurrently to optimize throughput.",
+  "rank": 1,
+  "competition_flow": "Load GitHub issue and repository context -> generate reproduction tests (F2P) with enhanced context -> localize relevant code locations -> generate SEARCH/REPLACE patch candidates -> validate patches via dry-run and execute against F2P and pre-existing unit tests (P2P) in parallel -> apply time constraints and submit the best valid patch.",
+  "data_reading": [],
+  "data_processing": [],
+  "features_engineering": [],
+  "models": [
+    "Qwen2.5 Coder 32B",
+    "Agentless 1.5"
+  ],
+  "frameworks_used": [],
+  "loss_functions": [],
+  "cv_strategy": "",
+  "ensembling": "The pipeline generates multiple candidate tests and patches (5 F2P tests and 8 repair patches per location) and filters them through dry-run git apply validation and parallel F2P/P2P test execution, effectively using a deterministic selection ensemble rather than weighted voting.",
+  "insights": [
+    "Providing explicit context (imports, class/function skeletons) is crucial for smaller 32B models to avoid import/instantiation errors during test generation.",
+    "Using a SEARCH/REPLACE diff format significantly increases the validity of generated patches compared to generating raw git diffs directly.",
+    "Varying context levels and decoding strategies (greedy vs. temperature/top_p/min_p) during test generation improves diversity and success rates.",
+    "Runtime optimization (e.g., generating repo structure once, parallel test execution, strict time limits) is essential for practical deployment of LLM-based code repair pipelines."
+  ],
+  "critical_findings": [
+    "Direct git diff generation by the model frequently fails due to line counting errors, whereas a SEARCH/REPLACE scheme drastically improves patch validity.",
+    "\"Small\" 32B models can outperform or match frontier models on this specific task when heavily guided with context and structured prompts, despite lacking massive memorization capabilities.",
+    "The leaderboard score distribution is highly discrete and luck-dependent due to the difficulty of the dataset and heavy penalties for wrong predictions."
+  ],
+  "what_did_not_work": [
+    "Agent mode (generating a test, running it, feeding the error back to the model to fix) was tried late and yielded no results.",
+    "Reasoning models produced excessive \"thinking\" text without meaningful score improvements over Qwen Coder.",
+    "Local validation setup with SweBench verified dataset failed to export packages for most repos and was limited by 24GB VRAM to ~8K token context."
+  ],
+  "github_repos": [
+    {
+      "url": "https://www.kaggle.com/code/arc144/custom-agentless-fork?scriptVersionId=226880215",
+      "role": "solution"
+    }
+  ],
+  "papers": [],
+  "other_solution_refs": [],
+  "source_url": "https://www.kaggle.com/competitions/konwinski-prize/discussion/568884"
+}

@@ -1,0 +1,44 @@
+{
+  "summary": "This notebook demonstrates an inference pipeline for the BirdCLEF 2025 competition that combines two pre-trained Sound Event Detection (SED) models via a weighted blend. It processes 60-second audio clips into 5-second segments, extracts Mel spectrograms, and passes them through custom attention-based architectures built on eca_nfnet_l0 and seresnext26t_32x4d. The pipeline applies targeted post-processing techniques, including a power transformation for low-confidence predictions and temporal smoothing across adjacent segments, to generate the final submission. The author highlights that while this approach achieves a high public leaderboard score, it risks overfitting to the test set, a common pitfall in this competition. Readers should take away the value of strategic model blending and domain-aware post-processing for audio classification tasks.",
+  "purpose": "inference",
+  "competition_flow": "Loads test audio files, extracts 5-second Mel spectrogram segments, runs them through two pre-trained SED models, applies power transformation and temporal smoothing post-processing, and blends the outputs with a 75/25 weight to produce a CSV submission.",
+  "data_reading": [
+    "Reads .ogg files from test_soundscapes/ using torchaudio.load and soundfile, converting stereo audio to mono."
+  ],
+  "data_processing": [
+    "Splits 60s audio into 12 non-overlapping 5s segments.",
+    "Computes Mel spectrograms (32kHz SR, 1024 FFT, 512 hop, 128 mels, HTK scale).",
+    "Applies log transform and per-segment standard deviation normalization.",
+    "Uses AmplitudeToDB (top_db=80) for one model variant.",
+    "Applies power transformation to low-confidence prediction columns.",
+    "Applies temporal smoothing via weighted neighbor averaging across segments."
+  ],
+  "features_engineering": [],
+  "models": [
+    "eca_nfnet_l0",
+    "seresnext26t_32x4d"
+  ],
+  "frameworks_used": [
+    "pytorch",
+    "timm",
+    "torchaudio",
+    "soundfile",
+    "numpy",
+    "pandas"
+  ],
+  "loss_functions": [],
+  "cv_strategy": "",
+  "ensembling": "Combines two model outputs using a weighted average (75% seresnext, 25% nfnet), followed by a power transformation on low-confidence predictions and temporal smoothing across adjacent 5-second segments.",
+  "insights": [
+    "Strategic model blending can significantly boost leaderboard scores.",
+    "Applying power transformations to low-confidence predictions improves detection rates.",
+    "Temporal smoothing enforces realistic prediction consistency across audio segments.",
+    "High leaderboard scores in BirdCLEF often indicate overfitting to the public test set."
+  ],
+  "critical_findings": [
+    "The weighted blend likely overfits to the public leaderboard test set, a recurring pattern in BirdCLEF competitions."
+  ],
+  "what_did_not_work": [],
+  "source_url": "https://www.kaggle.com/code/kumarandatascientist/bird25-weightedblend-0-88",
+  "votes": 580
+}

@@ -1,0 +1,38 @@
+{
+  "summary": "This notebook demonstrates how to run inference using the VGGT (Visual Geometry-Grounded Transformer) model on a sequence of images. It loads a pretrained model, processes input images, and extracts camera poses, depth maps, and 3D point clouds. The code also includes a visualization pipeline using Rerun.io to render the reconstructed geometry and camera trajectories in 3D space. Readers learn how to integrate a modern vision transformer for structure-from-motion tasks and apply confidence-based filtering to visualize only high-quality 3D points. The notebook serves as a practical starting point for exploring VGGT's capabilities in image matching and 3D reconstruction.",
+  "purpose": "inference",
+  "competition_flow": "Loads a sequence of input images, passes them through a pretrained VGGT model to extract camera poses, depth maps, and 3D point clouds, then visualizes the reconstructed geometry and camera trajectories using Rerun.io.",
+  "data_reading": [
+    "Uses glob to collect image paths from the competition directory",
+    "Passes paths to vggt.utils.load_fn.load_and_preprocess_images for tensor conversion"
+  ],
+  "data_processing": [
+    "load_and_preprocess_images for input formatting",
+    "Automatic mixed precision (bfloat16 or float16) during inference based on GPU capability",
+    "Percentile-based confidence thresholding (90th percentile) to mask low-confidence depth and point values"
+  ],
+  "features_engineering": [],
+  "models": [
+    "VGGT (facebook/VGGT-1B)"
+  ],
+  "frameworks_used": [
+    "torch",
+    "vggt",
+    "rerun-sdk",
+    "numpy",
+    "tqdm",
+    "jaxtyping"
+  ],
+  "loss_functions": [],
+  "cv_strategy": "",
+  "ensembling": "",
+  "insights": [
+    "VGGT can directly output camera poses, depth maps, and 3D point maps from image sequences without traditional SfM pipelines.",
+    "The model provides explicit confidence scores for both depth and points, enabling effective filtering of noisy geometry.",
+    "Rerun.io provides an efficient way to visualize 3D reconstruction results directly in a notebook environment via .rrd file export."
+  ],
+  "critical_findings": [],
+  "what_did_not_work": [],
+  "source_url": "https://www.kaggle.com/code/columbia2131/sample-code-for-vggt-inference",
+  "votes": 84
+}

@@ -1,0 +1,40 @@
+{
+  "summary": "This notebook presents a full-resolution seismic velocity inversion pipeline built around a modified CAFormer backbone and a custom UNet decoder. It demonstrates how architectural modifications like PixelShuffle upsampling, SCSE attention blocks, and intermediate convolutions can improve fine-detail reconstruction in regression tasks. The author also shares a custom Constant-Cosine learning rate scheduler and an inference-time flip augmentation strategy to stabilize training and boost prediction quality. Readers should take away practical techniques for adapting vision transformers to continuous output tasks, managing computational trade-offs, and leveraging ensemble patterns for robust outputs.",
+  "purpose": "training",
+  "competition_flow": "Loads preprocessed seismic data and velocity targets, processes them through a CAFormer-based UNet with custom decoder blocks, and generates a CSV submission of inverted velocity profiles.",
+  "data_reading": [
+    "Reads .npy files via np.load with mmap_mode='r', resolves file paths using glob, and maps seismic data to velocity targets."
+  ],
+  "data_processing": [
+    "Temporal flip augmentation during training.",
+    "Inference-time horizontal flip (TTA) averaged with original predictions.",
+    "Output scaling (* 1500 + 3000) and manual path resolution."
+  ],
+  "features_engineering": [],
+  "models": [
+    "CAFormer (caformer_b36.sail_in22k_ft_in1k)",
+    "Custom UNet decoder with PixelShuffle, SCSE blocks, and intermediate convolutions"
+  ],
+  "frameworks_used": [
+    "pytorch",
+    "timm",
+    "monai"
+  ],
+  "loss_functions": [
+    "L1Loss"
+  ],
+  "cv_strategy": "Holdout split using precomputed folds (folds 1\u20134 for training, fold 0 for validation/testing)",
+  "ensembling": "Averages predictions from multiple pretrained model checkpoints loaded via a custom EnsembleModel wrapper.",
+  "insights": [
+    "PixelShuffle upsampling preserves fine details better than standard methods despite higher compute costs.",
+    "SCSE blocks and intermediate convolutions effectively increase decoder capacity with minimal runtime overhead.",
+    "A constant learning rate followed by cosine annealing stabilizes training and lowers validation MAE.",
+    "Inference-time flip augmentation can be efficiently applied by averaging flipped and original predictions."
+  ],
+  "critical_findings": [
+    "The encoder's nn.ReflectionPad2d step applies excessive padding that may degrade shallow feature detail, indicating a potential area for architectural improvement."
+  ],
+  "what_did_not_work": [],
+  "source_url": "https://www.kaggle.com/code/brendanartley/caformer-full-resolution-improved",
+  "votes": 616
+}

@@ -1,0 +1,54 @@
+{
+  "summary": "The author achieved a 9th place solo gold medal in a competition focused on extracting and classifying data references (Accession IDs and DOIs) from scientific PDFs. Instead of training a classifier, they used deterministic keyword rules combined with sentence embedding similarity (Qwen3-Embedding-0.6B) to identify and classify Accession IDs. For DOIs, they implemented a multi-step zero-shot pipeline using Qwen2.5-7B and Qwen2.5-32B to extract links, parse metadata, and classify references as Data vs. Literature and Primary vs. Secondary. Key insights included abandoning probabilistic models due to extreme noise, prioritizing context engineering over fine-tuning, and applying strict post-processing rules to handle training set artifacts and PDF text ranges.",
+  "extensive_summary": "## Accession ID Extraction & Classification\nThe author processed the MDC corpus v4 (eupmc only) to extract Accession IDs from PDFs. Rather than training a classifier, they relied on a deterministic rule combined with semantic similarity. For each sentence containing an ACC_ID, they calculated similarity against a seed sentence using `Qwen3-Embedding-0.6B`. If the similarity score was `>= 0.667` and the sentence contained the keywords \"submit\" or \"deposit\", the reference was classified as `Primary`; otherwise, it was classified as `Secondary`. This approach captured 95% of Primary accessions while filtering out irrelevant matches.\n\n## DOI Extraction & Classification\nFor DOIs, the pipeline utilized `MDC corpus v3` and a multi-step zero-shot LLM workflow. Step 1 used `Qwen2.5-7B` to extract DOI links along with surrounding context. Steps 2 through 4 employed `Qwen2.5-32B` to extract metadata (title, author, published year), classify the reference as Data vs. Literature, and classify it as Primary vs. Secondary. A specific rule forced all DRYAD IDs to `Primary`. Step 5 appended corpus-based predictions for DRYAD IDs that were missing from the article text.\n\n## Design Choices & Post-Processing\nThe author explicitly rejected probabilistic solutions for Accession IDs after manual PDF analysis revealed extreme noise and lack of learnable patterns. Instead, they prioritized context engineering over model fine-tuning, noting that GPT-5, Claude 4, and Grok 3 performed similarly to Qwen2.5-32B-Instruct in zero-shot settings. Post-processing was critical: predictions per article were capped at 64 to account for potential training set false positives, and any ACC_ID falling within a textual range (e.g., `KT123456-KT123489`) was deleted to prevent over-prediction.\n\n## Debugging & Iteration\nThe author spent a week stuck at a 0.64 public score before shifting focus to deep debugging rather than chasing public ideas. This disciplined approach led to identifying the root cause of the score plateau and improving to 0.82 public scores within five days. The final submission strategy involved testing two public/private score configurations, ultimately selecting the one that balanced public leaderboard performance with private score stability.",
+  "rank": 9,
+  "competition_flow": "Raw PDFs were parsed to extract text, where Accession IDs were filtered using keyword rules and Qwen3-Embedding-0.6B similarity, while DOIs were extracted and classified via a multi-step zero-shot pipeline using Qwen2.5-7B and Qwen2.5-32B, followed by strict post-processing rules to cap predictions and remove range-based duplicates before final submission.",
+  "data_reading": [
+    "PDF text extraction (specific parser not explicitly named); MDC corpus v3/v4 used as external reference data."
+  ],
+  "data_processing": [
+    "Keyword filtering (\"submit\"/\"deposit\")",
+    "Sentence similarity thresholding (>= 0.667)",
+    "Post-processing caps (max 64 predictions per article)",
+    "Range-based ACC_ID deletion",
+    "Forcing DRYAD IDs to Primary",
+    "Appending corpus predictions for missing DRYAD IDs"
+  ],
+  "features_engineering": [],
+  "models": [
+    "Qwen3-Embedding-0.6B",
+    "Qwen2.5-7B",
+    "Qwen2.5-32B-Instruct"
+  ],
+  "frameworks_used": [],
+  "loss_functions": [],
+  "cv_strategy": "",
+  "ensembling": "Two final submissions were tested: one applying a rule to force all BioSample/BioModels as Primary, and another without it; the author selected the submission that maximized private score stability.",
+  "insights": [
+    "Context engineering and deterministic rules outperformed probabilistic classifiers for extremely noisy PDF text.",
+    "Zero-shot LLMs (Qwen2.5-32B-Instruct) matched or exceeded proprietary models (GPT-5, Claude 4, Grok 3) when provided with proper context.",
+    "Deep debugging of score plateaus is more effective than chasing public solutions or rapidly iterating on failed ideas."
+  ],
+  "critical_findings": [
+    "Accession IDs and DOIs exhibited only 1 degree of freedom in the training data, making traditional classification approaches ineffective.",
+    "Dropping Accession IDs for articles that already had a predicted DOI actually decreased the score, contrary to expectations.",
+    "Sweeping PDFs in 2048-token chunks for NER-style extraction did not improve CV or LB scores."
+  ],
+  "what_did_not_work": [
+    "Using publication date vs dataset creation date to classify Primary/Secondary.",
+    "Sweeping articles in 2048-token chunks for NER-style extraction.",
+    "Dropping Accessions for articles with a predicted DOI.",
+    "Reasoning for classification.",
+    "Using a different PDF parser (e.g., Marker).",
+    "Semantic/Keyword search for context engineering."
+  ],
+  "github_repos": [
+    {
+      "url": "https://github.com/bogoconic1/9th-place-kaggle-mdc-finding-data-references",
+      "role": "solution"
+    }
+  ],
+  "papers": [],
+  "other_solution_refs": [],
+  "source_url": "https://www.kaggle.com/competitions/make-data-count-finding-data-references/discussion/606743"
+}

@@ -1,0 +1,27 @@
+{
+  "summary": "This notebook provides a complete, step-by-step guide to running the open-weight GPT-OSS-20B model locally on a Kaggle GPU instance using Ollama. It demonstrates how to install the Ollama runtime, pull the ~13GB model weights, initialize an OpenAI-compatible client, and query the model with robust error handling and automatic retry logic. The author highlights practical deployment considerations, such as managing background processes, handling potential crashes, and verifying server readiness before making API calls. Readers should take away a reproducible template for integrating large open-weight LLMs into Kaggle notebooks without relying on external paid APIs.",
+  "purpose": "tutorial",
+  "competition_flow": "Installs Ollama on a Kaggle GPU instance, downloads the GPT-OSS-20B model weights, and provides a Python wrapper to query the model via a local OpenAI-compatible API.",
+  "data_reading": [],
+  "data_processing": [],
+  "features_engineering": [],
+  "models": [
+    "gpt-oss:20b"
+  ],
+  "frameworks_used": [
+    "openai",
+    "ollama"
+  ],
+  "loss_functions": [],
+  "cv_strategy": "",
+  "ensembling": "",
+  "insights": [
+    "Running large open-weight models locally on Kaggle is feasible using Ollama and an OpenAI-compatible client wrapper.",
+    "Background server processes require explicit health checks and restart logic to handle crashes or defunct states.",
+    "Automatic retry mechanisms with status verification are necessary for reliable LLM inference in constrained notebook environments."
+  ],
+  "critical_findings": [],
+  "what_did_not_work": [],
+  "source_url": "https://www.kaggle.com/code/taylorsamarel/run-gpt-oss-20b-in-kaggle-how-to-with-ollama",
+  "votes": 92
+}

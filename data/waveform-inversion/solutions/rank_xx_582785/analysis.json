@@ -1,0 +1,30 @@
+{
+  "summary": "The author presents an improved full-resolution model for the competition, focusing on architectural enhancements rather than extensive training tricks. The core design combines a CAFormer encoder with a custom decoder that integrates pixel shuffle, SCSE attention, and intermediate convolutions to better preserve spatial details. They provide direct links to their implementation notebook and a preprocessed dataset resized to 72x72 resolution. The writeup concludes by encouraging the community to build upon this architecture for further improvements.",
+  "extensive_summary": "The author introduces an improved full-resolution model architecture for the competition, shifting focus from data tricks to structural enhancements. The core innovation lies in the decoder design, which replaces standard upsampling with pixel shuffle, integrates SCSE attention mechanisms, and adds intermediate convolutions to better preserve spatial details. By pairing this enhanced decoder with a CAFormer encoder, the model achieves strong cross-domain performance across multiple fault and velocity style benchmarks.\n\nThe author provides direct links to their implementation notebook and a preprocessed dataset resized to 72x72 resolution, emphasizing reproducibility and lowering the barrier for community adoption. The writeup concludes with a call for collaborative architectural refinement to push the baseline further, highlighting that structural decoder improvements are a highly effective direction for this task.",
+  "rank": null,
+  "competition_flow": "The author trains a full-resolution CAFormer-based model with a custom decoder on preprocessed 72x72 datasets, evaluating performance across multiple fault and velocity style domains.",
+  "data_reading": [],
+  "data_processing": [
+    "Preprocessed dataset resized to 72x72 resolution"
+  ],
+  "features_engineering": [],
+  "models": [
+    "CAFormer",
+    "CAFormer encoder",
+    "decoder with pixel shuffle, SCSE, and intermediate convolutions"
+  ],
+  "frameworks_used": [],
+  "loss_functions": [],
+  "cv_strategy": "",
+  "ensembling": "",
+  "insights": [
+    "Architectural improvements to the decoder (pixel shuffle, SCSE, intermediate convolutions) drive significant performance gains.",
+    "Community collaboration is key to further advancing the architecture beyond the author's baseline."
+  ],
+  "critical_findings": [],
+  "what_did_not_work": [],
+  "github_repos": [],
+  "papers": [],
+  "other_solution_refs": [],
+  "source_url": "https://www.kaggle.com/competitions/waveform-inversion/discussion/582785"
+}

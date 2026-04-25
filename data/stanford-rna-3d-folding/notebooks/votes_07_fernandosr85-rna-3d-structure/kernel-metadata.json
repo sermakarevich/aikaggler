@@ -1,0 +1,23 @@
+{
+  "id": "fernandosr85/rna-3d-structure",
+  "id_no": 77600187,
+  "title": "RNA 3D Structure",
+  "code_file": "rna-3d-structure.ipynb",
+  "language": "python",
+  "kernel_type": "notebook",
+  "is_private": false,
+  "enable_gpu": false,
+  "enable_tpu": false,
+  "enable_internet": false,
+  "keywords": [],
+  "dataset_sources": [
+    "fernandosr85/biopython-1-85"
+  ],
+  "kernel_sources": [],
+  "competition_sources": [
+    "stanford-rna-3d-folding"
+  ],
+  "model_sources": [],
+  "docker_image": "gcr.io/kaggle-images/python@sha256:f4b6dd72d4ac48c76fbb02bce0798b80b284102886ad37e6041e9ab721dc8873",
+  "machine_shape": "None"
+}

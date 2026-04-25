@@ -1,0 +1,58 @@
+{
+  "summary": "This notebook provides a comprehensive EDA and ensemble baseline for the Jane Street market forecasting competition. It explores the temporal behavior, distributions, and cross-correlations of anonymized responders and features, highlighting the non-stationary and clipped nature of financial time series data. The author demonstrates how to load partitioned parquet data, handle missing values, and construct lagged features for inference. Finally, it combines pre-trained BayesianRidge, XGBoost, and PyTorch Lightning models into a weighted ensemble to generate predictions. Readers should learn how to navigate encrypted symbol IDs, manage lagged state during real-time inference, and apply simple but effective ensembling strategies to financial tabular data.",
+  "purpose": "ensemble",
+  "competition_flow": "Loads partitioned parquet training data, performs EDA on responders and features, loads pre-trained BayesianRidge, XGBoost, and PyTorch Lightning models, ensembles their predictions with custom weights, and runs inference via the Kaggle Jane Street evaluation server.",
+  "data_reading": [
+    "Loads partitioned train.parquet files using pd.read_parquet and concatenates them.",
+    "Reads features.csv, responders.csv, and sample_submission.csv via pd.read_csv.",
+    "Uses polars for inference data handling."
+  ],
+  "data_processing": [
+    "Fills missing feature values with forward fill (ffill) followed by 0.",
+    "Clips final predictions to [-5, 5].",
+    "Joins lagged responder data on date_id and symbol_id during inference."
+  ],
+  "features_engineering": [
+    "Lagged responder features (responder_{idx}_lag_1 for idx 0-8).",
+    "Includes symbol_id and time_id as features for XGBoost."
+  ],
+  "models": [
+    "BayesianRidge",
+    "XGBoost",
+    "Custom PyTorch Lightning MLP (BatchNorm, SiLU, Dropout, Linear, Tanh)"
+  ],
+  "frameworks_used": [
+    "pandas",
+    "polars",
+    "numpy",
+    "matplotlib",
+    "seaborn",
+    "pytorch",
+    "pytorch_lightning",
+    "scikit-learn",
+    "xgboost",
+    "joblib",
+    "kaggle_evaluation"
+  ],
+  "loss_functions": [
+    "Weighted Mean Squared Error (MSE)"
+  ],
+  "cv_strategy": "5-fold validation (loads nn_{fold}.model checkpoints)",
+  "ensembling": "Linear combination of BayesianRidge and (NN + XGB) predictions using weights [0.899, 0.28], followed by clipping predictions to [-5, 5].",
+  "insights": [
+    "responder_6 closely tracks resp0 and resp3 in cumulative behavior.",
+    "All responder values are strictly clipped between [-5, 5].",
+    "Feature distributions exhibit complex nonlinear relationships.",
+    "New symbol_ids may appear in future test sets, requiring robust handling.",
+    "Lags must be explicitly joined per date and symbol during inference."
+  ],
+  "critical_findings": [
+    "All responder values are strictly bounded within [-5, 5].",
+    "Many features contain significant missing values.",
+    "Real time intervals between time_id values are inconsistent.",
+    "symbol_id is encrypted and not guaranteed to appear in all date/time combinations."
+  ],
+  "what_did_not_work": [],
+  "source_url": "https://www.kaggle.com/code/allegich/jane-street-time-series-analysis-eda-ensemble",
+  "votes": 891
+}

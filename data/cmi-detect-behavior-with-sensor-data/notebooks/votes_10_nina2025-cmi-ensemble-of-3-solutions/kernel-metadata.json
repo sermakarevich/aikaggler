@@ -1,0 +1,36 @@
+{
+  "id": "nina2025/cmi-ensemble-of-3-solutions",
+  "id_no": 88493302,
+  "title": "CMI | Ensemble of 3 solutions",
+  "code_file": "cmi-ensemble-of-3-solutions.ipynb",
+  "language": "python",
+  "kernel_type": "notebook",
+  "is_private": false,
+  "enable_gpu": true,
+  "enable_tpu": false,
+  "enable_internet": false,
+  "keywords": [
+    "gpu"
+  ],
+  "dataset_sources": [
+    "hideyukizushi/20250627-cmi-b-102-b-105",
+    "kerta27/cmi-data-gated-gru",
+    "hideyukizushi/cmi-d-111",
+    "hideyukizushi/cmi25-imu-thmtof-tf-bilstm-gru-attentionlb-xx",
+    "myso1987/cmi3-models-p"
+  ],
+  "kernel_sources": [
+    "wasupandceacar/deterministic",
+    "hideyukizushi/lb-0-78-quaternions-tf-bilstm-gru-attention",
+    "wasupandceacar/cmi-metric"
+  ],
+  "competition_sources": [
+    "cmi-detect-behavior-with-sensor-data"
+  ],
+  "model_sources": [
+    "wasupandceacar/cmi-models-public/PyTorch/train_fold_model05_tof16_raw/1",
+    "wasupandceacar/cmi-precompute/PyTorch/all/1"
+  ],
+  "docker_image": "gcr.io/kaggle-private-byod/python@sha256:320043e14c68293f1c946585b9257123385205a58af4b94b17d31868cae4e868",
+  "machine_shape": "NvidiaTeslaT4"
+}

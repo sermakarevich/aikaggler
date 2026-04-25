@@ -1,0 +1,53 @@
+{
+  "summary": "The team placed 8th by focusing on efficient ensembling of large language models under strict time and memory constraints. They trained three Qwen3-14B, one Llama2-13B, and two Llama3.1-8B models using QLoRA and Unsloth on dual T4 GPUs. Key optimizations included parallel training, length-based sorting, bucketed batch sizing, and deduplication of the training data. They found that global ranking ensembling outperformed rule-specific ranking, while pseudo-labeling and simulated cross-validation proved ineffective.",
+  "extensive_summary": "## Approach & Model Composition\nThe solution prioritized maximizing model scale and quantity within a 12-hour window on dual T4 GPUs. The final submissions combined multiple LLMs: three Qwen3-14B, one Llama2-13B, and either bge-base-en-v1.5 or two Llama3.1-8B models, each trained with four different seeds.\n\n## Training & Optimization\nTraining was accelerated using QLoRA and Unsloth. The authors replaced Unsloth's default SFT classification head with a standard `AutoModelForSequenceClassification` head. To utilize both GPUs, they adapted standard parallel training code, noting that Qwen3-14B could only run two models in parallel without OOM, while smaller models had no such restriction. A critical training parameter was `group_by_length=True`, which doubled training speed.\n\n## Data Handling\nThe dataset was cleaned by deduplicating samples per `(body, rule)` pair, keeping the most frequent label. They leveraged an official unlabeled dataset to inject absolute negative samples. They also experimented with adding guessed positive samples based on the rules but reverted them when the LB dropped.\n\n## Inference & Ensembling\nInference was optimized by sorting data from shortest to longest, distributing it evenly across GPUs, and splitting it into three buckets with tailored batch sizes, yielding a 4x speedup. Ensembling was performed by averaging predictions across four seeds per model. Crucially, they found that ensembling based on global ranking significantly outperformed ensembling based on within-rule ranking.\n\n## Lessons Learned\nPseudo-labeling and simulating cross-validation during training did not work. The authors emphasized that with a random LB split and a stable mAUC metric, direct LB optimization without CV was a viable strategy.",
+  "rank": 8,
+  "competition_flow": "The pipeline involved deduplicating and augmenting the training data with unlabeled negatives, training multiple LLMs via QLoRA and Unsloth on dual T4s with parallelized, length-sorted inference, and ensembling predictions across seeds using global ranking.",
+  "data_reading": [],
+  "data_processing": [
+    "Deduplicated samples per (body, rule) combination by keeping the most frequent label.",
+    "Added absolute negative samples from an official unlabeled dataset.",
+    "Experimented with adding guessed positive samples based on rules (reverted if LB dropped)."
+  ],
+  "features_engineering": [],
+  "models": [
+    "Qwen3-14B",
+    "Llama2-13B",
+    "Llama3.1-8B",
+    "bge-base-en-v1.5"
+  ],
+  "frameworks_used": [
+    "unsloth",
+    "QLora"
+  ],
+  "loss_functions": [],
+  "cv_strategy": "No CV; code was adjusted solely based on the public leaderboard (LB).",
+  "ensembling": "Predictions were averaged across four different seeds per model, with global ranking ensembling proving superior to within-rule ranking.",
+  "insights": [
+    "Global ranking ensembling outperformed within-rule ranking.",
+    "group_by_length=True doubled training speed.",
+    "Sorting data by length and using bucketed batch sizes during inference yielded a 4x speedup.",
+    "Direct LB optimization without CV is viable when the metric is stable and the LB split is random."
+  ],
+  "critical_findings": [
+    "Qwen3-14B can only train two models in parallel on dual T4s without OOM, whereas smaller models like Llama3.1-8B face no such restriction.",
+    "Unsloth must be initialized before training begins."
+  ],
+  "what_did_not_work": [
+    "Pseudo-labeling.",
+    "Simulating cross-validation during training."
+  ],
+  "github_repos": [
+    {
+      "url": "https://huggingface.co/unsloth",
+      "role": "library"
+    },
+    {
+      "url": "https://colab.research.google.com/github/timothelaborie/text_classification_scripts/blob/main/unsloth_classification.ipynb",
+      "role": "reference"
+    }
+  ],
+  "papers": [],
+  "other_solution_refs": [],
+  "source_url": "https://www.kaggle.com/competitions/jigsaw-agile-community-rules/discussion/613195"
+}

@@ -1,0 +1,43 @@
+{
+  "summary": "This notebook provides a complete inference pipeline for the BirdCLEF 2025 competition, focusing on generating predictions from pre-trained audio classification models. It demonstrates converting raw audio files into normalized mel-spectrograms, processing them in 5-second sliding windows, and passing them through an EfficientNetV2-S backbone. The pipeline includes loading multiple model checkpoints, averaging their outputs, and applying a temporal smoothing filter to the final submission CSV. Readers should understand how to structure a production-ready inference script for audio tasks, handle variable-length inputs, and refine predictions through post-processing.",
+  "purpose": "inference",
+  "competition_flow": "Loads test audio files, converts them to mel-spectrograms, runs inference using an ensemble of pre-trained EfficientNetV2-S models, applies temporal smoothing to the predictions, and exports a formatted submission CSV.",
+  "data_reading": [
+    "Reads taxonomy CSV for class labels and sample submission CSV",
+    "Iterates over .ogg files in the test directory",
+    "Uses librosa.load to extract raw audio waveforms at 32kHz"
+  ],
+  "data_processing": [
+    "Converts raw audio to mel-spectrograms using librosa with specific FFT/hop/mel parameters",
+    "Handles NaN values and pads short audio segments",
+    "Normalizes spectrograms to [0,1] and resizes to 256x256 via OpenCV",
+    "Splits audio into 5-second non-overlapping windows"
+  ],
+  "features_engineering": [],
+  "models": [
+    "tf_efficientnetv2_s.in21k_ft_in1k"
+  ],
+  "frameworks_used": [
+    "torch",
+    "timm",
+    "librosa",
+    "numpy",
+    "pandas",
+    "cv2",
+    "torchvision"
+  ],
+  "loss_functions": [
+    "FocalLossBCE (custom combination of BCEWithLogitsLoss and sigmoid_focal_loss)"
+  ],
+  "cv_strategy": "",
+  "ensembling": "Averages predictions across multiple loaded model checkpoints; TTA is defined but disabled. Applies a 3-point temporal smoothing filter (weights 0.2, 0.6, 0.2) to predictions within each soundscape before saving the submission.",
+  "insights": [
+    "Mel-spectrograms normalized per-sample and resized to a fixed shape work effectively as input for CNN-based audio classification.",
+    "Temporal smoothing of per-window predictions helps reduce prediction jitter and improves submission quality.",
+    "A custom FocalLossBCE combining BCE and focal loss components is effective for handling class imbalance in audio classification tasks."
+  ],
+  "critical_findings": [],
+  "what_did_not_work": [],
+  "source_url": "https://www.kaggle.com/code/hideyukizushi/bird25-onlyinf-v2-s-focallossbce-cv-962-lb-829",
+  "votes": 399
+}

@@ -1,0 +1,112 @@
+{
+  "id": 104383,
+  "competitionName": "map-charting-student-math-misunderstandings",
+  "title": "MAP - Charting Student Math Misunderstandings",
+  "briefDescription": "Predict the affinity between misconceptions and student open-ended responses",
+  "dateEnabled": "2025-07-10T19:01:35.920Z",
+  "deadline": "2025-10-15T23:59:00Z",
+  "hasLeaderboard": true,
+  "leaderboardPercentage": 50,
+  "maxDailySubmissions": 5,
+  "numScoredSubmissions": 2,
+  "hasSolution": true,
+  "numPrizes": 6,
+  "forumId": 8043282,
+  "finalLeaderboardHasBeenVerified": true,
+  "userRankMultiplier": 1,
+  "publicLeaderboardDisclaimerMessage": "",
+  "dateCreated": "2025-06-03T18:06:06.904729100Z",
+  "competitionHostSegmentId": 1,
+  "maxTeamSize": 5,
+  "medalsAllowed": true,
+  "enableTeamFiles": true,
+  "teamFileDeadline": "2025-11-15T00:00:00Z",
+  "teamMergerExplicitDeadline": "2025-10-08T23:59:00Z",
+  "prohibitNewEntrantsExplicitDeadline": "2025-10-08T23:59:00Z",
+  "kernelsPublishingDisabledDeadline": "2025-10-08T23:59:00Z",
+  "organizationId": 5170,
+  "hasCoverImageUrl": true,
+  "showPrivateLeaderboard": true,
+  "hasScripts": true,
+  "onlyAllowKernelSubmissions": true,
+  "totalTeams": 1857,
+  "totalCompetitors": 2175,
+  "totalSubmissions": 39742,
+  "rulesRequired": true,
+  "usesSynchronousReruns": true,
+  "maxCpuRuntimeMinutes": 540,
+  "maxGpuRuntimeMinutes": 540,
+  "clonedFromCompetitionId": 82695,
+  "requiredSubmissionFilename": "submission.csv",
+  "evaluationAlgorithm": {
+    "id": 250,
+    "name": "MAP@{K}",
+    "isMax": true,
+    "isPublic": true,
+    "environmentRenderType": "ENVIRONMENT_RENDER_TYPE_JSON",
+    "state": "LEGACY"
+  },
+  "categories": [
+    {
+      "id": 11105,
+      "name": "education",
+      "fullPath": "subject > people and society > education",
+      "description": "Education datasets and kernels relate to statistics on student performance, university rankings, and answers for all your homework questions.",
+      "datasetCount": 36076,
+      "competitionCount": 68,
+      "scriptCount": 15377,
+      "slug": "education",
+      "displayName": "Education"
+    },
+    {
+      "id": 13204,
+      "name": "nlp",
+      "fullPath": "analysis > nlp",
+      "description": "Natural Language Processing gives a computer program the ability to extract meaning human language. Applications include sentiment analysis, translation, and speech recognition.",
+      "datasetCount": 6739,
+      "competitionCount": 130,
+      "scriptCount": 9654,
+      "slug": "nlp",
+      "displayName": "NLP"
+    },
+    {
+      "id": 16409,
+      "name": "primary and secondary schools",
+      "fullPath": "subject > people and society > education > primary and secondary schools",
+      "datasetCount": 2300,
+      "competitionCount": 13,
+      "scriptCount": 212,
+      "slug": "primary-and-secondary-schooling-(k-12)",
+      "displayName": "Primary and Secondary Schools"
+    },
+    {
+      "name": "map@{k}",
+      "description": "Mean Average Precision at K",
+      "displayName": "MAP@{K}"
+    }
+  ],
+  "organization": {
+    "slug": "the-learning-agency-llc",
+    "name": "The Learning Agency LLC",
+    "thumbnailImageUrl": "https://storage.googleapis.com/kaggle-organizations/5170/thumbnail.png?t=2025-07-09-23-10-51",
+    "profileUrl": "/organizations/the-learning-agency-llc"
+  },
+  "launched": true,
+  "createdByUserId": 995397,
+  "license": {
+    "id": 31,
+    "name": "MIT",
+    "url": "https://www.mit.edu/~amini/LICENSE.md",
+    "agreementRequired": false
+  },
+  "hostName": "The Learning Agency LLC",
+  "scoreTruncationNumDecimals": 5,
+  "locked": true,
+  "totalJoinedUsers": 8390,
+  "requiresIdentityVerification": true,
+  "submissionSizeLimitMb": 20480,
+  "reward": {
+    "id": "USD",
+    "quantity": 55000
+  }
+}

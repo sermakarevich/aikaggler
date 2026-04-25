@@ -1,0 +1,38 @@
+{
+  "summary": "This notebook documents an attempt to explore and run inference on Google\u2019s Health AI Developer Foundations (HAI-DEF), specifically focusing on the HeAR audio model. It walks through the installation of required dependencies, demonstrates how to call the model's API for raw audio embeddings, and highlights the practical challenges of setting up the environment. The author ultimately abandons the attempt due to missing modules and authentication errors, but the notebook serves as a practical reference for the expected API structure and model capabilities. Readers should understand both the potential of pre-trained medical foundation models and the real-world friction of integrating them.",
+  "purpose": "tutorial",
+  "competition_flow": "The notebook attempts to install dependencies and call the HeAR API for audio embedding generation but fails due to missing packages and authentication issues, serving as a failed demo walkthrough.",
+  "data_reading": [],
+  "data_processing": [],
+  "features_engineering": [],
+  "models": [
+    "HeAR",
+    "CXR Foundation",
+    "Path Foundation",
+    "Derm Foundation",
+    "CT Foundation"
+  ],
+  "frameworks_used": [
+    "tensorflow",
+    "sklearn",
+    "numpy",
+    "pandas",
+    "matplotlib",
+    "seaborn",
+    "plotly"
+  ],
+  "loss_functions": [],
+  "cv_strategy": "",
+  "ensembling": "",
+  "insights": [
+    "Pre-trained medical foundation models can significantly reduce data and compute requirements for healthcare AI tasks.",
+    "Official model demos often rely on specific API utilities and authentication that may not be readily available in standard notebook environments.",
+    "Audio-based health representations can effectively capture clinical acoustic signals like coughs and breathing patterns for downstream tasks."
+  ],
+  "critical_findings": [],
+  "what_did_not_work": [
+    "Installing external packages like lifelines, loss, network, cluster_utils, and api_utils failed or caused import errors, and the expected api_utils.make_prediction_with_exponential_backoff function was missing, preventing successful API calls."
+  ],
+  "source_url": "https://www.kaggle.com/code/mpwolke/medgemma-hai-def",
+  "votes": 106
+}

@@ -1,0 +1,61 @@
+{
+  "summary": "The author developed a two-stage image matching pipeline for the 2025 Image Matching Challenge, prioritizing high recall in the first stage to avoid missing true positives, followed by precision-focused pruning in subsequent stages. The pipeline uses DINOv2 global features for initial pair filtering, then applies multi-resolution keypoint detection with ALIKED and LightGlue across 840px, 1280px, and 2048px scales. DBSCAN clustering identifies dense correspondence regions for targeted cropping, and RANSAC removes outliers before feeding matches into COLMAP for incremental 3D reconstruction and pose estimation. This design explicitly balances the harmonic mean metric's sensitivity to both clustering and pose accuracy.",
+  "extensive_summary": "## Two-Stage Philosophy and Similarity Filtering\nThe solution is built around a recall-oriented first stage followed by precision-oriented pruning. Global feature vectors are extracted using a pretrained DINOv2 model, and cosine similarities are computed for all image pairs. Pairs are retained if their cosine similarity is \u2264 0.15 or if they fall within the top 50 most similar pairs. An adaptive mechanism switches to exhaustive matching when the dataset contains fewer than 100 images to maintain computational efficiency.\n\n## Multi-Resolution Keypoint Detection and Matching\nThe pipeline implements a three-phase multi-resolution matching strategy using ALIKED and LightGlue. Initially, images are resized to 840 pixels, up to 1024 keypoints are extracted, and rotation-aware matching compensates for 0\u00b0, 90\u00b0, 180\u00b0, and 270\u00b0 rotations. The resolution is then increased to 1280 pixels (up to 8192 keypoints) with a stricter filtering threshold of 0.2, followed by a final 2048-pixel pass for high-precision matches. After matching, DBSCAN clustering isolates high-density correspondence regions, which are used to define rectangular crop areas for focused processing at higher resolutions. RANSAC is subsequently applied to eliminate mismatched correspondences, and a final score threshold filters out low-confidence pairs.\n\n## 3-D Reconstruction and Pose Estimation\nMatches and fundamental matrices are converted into a COLMAP database to drive incremental 3D reconstruction. The process starts with the image pair containing the most matches, continuously optimizing the model via bundle adjustment as new images are added. Multiple reconstructions are attempted under varying initial conditions to select the optimal result. Independent scene clusters are detected and processed separately, with final camera poses assigned according to the camera model.\n\n## Acceleration and Implementation Details\nTo optimize parallel processing across 2x T4 GPUs, the dataset is partitioned into two groups balancing the sum of the squares of image counts, correcting an imbalance that previously caused processing delays of up to 15%.",
+  "rank": 9,
+  "competition_flow": "Global DINOv2 features filter candidate image pairs, which are then processed through multi-resolution ALIKED+LightGlue matching with DBSCAN cropping and RANSAC outlier removal, before being fed into COLMAP for incremental 3D reconstruction and pose estimation.",
+  "data_reading": [],
+  "data_processing": [
+    "Images resized to 840, 1280, and 2048 pixels across three matching phases.",
+    "DINOv2 cosine similarity thresholds (\u2264 0.15 or top-50) filter candidate pairs, with adaptive switch to exhaustive matching for datasets under 100 images.",
+    "DBSCAN identifies dense correspondence regions for targeted cropping.",
+    "RANSAC removes outlier correspondences.",
+    "Dataset partitioned by balancing sum of squares of image counts to optimize 2x T4 GPU load."
+  ],
+  "features_engineering": [],
+  "models": [
+    "DINOv2",
+    "ALIKED",
+    "LightGlue",
+    "COLMAP",
+    "DBSCAN",
+    "RANSAC"
+  ],
+  "frameworks_used": [],
+  "loss_functions": [],
+  "cv_strategy": "",
+  "ensembling": "",
+  "insights": [
+    "The harmonic mean metric penalizes sacrificing either clustering or pose accuracy, necessitating a recall-first then precision-focused pipeline.",
+    "Multi-resolution matching combined with DBSCAN-based cropping efficiently isolates dense feature regions for high-precision refinement.",
+    "Balancing dataset partitioning by the sum of squares of image counts significantly reduces GPU processing imbalance."
+  ],
+  "critical_findings": [
+    "Using MicKey features created an over-connected match graph where accumulated loop-closure errors caused final poses to diverge.",
+    "Applying LoFTR broadly increased high-resolution pairs but caused incorrect correspondences to over-fit and converge wrongly in low-parallax scenes.",
+    "Bayesian optimization for DINOv2 adaptive thresholds failed to converge within the time limit due to heavy computational costs per evaluation."
+  ],
+  "what_did_not_work": [
+    "Adaptive threshold tuning for DINOv2 via Bayesian optimization failed to converge due to computational heaviness.",
+    "A binary classifier for cluster identification using edge weights (inlier matches, reprojection error) sharply dropped in precision when recall increased.",
+    "MicKey features produced an overly dense LightGlue graph causing divergent poses from accumulated loop-closure errors.",
+    "LoFTR applied broadly increased high-resolution pairs but caused over-fitting and incorrect convergence in low-parallax scenes."
+  ],
+  "github_repos": [
+    {
+      "url": "https://github.com/nianticlabs/mickey",
+      "role": "reference"
+    },
+    {
+      "url": "https://github.com/zju3dv/LoFTR",
+      "role": "reference"
+    }
+  ],
+  "papers": [],
+  "other_solution_refs": [
+    {
+      "description": "IMC 2024 1st place solution (referenced for pipeline reimplementation)",
+      "url": "https://www.kaggle.com/code/vostankovich/imc2024-1st-place-solution#Merge-csv"
+    }
+  ],
+  "source_url": "https://www.kaggle.com/competitions/image-matching-challenge-2025/discussion/583464"
+}

@@ -1,0 +1,93 @@
+{
+  "summary": "The author contributed to a 26th place public leaderboard solution by developing and training TabM and AutoencoderMLP neural networks alongside offline LightGBM, XGBoost, and Ridge models. Key technical decisions include using R2 loss for stability in TabM, applying simple mean-std standardization with zero-filled NaNs, and leveraging time_id/symbol_id as categorical features with sin/cos periodic encodings. The pipeline heavily relies on online learning for the neural networks, where models are updated daily using a rolling window of historical data, while tree-based and linear models are trained offline on specific date ranges. The final submission ensembles these neural networks with the offline models to achieve the target score.",
+  "extensive_summary": "## Cross-Validation & Overall Approach\nThe author used the last 120 dates as a validation set, which showed strong correlation with the public leaderboard. The final solution ensembles neural network models trained with online learning, offline GBDT models, and a Ridge model.\n\n## TabM Model\nThe TabM architecture focuses on feature embedding layers and a 3-layer MLP backbone with 512 dimensions. For categorical features (`feature_09`, `feature_10`, `feature_11`, `symbol_id`, `time_id`), the author applied one-hot encoding after ordinal remapping, noting that treating `time_id` as a category significantly improved performance. Continuous features received no embedding layers. The model was trained using R2 loss, which proved more robust across validation epochs than MSE loss, despite MSE yielding higher CV scores. Hyperparameters included a dropout rate of 0.25, learning rate of 1e-3, weight decay of 8e-4, batch size of 8192, and 5-6 epochs. The ensemble size `k` was set to 16 to balance score and training time. Preprocessing involved simple mean-std standardization and zero-filling for NaNs. Features included `time_id`, `symbol_id`, 78 original features (excluding `feature_61`), 9 responder lags, and sin/cos encodings of `time_id` with 967 or 483 periods, plus a 20-period lag for `feature_61`. Gaussian noise (std 0.02) was added to continuous features for augmentation. Training started from date 252 onward to avoid excessive NaNs in earlier data.\n\n## AutoencoderMLP\nThis model uses an encoder/decoder with 96 hidden dimensions and a 5-layer MLP (96, 896, 448, 448, 256). It fills NaNs with 3 instead of standardizing. Features include `time_id`, `symbol_id`, 79 original features, and 1-step responder lag. It uses MSE for reconstruction and weighted-MSE for prediction, trained with Adam optimizer, learning rate 1e-3, batch size 8192, and ~15 epochs. Dropout rates were varied per layer.\n\n## Offline GBDT & Ridge Models\nThe author trained LightGBM, XGBoost, and Ridge models offline. Features were simplified to `time_id`, `symbol_id`, 79 features, responder lags, and basic statistics (mean, std, max). No category features were specified for GBDT. Training data ranges varied: dates after 750 for XGB/Ridge and after 678 for LGB. Fixed hyperparameters were used without optimization. Ridge achieved the lowest individual LB score (0.0044), while ensembling LGB, XGB, and Ridge yielded an LB of 0.0076.\n\n## Online Learning Pipeline\nOnline learning was critical. Data from previous dates was collected and used to update models daily. Instead of batch processing, the pipeline concatenated historical data (randomly sampled to ~300k rows) with current lags, filled NaNs with 3, and trained the model for 5 epochs per date using Adam optimizer (lr 1e-4) and MSE loss. Online learning was attempted on GBDT but abandoned due to poor performance and high computational cost.\n\n## Key Insights\n- `time_id` as a categorical feature significantly boosts TabM performance.\n- R2 loss is more robust than MSE for validation stability, even if MSE gives higher CV scores.\n- Simple mean-std standardization and zero-filling NaNs work well for TabM, while filling with 3 works for AutoencoderMLP.\n- Adding more lag features or auxiliary targets beyond `responder_3` and `responder_6` hurt performance.\n- Online learning is highly effective for NNs but impractical for GBDT in this setting.",
+  "rank": 26,
+  "competition_flow": "Raw time-series tabular data is preprocessed with standardization/NaN-filling and periodic encodings, then fed into TabM and AutoencoderMLP models updated daily via online learning on a rolling historical window, while offline LightGBM, XGBoost, and Ridge models are trained on fixed date ranges, with all predictions ensembled for the final submission.",
+  "data_reading": [],
+  "data_processing": [
+    "Simple mean-std standardization and zero-filling for NaNs (TabM)",
+    "Filling NaNs with 3 without standardization (AutoencoderMLP & XGB)",
+    "Gaussian noise (std 0.02) added to continuous features for augmentation",
+    "Sin/cos periodic encodings for time_id (967/483 periods) and feature_61 (20 periods)",
+    "Responder lags (lag 1) and basic statistics (mean, std, max)",
+    "Random sampling to ~300k rows for online training window"
+  ],
+  "features_engineering": [
+    "time_id and symbol_id as categorical features",
+    "78/79 original features",
+    "9 responder lags",
+    "Sin/cos encodings of time_id with 967 or 483 periods",
+    "20-period lag for feature_61",
+    "responder_3 as auxiliary target",
+    "Mean, std, and max statistics"
+  ],
+  "models": [
+    "TabM",
+    "AutoencoderMLP",
+    "LightGBM",
+    "XGBoost",
+    "Ridge",
+    "MLP"
+  ],
+  "frameworks_used": [
+    "pytorch",
+    "lightgbm",
+    "xgboost",
+    "polars",
+    "pandas"
+  ],
+  "loss_functions": [
+    "huber loss",
+    "logcosh loss",
+    "mae loss",
+    "zero-mean R2 loss",
+    "mse loss",
+    "weighted-mse loss",
+    "l2 objective",
+    "reg:squarederror"
+  ],
+  "cv_strategy": "Last 120 dates as validation set",
+  "ensembling": "The final submission ensembles predictions from the online-updated TabM and AutoencoderMLP neural networks with offline-trained LightGBM, XGBoost, and Ridge models, with the TabM model itself using an ensemble size of k=16 for its final output.",
+  "insights": [
+    "Treating time_id as a categorical feature significantly improves TabM performance.",
+    "R2 loss provides more robust validation stability than MSE, despite MSE yielding higher CV scores.",
+    "Online learning is highly effective for neural networks but impractical for GBDT due to computational cost and poor results.",
+    "Adding excessive lag features or auxiliary targets beyond responder_3 and responder_6 degrades performance.",
+    "Simple mean-std standardization with zero-filled NaNs works best for TabM, while filling NaNs with 3 suits AutoencoderMLP."
+  ],
+  "critical_findings": [
+    "MSE loss yields higher CV scores but R2 loss is more robust across validation epochs, making R2 the preferred choice for stability.",
+    "Training on dates after 750 improves CV but decreases LB score, revealing a distribution shift or overfitting to recent data.",
+    "Attempting online learning on GBDT models failed and was too computationally expensive, unlike its success with neural networks."
+  ],
+  "what_did_not_work": [
+    "Using embedding layers for continuous features (LinearEmbeddings, PeriodicEmbeddings, PiecewiseLinearEmbeddings) did not work well.",
+    "Higher dropout (0.5) caused slower convergence, while lower dropout (0.1) led to overfitting.",
+    "Adding more auxiliary targets beyond responder_3 and responder_6 showed no obvious improvement.",
+    "Training on dates after 750 improved CV but decreased LB score.",
+    "Online learning on GBDT models did not work well and was too time-consuming.",
+    "Using GRU, LSTM, or Transformer architectures failed early in the competition."
+  ],
+  "github_repos": [
+    {
+      "url": "https://github.com/chronoscop/JS-Public-LB-26th-training-code",
+      "role": "solution"
+    }
+  ],
+  "papers": [],
+  "other_solution_refs": [
+    {
+      "description": "Baseline TabM notebook",
+      "url": "https://www.kaggle.com/code/i2nfinit3y/jane-street-tabm-ft-transformer-inference"
+    },
+    {
+      "description": "TabM training code",
+      "url": "https://www.kaggle.com/code/i2nfinit3y/jane-street-tabm-training"
+    },
+    {
+      "description": "Single TabM online learning",
+      "url": "https://www.kaggle.com/code/i2nfinit3y/jane-street-tabm-online-learning"
+    }
+  ],
+  "source_url": "https://www.kaggle.com/competitions/jane-street-real-time-market-data-forecasting/discussion/556610"
+}

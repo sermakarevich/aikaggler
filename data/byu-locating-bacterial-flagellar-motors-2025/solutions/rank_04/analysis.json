@@ -1,0 +1,58 @@
+{
+  "summary": "The author developed a 4th place solution using a streamlined 3D-ResNet18 classifier to localize bacterial flagellar motors in cryo-ET volumes. Key insights included simplifying a complex UNet decoder into a pure encoder based on the competition metric's forgiveness regarding localization precision, and implementing a custom MixUp augmentation that restricts mixed patches to at most one motor to prevent overfitting. The pipeline relies on fixed-voxel scaling, GPU-accelerated augmentations via MONAI, and a sliding-window inference strategy with quantile-based thresholding for stable predictions.",
+  "extensive_summary": "## Approach & Model Architecture\nThe solution centers on a simplified 3D-ResNet18 encoder that replaces a previously used UNet decoder. Recognizing that the competition metric is forgiving regarding exact localization, the author removed the decoder entirely and flattened the 3x5x5 spatial feature map into 75 classes to predict motor presence at each grid cell, plus one additional class for background, totaling 76 classes. A custom `DenseCrossEntropy1D` loss is applied to these flattened logits and targets.\n\n## Data Processing & Augmentations\nRaw 3D images are scaled to a fixed voxel size of 15.6 and stored as int8. To combat overfitting during training from scratch, the pipeline employs MONAI-based augmentations including `RandomCrop` (96x160x160), axis-wise flips, and GPU-accelerated scaling and rotation. A custom MixUp implementation ensures mixed patches contain at most one motor, while positive samples are oversampled to 12.5% of the batch.\n\n## Training & Inference Strategy\nModels are trained in bf16 precision on single A100 GPUs. For inference, a sliding window approach with 0.5 overlap is applied to the full volume. Motor localization is determined by identifying the patch with the maximum prediction value across the 75 classes, then combining the patch coordinates with the 3x5x5 grid offset. Quantile-based thresholding is used for stability across models. The final submission leverages JIT or TensorRT exports to accelerate inference, enabling a larger ensemble.",
+  "rank": 4,
+  "competition_flow": "Raw 3D cryo-ET volumes are scaled to a fixed voxel size and cropped into 96x160x160 patches, which are fed into a 3D-ResNet18 classifier trained with a custom cross-entropy loss; inference uses a sliding window to predict motor locations, followed by quantile-based thresholding and JIT/TensorRT acceleration for the final ensemble submission.",
+  "data_reading": [],
+  "data_processing": [
+    "3D images scaled to fixed voxel size of 15.6 and saved as int8",
+    "External data from @brendanartley incorporated",
+    "RandomCrop (96x160x160) via MONAI",
+    "Flip on each axis within torch dataloader",
+    "GPU-accelerated scale and rotation augmentations",
+    "Custom MixUp ensuring max 1 motor per mixed patch",
+    "Positive sample oversampling to 12.5% fraction"
+  ],
+  "features_engineering": [],
+  "models": [
+    "3D-ResNet18",
+    "3D UNet"
+  ],
+  "frameworks_used": [
+    "MONAI",
+    "PyTorch",
+    "TensorRT"
+  ],
+  "loss_functions": [
+    "CrossEntropy Loss",
+    "DenseCrossEntropy1D"
+  ],
+  "cv_strategy": "4-fold grouped split: training data split by Voxel Size, external data split by dataset ID.",
+  "ensembling": "The final submission combines the 3D-ResNet18 classifier with object detection models from MONAI, accelerated via JIT or TensorRT exports, and applies quantile-based thresholding for stable predictions across models.",
+  "insights": [
+    "The competition metric's forgiveness regarding localization precision justified simplifying a complex UNet decoder into a pure encoder with a classification head.",
+    "A custom MixUp augmentation that restricts mixed patches to at most one motor was highly effective for preventing overfitting during extended training.",
+    "Quantile-based thresholding provided significantly more stable predictions across different models compared to fixed thresholds."
+  ],
+  "critical_findings": [
+    "Surprisingly, a simple 3D-ResNet18 encoder outperformed more complex architectures and the initial 3D UNet approach when trained from scratch.",
+    "Cross-validation correlation with the leaderboard was poor, making the LB score the primary feedback mechanism for iteration rather than validation metrics."
+  ],
+  "what_did_not_work": [
+    "Other architectures and alternatives performed much worse than the simple 3D-ResNet18."
+  ],
+  "github_repos": [
+    {
+      "url": "https://github.com/ChristofHenkel/kaggle-cryoet-1st-place-segmentation",
+      "role": "reference"
+    }
+  ],
+  "papers": [],
+  "other_solution_refs": [
+    {
+      "description": "Object Detection Part by @bloodaxe",
+      "url": "https://www.kaggle.com/competitions/byu-locating-bacterial-flagellar-motors-2025/discussion/583228"
+    }
+  ],
+  "source_url": "https://www.kaggle.com/competitions/byu-locating-bacterial-flagellar-motors-2025/discussion/583411"
+}

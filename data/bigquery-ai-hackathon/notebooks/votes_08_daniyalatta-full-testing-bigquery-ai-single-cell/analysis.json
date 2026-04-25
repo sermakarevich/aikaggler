@@ -1,0 +1,43 @@
+{
+  "summary": "The notebook implements a comprehensive market intelligence pipeline for the insurance industry by aggregating real-time data from Google Trends and multiple RSS news feeds. It processes this unstructured data using combined VADER and TextBlob sentiment analysis and keyword frequency counting to identify market trends and public sentiment. The pipeline generates a static matplotlib dashboard, a word cloud, and interactive Plotly charts to visualize search interest, regional breakdowns, and news sentiment distribution. Readers should learn how to combine external API/web scraping techniques with NLP sentiment analysis and multi-library visualization for business intelligence. The notebook demonstrates a robust, production-ready pattern for automated industry monitoring and reporting.",
+  "purpose": "utility",
+  "competition_flow": "Fetches Google Trends time-series data and RSS news articles, applies sentiment analysis and keyword extraction, then generates static and interactive visualizations along with a JSON export of the aggregated market intelligence.",
+  "data_reading": [
+    "Loads external data via the pytrends API for Google Trends time-series and regional metrics.",
+    "Parses RSS XML feeds using feedparser and requests for news articles."
+  ],
+  "data_processing": [
+    "Strips HTML tags from news summaries using BeautifulSoup.",
+    "Filters articles by a 30-day publication cutoff to ensure recency.",
+    "Combines VADER and TextBlob polarity scores to assign sentiment labels.",
+    "Calculates trend volatility and percentage changes over time.",
+    "Aggregates keyword frequencies across titles and summaries."
+  ],
+  "features_engineering": [],
+  "models": [],
+  "frameworks_used": [
+    "pandas",
+    "numpy",
+    "matplotlib",
+    "seaborn",
+    "plotly",
+    "textblob",
+    "vaderSentiment",
+    "feedparser",
+    "beautifulsoup4",
+    "requests",
+    "pytrends"
+  ],
+  "loss_functions": [],
+  "cv_strategy": "",
+  "ensembling": "",
+  "insights": [
+    "Combining VADER and TextBlob polarity scores yields a more balanced sentiment label than relying on a single library.",
+    "Google Trends regional data can be directly mapped to US state codes to quickly identify geographic hotspots for insurance-related searches.",
+    "Filtering RSS feeds by a strict 30-day publication window prevents historical noise from skewing current market sentiment analysis."
+  ],
+  "critical_findings": [],
+  "what_did_not_work": [],
+  "source_url": "https://www.kaggle.com/code/daniyalatta/full-testing-bigquery-ai-single-cell",
+  "votes": 27
+}

@@ -1,0 +1,25 @@
+{
+  "id": "yosukeyama/rsna2025-32ch-img-infer-lb-0-69-share",
+  "id_no": 89538367,
+  "title": "RSNA2025 32ch img infer [LB 0.69] share",
+  "code_file": "rsna2025-32ch-img-infer-lb-0-69-share.ipynb",
+  "language": "python",
+  "kernel_type": "notebook",
+  "is_private": false,
+  "enable_gpu": true,
+  "enable_tpu": false,
+  "enable_internet": false,
+  "keywords": [
+    "gpu"
+  ],
+  "dataset_sources": [
+    "yosukeyama/rsna2025-effnetv2-32ch"
+  ],
+  "kernel_sources": [],
+  "competition_sources": [
+    "rsna-intracranial-aneurysm-detection"
+  ],
+  "model_sources": [],
+  "docker_image": "gcr.io/kaggle-private-byod/python@sha256:320043e14c68293f1c946585b9257123385205a58af4b94b17d31868cae4e868",
+  "machine_shape": "Gpu"
+}

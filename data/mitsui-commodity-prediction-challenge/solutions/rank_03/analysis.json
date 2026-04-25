@@ -1,0 +1,55 @@
+{
+  "summary": "The author achieved 3rd place by prioritizing model stability and directional trend capture over complex feature engineering in a volatile commodity price prediction task. They adopted a target-centric approach, training one independent model per target using only the specific assets defined in the target pairs file. The pipeline applied conservative time-series features, robust numerical preprocessing, and a two-level stacked ensemble of tree-based models. Crucially, they ignored the misleading public leaderboard and avoided aggressive fine-tuning to prevent overfitting to noise.",
+  "extensive_summary": "## Strategic Philosophy & Target-Centric Design\nThe solution treats the competition not as a standard time-series forecasting task but as a directional trend extraction problem. Recognizing that the public leaderboard was unreliable and prone to overfitting, the author deliberately ignored it and trained on the full historical dataset. A core architectural decision was adopting a \"one model per target\" strategy, where each target is treated as an independent prediction problem. Features are strictly filtered to only include assets explicitly listed in `target_pairs.csv`, eliminating cross-asset interference and acting as an implicit regularizer.\n\n## Data Preparation & Preprocessing\nTemporal alignment is strictly enforced to prevent lookahead bias: features use data up to time `t`, while targets correspond to `t + lag`. Missing values are handled conservatively with forward-fill, backward-fill, and median imputation. The preprocessing pipeline applies a safe `log1p` transformation to compress extreme values, converts infinite values to NaN, and standardizes all features to zero mean and unit variance.\n\n## Feature Engineering & Model Architecture\nFeature engineering is deliberately conservative, focusing on positive and negative lags, rolling window statistics (means and maxima), and difference features. The inclusion of negative lags/windows is highlighted as a counterintuitive but effective stability mechanism that helps the model learn contextual patterns without leaking future information. The modeling stage employs a two-level stacked ensemble. Level-0 base learners consist of LightGBM, Random Forest, and XGBoost. Their out-of-sample predictions are reshaped and stacked as meta-features for a Level-1 meta-model, which is another XGBoost regressor. The author explicitly avoided heavy hyperparameter tuning and cross-validation to maintain computational efficiency and prevent overfitting to noisy signals.\n\n## Evaluation & Results\nThe model intentionally suppresses variance, resulting in predictions that capture directional movement rather than exact magnitude. This is evidenced by low MAE/RMSE but negative R\u00b2 and low correlation, which the author frames as a feature for volatile financial data where stability outweighs precise value forecasting.",
+  "rank": 3,
+  "competition_flow": "Raw price data and target pair definitions are parsed to construct independent, target-specific datasets with strict temporal alignment; conservative time-series features are engineered and numerically stabilized, then trained on a two-level stacked ensemble of tree models before submission via the Kaggle evaluation API.",
+  "data_reading": [],
+  "data_processing": [
+    "Safe log1p transformation to compress extreme values and stabilize variance",
+    "Conversion of infinite values to NaN",
+    "Forward-fill and backward-fill for missing values",
+    "Median imputation for missing values",
+    "Standardization to zero mean and unit variance",
+    "Strict temporal alignment (features up to t, targets at t+lag) with truncation to match lengths"
+  ],
+  "features_engineering": [
+    "Positive and negative lag features",
+    "Rolling window statistics (means and maxima)",
+    "Difference features",
+    "Target-specific asset pair filtering based on target_pairs.csv",
+    "Log returns/price differences as targets"
+  ],
+  "models": [
+    "LightGBM",
+    "Random Forest",
+    "XGBoost (base learners)",
+    "XGBoost (meta-model)",
+    "Two-level stacked ensemble"
+  ],
+  "frameworks_used": [],
+  "loss_functions": [],
+  "cv_strategy": "",
+  "ensembling": "Two-level stacked ensemble combining LightGBM, Random Forest, and XGBoost base learners with an XGBoost meta-model to learn optimal weights; no threshold tuning or TTA mentioned.",
+  "insights": [
+    "Public leaderboard scores are unreliable and can mislead model development.",
+    "One model per target with target-specific features reduces noise and prevents interference.",
+    "Negative lags/windows act as stability mechanisms rather than leakage.",
+    "Prioritizing directional trends over magnitude improves robustness in volatile financial time series.",
+    "Model diversity and simplicity outperform aggressive feature engineering and fine-tuning in noisy environments."
+  ],
+  "critical_findings": [
+    "Negative lag and window features, typically avoided in production, significantly improved stability and reduced overreaction to single-day shocks without causing leakage.",
+    "Ignoring the public leaderboard and training on the full dataset maximized private leaderboard performance.",
+    "The model intentionally underreacts to extreme spikes, which suppresses variance and aligns with private evaluation objectives."
+  ],
+  "what_did_not_work": [],
+  "github_repos": [],
+  "papers": [],
+  "other_solution_refs": [
+    {
+      "description": "Notebook illustrating target calculation methodology",
+      "url": "https://www.kaggle.com/code/sohier/mitsui-target-calculation-example/"
+    }
+  ],
+  "source_url": "https://www.kaggle.com/competitions/mitsui-commodity-prediction-challenge/discussion/668769"
+}

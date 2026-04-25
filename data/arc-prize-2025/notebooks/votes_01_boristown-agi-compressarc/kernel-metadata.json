@@ -1,0 +1,26 @@
+{
+  "id": "boristown/agi-compressarc",
+  "id_no": 80689305,
+  "title": "[\u6697\u9ed1AGI]CompressARC",
+  "code_file": "agi-compressarc.ipynb",
+  "language": "python",
+  "kernel_type": "notebook",
+  "is_private": false,
+  "enable_gpu": true,
+  "enable_tpu": false,
+  "enable_internet": false,
+  "keywords": [
+    "gpu"
+  ],
+  "dataset_sources": [
+    "",
+    "boristown/darkagicompressarc"
+  ],
+  "kernel_sources": [],
+  "competition_sources": [
+    "arc-prize-2025"
+  ],
+  "model_sources": [],
+  "docker_image": "gcr.io/kaggle-private-byod/python@sha256:d8674e13fab653bf7fb8d9a102f2ae94036771ccb5c73f51888d881421e1f937",
+  "machine_shape": "NvidiaL4"
+}

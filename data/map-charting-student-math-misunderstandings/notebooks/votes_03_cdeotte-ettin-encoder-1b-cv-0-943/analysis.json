@@ -1,0 +1,38 @@
+{
+  "summary": "This notebook demonstrates a rapid inference workflow for a Kaggle Mean Average Precision competition focused on identifying student math misconceptions. It highlights how strategic prompt engineering and a simple popularity-based feature can significantly boost validation scores when fine-tuning large language models. The author provides practical memory-efficient training tips for 1B-parameter models and explains GPU precision constraints for Kaggle's T4 environment. Readers should learn how to adapt tabular text data into effective LLM prompts, implement a custom MAP@3 metric, and streamline the transition from training to quick submission generation.",
+  "purpose": "tutorial",
+  "competition_flow": "Loads tabular math question data, engineers a popularity-based correctness feature, formats it into a custom prompt, tokenizes it, trains a 1B-parameter sequence classification model on a 20% holdout, and generates a MAP@3 submission via inference.",
+  "data_reading": [
+    "Reads train and test CSVs with pandas, fills NaN values in the 'Misconception' column with 'NA', creates a combined target string 'Category:Misconception', and applies scikit-learn's LabelEncoder to generate integer labels."
+  ],
+  "data_processing": [
+    "Tokenizes text using AutoTokenizer with a maximum length of 256, padding, and truncation, converts DataFrames to Hugging Face Datasets, sets PyTorch tensor formats, and splits data into an 80/20 train-validation holdout."
+  ],
+  "features_engineering": [
+    "Derives an 'is_correct' flag by counting answer frequencies per question and assuming the most selected MC_Answer is the ground truth, then merges this feature back into the dataset."
+  ],
+  "models": [
+    "Ettin-Encoder-1B (jhu-clsp/ettin-encoder-1b)"
+  ],
+  "frameworks_used": [
+    "transformers",
+    "datasets",
+    "torch",
+    "scikit-learn"
+  ],
+  "loss_functions": [],
+  "cv_strategy": "Random train-test split with 20% holdout validation (test_size=0.2, random_state=42)",
+  "ensembling": "",
+  "insights": [
+    "Prompt structure directly impacts model performance and validation scores.",
+    "Half-precision (fp16) is required for faster inference on Kaggle's T4 GPUs since they lack bf16 support.",
+    "Memory-efficient techniques like gradient accumulation, mixed precision, and LoRA enable training of 1B-parameter models on limited VRAM."
+  ],
+  "critical_findings": [
+    "Kaggle's T4 GPUs do not support bf16, necessitating fp16 for inference to avoid errors.",
+    "The notebook approximates ground-truth answers by assuming the most frequently selected multiple-choice option per question is correct."
+  ],
+  "what_did_not_work": [],
+  "source_url": "https://www.kaggle.com/code/cdeotte/ettin-encoder-1b-cv-0-943",
+  "votes": 481
+}

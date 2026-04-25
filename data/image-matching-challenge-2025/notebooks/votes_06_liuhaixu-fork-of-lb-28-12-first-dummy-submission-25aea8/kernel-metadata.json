@@ -1,0 +1,34 @@
+{
+  "id": "liuhaixu/fork-of-lb-28-12-first-dummy-submission-25aea8",
+  "id_no": 80211991,
+  "title": "Fork of [LB: 28.12] FIRST DUMMY SUBMISSION  25aea8",
+  "code_file": "fork-of-lb-28-12-first-dummy-submission-25aea8.ipynb",
+  "language": "python",
+  "kernel_type": "notebook",
+  "is_private": false,
+  "enable_gpu": true,
+  "enable_tpu": false,
+  "enable_internet": false,
+  "keywords": [
+    "gpu"
+  ],
+  "dataset_sources": [
+    "oldufo/imc2024-packages-lightglue-rerun-kornia",
+    "eduardtrulls/imc25-utils"
+  ],
+  "kernel_sources": [],
+  "competition_sources": [
+    "image-matching-challenge-2025"
+  ],
+  "model_sources": [
+    "oldufo/aliked/PyTorch/aliked-n16rot/1",
+    "oldufo/aliked/PyTorch/aliked-n16/1",
+    "oldufo/aliked/PyTorch/aliked-n32/1",
+    "metaresearch/dinov2/PyTorch/giant/1",
+    "metaresearch/dinov2/PyTorch/base/1",
+    "metaresearch/dinov2/PyTorch/large/1",
+    "oldufo/lightglue/PyTorch/aliked/1"
+  ],
+  "docker_image": "gcr.io/kaggle-private-byod/python@sha256:d8674e13fab653bf7fb8d9a102f2ae94036771ccb5c73f51888d881421e1f937",
+  "machine_shape": "Gpu"
+}

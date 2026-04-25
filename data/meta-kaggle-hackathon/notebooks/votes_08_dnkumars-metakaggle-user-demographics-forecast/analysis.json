@@ -1,0 +1,34 @@
+{
+  "summary": "This notebook provides an exploratory analysis of the MetaKaggle dataset, focusing on user demographics, geographical distribution, and historical growth trends. It demonstrates how to programmatically download Kaggle's internal dataset, inspect its complex schema, and visualize user locations using geospatial libraries. The author applies statistical methods to forecast future platform growth, offering readers a practical tutorial on handling large tabular metadata and performing time-series projections. Key takeaways include techniques for geospatial mapping of community data and understanding the structural relationships within Kaggle's ecosystem.",
+  "purpose": "eda",
+  "competition_flow": "Downloads the MetaKaggle dataset via kagglehub, inspects its schema and user metadata, visualizes geographical user distribution, and applies statistical forecasting to predict future user growth.",
+  "data_reading": [
+    "Uses kagglehub.dataset_download to fetch the kaggle/meta-kaggle and kaggle/meta-kaggle-code datasets."
+  ],
+  "data_processing": [
+    "Maps dataset country names to GeoJSON standards for geospatial visualization; minimal explicit cleaning or transformation is shown in the provided cells."
+  ],
+  "features_engineering": [],
+  "models": [],
+  "frameworks_used": [
+    "polars",
+    "pandas",
+    "kagglehub",
+    "plotly",
+    "folium",
+    "scipy",
+    "graphviz"
+  ],
+  "loss_functions": [],
+  "cv_strategy": "",
+  "ensembling": "",
+  "insights": [
+    "Kaggle's user base exhibits significant geographical diversity that can be effectively mapped and tracked over time.",
+    "Statistical forecasting can reliably project future platform growth trends based on historical user registration data.",
+    "Exploring the MetaKaggle schema reveals the complex relational structure underlying Kaggle's competition and user ecosystem."
+  ],
+  "critical_findings": [],
+  "what_did_not_work": [],
+  "source_url": "https://www.kaggle.com/code/dnkumars/metakaggle-user-demographics-forecast",
+  "votes": 25
+}

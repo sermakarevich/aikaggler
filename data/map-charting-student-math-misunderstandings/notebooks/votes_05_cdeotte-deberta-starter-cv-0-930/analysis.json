@@ -1,0 +1,45 @@
+{
+  "summary": "This notebook provides a baseline pipeline for the MAP competition using a DeBERTa encoder to predict student misconceptions from math Q&A data. It demonstrates how to construct a structured text prompt, engineer a simple correctness feature based on answer popularity, and train a sequence classification model with a custom MAP@3 evaluation metric. The author shows that prompt formatting and leveraging pre-trained LLMs significantly outperform traditional TF-IDF baselines. Readers should learn how to adapt the Hugging Face Trainer for custom metrics and efficiently format top-k predictions for submission.",
+  "purpose": "baseline",
+  "competition_flow": "Loads train and test CSVs, engineers a correctness feature, formats multi-turn Q&A into prompts, tokenizes the data, trains a DeBERTa sequence classifier with a custom MAP@3 metric, and generates a top-3 prediction submission file.",
+  "data_reading": [
+    "Reads train.csv and test.csv with pandas",
+    "Fills NaN values in the Misconception column with 'NA'",
+    "Uses scikit-learn's LabelEncoder to map the combined Category:MC_Answer string to integer labels"
+  ],
+  "data_processing": [
+    "Tokenizes text inputs using AutoTokenizer with max_length=256, padding='max_length', and truncation=True",
+    "Converts pandas DataFrames to Hugging Face Dataset objects",
+    "Applies softmax to model logits to obtain class probabilities"
+  ],
+  "features_engineering": [
+    "Creates an is_correct feature by identifying the most frequently selected MC_Answer per QuestionId in the training set and merging it back to both train and test dataframes"
+  ],
+  "models": [
+    "DeBERTa-v3-xsmall",
+    "DeBERTaV2ForSequenceClassification"
+  ],
+  "frameworks_used": [
+    "pandas",
+    "numpy",
+    "scikit-learn",
+    "torch",
+    "transformers",
+    "datasets",
+    "matplotlib",
+    "IPython",
+    "joblib"
+  ],
+  "loss_functions": [],
+  "cv_strategy": "Holdout validation split (20% via train_test_split); author mentions 5-KFold as an alternative training strategy in the markdown text.",
+  "ensembling": "",
+  "insights": [
+    "Modifying the input prompt structure can significantly improve cross-validation scores.",
+    "Pre-trained encoder models like DeBERTa outperform traditional TF-IDF approaches for this text classification task.",
+    "Answer frequency per question can serve as a useful proxy feature for correctness."
+  ],
+  "critical_findings": [],
+  "what_did_not_work": [],
+  "source_url": "https://www.kaggle.com/code/cdeotte/deberta-starter-cv-0-930",
+  "votes": 371
+}

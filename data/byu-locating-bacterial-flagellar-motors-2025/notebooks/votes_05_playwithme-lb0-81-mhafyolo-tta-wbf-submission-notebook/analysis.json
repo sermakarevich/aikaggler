@@ -1,0 +1,38 @@
+{
+  "summary": "The notebook implements an optimized inference pipeline for detecting bacterial flagellar motors in 3D tomograms. It loads a pre-trained YOLOv10 model and processes image slices with test-time augmentation and weighted box fusion to refine 2D bounding boxes. Detections are aggregated across slices using a custom 3D distance-based non-maximum suppression to identify the most confident motor location per tomogram. The pipeline prioritizes inference speed and memory efficiency through dynamic batch sizing, CUDA stream parallelization, and FP16 half-precision execution. Readers should understand how to adapt 2D object detectors for volumetric data and optimize GPU utilization for large-scale submission generation.",
+  "purpose": "inference",
+  "competition_flow": "Loads test tomogram slices, runs YOLOv10 inference with TTA and WBF on each slice, merges 2D detections into 3D coordinates via custom 3D NMS, and outputs a CSV submission with the top motor detection per tomogram.",
+  "data_reading": [
+    "Reads test slices as .jpg files from the competition test directory using cv2.imread with a PIL fallback."
+  ],
+  "data_processing": [
+    "Horizontal flip test-time augmentation",
+    "Weighted Box Fusion (WBF) for overlapping boxes",
+    "Dynamic batch sizing based on available GPU memory",
+    "FP16 half-precision conversion",
+    "Custom 3D distance-based non-maximum suppression to merge detections across slices"
+  ],
+  "features_engineering": [],
+  "models": [
+    "YOLOv10"
+  ],
+  "frameworks_used": [
+    "pytorch",
+    "ultralytics",
+    "opencv",
+    "numpy",
+    "pandas"
+  ],
+  "loss_functions": [],
+  "cv_strategy": "",
+  "ensembling": "Combines predictions from test-time augmentations (original and horizontal flip) using Weighted Box Fusion (WBF) with a confidence-weighted average, followed by a final 3D NMS to merge detections across slices.",
+  "insights": [
+    "TTA combined with WBF effectively reduces false positives and refines bounding box localization for 3D motor detection.",
+    "Dynamic batch sizing and CUDA stream parallelization significantly improve inference throughput on constrained GPU memory.",
+    "Processing slices independently and merging via 3D NMS is a viable strategy for volumetric object detection without full 3D models."
+  ],
+  "critical_findings": [],
+  "what_did_not_work": [],
+  "source_url": "https://www.kaggle.com/code/playwithme/lb0-81-mhafyolo-tta-wbf-submission-notebook",
+  "votes": 443
+}

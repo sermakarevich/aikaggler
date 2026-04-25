@@ -1,0 +1,49 @@
+{
+  "summary": "This notebook implements a fast, physics-driven pipeline for estimating exoplanet transit depths and uncertainties from Ariel mission detector data. It processes raw signals through sensor-specific calibration, applies temporal binning and inverse-variance weighting, and detects transit phases using gradient analysis. A custom polynomial fitting routine optimized via Nelder-Mead estimates the transit depth, while per-planet uncertainties are dynamically derived from out-of-transit and in-transit variance ratios. Readers should learn how to efficiently parallelize detector calibration, retain hot pixels to preserve signal integrity, and replace fixed error estimates with data-driven multipliers for more realistic uncertainty quantification.",
+  "purpose": "baseline",
+  "competition_flow": "Reads raw detector parquet files and calibration masks, applies sensor-specific calibration and binning, detects transit phases via gradient analysis, optimizes transit depth using Nelder-Mead with polynomial fitting, estimates per-planet uncertainties from variance ratios, and outputs a formatted CSV submission.",
+  "data_reading": [
+    "Loads signal, dark, dead, flat, and linear_corr arrays from per-planet sensor parquet files using pd.read_parquet.",
+    "Reads adc_info, test_star_info, and sample_submission from CSV files using pd.read_csv."
+  ],
+  "data_processing": [
+    "Applies ADC gain/offset correction, non-negative clamping, and polynomial linearity correction.",
+    "Performs dark subtraction with alternating integration time scaling and flat-field division (excluding dead pixels but retaining hot pixels).",
+    "Crops sensor-specific ROIs, applies temporal binning, and computes inverse-variance weights across wavelengths with percentile clipping.",
+    "Uses Savitzky-Golay filtering for phase detection and winsorization for AIRS channel stability."
+  ],
+  "features_engineering": [
+    ""
+  ],
+  "models": [
+    ""
+  ],
+  "frameworks_used": [
+    "numpy",
+    "pandas",
+    "scipy",
+    "pqdm",
+    "tqdm",
+    "astropy"
+  ],
+  "loss_functions": [
+    ""
+  ],
+  "cv_strategy": "",
+  "ensembling": "",
+  "insights": [
+    "Hot pixels should be monitored but intentionally retained in the data rather than masked to avoid losing valid signal.",
+    "Dynamic uncertainty estimation using out-of-transit and in-transit variance ratios provides more realistic error bars than fixed sigma values.",
+    "Inverse-variance weighting with percentile clipping prevents dominant channels from skewing the binned signal.",
+    "Parallel processing with pqdm significantly accelerates per-planet sensor calibration."
+  ],
+  "critical_findings": [
+    "The author explicitly notes that hot pixels are intentionally not masked, contrary to typical practice, to preserve signal integrity.",
+    "Fixed sigma values are replaced with data-driven multipliers clipped to \u00b120-25% of the baseline to prevent overconfident or overly conservative uncertainty estimates."
+  ],
+  "what_did_not_work": [
+    ""
+  ],
+  "source_url": "https://www.kaggle.com/code/antonsibilev/very-fast-with-hot-pixels-enabled",
+  "votes": 144
+}

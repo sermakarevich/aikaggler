@@ -1,0 +1,43 @@
+{
+  "summary": "This notebook implements a three-stage inference pipeline to convert test ECG images into 12-lead time-series signals for the PhysioNet challenge. It separates the model loading and prediction steps into distinct scripts to manage GPU memory, enforces deterministic behavior via fixed seeds, and applies specific geometric transformations and scaling constants for accurate signal extraction. The pipeline processes each test image through sequential networks for alignment, rectification, and pixel-to-series conversion, then maps and interpolates the outputs to match the required submission format. Readers should learn how to structure a memory-efficient multi-stage inference workflow, handle lead mapping for ECG data, and format predictions for competition submission.",
+  "purpose": "inference",
+  "competition_flow": "Loads test metadata and images, processes them through three sequential PyTorch models for geometric correction and signal extraction, maps the extracted 4-lead signals to 12 leads, interpolates to match required lengths, and saves the final submission CSV.",
+  "data_reading": [
+    "Loads test metadata CSV and groups by patient ID",
+    "Reads test images via OpenCV in RGB format"
+  ],
+  "data_processing": [
+    "Applies homography-based rotation and keypoint alignment, followed by image rectification and fixed-coordinate cropping",
+    "Converts images to tensors and uses `torch.amp.autocast` with `float32` for inference",
+    "Interpolates extracted signals to match required row counts and handles failed predictions with zero-padding or original image fallback"
+  ],
+  "features_engineering": [],
+  "models": [
+    "Stage0Net",
+    "Stage1Net",
+    "Stage2Net"
+  ],
+  "frameworks_used": [
+    "torch",
+    "cv2",
+    "numpy",
+    "pandas",
+    "plotly",
+    "kagglehub"
+  ],
+  "loss_functions": [],
+  "cv_strategy": "",
+  "ensembling": "",
+  "insights": [
+    "Splitting a multi-model pipeline into separate scripts effectively prevents GPU OOM errors during inference.",
+    "Setting a fixed global seed and enabling deterministic operations ensures reproducible results across different runs.",
+    "Applying specific geometric constants and coordinate cropping is essential for accurate ECG signal extraction from images.",
+    "Mapping and interpolating 4-lead outputs to 12-lead formats requires careful index alignment and length matching."
+  ],
+  "critical_findings": [],
+  "what_did_not_work": [
+    "The author explicitly removed `filter_series_by_limits` because it did not improve the leaderboard score."
+  ],
+  "source_url": "https://www.kaggle.com/code/wasupandceacar/physio-v2-2-public",
+  "votes": 224
+}

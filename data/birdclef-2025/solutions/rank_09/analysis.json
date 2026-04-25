@@ -1,0 +1,81 @@
+{
+  "summary": "The author achieved 9th place in a bird audio classification competition by implementing a two-stage semi-supervised pipeline that leverages pre-trained SED and CNN architectures. They applied targeted audio and spectrogram augmentations, RMS sampling, and Exponential Moving Average (EMA) during training, followed by pseudo-label generation on 10-second chunks to boost performance. Key insights included the critical impact of random seed diversity on ensemble scores, the necessity of retaining 50% human voice rather than removing it entirely, and the discovery that multi-threaded ONNX inference caused timeouts. The final submission relied on weighted averaging of seed-diverse models with careful post-processing threshold smoothing and frequency cutoff adjustments.",
+  "extensive_summary": "## Dataset & Preprocessing\nThe solution utilized only `train_audio` and `train_soundscapes` from the 2025 competition. A crucial preprocessing step involved removing exactly 50% of human voice from the audio, as the author found that stripping all human voice degraded model performance.\n\n## Stage 1 Training\nThe pipeline combined SED and CNN models. For raw signal augmentation, the author applied PitchShift, Shift, and Sumix (0.5 probability). Mel-spectrogram augmentations included Mixup2, Time masking, FilterAugment (0.5 probability), FrequencyMasking (0.5 probability), and PinkNoise (0.5 probability). Mel-spectrogram parameters were explicitly configured using torchaudio (SR=32000, n_fft=2048, n_mels=256/128, f_min=20, f_max=16000/14000, dynamic hop_length). RMS sampling was found superior to random sampling. EMA was applied throughout training to improve robustness and narrow epoch performance gaps. Backbones included `efficientnetv2_b3`, `eca_nfet_l0`, and `seresnext26t` for SED models (10s segments), and `efficientnet_b0` for CNN models (5s segments). Loss functions were FocalBCE for SED models, and a hybrid CE+BCE strategy for CNN models (CE early for convergence speed, BCE late).\n\n## Stage 2 Pseudo-labeling\nModels generated pseudo-labels on 10-second chunks. Only the top 10% of classes per sample were retained as soft labels, with others zeroed out. The same pipeline was retrained, selecting `efficientnetv2_b3` and `seresnext26t` as final backbones, yielding a >0.02 LB boost.\n\n## Inference & TTA\n10s chunks were fed into models with a 2-second window for TTA. All models were converted to ONNX format. The author noted that multi-threaded ONNX inference caused timeouts despite appearing viable, requiring single-threaded execution for successful submission.\n\n## Ensemble & Post-processing\nWeighted averaging was used for ensembling. Post-processing included smoothing predictions with `[0.2, 0.6, 0.2]` weights (boosting 0.005~0.01) and setting `fmax` to 2000 during inference (boosting 0.002). Random seed selection proved highly impactful, necessitating ensemble diversity across seeds.\n\n## Failed Ideas & Insights\nSeveral concepts that failed on the public leaderboard actually improved private scores, including resampling pseudo-labels by probability and adjusting probabilities by max/mean. Explicitly failed attempts included raw signal models, rank-average ensembling, RMS sampling with energy weights, using common names as auxiliary targets, lower rank power postprocessing, and adding Gaussian noise to raw signals.",
+  "rank": 9,
+  "competition_flow": "Raw audio and soundscapes were preprocessed by removing 50% human voice, converted to Mel-spectrograms, and fed into a two-stage training pipeline using SED and CNN backbones with targeted audio augmentations and pseudo-labeling, followed by ONNX conversion, TTA, and weighted ensemble with threshold smoothing for final submission.",
+  "data_reading": [],
+  "data_processing": [
+    "Removed 50% human voice from audio",
+    "Converted raw signals to Mel-spectrograms using torchaudio transforms (SR=32000, n_fft=2048, n_mels=256/128, f_min=20, f_max=16000/14000, dynamic hop_length)",
+    "Applied RMS sampling over random sampling",
+    "Applied EMA during training",
+    "Converted models to ONNX format for inference",
+    "Applied TTA with 2-second window on 10s chunks",
+    "Smoothed predictions with [0.2, 0.6, 0.2] weights",
+    "Set fmax=2000 during inference"
+  ],
+  "features_engineering": [],
+  "models": [
+    "sed models",
+    "cnn model",
+    "efficientnetv2_b3",
+    "eca_nfet_l0",
+    "seresnext26t",
+    "efficientnet_b0"
+  ],
+  "frameworks_used": [
+    "torchaudio",
+    "onnx"
+  ],
+  "loss_functions": [
+    "FocalBCE",
+    "CE+BCE"
+  ],
+  "cv_strategy": "",
+  "ensembling": "Weighted average was used to ensemble models trained with different random seeds, with no extensive threshold tuning or calibration beyond prediction smoothing and frequency cutoff adjustments.",
+  "insights": [
+    "RMS sampling outperformed random sampling for audio data.",
+    "Applying EMA during training improved model robustness and reduced performance variance across epochs.",
+    "Random seed selection had a surprisingly large impact on final scores, necessitating ensemble diversity across seeds.",
+    "Converting models to ONNX with multi-threading caused inference timeouts, requiring single-threaded execution for successful submission."
+  ],
+  "critical_findings": [
+    "Removing all human voice from audio degraded model performance, so only 50% was removed instead.",
+    "Ideas that failed on the public leaderboard (like resampling pseudo-labels by probability and adjusting probabilities by max/mean) actually improved private leaderboard scores.",
+    "Multi-threaded ONNX inference led to timeouts despite appearing viable, revealing a hidden deployment bug."
+  ],
+  "what_did_not_work": [
+    "raw signal model",
+    "ensemble with rank average",
+    "rms sample with energy weight",
+    "use common name as auxiliary target",
+    "lower rank power postprocessing",
+    "add guassian noise into raw signal"
+  ],
+  "github_repos": [
+    {
+      "url": "https://github.com/frednam93/FilterAugSED",
+      "role": "library"
+    }
+  ],
+  "papers": [],
+  "other_solution_refs": [
+    {
+      "description": "2nd place solution of 2023 (SED models reference)",
+      "url": "https://www.kaggle.com/competitions/birdclef-2023/discussion/412707"
+    },
+    {
+      "description": "7th place solution of 2023 (Sumix augmentation reference)",
+      "url": "https://www.kaggle.com/competitions/birdclef-2023/discussion/412922"
+    },
+    {
+      "description": "3rd place solution of 2024 (max/mean post-processing reference)",
+      "url": "https://www.kaggle.com/competitions/birdclef-2024/discussion/511905"
+    },
+    {
+      "description": "Inference notebook",
+      "url": "https://www.kaggle.com/code/i2nfinit3y/bird2025-9th-place-solution?scriptVersionId=244060530"
+    }
+  ],
+  "source_url": "https://www.kaggle.com/competitions/birdclef-2025/discussion/583365"
+}

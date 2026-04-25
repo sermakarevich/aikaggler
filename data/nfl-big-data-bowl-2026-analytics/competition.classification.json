@@ -1,0 +1,13 @@
+{
+  "description": "Participants analyze NFL tracking and event data to model player movement and ball trajectory during aerial plays. The dataset contains spatial coordinates, timestamps, and play context records that competitors must process to extract spatial-temporal patterns. The goal is to build predictive models for player positioning and play outcomes, with success evaluated on a held-out test set using a competition-specific metric.",
+  "data_modality": "tabular",
+  "task_type": "forecasting",
+  "label_structure": "unknown",
+  "metric": "unknown",
+  "test_split": "unknown",
+  "format": "standard",
+  "dataset_scale": "unknown",
+  "domain": "sports_analytics",
+  "data_challenges": [],
+  "constraints": []
+}

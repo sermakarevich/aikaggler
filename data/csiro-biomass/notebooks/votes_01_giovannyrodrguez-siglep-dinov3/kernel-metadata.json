@@ -1,0 +1,30 @@
+{
+  "id": "giovannyrodrguez/siglep-dinov3",
+  "id_no": 107100881,
+  "title": "siglep+dinov3",
+  "code_file": "siglep-dinov3.ipynb",
+  "language": "python",
+  "kernel_type": "notebook",
+  "is_private": false,
+  "enable_gpu": true,
+  "enable_tpu": false,
+  "enable_internet": false,
+  "keywords": [
+    "gpu"
+  ],
+  "dataset_sources": [],
+  "kernel_sources": [
+    "samu2505/csiro-datasplit",
+    "packagemanager/pm-107100881-at-01-19-2026-23-05-02"
+  ],
+  "competition_sources": [
+    "csiro-biomass"
+  ],
+  "model_sources": [
+    "",
+    "aishikai/google-siglip-so400m-patch14-384/Transformers/default/1",
+    "giovannyrodrguez/modelv3/PyTorch/default/1"
+  ],
+  "docker_image": "gcr.io/kaggle-private-byod/python@sha256:536e3d9752ddf933ae83b0a0c3ea67d38e6236db11a1cd47d84927a0b8d2c440",
+  "machine_shape": "Gpu"
+}

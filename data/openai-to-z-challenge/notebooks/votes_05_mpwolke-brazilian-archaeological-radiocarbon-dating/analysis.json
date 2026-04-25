@@ -1,0 +1,34 @@
+{
+  "summary": "This notebook explores a compiled dataset of Brazilian bioarchaeological samples, focusing on radiocarbon dating and stable isotope data. It loads multiple Excel files containing site locations, radiocarbon dates, funerary practices, and skeletal sample types. Through visualizations like bar charts, scatter plots, and interactive Folium maps, it examines regional distributions, coordinate types, burial methods, and sampled bone proportions. The author emphasizes the historical and geographical context of the data, noting its value for interdisciplinary research and the limitations of past archaeological records. Readers should understand how to load and visualize multi-sheet tabular archaeological data in Python and appreciate the dataset's scope for further analysis.",
+  "purpose": "eda",
+  "competition_flow": "Loads multiple Excel files containing archaeological site coordinates, radiocarbon dates, and skeletal/funerary metadata, then generates static and interactive visualizations to explore regional distributions and sample characteristics without building any predictive models.",
+  "data_reading": [
+    "pd.read_excel() is used to load four separate Excel files: 'Brazilian radiocarbon bioarchaeological samples.xlsx', 'individuals.xlsx', 'human_individuals_funerary.xlsx', and 'sampled_skeletal_part.xlsx'."
+  ],
+  "data_processing": [
+    "Basic cleaning includes resetting the index and sorting by calibrated date limits. No normalization, tokenization, or augmentation is applied."
+  ],
+  "features_engineering": [],
+  "models": [],
+  "frameworks_used": [
+    "pandas",
+    "numpy",
+    "seaborn",
+    "matplotlib",
+    "plotly",
+    "folium"
+  ],
+  "loss_functions": [],
+  "cv_strategy": "",
+  "ensembling": "",
+  "insights": [
+    "The dataset compiles radiocarbon and stable isotope data from 71 archaeological sites across Brazil, spanning from 18 kyr BP to modern times.",
+    "Inhumation is the predominant body disposal type among the sampled individuals.",
+    "Ribs and skulls are the most frequently sampled skeletal parts, with bone and teeth being the primary sample types.",
+    "The Amazon region is underrepresented in the dataset, with only Amap\u00e1 and Par\u00e1 states contributing samples."
+  ],
+  "critical_findings": [],
+  "what_did_not_work": [],
+  "source_url": "https://www.kaggle.com/code/mpwolke/brazilian-archaeological-radiocarbon-dating",
+  "votes": 57
+}

@@ -1,0 +1,35 @@
+{
+  "summary": "This notebook performs an exploratory data analysis for the Image Matching Challenge 2025, focusing on understanding the dataset structure, label encoding, and visual diversity across multiple scenes. It demonstrates how to load the train_labels.csv file and parse the flattened rotation matrices and translation vectors that serve as regression targets. The author visualizes the distribution of images across datasets and displays random samples from each scene to highlight domain-specific challenges such as lighting variations, aerial perspectives, and repetitive structures. Readers should take away a clear understanding of the input-output format, the sequential nature of training data versus the randomized test set, and the visual complexity they will need to handle in a baseline model.",
+  "purpose": "eda",
+  "competition_flow": "Loads the training labels CSV and image directories, inspects the distribution of scenes and target formats, and visualizes random samples from each dataset to understand the input-output structure for 3D reconstruction.",
+  "data_reading": [
+    "pd.read_csv() loads train_labels.csv containing dataset, scene, image_path, rotation_matrix, and translation_vector columns.",
+    "Target columns rotation_matrix and translation_vector are stored as flattened vectors with values separated by semicolons.",
+    "Images are loaded via PIL.Image.open() from scene-specific directories under /kaggle/input/image-matching-challenge-2025/train/."
+  ],
+  "data_processing": [],
+  "features_engineering": [],
+  "models": [],
+  "frameworks_used": [
+    "pandas",
+    "matplotlib",
+    "plotly",
+    "opencv",
+    "mediapy",
+    "PIL",
+    "os",
+    "random"
+  ],
+  "loss_functions": [],
+  "cv_strategy": "",
+  "ensembling": "",
+  "insights": [
+    "Training data features sequential capture ordering with high image-to-image overlap, whereas the test set uses limited overlap and randomized ordering.",
+    "The ground truth 3D poses are encoded as flattened 3x3 rotation matrices and 3D translation vectors separated by semicolons in the CSV.",
+    "The dataset covers 13 distinct scenes across six challenge categories, each introducing specific visual difficulties like temporal shifts, aerial-ground mixing, or textureless surfaces."
+  ],
+  "critical_findings": [],
+  "what_did_not_work": [],
+  "source_url": "https://www.kaggle.com/code/sharifi76/eda-imc-locations",
+  "votes": 117
+}

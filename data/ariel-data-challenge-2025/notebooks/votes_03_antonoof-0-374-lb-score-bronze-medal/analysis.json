@@ -1,0 +1,38 @@
+{
+  "summary": "This notebook implements an inference pipeline for the Ariel Data Challenge 2025, combining rigorous custom signal processing with pre-trained neural networks. It calibrates raw sensor data, estimates per-planet noise levels using variance ratios, and predicts transit depth via a custom optimization routine. Pre-trained PyTorch ResNetMLPs then map stellar parameters to spectral fluxes, demonstrating a hybrid approach to astronomical data analysis. Readers should learn how to handle noisy sensor data, estimate uncertainties, and leverage pre-trained models for rapid baseline generation.",
+  "purpose": "inference",
+  "competition_flow": "Raw sensor data is calibrated and binned, transit depth is estimated via custom optimization, pre-trained PyTorch ResNetMLPs predict spectral fluxes using stellar parameters, and results are combined with estimated noise levels to generate a submission CSV.",
+  "data_reading": [
+    "Reads signal and calibration files (dark, dead, flat, linear_corr) from parquet files per planet and sensor.",
+    "Reads ADC gain/offset and star metadata from CSVs."
+  ],
+  "data_processing": [
+    "ADC gain/offset correction and hot pixel removal via sigma clipping.",
+    "Linear correction, signal binning, variance-based weighting, and percentile clipping.",
+    "Savitzky-Golay filtering and custom sigma estimation using out-of-transit/in-transit variance ratios."
+  ],
+  "features_engineering": [
+    "Stellar radius (Rs) and inclination (i) combined with the estimated transit depth to form the input feature vector for the neural networks."
+  ],
+  "models": [
+    "ResNetMLP (custom residual MLP with 80 blocks)"
+  ],
+  "frameworks_used": [
+    "pytorch",
+    "scikit-learn",
+    "scipy",
+    "astropy"
+  ],
+  "loss_functions": [],
+  "cv_strategy": "",
+  "ensembling": "",
+  "insights": [
+    "Careful calibration and variance weighting are critical for handling raw astronomical sensor data.",
+    "Estimating per-planet noise levels using out-of-transit and in-transit variance ratios improves uncertainty quantification.",
+    "Pre-trained shallow residual networks can effectively map stellar parameters to spectral fluxes when combined with robust signal processing."
+  ],
+  "critical_findings": [],
+  "what_did_not_work": [],
+  "source_url": "https://www.kaggle.com/code/antonoof/0-374-lb-score-bronze-medal",
+  "votes": 267
+}

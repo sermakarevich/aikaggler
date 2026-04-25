@@ -1,0 +1,13 @@
+{
+  "description": "Participants develop human-centered AI applications leveraging MedGemma and other open-source models from Google\u2019s Health AI Developer Foundations. The challenge focuses on healthcare and health analytics, encouraging competitors to create practical tools that address real-world medical and wellness use cases. Success is evaluated through model comparison and application impact rather than a single predictive metric.",
+  "data_modality": "multimodal",
+  "task_type": "other",
+  "label_structure": "unknown",
+  "metric": "unknown",
+  "test_split": "unknown",
+  "format": "standard",
+  "dataset_scale": "unknown",
+  "domain": "healthcare",
+  "data_challenges": [],
+  "constraints": []
+}

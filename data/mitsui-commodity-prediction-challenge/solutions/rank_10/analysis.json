@@ -1,0 +1,39 @@
+{
+  "summary": "The author placed 10th in a time series competition focused on predicting and ranking 400 commodity spreads daily. Recognizing that the short ~3-month test window and synthetic removal of carry effects made complex ML signals unlearnable, they pivoted to a theoretically grounded, regularized naive approach. The method leverages a covariance matrix regularized against validation sets of similar size to the private test, combined with Kelly-optimal portfolio ranking using standardized daily ranks. This simple, robust strategy outperformed more complex ML attempts.",
+  "extensive_summary": "The competition required predicting and ranking 400 commodity spreads daily, with targets structured as return-based spreads grouped across different time horizons. Initially drawn to the setup by pairs cointegration concepts, the author quickly realized the task differed fundamentally: the targets were return-based, the test period was only ~3 months, and the provided price series appeared to have synthetically removed carry effects. These constraints led to the insight that no ML-usable signal was likely present, and any non-optimal prediction would degrade performance rapidly in such a short window.\n\nInstead of pursuing complex models, the author adopted a carefully regularized naive approach. The theoretical foundation relies on the in-sample optimal prediction being rank-equivalent to a Kelly optimal portfolio, implemented via Kelly-leverage using standardized ranks. For out-of-sample prediction, the covariance matrix was regularized using validation sets sized similarly to the private test period. Preprocessing steps included forward-filling NaNs in prices before target construction and performing daily rank standardization. While one submission excluded the 2020-2021 period, the final submission used the full 2018-2025 dataset and achieved a score of 0.479, aligning with late validation scores around 0.4. The writeup emphasizes that in highly constrained, short-horizon time series tasks, a robust, theoretically informed naive method often outperforms complex machine learning pipelines.",
+  "rank": 10,
+  "competition_flow": "Raw price data was forward-filled for NaNs, used to construct return-based spread targets, standardized daily ranks were computed, and a covariance matrix regularized against a ~3-month validation set was applied to generate Kelly-optimal portfolio rankings for the final submission.",
+  "data_reading": [],
+  "data_processing": [
+    "Forward-filling NaNs in prices before target construction",
+    "Daily rank standardization",
+    "Covariance matrix regularization using validation sets matching the private test size",
+    "Exclusion of the 2020-2021 period in one attempt (full 2018-2025 used for final)"
+  ],
+  "features_engineering": [
+    "Kelly-leverage using standardized ranks",
+    "Covariance matrix regularization"
+  ],
+  "models": [],
+  "frameworks_used": [],
+  "loss_functions": [],
+  "cv_strategy": "Holdout validation sets sized similarly to the private test period (~3 months).",
+  "ensembling": "No ensembling or post-processing was applied; the submission consisted of a single regularized naive prediction.",
+  "insights": [
+    "In short-horizon time series competitions, complex ML signals are often unlearnable and degrade performance quickly.",
+    "A theoretically grounded, regularized naive approach can be more robust and effective than complex models.",
+    "The optimal in-sample prediction aligns with a Kelly-optimal portfolio using standardized ranks."
+  ],
+  "critical_findings": [
+    "The test period was only ~3 months, making it too short for small statistical edges to beat random chance.",
+    "The provided price series appeared to have synthetically removed carry effects in a non-straightforward way.",
+    "Targets were return-based spreads rather than price-based, and the ranking involved spreads across different time horizons."
+  ],
+  "what_did_not_work": [
+    "Complex ML models, which were explored but confirmed to be unlearnable for this task."
+  ],
+  "github_repos": [],
+  "papers": [],
+  "other_solution_refs": [],
+  "source_url": "https://www.kaggle.com/competitions/mitsui-commodity-prediction-challenge/discussion/668589"
+}

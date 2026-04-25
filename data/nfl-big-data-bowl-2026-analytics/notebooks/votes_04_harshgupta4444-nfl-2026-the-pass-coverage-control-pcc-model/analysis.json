@@ -1,0 +1,33 @@
+{
+  "summary": "This notebook implements and visualizes a Pass Coverage Control (PCC) metric adapted from soccer analytics to quantify defensive territorial control during NFL passing plays. It loads frame-by-frame tracking data, calculates player velocities, and computes a grid-based probability map using a heuristic time-to-target model with fixed reaction time and maximum speed parameters. The output is an animated heatmap overlay showing how control shifts across the field as the ball travels. Readers learn how to transform long-format tracking CSVs into wide-format frame data, apply physics-based spatial metrics, and generate broadcast-style visualizations using matplotlib. The notebook serves as an educational demonstration of tracking data analytics rather than a predictive modeling pipeline.",
+  "purpose": "tutorial",
+  "competition_flow": "Loads NFL tracking CSV data for a selected play, computes a grid-based territorial control metric using player positions and velocities, and renders the result as an animated heatmap visualization.",
+  "data_reading": [
+    "Reads input and output tracking CSV files via pd.read_csv, filters rows by game_id and play_id, and extracts frame_id, x, y, nfl_id, and player_side columns."
+  ],
+  "data_processing": [
+    "Calculates frame-to-frame velocity assuming a 0.1s timestep, pivots long-format player tracking data to wide format indexed by frame_id, and discretizes the field into a 30x13 grid for spatial computation."
+  ],
+  "features_engineering": [
+    "Hand-crafted time-to-target metrics for offense and defense using fixed elite speed and reaction time parameters, combined via a sigmoid function to generate a Pass Coverage Control probability grid."
+  ],
+  "models": [],
+  "frameworks_used": [
+    "pandas",
+    "numpy",
+    "matplotlib"
+  ],
+  "loss_functions": [],
+  "cv_strategy": "",
+  "ensembling": "",
+  "insights": [
+    "Adapting soccer pitch control to NFL passing plays provides a quantifiable metric for defensive swarming and territorial advantage.",
+    "Fixed elite speed and reaction time parameters offer a simplified but effective heuristic for estimating player arrival times.",
+    "Pivoting long-format tracking data to wide format enables efficient frame-by-frame spatial calculations.",
+    "Matplotlib animation capabilities can effectively broadcast tracking analytics in a replay-style format."
+  ],
+  "critical_findings": [],
+  "what_did_not_work": [],
+  "source_url": "https://www.kaggle.com/code/harshgupta4444/nfl-2026-the-pass-coverage-control-pcc-model",
+  "votes": 28
+}

@@ -1,0 +1,42 @@
+{
+  "summary": "This notebook serves as a tutorial demonstrating how to fine-tune and run inference on the Gemma 3N 4B multimodal large language model using the Unsloth library on a free Kaggle GPU. It walks through installing dependencies, loading a 4-bit quantized model, preparing conversational data from the FineTome-100k dataset, and applying LoRA adapters for efficient parameter updates. The author shows how to mask training loss to only update the model on assistant responses, then trains for a short duration before demonstrating text, image, audio, and multimodal inference. Readers learn how to export the fine-tuned model to LoRA, float16, or GGUF formats for deployment.",
+  "purpose": "tutorial",
+  "competition_flow": "Loads a 4-bit quantized Gemma 3N 4B model, prepares conversational data from a Hugging Face dataset, fine-tunes it using LoRA and Unsloth's SFTTrainer, and demonstrates multimodal inference and model export.",
+  "data_reading": [
+    "Loads the mlabonne/FineTome-100k dataset from Hugging Face using datasets.load_dataset, selecting the first 3000 training rows."
+  ],
+  "data_processing": [
+    "Applies the Gemma-3 chat template to format conversations, removes the leading <bos> token, and masks the loss on user instructions during training using train_on_responses_only so gradients only update on assistant outputs."
+  ],
+  "features_engineering": [],
+  "models": [
+    "Gemma-3N-E4B-it"
+  ],
+  "frameworks_used": [
+    "unsloth",
+    "transformers",
+    "trl",
+    "datasets",
+    "torch",
+    "bitsandbytes",
+    "accelerate",
+    "xformers",
+    "peft"
+  ],
+  "loss_functions": [
+    "Cross-entropy loss masked to only compute gradients on assistant responses (user inputs masked with -100)"
+  ],
+  "cv_strategy": "",
+  "ensembling": "",
+  "insights": [
+    "LoRA fine-tuning with r=8 and lora_alpha=8 efficiently adapts the model without full parameter updates.",
+    "Masking the loss to only train on model responses significantly improves fine-tuning accuracy.",
+    "4-bit quantization via Unsloth drastically reduces VRAM requirements, enabling training on free Kaggle T4 GPUs.",
+    "Gemma-3N natively supports text, vision, and audio modalities in a single unified architecture.",
+    "Recommended inference hyperparameters for Gemma-3 are temperature=1.0, top_p=0.95, and top_k=64."
+  ],
+  "critical_findings": [],
+  "what_did_not_work": [],
+  "source_url": "https://www.kaggle.com/code/danielhanchen/gemma-3n-4b-multimodal-finetuning-inference",
+  "votes": 774
+}

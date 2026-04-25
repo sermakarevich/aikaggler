@@ -1,0 +1,50 @@
+{
+  "summary": "This notebook presents a trajectory prediction baseline for the NFL Big Data Bowl that combines a deterministic geometric baseline with a neural network learning residual corrections. It constructs a rich feature set including physics-based momentum, route clustering, GNN-lite neighbor embeddings, and temporal progress indicators. The core architecture is a GRU with multi-head attention that predicts cumulative displacement over a future horizon. By training on the difference between actual player movement and a geometry-derived endpoint, the model focuses on complex interactions like coverage and collisions rather than basic physics. The workflow demonstrates how domain-informed geometric priors can simplify the learning task and improve generalization in sports trajectory forecasting.",
+  "purpose": "baseline",
+  "competition_flow": "Loads weekly NFL player tracking CSVs, computes 167 hand-crafted geometric, spatial, and temporal features, trains a 5-fold GroupKFold GRU-Attention model on displacement residuals, and averages fold predictions to generate a field-clipped submission.",
+  "data_reading": [
+    "pd.read_csv on weekly train/input_2023_w{w:02d}.csv and train/output_2023_w{w:02d}.csv files, concatenated into DataFrames",
+    "pd.read_csv on test_input.csv and test.csv"
+  ],
+  "data_processing": [
+    "Converts height strings to numeric inches/feet",
+    "Computes velocity/acceleration vectors from speed/direction/acceleration",
+    "Clips coordinates to field bounds (0-120, 0-53.3)",
+    "Pads sequences to a fixed window of 10 frames",
+    "Fills missing values with group means or zeros",
+    "Applies per-fold StandardScaler normalization"
+  ],
+  "features_engineering": [
+    "Physics-based momentum, kinetic energy, speed_squared, accel_magnitude",
+    "Ball-landing distance, angle, direction, and closing speed",
+    "Opponent proximity, closing speed, mirror WR offsets, pressure metrics",
+    "KMeans route clustering (7 clusters) on trajectory straightness/turns/speed",
+    "GNN-lite weighted neighbor embeddings (dx/dy/dvx/dvy for allies/opponents, counts, min/mean distances)",
+    "Temporal lags (1-5), rolling mean/std (3,5), deltas, EMAs",
+    "Time-progress ratios, frame_time, time_remaining, expected_x/y_at_ball, error_from_ball",
+    "13 geometric endpoint features: required velocity/acceleration, velocity error, alignment, urgency/coupling"
+  ],
+  "models": [
+    "JointSeqModel (2-layer GRU with 128 hidden dim, MultiheadAttention with 4 heads, Linear head outputting horizon*2 displacement)"
+  ],
+  "frameworks_used": [
+    "torch",
+    "numpy",
+    "pandas",
+    "scikit-learn"
+  ],
+  "loss_functions": [
+    "TemporalHuber (Huber delta=0.5, exponential time decay weighting)"
+  ],
+  "cv_strategy": "GroupKFold(n_splits=5) split by game_id",
+  "ensembling": "Averages predictions across all 5 fold models, then clips final x/y coordinates to field boundaries before saving.",
+  "insights": [
+    "Decomposing movement into a deterministic geometric baseline plus neural corrections reduces the learning burden and improves generalization.",
+    "GNN-lite weighted neighbor embeddings effectively capture spatial coupling between players without full graph computation.",
+    "Time-progress and ball-landing alignment features are critical for forecasting future trajectories in football."
+  ],
+  "critical_findings": [],
+  "what_did_not_work": [],
+  "source_url": "https://www.kaggle.com/code/ryanadamsai/nfl-big-data-bowl-geometric-gnn-lb-586",
+  "votes": 245
+}

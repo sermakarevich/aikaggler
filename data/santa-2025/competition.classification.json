@@ -1,0 +1,17 @@
+{
+  "description": "Participants tackle a 3D bin-packing optimization problem by determining the optimal placement and orientation of Christmas trees within a shipping box. The competition provides geometric dimensions for both the trees and the container, requiring competitors to maximize the number of trees packed without overlap. Success is evaluated using a custom scoring function that balances packing density and stability, with rankings determined by a held-out private test set of box configurations.",
+  "data_modality": "tabular",
+  "task_type": "classification",
+  "label_structure": "none",
+  "metric": "Santa 2025 Metric",
+  "test_split": "unknown",
+  "format": "code_comp",
+  "dataset_scale": "small",
+  "domain": "logistics",
+  "data_challenges": [
+    "geometric_constraints"
+  ],
+  "constraints": [
+    "time_limit_on_solving"
+  ]
+}

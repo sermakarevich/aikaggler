@@ -1,0 +1,33 @@
+{
+  "summary": "This notebook demonstrates a functional inference pipeline for Google\u2019s Gemma 3n 2B instruction-tuned model, focusing on its compact, on-device capabilities. It benchmarks the model across diverse domains including history, pop culture, mathematics, multilingual queries, and multimodal text-image tasks. The author provides practical code for loading the model via Kaggle Hub, configuring generation parameters, and formatting outputs for readability. Readers learn how to quickly prototype with a privacy-first, edge-optimized LLM and understand its strengths in concise reasoning and language coverage.",
+  "purpose": "tutorial",
+  "competition_flow": "Downloads the Gemma 3n 2B model via Kaggle Hub, configures it for text and multimodal inference using Hugging Face Transformers, runs it on curated prompts, and evaluates its performance across multiple domains.",
+  "data_reading": [
+    "Loads model weights and tokenizer via kagglehub.model_download(\"google/gemma-3n/transformers/gemma-3n-e2b-it\")."
+  ],
+  "data_processing": [],
+  "features_engineering": [],
+  "models": [
+    "Gemma 3n 2B it"
+  ],
+  "frameworks_used": [
+    "transformers",
+    "torch",
+    "kagglehub",
+    "accelerate",
+    "timm"
+  ],
+  "loss_functions": [],
+  "cv_strategy": "",
+  "ensembling": "",
+  "insights": [
+    "Prompting the model to answer concisely significantly improves output quality and relevance.",
+    "The model handles arithmetic, algebra, and geometry tasks accurately when explicitly instructed to return only the result.",
+    "Multimodal inference requires using AutoProcessor with a structured chat template to correctly format image and text inputs.",
+    "Generation parameters like temperature and max_new_tokens are critical for controlling response length and stochasticity."
+  ],
+  "critical_findings": [],
+  "what_did_not_work": [],
+  "source_url": "https://www.kaggle.com/code/gpreda/testing-gemma-3n-like-a-pro",
+  "votes": 62
+}

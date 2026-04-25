@@ -1,0 +1,61 @@
+{
+  "summary": "The team of five CTFers and code golfers focused heavily on early tooling development to compensate for varying golfing experience. They built a custom character-level fuzzer (`charbrute`) and integrated `pysearch` to brute-force arithmetic expressions, discovering a novel `pop rotation` technique that eliminated `zip()` calls for grid manipulation. Compression optimization was handled via a genetic variable renaming algorithm and specific zlib parameters, while a Flask/WebSocket web UI replaced traditional version control to enable real-time collaboration. Key technical takeaways centered on Huffman tree alignment, the non-linear relationship between compressed and uncompressed length, and strategic use of regex and recursion for specific tasks.",
+  "extensive_summary": "## Team Structure & Collaboration Infrastructure\nThe authors formed a five-person team and prioritized building collaborative tooling early in the competition. Instead of using Git, they deployed a centralized Flask web server with WebSocket support to store solutions, annotations, and test cases in real time. The UI included features like automatic test case copying, timeout management, and two-way integration with a Google Spreadsheet via Apps Script to streamline analysis and tracking.\n\n## Fuzzing & Mutation Strategies\nThe core optimization engine was `charbrute`, a character-level fuzzer that applied deletions, substitutions, and insertions. Early iterations were enhanced with hotspot probability distributions and chunk movement (though the latter proved ineffective). The fuzzer's most significant discovery was \"pop rotation,\" a technique using `.pop()` to perform 90-degree grid rotations in list comprehensions without `zip()`. An `astbrute` approach was considered but abandoned due to complexity.\n\n## Compression & Variable Renaming\nFor compressed tasks, the team stripped headers/checksums and used `wbits=-9` for decompression. They implemented a genetic algorithm (generated via LLM) to optimize variable names for raw compressed length rather than naive brute force. They noted that optimizing for compressed size is highly non-linear; manual rewrites that appear shorter uncompressed frequently expand when compressed. Aligning variable names and bitwise operators with the Huffman tree during compression yielded additional byte savings.\n\n## Arithmetic Expression Search\nThe team heavily utilized `pysearch` to brute-force arithmetic expressions, finding it effective up to lengths of 13\u201314 characters. To avoid manual parameter entry, they wrote a Python script that parsed JSON training/test data, extracted input/output tuples, and programmatically generated Rust `params.rs` files for `pysearch`. This automated pipeline was reused across numerous tasks, particularly grid rotation puzzles.\n\n## Task-Specific Solutions\n- **task048**: Solved by hardcoding test cases using `hash()`.\n- **task387**: Solved via a complex regex that filled half-edges and half-corners per pass to avoid double-matching during rotation, ultimately producing a 201-byte solution.\n- **task023**: Solved with a recursive depth-first search using byte strings and modulo arithmetic for shape offsets. The team leveraged `try/except` with a non-existent variable to terminate recursion efficiently, noting that algorithmic efficiency rarely correlates with byte count in code golf.",
+  "rank": 2,
+  "competition_flow": "Parsed JSON task data and test cases, generated initial solutions via LLM or manual coding, optimized byte count using a custom character-level fuzzer (`charbrute`) and `pysearch` for arithmetic expressions, applied genetic variable renaming for compression, and submitted via a custom Flask/WebSocket web UI.",
+  "data_reading": [
+    "JSON files parsed via Python's `json` module (e.g., `../data/training/task{task_num:03d}.json`)"
+  ],
+  "data_processing": [
+    "Extracted input/output pairs from JSON test cases to construct search tuples for `pysearch`; no traditional ML preprocessing or augmentation was performed."
+  ],
+  "features_engineering": [],
+  "models": [],
+  "frameworks_used": [
+    "flask",
+    "websocket",
+    "pypy3.11",
+    "pysearch",
+    "ast.unparse"
+  ],
+  "loss_functions": [],
+  "cv_strategy": "",
+  "ensembling": "",
+  "insights": [
+    "Optimizing code for compressed length often results in longer uncompressed code, requiring careful trial and error and pattern recognition.",
+    "The `pysearch` tool is highly effective for brute-forcing arithmetic expressions up to a length of 13 or 14 characters.",
+    "In code golf, the most efficient algorithmic approach is rarely the shortest in terms of byte count.",
+    "Aligning variable names and bitwise operations with the Huffman tree during compression can yield significant byte savings."
+  ],
+  "critical_findings": [
+    "A 'pop rotation' technique using `.pop()` completely eliminates the need for `zip()` when rotating square grids in list comprehensions.",
+    "Using `try/except` with a non-existent variable is a highly effective, byte-saving method to terminate recursion in golfed code.",
+    "Optimizing for compressed length is highly non-linear; manual rewrites that appear shorter uncompressed frequently expand when compressed."
+  ],
+  "what_did_not_work": [
+    "The proposed 'astbrute' fuzzer was abandoned due to high implementation complexity and low perceived gains.",
+    "The chunk mover mutation strategy yielded poor results compared to other mutation types.",
+    "LLM-generated initial solutions were frequently obsoleted by public notebooks or required complete rewrites."
+  ],
+  "github_repos": [
+    {
+      "url": "https://github.com/jailctf-merger-goog-golf/compression",
+      "role": "solution"
+    },
+    {
+      "url": "https://github.com/jailctf-merger-goog-golf/golf",
+      "role": "solution"
+    },
+    {
+      "url": "https://github.com/lynn/pysearch",
+      "role": "library"
+    },
+    {
+      "url": "https://github.com/madler/infgen",
+      "role": "library"
+    }
+  ],
+  "papers": [],
+  "other_solution_refs": [],
+  "source_url": "https://www.kaggle.com/competitions/google-code-golf-2025/discussion/618673"
+}

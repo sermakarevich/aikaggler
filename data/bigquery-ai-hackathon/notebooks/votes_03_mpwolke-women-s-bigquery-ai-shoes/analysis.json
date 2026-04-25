@@ -1,0 +1,34 @@
+{
+  "summary": "This notebook explores public OpenStreetMap data hosted on BigQuery to locate shoe stores and other amenities across different regions. It demonstrates how to query geospatial datasets using SQL, construct bounding boxes, and filter results based on specific tags. The author uses the exercise to humorously investigate the geographic distribution of footwear retailers while highlighting practical BigQuery and pandas workflows. Readers learn how to interact with BigQuery's geo_openstreetmap dataset, handle nested arrays in SQL, and perform basic geospatial filtering. The notebook also serves as a lighthearted tutorial on querying public geospatial data without a formal competition dataset.",
+  "purpose": "eda",
+  "competition_flow": "Queries public OpenStreetMap geospatial data via BigQuery SQL, filters for specific amenity tags, and exports the results to pandas DataFrames for basic inspection and geospatial bounding box visualization.",
+  "data_reading": [
+    "Uses the google.cloud.bigquery client to execute SQL queries against the bigquery-public-data.geo_openstreetmap dataset, converting query results directly into pandas DataFrames via .to_dataframe()."
+  ],
+  "data_processing": [
+    "Filters raw OSM node data using SQL WHERE clauses on nested all_tags arrays for specific amenity values; constructs a geospatial bounding box polygon using BigQuery GIS functions (ST_MAKEPOLYGON, ST_MAKELINE, ST_GEOGPOINT); attempts to intersect historical nodes with the bounding box (though the execution contains a pandas read_sql_query error)."
+  ],
+  "features_engineering": [],
+  "models": [],
+  "frameworks_used": [
+    "bigquery",
+    "pandas",
+    "plotly",
+    "matplotlib",
+    "seaborn"
+  ],
+  "loss_functions": [],
+  "cv_strategy": "",
+  "ensembling": "",
+  "insights": [
+    "Public BigQuery datasets can be queried directly without local data downloads.",
+    "OSM data stores tags in nested arrays, requiring UNNEST in SQL to filter by specific keys and values.",
+    "BigQuery's built-in GIS functions enable geospatial filtering and bounding box creation directly in SQL."
+  ],
+  "critical_findings": [],
+  "what_did_not_work": [
+    "The author explicitly notes that using pd.read_sql_query on a pandas DataFrame caused an AttributeError because DataFrames lack a cursor attribute, and the initial attempt to find shoe stores in Milan failed due to incorrect bounding box coordinates and SQL logic."
+  ],
+  "source_url": "https://www.kaggle.com/code/mpwolke/women-s-bigquery-ai-shoes",
+  "votes": 48
+}

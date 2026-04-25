@@ -1,0 +1,45 @@
+{
+  "summary": "This notebook provides a baseline regression pipeline for the CSIRO Biomass competition, predicting dry biomass components (green vegetation, clover, dead material) from pasture images. It demonstrates a temporal group-based cross-validation strategy to address data drift, a custom twin-image input approach that splits each image vertically and modulates features via a FiLM layer, and a multi-head regression architecture. The author emphasizes the importance of handling temporal distribution shifts and leverages test-time augmentation alongside k-fold averaging to stabilize predictions. Readers should take away practical techniques for time-series-aware validation, feature modulation in vision models, and robust regression ensembling.",
+  "purpose": "baseline",
+  "competition_flow": "Loads train/test CSVs and images, splits images vertically, trains a 5-fold EfficientNet-B2 regression model with temporal grouping and TTA, then averages predictions across folds to generate a biomass submission.",
+  "data_reading": [
+    "Reads train.csv and test.csv via pandas, splits sample_id into prefixes/suffixes, groups rows by image path, and loads images using PIL's Image.open converted to RGB."
+  ],
+  "data_processing": [
+    "Resizes images to 256x256, splits each image vertically into left/right halves, applies training augmentations (horizontal/vertical flips, 90-degree rotation, color jitter), normalizes with ImageNet statistics, and applies TTA (flips/rotations) during validation/inference."
+  ],
+  "features_engineering": [],
+  "models": [
+    "EfficientNet-B2",
+    "FiLM",
+    "MultiTargetRegressor"
+  ],
+  "frameworks_used": [
+    "pytorch",
+    "torchvision",
+    "timm",
+    "transformers",
+    "pandas",
+    "numpy",
+    "matplotlib",
+    "PIL"
+  ],
+  "loss_functions": [
+    "SmoothL1Loss"
+  ],
+  "cv_strategy": "GroupKFold and StratifiedGroupKFold split by Sampling_Date (temporal grouping), applied to head/tail data halves.",
+  "ensembling": "Averages predictions across 5 K-Fold models and applies Test-Time Augmentation (original, horizontal flip, vertical flip, 90-degree rotation) during validation and inference.",
+  "insights": [
+    "Temporal distribution shift is the primary driver of train-test discrepancy, making date-based grouping essential for reliable validation.",
+    "Splitting images vertically and using a FiLM layer to modulate shared backbone features effectively captures complementary spatial information.",
+    "Softplus activation guarantees non-negative biomass predictions, aligning with physical constraints.",
+    "TTA and multi-fold averaging significantly reduce prediction variance for regression targets."
+  ],
+  "critical_findings": [
+    "The competition host confirmed that while States and Species are consistent across train/test, the test set includes non-overlapping time periods, causing significant temporal distribution shift.",
+    "The Sampling_Date column is the most critical feature for aligning validation with the test distribution."
+  ],
+  "what_did_not_work": [],
+  "source_url": "https://www.kaggle.com/code/jiazhuang/csiro-simple",
+  "votes": 418
+}

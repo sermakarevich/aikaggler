@@ -1,0 +1,46 @@
+{
+  "summary": "This notebook demonstrates a baseline pipeline for fine-tuning Gemma2-2B using Tunix and Group Relative Policy Optimization (GRPO) on TPU to teach the model to generate explicit reasoning traces before answering math problems. It covers dataset ingestion from GSM8K, custom prompt templating with reasoning tags, LoRA configuration, and GRPO hyperparameter setup. The author explicitly halts execution due to a sharding compatibility error during LoRA policy initialization. Readers should understand the structural requirements for Tunix-based RLHF training and the importance of careful KL penalty tuning.",
+  "purpose": "tutorial",
+  "competition_flow": "Downloads GSM8K data, formats prompts with reasoning tags, configures a Gemma2-2B model with LoRA and GRPO hyperparameters for Tunix on TPU, but stops before training due to a sharding error.",
+  "data_reading": [
+    "Loads GSM8K via kagglehub.dataset_download or tensorflow_datasets, reads CSV files, extracts answers using the #### delimiter, and maps them to dictionaries containing questions and answers."
+  ],
+  "data_processing": [
+    "Formats inputs using a custom TEMPLATE string that injects a system prompt and question, wraps expected reasoning and answers in <reasoning>/<answer> tags, and batches data using grain.MapDataset."
+  ],
+  "features_engineering": [],
+  "models": [
+    "Gemma2-2B"
+  ],
+  "frameworks_used": [
+    "jax",
+    "tunix",
+    "flax",
+    "optax",
+    "grain",
+    "tensorflow_datasets",
+    "kagglehub",
+    "wandb",
+    "qwix"
+  ],
+  "loss_functions": [
+    "GRPO loss with KL divergence penalty (beta=0.08) and clipping (epsilon=0.2)"
+  ],
+  "cv_strategy": "",
+  "ensembling": "",
+  "insights": [
+    "GRPO training requires a sufficiently high KL penalty coefficient to prevent divergence.",
+    "Using high temperature and top_p during generation promotes diverse reasoning traces necessary for effective policy optimization.",
+    "Explicit prompt templating with dedicated reasoning tags guides the model to structure its output consistently.",
+    "LoRA sharding on TPU requires precise mesh configuration to avoid metadata assignment errors."
+  ],
+  "critical_findings": [
+    "The author explicitly warns that keeping the KL divergence penalty (beta) high is crucial to prevent unchecked divergence during GRPO training.",
+    "A sharding/metadata compatibility error occurs when applying LoRA to the Gemma model on TPU, highlighting a known pitfall in the Tunix/qwix stack."
+  ],
+  "what_did_not_work": [
+    "The LoRA policy initialization failed with a TypeError due to incorrect sharding/metadata arguments, causing the author to abandon the training pipeline."
+  ],
+  "source_url": "https://www.kaggle.com/code/angelfencer/descriptive-and-solid-tt-tunix-on-tpu",
+  "votes": 71
+}

@@ -1,0 +1,71 @@
+{
+  "summary": "The author secured 1st place by splitting input images into left and right views processed through a shared DINOv3 backbone, followed by a multi-head self-attention fusion layer and regression/classification heads. Key innovations include interval-based classification heads adapted from crowd counting literature and a two-stage training strategy that initially freezes the backbone. They also leveraged online pseudo-labeling during the testing phase and simple post-processing scaling to boost final scores.",
+  "extensive_summary": "## Architecture & Backbone\nThe solution treats each input as a stereo pair, splitting the image into left and right views that share a DINOv3 backbone to enforce feature consistency. The concatenated features from both views are processed through a single multi-head self-attention layer, followed by an MLP that outputs fused representations. The model employs five regression heads (each containing three linear layers) to predict species biomass, alongside five classification heads that predict biomass intervals. These intervals were derived from the training set using a scheme adapted from UEPNet, which improved both LB and PB by approximately 0.03.\n\n## Training Strategy & Loss\nTraining follows a two-stage approach: Stage 1 freezes the DINO backbone while training the fusion layers and heads; Stage 2 fine-tunes the entire model. The authors found that increasing input resolution to 1024 pixels yielded better gains than scaling model size from Large to Huge. They experimented with an epsilon-insensitive L1 loss to handle the skewed biomass distribution, though the final submission used weighted SmoothL1 and CrossEntropy losses. Data augmentation includes standard geometric/color transforms plus random scaling with black padding to simulate focal length and viewing angle differences.\n\n## Inference & Ensembling\nA major score driver was online pseudo-labeling during the testing phase. Four initial models generated pseudo-labels, which were used to train two DINO-Large models via Stochastic Weight Averaging (SWA) on the combined train/test set. These produced second-round pseudo-labels for two DINO-Base models. Final predictions fused the DINO-Large and DINO-Base outputs with 0.4/0.6 weights, followed by simple heuristic scaling and mixing of individual species outputs to slightly improve LB and PB.",
+  "rank": 1,
+  "competition_flow": "Images are split into left/right views, processed through a shared DINOv3 backbone with attention fusion, trained via a two-stage strategy with pseudo-labeling during inference, and fused with weighted scaling for final biomass predictions.",
+  "data_reading": [],
+  "data_processing": [
+    "Splits images into left and right views",
+    "Applies HorizontalFlip, VerticalFlip, RandomRotate90, GaussNoise, RandomBrightnessContrast, HueSaturationValue, CLAHE, ColorJitter, Normalize, and Resize",
+    "Applies augmentations independently to subimages",
+    "Random scaling with black padding to simulate focal length and viewing angle differences",
+    "Normalize mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225]"
+  ],
+  "features_engineering": [],
+  "models": [
+    "DINOv3",
+    "DINO-Large",
+    "DINO-Base",
+    "DINO-Huge"
+  ],
+  "frameworks_used": [
+    "pytorch",
+    "albumentations",
+    "opencv",
+    "numpy"
+  ],
+  "loss_functions": [
+    "SmoothL1Loss",
+    "CrossEntropyLoss",
+    "EpsilonInsensitiveLoss"
+  ],
+  "cv_strategy": "3 folds determined jointly by state and sampling date.",
+  "ensembling": "SWA ensemble of pseudo-labeled models combined with weighted fusion (0.4 DINO-Large, 0.6 DINO-Base) and simple heuristic scaling/mixing of individual species outputs.",
+  "insights": [
+    "Splitting images into left/right views enhances feature consistency.",
+    "Interval-based classification heads significantly improve regression performance by constraining predictions to learned biomass ranges.",
+    "Increasing input resolution to 1024 is more computationally efficient and effective than scaling model size.",
+    "Dropout surprisingly improves regression stability despite theoretical concerns about training/inference variance mismatch."
+  ],
+  "critical_findings": [
+    "Epsilon-insensitive loss effectively handles uneven biomass distributions by allowing larger errors for high values.",
+    "Online pseudo-label training during testing consistently yields >0.02 score gains.",
+    "Ranking loss and multi-resolution patch inputs severely overfit or oscillate despite promising CV scores."
+  ],
+  "what_did_not_work": [
+    "Semi-supervised schemes",
+    "Training one model per species",
+    "Introducing physical constraints",
+    "Removing dropout",
+    "Adding external/unlabeled data",
+    "Adding shadows",
+    "Ranking loss",
+    "Replacing L1 loss",
+    "Multi-resolution patch inputs"
+  ],
+  "github_repos": [],
+  "papers": [
+    {
+      "title": "Uniformity in heterogeneity: Diving deep into count interval partition for crowd counting",
+      "url": "",
+      "arxiv_id": null
+    }
+  ],
+  "other_solution_refs": [
+    {
+      "description": "Final inference notebook",
+      "url": "https://www.kaggle.com/code/pingfan/lb0-77-pb-0-67-1-debug-infer-two-gpus-v1-d45a08?scriptVersionId=294488905"
+    }
+  ],
+  "source_url": "https://www.kaggle.com/competitions/csiro-biomass/discussion/670735"
+}

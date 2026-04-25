@@ -1,0 +1,46 @@
+{
+  "summary": "This notebook demonstrates an offline installation workflow for vLLM and related libraries, then implements three distinct approaches for the Jigsaw Agile Community Rules competition: fine-tuning a Qwen2.5-0.5B model with LoRA for few-shot classification, direct inference on a Qwen2.5-14B model, and semantic search using a Qwen3-Embedding-0.6B model. It shows how to construct few-shot prompts, apply logits processors for binary classification, handle GPU parallelization, and compute semantic similarity scores per rule. The author ultimately combines these methods via a weighted ensemble, highlighting practical techniques for LLM-based text classification and retrieval in a Kaggle environment.",
+  "purpose": "training",
+  "competition_flow": "Installs vLLM and dependencies offline, trains a Qwen2.5-0.5B model via LoRA, runs inference on Qwen2.5-14B and Qwen3-Embedding-0.6B, and combines the outputs into a ranked submission for the Jigsaw Agile Community Rules competition.",
+  "data_reading": [
+    "Loads train.csv and test.csv from /kaggle/input/jigsaw-agile-community-rules/ using pandas.read_csv."
+  ],
+  "data_processing": [
+    "Randomly selects one positive and one negative example per row from provided candidate columns to construct few-shot prompts.",
+    "Cleans text with cleantext for the embedding pipeline.",
+    "Applies softmax to binary logprobs for probability calibration.",
+    "Normalizes predictions via average ranking before saving submissions."
+  ],
+  "features_engineering": [],
+  "models": [
+    "Qwen2.5-0.5B-Instruct-GPTQ-INT4",
+    "Qwen2.5-14B-Instruct-GPTQ-INT4",
+    "Qwen3-Embedding-0.6B"
+  ],
+  "frameworks_used": [
+    "vllm",
+    "trl",
+    "peft",
+    "transformers",
+    "deepspeed",
+    "accelerate",
+    "logits-processor-zoo",
+    "sentence-transformers",
+    "pandas",
+    "numpy"
+  ],
+  "loss_functions": [
+    "completion_only_loss (via SFTConfig)"
+  ],
+  "cv_strategy": "",
+  "ensembling": "Implements a weighted average function to merge predictions from multiple submissions, though the final execution only applies a weight of 1.0 to the Qwen2.5-14B model output.",
+  "insights": [
+    "Few-shot prompting with randomly selected examples effectively adapts small LLMs for rule-based classification.",
+    "Using MultipleChoiceLogitsProcessor with vLLM enables efficient binary classification without full text generation.",
+    "Semantic search with a fine-tuned embedding model provides a strong retrieval-based baseline for rule violation tasks."
+  ],
+  "critical_findings": [],
+  "what_did_not_work": [],
+  "source_url": "https://www.kaggle.com/code/hiranorm/offline-install-vllm-0-10-0-i-qwenemdding-llama",
+  "votes": 285
+}

@@ -1,0 +1,23 @@
+{
+  "id": "codingloading/can-gemma-3n-understand-memes",
+  "id_no": 85927322,
+  "title": "\ud83d\ude1cCan Gemma-3n Understand Memes?",
+  "code_file": "can-gemma-3n-understand-memes.ipynb",
+  "language": "python",
+  "kernel_type": "notebook",
+  "is_private": false,
+  "enable_gpu": false,
+  "enable_tpu": false,
+  "enable_internet": false,
+  "keywords": [],
+  "dataset_sources": [],
+  "kernel_sources": [],
+  "competition_sources": [
+    "google-gemma-3n-hackathon"
+  ],
+  "model_sources": [
+    "google/gemma-3n/Transformers/gemma-3n-e2b-it/1"
+  ],
+  "docker_image": "gcr.io/kaggle-images/python@sha256:3223337db7786b068bfeac3a1b741bf0d572a4bf309735b45692de873b7758db",
+  "machine_shape": "None"
+}

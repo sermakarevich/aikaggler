@@ -1,0 +1,63 @@
+{
+  "summary": "The team achieved 5th place in a code golf competition by developing a custom deflate compressor that outperformed Zopfli, implementing dynamic programming for optimal Huffman tree construction, and cracking test case seeds from the ARC-GEN generator to regenerate solutions. Their approach combined low-level compression hacks, regex tricks for specific tasks, and automated tooling for tracking progress. They prioritized handwritten, highly compressed Python code over AI-generated or library-based solutions to maximize byte efficiency.",
+  "extensive_summary": "## Compression Optimizations\nThe core of the solution revolved around minimizing Python code size through advanced deflate compression. The authors built a custom compressor and optimizer that surpassed Zopfli by addressing the discrete nature of Huffman coding. They discovered that minimizing the number of deflate factors alone does not guarantee minimal output size due to Huffman tree overhead. To solve this, they fixed the factorization and cl-code, then used dynamic programming to compute optimal Huffman code lengths, significantly shrinking tree sizes. Additional payload optimizations included hill climbing on Zopfli's output to eliminate escape characters, automatic variable-name reassignment via static dependency analysis, and a genetic algorithm interleaving factorization and Huffman optimizations.\n\n## Seed Cracking\nThe team identified that test cases were generated deterministically using ARC-GEN. By analyzing `randint` calls where the range was a power of two, they extracted clean bits of the PRNG state. Inspection revealed that seeds followed a simple pattern (`2025 + i` per example index). This allowed them to regenerate specific tasks exactly, turning highly randomized grid generation into a deterministic, compressible algorithm for tasks like task096.\n\n## Tooling & Workflow\nTo manage the marathon contest, the team built a local Web UI and CI/CD pipeline. The UI tracked task progress, score trajectories, and integrated with a checker for debugging. CI/CD automated README generation, per-file size banners, Discord notifications, and leaderboard monitoring. Early attempts using GPT-o4-mini and minified arc-dsl/re-arc were ultimately abandoned in favor of handwritten, highly optimized code.",
+  "rank": 5,
+  "competition_flow": "Raw task grids were processed through custom Python solutions, which were then optimized for byte size using a custom deflate compressor and seed regeneration before submission.",
+  "data_reading": [],
+  "data_processing": [],
+  "features_engineering": [],
+  "models": [],
+  "frameworks_used": [
+    "Python",
+    "zlib",
+    "GPT-o4-mini"
+  ],
+  "loss_functions": [],
+  "cv_strategy": "",
+  "ensembling": "",
+  "insights": [
+    "Minimizing factor count in deflate does not guarantee minimal output size due to Huffman coding overhead.",
+    "Variable-name assignment heavily impacts compressibility and should be optimized via static analysis.",
+    "Tabs and single quotes disrupt RLE less than spaces and double quotes in Python code-length streams.",
+    "Using `randint` with power-of-two ranges in ARC-GEN leaks clean bits of the PRNG state, enabling seed recovery."
+  ],
+  "critical_findings": [
+    "A custom compressor combining hill climbing on Zopfli's output with dynamic programming for optimal Huffman code lengths outperformed Zopfli itself.",
+    "Test case seeds were simply `2025 + i` per example index, allowing exact regeneration of specific tasks via ARC-GEN.",
+    "Uppercase variable names disrupt the RLE in the Huffman code-length stream, making lowercase or keyword-reused names strictly preferable."
+  ],
+  "what_did_not_work": [
+    "Improving Huffman trees with metaheuristics like genetic algorithms and simulated annealing underperformed due to a non-smooth search landscape and discrete objective.",
+    "Early auto-generated solutions using GPT-o4-mini were abandoned in favor of handwritten code.",
+    "Minified versions of arc-dsl and re-arc were removed in favor of custom handwritten solutions."
+  ],
+  "github_repos": [
+    {
+      "url": "https://github.com/Seek64/NeurIPS-Code-Golf-2025",
+      "role": "reference"
+    },
+    {
+      "url": "https://github.com/key-moon/deflate-viz",
+      "role": "library"
+    },
+    {
+      "url": "https://github.com/key-moon/golf",
+      "role": "solution"
+    },
+    {
+      "url": "https://github.com/google/ARC-GEN",
+      "role": "reference"
+    },
+    {
+      "url": "https://github.com/michaelhodel/arc-dsl",
+      "role": "reference"
+    },
+    {
+      "url": "https://github.com/michaelhodel/re-arc",
+      "role": "reference"
+    }
+  ],
+  "papers": [],
+  "other_solution_refs": [],
+  "source_url": "https://www.kaggle.com/competitions/google-code-golf-2025/discussion/614225"
+}

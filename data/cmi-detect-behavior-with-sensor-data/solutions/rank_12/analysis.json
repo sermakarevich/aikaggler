@@ -1,0 +1,65 @@
+{
+  "summary": "The author achieved 12th place by designing a multi-branch neural network that independently processes IMU, thermal (THM), and time-of-flight (TOF) sensor sequences before fusing them for gesture classification. Key architectural choices include using 1D/3D ResBlocks with SCSE attention and group convolutions to preserve modality-specific features, followed by a fusion module combining GRUs and RoPE-enhanced Multi-Head Attention. The training pipeline leverages multi-task learning with decaying loss ratios, extensive temporal and spatial augmentations, and a constrained voting ensemble to prevent overfitting while maximizing generalization.",
+  "extensive_summary": "## Data Processing & Feature Engineering\nThe pipeline handles three distinct sensor modalities with modality-specific preprocessing. IMU data has its rotation normalized to `rot_w>0` and sign recovered via a dot product constraint, followed by a handedness flip (`-acc_x, -rot_y, -rot_z`). No explicit normalization is applied to IMU, relying instead on a BatchNorm layer. THM sequences are zeroed out if the mean falls outside 20-40 or standard deviation is zero, with a handedness flip swapping sensors 3 and 5, and normalized via `(t-27)/3`. TOF data clips values outside 0-249 to NaN, applies complex handedness flips (swapping sensors 3/5, flipping axes), normalizes via `(250-x)/65`, and replaces NaNs with 0 (250 pre-normalization) without interpolation. Feature engineering extracts acceleration, rotation, angular velocity (in both device and world frames), gravity-removed acceleration, angular velocity absolute differences, and gravity projections. Zero-padding aligns feature bins to size 4 for group convolutions, and a 0-1 NaN indicator is added for TOF.\n\n## Model Architecture\nThe network uses three parallel branches. The IMU and THM branches each consist of two standard 1DResBlocks with SCSE attention. The TOF branch uses three 3DResBlocks with SCSE attention and a specific kernel schedule `(1,3,3)*2+(3,1,1)`. Group convolutions are applied across branches to restrict feature interaction strictly within the same sensor group. Fusion combines outputs from two GRUs (modularized with skip-connections and layernorm), Multi-Head Attention with RoPE, AttentionPooling, and an MLP. Notably, the author removed the standard transformer feedforward layer, retaining only the MHA component.\n\n## Training Strategy & Augmentation\nTraining employs a multi-task objective: a primary cross-entropy + dice loss (with decaying CE ratio), cross-entropy for orientation classification, MSE on gesture region ratio, and MAE on the main loss. Optimization uses onecycle learning rate scheduling, AdamW, EMA, mixup, dropout, and SiLU activations. Sequences are truncated/padded to length 120. Augmentations include rotation sign flips, world-frame X-Y plane rotations, time stretching, sequence and TOF patch masking, TOF pixel jitter, and sensor masking. A random search with manually clipped bounds was used for hyperparameter tuning.\n\n## Ensemble & Results\nThe final submission combines predictions via class rank averaging across K-folds and voting across different model variants. The author explicitly avoided weight tuning on local CV to prevent overfitting, instead restricting the pool to high-CV models and applying voting, which outperformed averaging by mitigating overconfident predictions. The ensemble improved the private LB score from 0.859 to 0.862.",
+  "rank": 12,
+  "competition_flow": "Raw IMU, THM, and TOF sensor sequences are preprocessed with modality-specific normalization, handedness flips, and NaN handling, passed through separate multi-branch CNNs with group convolutions and SCSE attention, fused via GRUs and RoPE-enhanced MHA, and trained with multi-task losses before being combined via a constrained voting ensemble for submission.",
+  "data_reading": [],
+  "data_processing": [
+    "IMU: normalized rotation to rot_w>0, recovered sign via dot_product constraint, applied handedness flip (-acc_x, -rot_y, -rot_z), used BN as first layer instead of explicit normalization.",
+    "THM: set sequences to nan if mean>40 or mean<20 or std==0, applied handedness flip (switch sensor 3 and 5), normalized via (t-27)/3.",
+    "TOF: clipped values <0 or >249 to nan, applied handedness flips (switch sensors 3/5, up-down flip for 3/5, left-right flip for 1/2/4), normalized via (250-x)/65, replaced nan with 0 (250 before normalization), no interpolation."
+  ],
+  "features_engineering": [
+    "IMU: extracted acc/rot/angular velocity in device and world frames, acc with gravity removed in both frames, angular velocity abs_diff, gravity projection in device frame, and handedness meta-feature.",
+    "Zero-padded feature matrices to bins of size 4 to enable group convolutions.",
+    "TOF: added 0-1 nan indicator as an extra feature."
+  ],
+  "models": [
+    "1DResBlock",
+    "3DResBlock",
+    "SCSE attention",
+    "GRU",
+    "MHA (Multi-Head Attention)",
+    "AttentionPooling",
+    "MLP"
+  ],
+  "frameworks_used": [],
+  "loss_functions": [
+    "cross entropy",
+    "dice loss",
+    "MSE",
+    "MAE"
+  ],
+  "cv_strategy": "",
+  "ensembling": "The author combined predictions via class rank averaging across K-folds and voting across different models, restricting the pool to high-CV models to prevent overfitting and noting that voting outperformed simple averaging.",
+  "insights": [
+    "Using group convolutions restricts feature interaction to within the same sensor group, preserving modality-specific characteristics.",
+    "Restricting the ensemble to models with strong local CV performance and using voting instead of averaging prevents overfitting and yields better generalization.",
+    "Modularizing GRUs with skip-connections and layernorm improves training stability and performance."
+  ],
+  "critical_findings": [
+    "Removing the extra feedforward layer from standard transformer blocks improved performance, contrary to typical transformer design.",
+    "Voting across models performed better than class rank averaging, likely because it mitigates overconfident model predictions."
+  ],
+  "what_did_not_work": [
+    "MSE on the ratio of gesture region was not properly normalized and its effectiveness was uncertain.",
+    "MAE on the main loss was applied but its contribution was uncertain."
+  ],
+  "github_repos": [],
+  "papers": [],
+  "other_solution_refs": [
+    {
+      "description": "EDA and sensor pulse visualization for BFRB detection",
+      "url": "https://www.kaggle.com/code/tarundirector/sensor-pulse-viz-eda-for-bfrb-detection"
+    },
+    {
+      "description": "IMU-only LSTM approach",
+      "url": "https://www.kaggle.com/code/jiazhuang/cmi-imu-only-lstm"
+    },
+    {
+      "description": "LB 0.75 IMU-only multibranch inference",
+      "url": "https://www.kaggle.com/code/kaigaokaigao/lb-0-75-imu-only-multibranch-inference/notebook"
+    }
+  ],
+  "source_url": "https://www.kaggle.com/competitions/cmi-detect-behavior-with-sensor-data/discussion/603564"
+}

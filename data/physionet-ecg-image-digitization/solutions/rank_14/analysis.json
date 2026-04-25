@@ -1,0 +1,86 @@
+{
+  "summary": "The author developed a 3-stage deep learning pipeline to digitize ECG images by progressively normalizing, rectifying, and predicting waveforms from diverse, degraded inputs. The core innovation replaces standard encoder-decoder architectures with a high-resolution HRNet-W48 backbone, augmented by CoordConv, RGB skip connections, and PixelShuffle upsampling to preserve spatial precision. Training leverages a comprehensive segment-aware augmentation pipeline with memory-mapped caching, a 100/0 train/validation split, and BCE loss with positive weighting. Inference combines horizontal flip TTA with physics-based Einthoven's Law correction and softmax weighted-centroid extraction to achieve a final public score of 21.56 SNR.",
+  "extensive_summary": "The solution addresses the PhysioNet ECG digitization challenge through a **3-stage deep learning pipeline** designed to handle highly variable image sources, geometric distortions, and visual degradations. The first two stages rely on pre-trained baseline checkpoints for preprocessing: Stage 0 uses a **ResNet18 encoder + U-Net decoder** to detect lead markers and correct orientation via homography, while Stage 1 applies a **ResNet34 encoder + U-Net decoder** to detect grid points and correct perspective distortions. These stages ensure the input is normalized to a canonical size before waveform prediction.\n\nThe primary innovation resides in Stage 2, which predicts pixel-level waveforms using a high-resolution **HRNet-W48 backbone**. The architecture maintains spatial precision through parallel multi-resolution branches, injects position-awareness via a **CoordConv decoder**, preserves fine details with an **RGB skip connection**, and uses **PixelShuffle** for memory-efficient upsampling. Training is stabilized with **GroupNorm** (enabling batch size 1) and **gradient checkpointing**, optimized via **AdamW** with **EMA** over 80 epochs using **FP16 (AMP)**.\n\nA major technical contribution is the **segment-aware augmentation pipeline**, which applies targeted degradations (e.g., Perlin noise, texture noise, moir\u00e9 patterns, water stains, mold patches) across 12 distinct segment types. To mitigate compute bottlenecks, the author implements a **memory-mapped caching system** for expensive augmentations. The model is trained on a **100/0 train/validation split** at full resolution (1696\u00d74352), using **BCE with positive class weighting (pos_weight=10.0)** for pixel-level supervision.\n\nDuring inference, the pipeline applies **horizontal flip TTA** and averages predictions. Final waveforms are extracted via softmax weighted-centroid computation and converted to mV using calibration parameters. A physics-based **Einthoven's Law correction** redistributes limb lead violations to enforce electrocardiogram constraints. Ablation studies highlight that high resolution, HRNet's spatial preservation, full-data training, and physics-informed post-processing were the primary drivers of the ~21.56 SNR score.",
+  "rank": 14,
+  "competition_flow": "Raw ECG images are normalized and rectified using pre-trained Stage 0/1 models, fed into a high-resolution HRNet-W48 model for pixel-level waveform prediction, processed with horizontal flip TTA and Einthoven's Law correction, and converted to numerical waveforms via softmax weighted-centroid extraction for submission.",
+  "data_reading": [],
+  "data_processing": [
+    "Stage 0/1 normalization and rectification using pre-trained baseline checkpoints.",
+    "Comprehensive segment-aware augmentation pipeline (Perlin noise, texture noise, color jitter, Gaussian blur/noise, shadow overlay, paper texture, JPEG artifacts, horizontal flip) with memory-mapped caching.",
+    "High-resolution training at 1696\u00d74352 pixels.",
+    "Horizontal flip TTA during inference.",
+    "Einthoven's Law physics-based correction and softmax weighted-centroid extraction for waveform conversion."
+  ],
+  "features_engineering": [],
+  "models": [
+    "ResNet18",
+    "U-Net",
+    "ResNet34",
+    "HRNet-W48",
+    "CoordConv Decoder",
+    "PixelShuffle",
+    "GroupNorm"
+  ],
+  "frameworks_used": [
+    "pytorch"
+  ],
+  "loss_functions": [
+    "Binary Cross-Entropy (BCE) with positive class weighting (pos_weight=10.0)"
+  ],
+  "cv_strategy": "100/0 train/validation split (utilized 100% of training data)",
+  "ensembling": "Horizontal flip TTA with prediction averaging, followed by Einthoven's Law physics-based correction and softmax weighted-centroid extraction for final waveform generation.",
+  "insights": [
+    "High resolution (1696\u00d74352) provided the largest single performance boost (~3 SNR).",
+    "HRNet-W48's multi-resolution parallel branches preserve spatial precision better than traditional encoder-decoder architectures.",
+    "Using 100% of training data with comprehensive augmentations outperformed holding out a validation set.",
+    "Physics-informed post-processing (Einthoven's Law) consistently improves scores by enforcing known ECG constraints."
+  ],
+  "critical_findings": [
+    "BCE with positive weighting significantly outperformed regression-based losses (MSE, SNR) for pixel-level supervision.",
+    "Memory-mapped caching for expensive augmentations (e.g., Perlin noise) was necessary to avoid on-the-fly compute bottlenecks.",
+    "Gradient checkpointing and GroupNorm were critical for stable training with batch size 1 on high-resolution images."
+  ],
+  "what_did_not_work": [],
+  "github_repos": [
+    {
+      "url": "https://github.com/starrynites/PhysioNet_Digitization_of_ECG_Images",
+      "role": "solution"
+    }
+  ],
+  "papers": [
+    {
+      "title": "ECG-Image-Kit: a synthetic image generation toolbox to facilitate deep learning-based electrocardiogram digitization",
+      "url": "https://doi.org/10.1088/1361-6579/ad4954",
+      "arxiv_id": null
+    },
+    {
+      "title": "ECG-Image-Database: A dataset of ECG images with real-world imaging and scanning artifacts; a foundation for computerized ECG image digitization and analysis",
+      "url": "https://doi.org/10.48550/arXiv.2409.16612",
+      "arxiv_id": "2409.16612"
+    },
+    {
+      "title": "PhysioNet - Digitization of ECG Images",
+      "url": "https://kaggle.com/competitions/physionet-ecg-image-digitization",
+      "arxiv_id": null
+    }
+  ],
+  "other_solution_refs": [
+    {
+      "description": "Original low resolution baseline",
+      "url": "https://www.kaggle.com/code/hengck23/demo-submission"
+    },
+    {
+      "description": "High resolution baseline reference",
+      "url": "https://www.kaggle.com/code/wasupandceacar/physio-v2-3-public"
+    },
+    {
+      "description": "Einthoven's law correction idea",
+      "url": "https://www.kaggle.com/code/tonylica/physionet-ecg-streamlined-inference"
+    },
+    {
+      "description": "Kaggle Inference Notebook",
+      "url": "https://www.kaggle.com/code/sshiyu/physionet-final-submission"
+    }
+  ],
+  "source_url": "https://www.kaggle.com/competitions/physionet-ecg-image-digitization/discussion/669558"
+}

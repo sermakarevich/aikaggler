@@ -1,0 +1,93 @@
+[
+  {
+    "topic_id": 583143,
+    "title": "1st Place - 3D U-Net + Quantile Thresholding",
+    "owner": "brendanartley",
+    "repo": "BYU-competition",
+    "url": "https://github.com/brendanartley/BYU-competition"
+  },
+  {
+    "topic_id": 583143,
+    "title": "1st Place - 3D U-Net + Quantile Thresholding",
+    "owner": "kenshohara",
+    "repo": "3D-ResNets-PyTorch",
+    "url": "https://github.com/kenshohara/3D-ResNets-PyTorch"
+  },
+  {
+    "topic_id": 583411,
+    "title": "4th place: Simple ResNet18 classification",
+    "owner": "ChristofHenkel",
+    "repo": "kaggle-cryoet-1st-place-segmentation",
+    "url": "https://github.com/ChristofHenkel/kaggle-cryoet-1st-place-segmentation"
+  },
+  {
+    "topic_id": 583380,
+    "title": "3rd place solution: 3D/2D UNet with Gaussian Heatmap and  WBF",
+    "owner": "MIC-DKFZ",
+    "repo": "nnUNet",
+    "url": "https://github.com/MIC-DKFZ/nnUNet"
+  },
+  {
+    "topic_id": 583380,
+    "title": "3rd place solution: 3D/2D UNet with Gaussian Heatmap and  WBF",
+    "owner": "ZFTurbo",
+    "repo": "segmentation_models_pytorch_3d",
+    "url": "https://github.com/ZFTurbo/segmentation_models_pytorch_3d"
+  },
+  {
+    "topic_id": 583380,
+    "title": "3rd place solution: 3D/2D UNet with Gaussian Heatmap and  WBF",
+    "owner": "ZFTurbo",
+    "repo": "timm_3d",
+    "url": "https://github.com/ZFTurbo/timm_3d"
+  },
+  {
+    "topic_id": 583380,
+    "title": "3rd place solution: 3D/2D UNet with Gaussian Heatmap and  WBF",
+    "owner": "facebookresearch",
+    "repo": "SlowFast",
+    "url": "https://github.com/facebookresearch/SlowFast"
+  },
+  {
+    "topic_id": 583380,
+    "title": "3rd place solution: 3D/2D UNet with Gaussian Heatmap and  WBF",
+    "owner": "albumentations-team",
+    "repo": "albumentations",
+    "url": "https://github.com/albumentations-team/albumentations"
+  },
+  {
+    "topic_id": 583380,
+    "title": "3rd place solution: 3D/2D UNet with Gaussian Heatmap and  WBF",
+    "owner": "cvat-ai",
+    "repo": "cvat",
+    "url": "https://github.com/cvat-ai/cvat"
+  },
+  {
+    "topic_id": 583380,
+    "title": "3rd place solution: 3D/2D UNet with Gaussian Heatmap and  WBF",
+    "owner": "dangnh0611",
+    "repo": "kaggle_byu",
+    "url": "https://github.com/dangnh0611/kaggle_byu"
+  },
+  {
+    "topic_id": 583128,
+    "title": "20th place solution -- Keypoint-Based Dual-Graph Predictor",
+    "owner": "tom99763",
+    "repo": "21th-place-solution-BYU",
+    "url": "https://github.com/tom99763/21th-place-solution-BYU"
+  },
+  {
+    "topic_id": 583144,
+    "title": "17th Place Solution - Ultralytics + Timm",
+    "owner": "ultralytics",
+    "repo": "ultralytics",
+    "url": "https://github.com/ultralytics/ultralytics"
+  },
+  {
+    "topic_id": 583144,
+    "title": "17th Place Solution - Ultralytics + Timm",
+    "owner": "yang-0201",
+    "repo": "MHAF-YOLO",
+    "url": "https://github.com/yang-0201/MHAF-YOLO"
+  }
+]

@@ -1,0 +1,39 @@
+{
+  "summary": "This notebook implements a spatio-temporal Transformer model for NFL player trajectory prediction, centered around a deterministic geometric baseline that calculates expected player endpoints using physics and role-specific rules. Instead of predicting raw coordinates, the model learns residual corrections to this geometric prior, significantly reducing the optimization landscape. It combines 167 hand-crafted features\u2014including route clustering, weighted neighbor embeddings, and temporal statistics\u2014processed through sliding windows and per-fold scaling. The pipeline uses a 10-fold GroupKFold validation scheme, trains with a time-decayed Huber loss, and averages predictions across folds for final submission. Readers should learn how to integrate domain-derived geometric priors with deep learning to stabilize trajectory forecasting and reduce model complexity.",
+  "purpose": "training",
+  "competition_flow": "Loads NFL play CSVs, computes 167 spatio-temporal and geometric features, trains a custom STTransformer across 10 GroupKFold splits using a time-decayed Huber loss, and averages fold predictions for final trajectory submission.",
+  "data_reading": [
+    "Reads `train/input_2023_w*.csv` and `train/output_2023_w*.csv` from a Kaggle input directory using `pd.read_csv` and `pd.concat`, with an optional debug mode that filters to a subset of plays."
+  ],
+  "data_processing": [
+    "Computes velocity/acceleration from speed/direction, clips coordinates to field boundaries, handles missing values via forward fill/mean padding, scales features per fold using `StandardScaler`, creates sliding windows of 10 frames with padding, and computes temporal lags/rolling statistics."
+  ],
+  "features_engineering": [
+    "154 base features (physical stats like BMI/momentum, opponent distances, mirror offsets, route clustering labels via KMeans, GNN-lite weighted neighbor embeddings, temporal lags/rolling stats/EMA) + 13 geometric features (endpoint coordinates, required velocity/acceleration, velocity error, alignment metrics)."
+  ],
+  "models": [
+    "STTransformer (custom PyTorch implementation with TransformerEncoder, positional encoding, attention pooling, and a ResidualMLPHead with residual blocks)"
+  ],
+  "frameworks_used": [
+    "pytorch",
+    "scikit-learn",
+    "pandas",
+    "numpy",
+    "polars",
+    "kaggle_evaluation.nfl_inference_server"
+  ],
+  "loss_functions": [
+    "TemporalHuber (Huber loss with exponential time decay weighting)"
+  ],
+  "cv_strategy": "GroupKFold(n_splits=10) grouped by game_id",
+  "ensembling": "Averages the trajectory predictions across all 10 fold models before clipping coordinates to field boundaries.",
+  "insights": [
+    "Training the model to predict corrections to a deterministic geometric baseline is more effective than predicting raw coordinates.",
+    "Role-specific geometric rules (e.g., receivers targeting ball landing, defenders mirroring receivers) provide strong priors that reduce the learning burden.",
+    "Weighted neighbor embeddings and route clustering capture spatial and behavioral patterns without full GNN computation."
+  ],
+  "critical_findings": [],
+  "what_did_not_work": [],
+  "source_url": "https://www.kaggle.com/code/pankajiitr/nfl-big-data-bowl-2026-geometry-gnn",
+  "votes": 303
+}

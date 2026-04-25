@@ -1,0 +1,39 @@
+{
+  "summary": "The author achieved 6th place with a score of 0.484 by building a CPU-only pipeline that relies exclusively on the provided RNA training sequences. The core approach computes pairwise TM-scores grouped by sequence length to construct a distance matrix, which is then clustered to identify representative structural groups. A Keras classifier is trained to assign input sequences to one of five clusters, and inference returns the 3D structure of the most similar representative within each predicted cluster based on sequence length and intra-group TM-score. The solution prioritizes computational efficiency and algorithmic simplicity due to strict hardware constraints.",
+  "extensive_summary": "## Overview\nThe author secured 6th place (score: 0.484) using a lightweight, hardware-constrained pipeline focused on RNA sequence similarity and structural clustering. With only a CPU (i5-6500) and 24 GB RAM, the approach deliberately avoids external models, additional datasets, or GPU acceleration, relying entirely on the provided training sequences.\n\n## Data Processing & Feature Construction\nThe pipeline begins with data acquisition, unification, and selection. The most computationally intensive step is calculating pairwise TM-scores between all training sequences, strategically grouped by sequence length to mitigate runtime costs. This yields a distance matrix that is clustered into `n` groups (classes). From each cluster, the most representative sequences are selected to serve as structural anchors for later retrieval.\n\n## Modeling & Inference\nA Keras-based classifier is trained to map raw RNA sequences to one of five predefined groups. During inference, the model predicts the top 5 most likely groups for a given input sequence. The final submission is constructed by retrieving the 3D structure of the most similar representative sequence within each predicted group, prioritizing matches by sequence length and the highest intra-group TM-score.\n\n## Constraints & Future Work\nThe author explicitly notes that step 2 (TM-score calculation) is highly expensive for long sequences. While incorporating PDB data or applying data augmentation techniques was considered to optimize this step, hardware limitations forced their exclusion. These remain proposed extensions for future iterations.",
+  "rank": 6,
+  "competition_flow": "Raw RNA sequences are processed by computing pairwise TM-scores grouped by length to build a distance matrix, which is clustered to find representative structures; a Keras classifier then predicts cluster membership for inference, returning the 3D structure of the most similar representative per predicted cluster.",
+  "data_reading": [],
+  "data_processing": [
+    "Data acquisition, unification, and selection",
+    "Pairwise TM-score calculation grouped by sequence length to generate a distance matrix",
+    "Clustering into n groups",
+    "Selection of representative sequences per group"
+  ],
+  "features_engineering": [
+    "Distance matrix derived from pairwise TM-scores",
+    "Cluster assignments used as classification targets",
+    "Representative sequence selection per cluster"
+  ],
+  "models": [
+    "Keras classifier (specific architecture not specified)"
+  ],
+  "frameworks_used": [
+    "keras"
+  ],
+  "loss_functions": [],
+  "cv_strategy": "",
+  "ensembling": "",
+  "insights": [
+    "Grouping TM-score calculations by sequence length significantly reduces computational cost.",
+    "Hardware constraints (CPU-only, limited RAM) necessitate prioritizing algorithmic efficiency over complex model architectures or external data."
+  ],
+  "critical_findings": [],
+  "what_did_not_work": [
+    "Incorporating PDB data or using data augmentation techniques for step 2 was considered but discarded due to hardware limitations."
+  ],
+  "github_repos": [],
+  "papers": [],
+  "other_solution_refs": [],
+  "source_url": "https://www.kaggle.com/competitions/stanford-rna-3d-folding/discussion/582377"
+}

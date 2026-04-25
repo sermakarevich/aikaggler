@@ -1,0 +1,146 @@
+# byu-locating-bacterial-flagellar-motors-2025: top public notebooks
+
+The community's top-voted notebooks focus on adapting 2D object detection architectures (primarily YOLOv8, YOLOv10, DEIM, and ConvNeXt) to locate bacterial flagellar motors in 3D cryo-ET tomograms. They heavily emphasize tomogram-level data splitting to prevent slice-level leakage, percentile-based contrast normalization, and custom 3D post-processing (NMS/clustering) to consolidate redundant slice detections into single 3D coordinates. Inference optimization techniques such as GPU-accelerated preprocessing, FP16 precision, dynamic batching, and TTA/WBF are also widely featured alongside robust validation and checkpointing strategies.
+
+## Common purposes
+- inference
+- baseline
+- training
+- eda
+- utility
+- tutorial
+
+## Competition flows
+- Loads training labels and tomogram slices, performs EDA and percentile-based normalization to create a YOLO-format dataset, trains a YOLOv8 model with transfer learning, and runs an optimized inference pipeline with 3D NMS to generate a CSV submission of motor coordinates.
+- Loads a pre-trained YOLOv10 model, processes test tomogram slices in parallel batches, applies a custom 3D non-maximum suppression algorithm to merge detections across slices, and generates a CSV submission with the top motor detection coordinates per tomogram.
+- Loads pre-trained YOLOv8 weights, runs optimized GPU inference on test tomogram slices, applies 3D NMS to merge detections, and exports the top prediction per tomogram to a CSV submission file.
+- Loads a pre-prepared YOLO-format dataset via YAML, fine-tunes a YOLOv8n model for 30 epochs with early stopping, and exports the best checkpoint for downstream inference.
+- Loads test tomogram slices, runs YOLOv10 inference with TTA and WBF on each slice, merges 2D detections into 3D coordinates via custom 3D NMS, and outputs a CSV submission with the top motor detection per tomogram.
+- Loads preprocessed YOLO-format images and labels, normalizes contrast, overlays bounding box annotations, and displays random samples to validate dataset preparation before training.
+- Loads tomographic slices and annotations → extracts and normalizes 2D slices around motor locations → splits data at the tomogram level → outputs a YOLO-compatible dataset with bounding boxes and configuration file.
+- Loads test tomography slices, resizes them to 384x384, runs a sliding-window inference with a single DEIM model, clusters and aggregates detections using distance thresholds and score-weighted means, and exports a complete submission CSV.
+- Extracts 2D slices from 3D tomograms, normalizes intensity, trains a YOLOv8 detector on tomogram-level splits, and generates a submission by running inference across slices with 3D non-maximum suppression.
+- Loads test tomogram slices, applies GPU-accelerated preprocessing and rot90 test-time augmentation, runs inference with a pretrained ConvNeXt-based model using automatic mixed precision and multiprocessing, and generates a CSV submission with predicted motor coordinates.
+
+## Data reading
+- Loads train_labels.csv into a pandas DataFrame.
+- Reads tomogram slices as JPEG files from nested directories using glob and cv2.imread/PIL.Image.open.
+- Reads test tomogram directories containing `.jpg` slice files using `os.listdir` and loads them via `cv2.imread` with a `PIL.Image.open` fallback.
+- Iterates through sorted slice files per tomogram to maintain z-axis order.
+- Reads image files via glob from /kaggle/input/parse-data/yolo_dataset/images/train/.
+- Reads corresponding YOLO-format .txt label files from /kaggle/input/parse-data/yolo_dataset/labels/train/.
+- Reads motor location annotations from train_labels.csv using pandas.
+- Loads 2D tomographic slices as JPEG images using PIL from nested directory paths.
+- Reads image slices from nested directories per tomo_id, sorts them by numerical index in the filename, loads them via PIL or torchvision.io, and stacks them into (n_frames, h, w) numpy arrays.
+- Globbing test directories for slice_*.jpg files, parsing slice numbers from filenames, and loading images via PIL into numpy arrays.
+
+## Data processing
+- Extracts 2D slices around each motor's Z-axis coordinate (±4 slices).
+- Applies percentile-based contrast enhancement (clipping to 2nd and 98th percentiles, scaling to 0-255).
+- Splits data by tomogram ID (80% train, 20% val) to prevent slice-level leakage.
+- Generates YOLO-format bounding box annotations with a fixed 24x24 pixel box size.
+- Normalizes bounding box coordinates to image dimensions.
+- Dynamically adjusts batch size based on available GPU memory to prevent OOM errors while maximizing throughput.
+- Applies FP16 precision and layer fusion for inference speedup on compatible GPUs.
+- Subsamples slices across the z-axis using a configurable CONCENTRATION ratio to control processing speed.
+- Relies on YOLOv8's internal defaults with a fixed input image size of 640x640.
+- Horizontal flip test-time augmentation.
+- Weighted Box Fusion (WBF) for overlapping boxes.
+- Custom 3D distance-based non-maximum suppression to merge detections across slices.
+- Normalizes image arrays using 2nd and 98th percentiles for contrast enhancement.
+- Converts images to RGB.
+- Creates transparent RGBA overlays to draw bounding boxes and class labels.
+- Extracts ±TRUST slices around motor centers.
+- Performs a strict tomogram-level 80/20 train/validation split.
+- Normalizes bounding box coordinates to [0, 1] for YOLO format.
+- Generates a dataset.yaml configuration.
+- Resizes all images to 384x384, normalizes pixel values to float [0,1] during inference.
+- Optionally applies a 21-frame rolling mean along the z-axis.
+- Slices 3-channel windows along the z-axis for batch processing.
+- Scales bounding box coordinates back to original image dimensions.
+- Resizing to 640x640, quantile normalization (clipping to 5th/95th percentiles), moving preprocessing to GPU, and applying rot90 rotations for TTA.
+
+## Models
+- YOLOv8
+- YOLOv10
+- DEIM
+- ConvNeXt Tiny
+
+## Frameworks used
+- Ultralytics
+- PyTorch
+- NumPy
+- Pandas
+- Matplotlib
+- Seaborn
+- Plotly
+- OpenCV
+- Pillow
+- scikit-learn
+- torchvision
+- SciPy
+- NetworkX
+- timm
+- multiprocessing
+- PyYAML
+- tqdm
+- glob
+- os
+
+## Loss functions
+- DFL (Distribution Focal Loss)
+- BCEWithLogitsLoss
+- MSELoss
+
+## CV strategies
+- Holdout split by tomogram ID (80% train, 20% val)
+- Holdout split with early stopping (patience=5) based on minimum validation DFL loss.
+- Tomogram-level holdout split (80/20) to prevent data leakage.
+
+## Ensembling
+- Applies a custom 3D non-maximum suppression to merge detections across slices, filters by a confidence threshold of 0.40, and selects the single highest-confidence detection per tomogram for submission.
+- Applies 3D non-maximum suppression to cluster and merge nearby detections across slices, then selects the single highest-confidence detection per tomogram for the final submission.
+- Combines predictions from test-time augmentations (original and horizontal flip) using Weighted Box Fusion (WBF) with a confidence-weighted average, followed by a final 3D NMS to merge detections across slices.
+- Single model inference with post-processing: detections are filtered by score, clustered via Euclidean distance threshold and connected components, aggregated using score-weighted mean coordinates, and the highest-scoring cluster per tomo is selected as the final prediction.
+- Applies 3D non-maximum suppression to cluster nearby 2D detections into single 3D motor locations during inference.
+- Averages predictions across four rot90 TTA transformations and optionally across multiple model folds, then applies a 0.5 confidence threshold to filter negative predictions before submission.
+
+## Insights
+- Splitting data by tomogram ID rather than by slice prevents data leakage during validation.
+- The optimal confidence threshold differs between local cross-validation (0.5–0.55) and the public leaderboard (0.35–0.45).
+- Early stopping and periodic checkpointing are essential for preventing overfitting and preserving the best model state.
+- TTA combined with WBF effectively reduces false positives and refines bounding box localization for 3D motor detection.
+- Post-processing aggregation using connected components and score-weighted mean coordinates significantly refines raw detection outputs.
+- Visualizing random samples with ground truth bounding boxes is essential for validating preprocessing and annotation accuracy before training.
+- Moving preprocessing to the GPU eliminates it as a bottleneck compared to model inference, halving total inference time.
+
+## Critical findings
+- A lower confidence threshold (0.35–0.45) yields better leaderboard scores than the higher threshold (0.5–0.55) optimal for local validation.
+- The `CONCENTRATION` parameter allows subsampling slices to reduce compute time, though it is set to 1.0 here to process all slices.
+- Subsampling slices via the CONCENTRATION parameter trades detection recall for speed, making it useful for pipeline verification rather than final scoring.
+- GPU memory availability directly dictates the maximum feasible batch size, requiring runtime calculation rather than static configuration.
+- The reported COCO metrics show perfect recall at IoU=0.50 (1.000) but unavailable scores for small and large objects (-1.000), suggesting potential ground truth gaps or class imbalance for extreme sizes.
+- CPU preprocessing takes ~240 seconds for 20 tomograms, making it comparable to inference time, whereas GPU preprocessing makes it negligible.
+- AMP speeds up T4 inference by a factor of 2 but offers no benefit on P100.
+- Using only ±4 positive slices during training speeds up training with minimal score loss, though adding negatives might improve scores.
+
+## Notable individual insights
+- votes 502 (EDA+Visualization+YOLOv8): Splitting data by tomogram ID rather than by slice prevents data leakage during validation.
+- votes 499 (BYU|SingleYOLOv10(mAP:0.948/F1:0.88)OnlyINF|LB.762): The optimal confidence threshold differs between local cross-validation (0.5–0.55) and the public leaderboard (0.35–0.45).
+- votes 472 (Train Yolo): Monitoring DFL loss curves allows precise identification of the epoch where validation performance peaks.
+- votes 443 (LB0.81-MHAFYOLO -tta-wbf-Submission Notebook): TTA combined with WBF effectively reduces false positives and refines bounding box localization for 3D motor detection.
+- votes 342 ([BYU] DEIM single model inference): Post-processing aggregation using connected components and score-weighted mean coordinates significantly refines raw detection outputs.
+- votes 232 (Speed up inference): Moving preprocessing to the GPU eliminates it as a bottleneck compared to model inference, halving total inference time.
+- votes 422 (Visualize Data): Visualizing random samples with ground truth bounding boxes is essential for validating preprocessing and annotation accuracy before training.
+
+## Notebooks indexed
+- #502 votes [[notebooks/votes_01_sharifi76-eda-visualization-yolov8/notebook|EDA+Visualization+YOLOv8]] ([kaggle](https://www.kaggle.com/code/sharifi76/eda-visualization-yolov8))
+- #499 votes [[notebooks/votes_02_hideyukizushi-byu-singleyolov10-map-0-948-f1-0-88-onlyinf-lb-762/notebook|BYU|SingleYOLOv10(mAP:0.948/F1:0.88)OnlyINF|LB.762]] ([kaggle](https://www.kaggle.com/code/hideyukizushi/byu-singleyolov10-map-0-948-f1-0-88-onlyinf-lb-762))
+- #484 votes [[notebooks/votes_03_andrewjdarley-submission-notebook/notebook|Submission Notebook]] ([kaggle](https://www.kaggle.com/code/andrewjdarley/submission-notebook))
+- #472 votes [[notebooks/votes_04_andrewjdarley-train-yolo/notebook|Train Yolo]] ([kaggle](https://www.kaggle.com/code/andrewjdarley/train-yolo))
+- #443 votes [[notebooks/votes_05_playwithme-lb0-81-mhafyolo-tta-wbf-submission-notebook/notebook|LB0.81-MHAFYOLO -tta-wbf-Submission Notebook]] ([kaggle](https://www.kaggle.com/code/playwithme/lb0-81-mhafyolo-tta-wbf-submission-notebook))
+- #422 votes [[notebooks/votes_06_andrewjdarley-visualize-data/notebook|Visualize Data]] ([kaggle](https://www.kaggle.com/code/andrewjdarley/visualize-data))
+- #413 votes [[notebooks/votes_07_andrewjdarley-parse-data/notebook|Parse Data]] ([kaggle](https://www.kaggle.com/code/andrewjdarley/parse-data))
+- #342 votes [[notebooks/votes_08_pondelion-byu-deim-single-model-inference/notebook|[BYU] DEIM single model inference]] ([kaggle](https://www.kaggle.com/code/pondelion/byu-deim-single-model-inference))
+- #233 votes [[notebooks/votes_09_andrewjdarley-byu-biophysics-group-starter/notebook|BYU Biophysics Group Starter]] ([kaggle](https://www.kaggle.com/code/andrewjdarley/byu-biophysics-group-starter))
+- #232 votes [[notebooks/votes_10_junkoda-speed-up-inference/notebook|Speed up inference]] ([kaggle](https://www.kaggle.com/code/junkoda/speed-up-inference))

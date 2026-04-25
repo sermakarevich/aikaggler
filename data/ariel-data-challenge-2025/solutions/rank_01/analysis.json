@@ -1,0 +1,66 @@
+{
+  "summary": "The author achieved 1st place by applying a rigorous Bayesian inference framework to estimate exoplanet transit depths and uncertainties from synthetic spectroscopic signals. The pipeline converts raw sensor counts into photon flux, defines a comprehensive statistical prior (modeling noise, stellar spectrum, drift, and transit parameters via the `batman` package), and iteratively solves for the posterior distribution. Despite the principled statistical foundation, the author found that post-hoc calibration of the mean and uncertainty predictions was essential for a top score, revealing a significant gap between the prior model and the actual synthetic data generation process.",
+  "extensive_summary": "## Preprocessing Pipeline\nThe solution begins by converting raw sensor counts per pixel into photon counts. The author applies time binning (5 frames for AIRS, 50 for FGS) and wavelength binning across the dispersion axis. While simple summing serves as the baseline, the author attempts to address detector jitter, non-Poisson noise characteristics, invalid pixels, and constant background signals. Despite extensive effort, a fully principled preprocessing flow handling all these effects simultaneously remains incomplete, yielding only a ~0.01 score improvement over simple summing.\n\n## Bayesian Inference Framework\nThe core of the solution is a Bayesian inference approach to estimate transit depth $D(\\lambda)$ and its uncertainty $\\sigma(\\lambda)$. A comprehensive prior is constructed by decomposing the signal into uncorrelated Gaussian noise, a star spectrum, a third-order polynomial drift, and transit parameters modeled via the `batman` package (including mid-time, semi-major axis, period, inclination, and quadratic limb darkening). The transit depth variation is modeled using a combination of a Gaussian Process (sum of two squared-exponential kernels) and PCA basis functions.\n\n## Solver & Optimization\nDue to non-linearities in the `batman` transit model and parameter multiplications, the solver linearizes the model around the posterior mean iteratively. Initial values are found via grid search and BFGS optimization using `scipy.optimize.minimize`. Hyperparameters for the prior are tuned on the training set using maximum likelihood estimation. The final inference runs for 8 iterations to balance score and submission time limits.\n\n## Post-hoc Calibration\nThe author applies a post-processing calibration step to the predicted mean transit depth and uncertainty. This involves fitting 12 parameters (constant offsets, multiplicative factors, and dependencies on limb darkening and variation magnitude) directly on the training set to optimize the competition metric. The author notes this step is necessary because the Bayesian prior fails to fully capture the synthetic data generation process, as evidenced by inconsistent transit profiles for the same planet.",
+  "rank": 1,
+  "competition_flow": "Raw sensor counts are binned and calibrated into photon flux, then processed through an iterative Bayesian inference solver using a custom prior and the `batman` transit model to estimate transit depth and uncertainty, followed by post-hoc calibration of 12 parameters fitted on the training set.",
+  "data_reading": [
+    "Raw sensor data in counts per pixel; time binning (5 frames for AIRS, 50 for FGS); wavelength binning via summing over the dispersion axis."
+  ],
+  "data_processing": [
+    "Time binning, wavelength binning, hot pixel invalidation (disabled), cosmic ray removal, PCA-based jitter analysis, attempts at background signal removal and low-pass filtering."
+  ],
+  "features_engineering": [
+    "PCA basis functions for transit depth variation, Gaussian Process kernels for wavelength variation, quadratic limb darkening parameters, third-order polynomial drift terms."
+  ],
+  "models": [
+    "batman transit model, Gaussian Process (sum of two squared-exponential kernels), PCA, third-order polynomial drift, quadratic limb darkening model."
+  ],
+  "frameworks_used": [
+    "batman, scipy (scipy.optimize.minimize)"
+  ],
+  "loss_functions": [
+    "Maximum likelihood estimation (MLE) for hyperparameter tuning; competition metric optimization for post-hoc calibration."
+  ],
+  "cv_strategy": "Hyperparameters and fudging parameters fitted on the full training set; no explicit cross-validation scheme described.",
+  "ensembling": "Not applicable; single pipeline with post-hoc calibration of 12 parameters fitted on the training set to optimize the competition metric.",
+  "insights": [
+    "Bayesian inference provides a principled framework for estimating transit depth and uncertainty but requires careful prior specification.",
+    "Post-hoc calibration is surprisingly necessary for top scores, indicating a gap between the prior model and reality.",
+    "Jitter shapes approximately sum to zero but detector calibration imperfections prevent perfect cancellation."
+  ],
+  "critical_findings": [
+    "Removing the post-hoc calibration step drops the score from 1st place to ~20th place, revealing a major model misspecification.",
+    "Comparing transit profiles for the same planet shows unexplained variations that the current prior cannot capture.",
+    "Noise characteristics deviate from pure Poisson, with lower noise for brighter pixels and occasional noisy outliers."
+  ],
+  "what_did_not_work": [
+    "A fully principled preprocessing flow that simultaneously handles jitter, non-Poisson noise, invalid pixels, and background signals failed to be fully optimized.",
+    "Different limb darkening models did not resolve the discrepancy between the prior and the synthetic data."
+  ],
+  "github_repos": [
+    {
+      "url": "https://github.com/jcottaar/ariel2",
+      "role": "solution"
+    }
+  ],
+  "papers": [],
+  "other_solution_refs": [
+    {
+      "description": "Author's Kaggle code notebook",
+      "url": "https://www.kaggle.com/code/jeroencottaar/ariel2025-1st-place-bayesian-exoplanet-analysis"
+    },
+    {
+      "description": "Host's calibration notebook",
+      "url": "https://www.kaggle.com/code/gordonyip/calibrating-and-binning-ariel-data"
+    },
+    {
+      "description": "Competition discussion thread",
+      "url": "https://www.kaggle.com/competitions/ariel-data-challenge-2025/discussion/602425"
+    },
+    {
+      "description": "Author's demonstration notebook for label issue",
+      "url": "https://www.kaggle.com/code/jeroencottaar/demonstrate-apparent-label-issue"
+    }
+  ],
+  "source_url": "https://www.kaggle.com/competitions/ariel-data-challenge-2025/discussion/609888"
+}

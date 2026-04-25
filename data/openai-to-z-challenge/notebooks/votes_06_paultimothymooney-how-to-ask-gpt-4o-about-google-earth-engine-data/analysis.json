@@ -1,0 +1,34 @@
+{
+  "summary": "The notebook demonstrates a practical workflow for querying Google Earth Engine to retrieve a Sentinel-2 satellite image, converting it to a base64-encoded JPEG, and sending it to the GPT-4o-mini multimodal model via the OpenAI API. It serves as a step-by-step tutorial on integrating cloud-based geospatial data with large multimodal language models for automated image analysis. Readers learn how to securely handle API credentials, fetch and visualize remote sensing data, and format multimodal prompts for zero-shot inference. The key takeaway is that cloud satellite APIs and multimodal LLMs can be combined without custom training to perform rapid geospatial exploration and description.",
+  "purpose": "tutorial",
+  "competition_flow": "Authenticates with GEE and OpenAI APIs, fetches a Sentinel-2 satellite image, encodes it to base64, and queries GPT-4o-mini for a textual description and location/time guess.",
+  "data_reading": [
+    "ee.ImageCollection('COPERNICUS/S2_SR_HARMONIZED') filtered by bounds, date range, and cloud cover, then downloaded as a JPEG via urllib.request"
+  ],
+  "data_processing": [
+    "Encodes the PIL Image to a base64 string for API transmission",
+    "Applies RGB band selection (B4, B3, B2), min/max scaling, and gamma correction for visualization"
+  ],
+  "features_engineering": [],
+  "models": [
+    "GPT-4o-mini"
+  ],
+  "frameworks_used": [
+    "google-earth-engine",
+    "openai",
+    "PIL",
+    "matplotlib"
+  ],
+  "loss_functions": [],
+  "cv_strategy": "",
+  "ensembling": "",
+  "insights": [
+    "Integrating GEE with multimodal LLMs enables zero-shot geospatial analysis without custom training.",
+    "Base64 encoding is a reliable method for transmitting satellite imagery to OpenAI's API.",
+    "Filtering Sentinel-2 data by cloud cover and sorting by percentage ensures high-quality input images for vision models."
+  ],
+  "critical_findings": [],
+  "what_did_not_work": [],
+  "source_url": "https://www.kaggle.com/code/paultimothymooney/how-to-ask-gpt-4o-about-google-earth-engine-data",
+  "votes": 49
+}

@@ -1,0 +1,32 @@
+{
+  "summary": "This notebook provides a step-by-step guide on integrating the Google Earth Engine (GEE) Python API with Kaggle kernels. It demonstrates how to securely store and retrieve service account credentials using Kaggle secrets, initialize the GEE client, and query geospatial datasets like SRTM elevation and Sentinel-2 satellite imagery. The author shows how to filter image collections by geographic bounds, date ranges, and cloud cover percentages, then fetch and visualize the results. Readers should learn the practical workflow for accessing large-scale geospatial data directly within Kaggle without manual downloads.",
+  "purpose": "tutorial",
+  "competition_flow": "Loads GEE credentials from Kaggle secrets, initializes the Earth Engine API, queries elevation and satellite imagery data, and displays the results.",
+  "data_reading": [
+    "Queries GEE datasets via `ee.Image` and `ee.ImageCollection` APIs, filters by bounds and dates, fetches image thumbnails via HTTP URL, and parses the binary response into a PIL Image."
+  ],
+  "data_processing": [
+    "Filters Sentinel-2 collection by geographic bounds, date range, and cloud cover (<20%), sorts by cloudiness, selects the clearest image, and applies RGB band mapping (B4, B3, B2) with min/max scaling and gamma correction for visualization."
+  ],
+  "features_engineering": [],
+  "models": [],
+  "frameworks_used": [
+    "earthengine-api",
+    "kaggle_secrets",
+    "PIL",
+    "matplotlib",
+    "urllib"
+  ],
+  "loss_functions": [],
+  "cv_strategy": "",
+  "ensembling": "",
+  "insights": [
+    "Securely passing GEE service account credentials to Kaggle kernels requires uploading the JSON key as a private dataset and loading it via `kaggle_secrets`.",
+    "GEE collections can be efficiently filtered by geographic bounds, date ranges, and metadata like cloud cover percentage before downloading.",
+    "Satellite imagery can be fetched and visualized directly in Python using GEE's thumbnail URL generation and standard image processing libraries."
+  ],
+  "critical_findings": [],
+  "what_did_not_work": [],
+  "source_url": "https://www.kaggle.com/code/paultimothymooney/how-to-query-google-earth-engine-data-using-kaggle",
+  "votes": 49
+}

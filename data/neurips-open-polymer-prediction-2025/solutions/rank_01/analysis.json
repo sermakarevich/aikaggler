@@ -1,0 +1,118 @@
+{
+  "summary": "The author secured 1st place by ensembling ModernBERT-base, CodeBERT, AutoGluon, and Uni-Mol 2 models trained separately for each target property. The winning strategy hinged on three core innovations: post-processing predictions to correct a severe systematic distribution shift in the leaderboard test labels, pretraining BERT models on pseudolabeled PI1M data using a multi-task ranking classifier, and rigorously cleaning external datasets with dirty labels via isotonic rescaling, error filtering, and Optuna-tuned sample weighting. The pipeline combined extensive tabular feature engineering, molecular dynamics simulations for descriptor generation, and strict train/test deduplication to prevent leakage. These technical choices collectively drove significant score improvements across all properties.",
+  "extensive_summary": "## Ensemble Architecture & Post-Processing\nThe final solution combines property-specific predictions from ModernBERT-base, CodeBERT, AutoGluon, and Uni-Mol 2 84M. A critical breakthrough was identifying a systematic bias in the leaderboard test labels. By probing the public LB score curve, the author derived a constant offset coefficient (0.5644) and applied it to the glass transition temperature predictions: `submission_df[\"Tg\"] += (submission_df[\"Tg\"].std() * 0.5644)`. This simple post-processing step dramatically improved both public and private LB scores.\n\n## External Data Cleaning & Handling Dirty Labels\nMultiple external datasets were integrated, but they contained label noise, constant biases, and outliers. The author implemented a five-step cleaning pipeline: (1) isotonic regression to rescale raw labels against a strong ensemble's predictions, (2) error-based filtering to discard samples exceeding a threshold relative to the mean absolute error, (3) Optuna-tuned sample weighting to downweight lower-quality datasets, (4) semi-manual threshold filtering for suspicious values, and (5) model stacking where 41 XGBoost models predicted MD simulation results to generate supplemental features for AutoGluon.\n\n## Deduplication & Leakage Prevention\nExact duplicates within training data were removed by converting SMILES to canonical form and dropping the lower-weighted sample. To prevent train/test leakage, Tanimoto similarity scores were computed between training monomers and test folds, dropping any training example with a similarity > 0.99. The author noted that exact canonical SMILES deduplication was likely sufficient, but kept the stricter filtering due to paranoia from a prior CV bug.\n\n## BERT Pretraining & Finetuning\nBERT models underwent a two-stage process. First, they were pretrained on 50,000 PI1M polymers using a multi-task ranking classification objective inspired by the RankUp paper, which reduced exposure to label noise from pseudolabels. Second, they were finetuned with AdamW, one-cycle LR, AMP, and a dual learning rate strategy (higher LR for the regression head). Data augmentation used non-canonical SMILES generation (10x during training, 50x during TTA with median aggregation).\n\n## Tabular Models & Feature Engineering\nTabular features spanned RDKit descriptors (Morgan, atom pair, topological-torsion, MACCS, graph features), backbone/sidechain features (+107 AI-generated variants), MD simulation descriptors (FFV, density, Rg, 3D descriptors), polyBERT embeddings, and Gasteiger charge statistics. AutoGluon's \"best\" quality preset significantly outperformed a manually tuned XGBoost/LightGBM/TabM ensemble with far less compute. MD-derived features improved GBDT models but were detrimental to AutoGluon.\n\n## 3D Models & Model Selection Insights\nUni-Mol 2 84M required minimal tuning but suffered from OOM issues on large monomers and poor FFV performance. The author found that general-purpose models (ModernBERT) outperformed chemistry-specific ones, larger models did not help, and code-pretrained models (CodeBERT) beat natural language-pretrained ones. GNNs (D-MPNN) and GMM-based augmentation were explicitly noted as ineffective.",
+  "rank": 1,
+  "competition_flow": "Raw SMILES and external datasets were cleaned, deduplicated, and augmented, then fed into separate BERT, AutoGluon, and Uni-Mol pipelines with extensive tabular feature engineering and MD-derived descriptors, followed by property-specific ensembling and a constant-bias post-processing step to correct test label distribution shifts.",
+  "data_reading": [],
+  "data_processing": [
+    "Canonical SMILES conversion for deduplication",
+    "Tanimoto similarity filtering (>0.99) to prevent train/test leakage",
+    "Isotonic regression for label rescaling",
+    "Error-based data filtering using MAE ratios",
+    "Optuna-tuned sample weighting per dataset",
+    "Semi-manual threshold filtering for suspicious values",
+    "Non-canonical SMILES generation (10x training, 50x TTA)",
+    "Polymerization to ~600 atoms per chain",
+    "Amorphous cell generation (10 chains, 0.15 density)",
+    "LAMMPS equilibrium simulation for property estimation"
+  ],
+  "features_engineering": [
+    "RDKit 2D and graph molecular descriptors",
+    "Morgan, atom pair, and topological-torsion fingerprints",
+    "MACCS keys",
+    "NetworkX graph features",
+    "Backbone vs. sidechain features (+107 AI-generated variants)",
+    "MD simulation descriptors (FFV, density, Rg, 3D descriptors)",
+    "polyBERT embeddings",
+    "Gasteiger charge statistics",
+    "Element composition and bond type ratios",
+    "XGBoost ensemble predictions on MD results"
+  ],
+  "models": [
+    "ModernBERT-base",
+    "CodeBERT",
+    "AutoGluon",
+    "Uni-Mol 2 84M",
+    "D-MPNN",
+    "ChemBERTa",
+    "polyBERT",
+    "ModernBERT-large",
+    "DeBERTa-v3-large",
+    "XGBoost",
+    "LightGBM",
+    "TabM",
+    "isotonic regression models"
+  ],
+  "frameworks_used": [
+    "AutoGluon",
+    "Optuna",
+    "RDKit",
+    "LAMMPS",
+    "psi4",
+    "MDAnalysis",
+    "XGBoost",
+    "LightGBM",
+    "Uni-Mol",
+    "HuggingFace"
+  ],
+  "loss_functions": [],
+  "cv_strategy": "5-fold cross-validation on the host's original training data (80% train, 20% test per fold), with all selected external data included in training. CV scores were computed exclusively on the held-out host data to prevent test leakage.",
+  "ensembling": "Property-specific predictions from ModernBERT-base, CodeBERT, AutoGluon, and Uni-Mol 2 were combined, with Tg predictions adjusted by a constant bias offset scaled by the prediction standard deviation to correct for a systematic test label distribution shift.",
+  "insights": [
+    "General-purpose foundation models outperformed chemistry-specific ones for this polymer prediction task.",
+    "Larger model sizes did not guarantee better performance and sometimes degraded scores.",
+    "Models pretrained on code corpora yielded better results than those pretrained on natural language.",
+    "AutoGluon's automated tuning significantly outperformed manually constructed tabular ensembles with far less compute.",
+    "MD simulation-derived features improved GBDT models but were detrimental to AutoGluon."
+  ],
+  "critical_findings": [
+    "The leaderboard test labels contained a severe systematic bias that required a constant offset post-processing step to align predictions with the ground truth.",
+    "Training on external datasets with dirty labels required a multi-step cleaning pipeline to extract useful signal rather than discarding them entirely.",
+    "Exact-duplicate canonical SMILES deduplication was sufficient to prevent leakage, making Tanimoto similarity filtering largely redundant.",
+    "MD simulation data generation was highly unstable and required a LightGBM classifier to predict and route problematic polymers to faster configurations."
+  ],
+  "what_did_not_work": [
+    "GNNs (D-MPNN)",
+    "GMM-based data augmentation strategy"
+  ],
+  "github_repos": [
+    {
+      "url": "https://github.com/RUIMINMA1996/PI1M",
+      "role": "reference"
+    },
+    {
+      "url": "https://github.com/RadonPy/RadonPy",
+      "role": "library"
+    },
+    {
+      "url": "https://github.com/Duke-MatSci/ChemProps",
+      "role": "reference"
+    },
+    {
+      "url": "https://github.com/jday96314/NeurIPS-polymer-prediction",
+      "role": "solution"
+    }
+  ],
+  "papers": [
+    {
+      "title": "RankUp: Boosting Semi-Supervised Regression with an Auxiliary Ranking Classifier",
+      "url": "https://arxiv.org/html/2410.22124v1",
+      "arxiv_id": null
+    }
+  ],
+  "other_solution_refs": [
+    {
+      "description": "Backbone-sidechain features notebook",
+      "url": "https://www.kaggle.com/code/mtinti/backbone-sidechain-features"
+    },
+    {
+      "description": "LAMMPS starter discussion",
+      "url": "https://www.kaggle.com/competitions/neurips-open-polymer-prediction-2025/discussion/591661"
+    },
+    {
+      "description": "Inference notebook",
+      "url": "https://www.kaggle.com/code/jsday96/polymers-tabular-bert-unimol"
+    }
+  ],
+  "source_url": "https://www.kaggle.com/competitions/neurips-open-polymer-prediction-2025/discussion/607947"
+}

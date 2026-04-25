@@ -1,0 +1,50 @@
+{
+  "summary": "This notebook demonstrates a comprehensive spatial-temporal analytics pipeline for the NFL Big Data Bowl 2026, focusing on player tracking data and play outcomes. It loads and aligns week-by-week input/output tracking frames, then generates extensive field density and movement distribution visualizations. The core contribution is the engineering of three novel play-level metrics: Receiver Separation Score, Defensive Response Time, and Route Efficiency Index. Readers should learn how to transform raw coordinate data into actionable sports analytics features and how to structure fault-tolerant EDA workflows for large-scale tracking datasets.",
+  "purpose": "eda",
+  "competition_flow": "Loads tracking and supplementary CSV data across 18 weeks, computes spatial-temporal player metrics and field density visualizations, and exports summary statistics and metric distributions for competition writeups.",
+  "data_reading": [
+    "Iteratively loads input_2023_w{week:02d}.csv and output_2023_w{week:02d}.csv files using pd.read_csv() within a try/except loop over weeks 1-18.",
+    "Concatenates tracking frames across weeks with pd.concat(ignore_index=True).",
+    "Merges play-level metadata from supplementary_data.csv on ['game_id', 'play_id'] using pd.merge()."
+  ],
+  "data_processing": [
+    "Applies week-by-week error handling and safe sampling to prevent memory bottlenecks during visualization.",
+    "Standard-scales numerical features (s, a, o, dir, x, y) using sklearn.preprocessing.StandardScaler for clustering.",
+    "Computes Euclidean distances and frame-to-frame velocity changes using scipy.spatial.distance.euclidean and pandas diff operations.",
+    "Filters and aggregates data by player_role, player_position, and game quarter for stratified analysis."
+  ],
+  "features_engineering": [
+    "Receiver Separation Score: Weighted combination of minimum and average defender distance at the catch point.",
+    "Defensive Response Time: Mean absolute velocity change in the first 3 frames after ball release.",
+    "Route Efficiency Index: Direct Euclidean distance to ball landing divided by total traveled distance.",
+    "Aggregated speed and acceleration statistics grouped by player role and position."
+  ],
+  "models": [
+    "KMeans",
+    "DBSCAN",
+    "PCA",
+    "t-SNE",
+    "RandomForestRegressor"
+  ],
+  "frameworks_used": [
+    "pandas",
+    "numpy",
+    "matplotlib",
+    "seaborn",
+    "scipy",
+    "scikit-learn",
+    "plotly"
+  ],
+  "loss_functions": [],
+  "cv_strategy": "",
+  "ensembling": "",
+  "insights": [
+    "High receiver separation and route efficiency strongly correlate with pass completion and expected points added, while early defensive reaction speed significantly impacts coverage success."
+  ],
+  "critical_findings": [
+    "Some strategic zone visualizations rely on simulated probability distributions rather than raw data, and frame-by-frame distance calculations require aggressive sampling to avoid memory bottlenecks."
+  ],
+  "what_did_not_work": [],
+  "source_url": "https://www.kaggle.com/code/taylorsamarel/eda-model-video-3d-video",
+  "votes": 97
+}

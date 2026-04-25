@@ -1,0 +1,52 @@
+{
+  "summary": "This notebook refactors a public ECG image-to-signal digitization pipeline into a modular, debuggable `PhysioPipeline` class to replace black-box execution with transparent, stage-by-stage validation. It introduces source-aware preprocessing recipes, quantitative sanity scoring, and a controlled benchmarking framework to evaluate how different image types and preprocessing steps impact reconstruction quality. The author demonstrates how to catch pipeline failures early, adapt preprocessing based on predicted image sources, and correctly format multi-lead time series for competition submission. Readers should learn how to systematically validate, debug, and improve multi-stage CV pipelines rather than treating them as opaque inference scripts.",
+  "purpose": "utility",
+  "competition_flow": "Loads ECG scan images and metadata, runs them through a three-stage neural pipeline (rotation normalization, grid rectification, segmentation-to-signal conversion), applies source-aware preprocessing and Einthoven correction, and formats the 12-lead time series into a competition submission CSV.",
+  "data_reading": [
+    "Images loaded via `cv2.imread` from Kaggle dataset paths",
+    "Metadata and ground truth signals loaded via `pd.read_csv` and `pd.read_parquet`",
+    "Test IDs grouped by `df_test.groupby('id')`"
+  ],
+  "data_processing": [
+    "Stage 0/1/2 neural transformations",
+    "Source-specific preprocessing (HSV denoising, CLAHE, bilateral/median filtering, LAB background correction, illumination gating)",
+    "Signal smoothing via Savitzky-Golay filter",
+    "Einthoven correction",
+    "Lead length interpolation/padding",
+    "Cross-correlation alignment for evaluation"
+  ],
+  "features_engineering": [],
+  "models": [
+    "Stage0Net",
+    "Stage1Net",
+    "Net3 (ResNet-34 encoder + MyCoordUnetDecoder + nn.Conv2d)",
+    "efficientnet_b2"
+  ],
+  "frameworks_used": [
+    "pytorch",
+    "timm",
+    "opencv",
+    "numpy",
+    "pandas",
+    "scipy",
+    "matplotlib",
+    "tqdm"
+  ],
+  "loss_functions": [],
+  "cv_strategy": "",
+  "ensembling": "",
+  "insights": [
+    "Modular pipeline design enables independent stage debugging and output reuse without re-running the entire process.",
+    "Source-aware preprocessing significantly impacts reconstruction quality and should be benchmarked quantitatively rather than applied uniformly.",
+    "Visual QA at each pipeline stage quickly reveals subtle failures like misalignment or segmentation drift.",
+    "A lightweight classifier can reliably predict image source types to trigger optimal preprocessing recipes during inference."
+  ],
+  "critical_findings": [
+    "Applying CLAHE to stained or low-contrast images can amplify noise and grid artifacts, making illumination gating necessary before contrast enhancement.",
+    "Lead II requires full 10-second length handling while other leads are short ~2.5-second segments, requiring careful interpolation and padding to avoid submission format errors.",
+    "Flat predicted signals or high NaN rates in the ground truth region indicate fundamental pipeline failures rather than minor tuning issues."
+  ],
+  "what_did_not_work": [],
+  "source_url": "https://www.kaggle.com/code/sanpier/visual-qa-for-all-stages-of-ecg-digitization",
+  "votes": 284
+}

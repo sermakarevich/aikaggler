@@ -1,0 +1,72 @@
+{
+  "id": 105267,
+  "competitionName": "google-gemma-3n-hackathon",
+  "title": "Google - The Gemma 3n Impact Challenge",
+  "briefDescription": "Explore the newest Gemma model and build your best products for a better world",
+  "dateEnabled": "2025-06-26T16:17:36.757Z",
+  "deadline": "2025-08-06T23:59:00Z",
+  "leaderboardPercentage": 30,
+  "maxDailySubmissions": 5,
+  "numScoredSubmissions": 2,
+  "numPrizes": 10,
+  "forumId": 8125869,
+  "finalLeaderboardHasBeenVerified": true,
+  "dateCreated": "2025-06-13T15:22:15.125798300Z",
+  "competitionHostSegmentId": 1,
+  "maxTeamSize": 5,
+  "organizationId": 3823,
+  "hasCoverImageUrl": true,
+  "showPrivateLeaderboard": true,
+  "hasScripts": true,
+  "totalTeams": 602,
+  "totalCompetitors": 866,
+  "totalSubmissions": 605,
+  "rulesRequired": true,
+  "clonedFromCompetitionId": 103529,
+  "categories": [
+    {
+      "id": 14101,
+      "name": "tabular",
+      "fullPath": "data type > tabular",
+      "datasetCount": 15194,
+      "competitionCount": 15461,
+      "scriptCount": 7996,
+      "slug": "tabular-data",
+      "displayName": "Tabular"
+    },
+    {
+      "id": 14104,
+      "name": "text",
+      "fullPath": "data type > text",
+      "datasetCount": 10256,
+      "competitionCount": 185,
+      "scriptCount": 4975,
+      "slug": "text-data",
+      "displayName": "Text"
+    }
+  ],
+  "organization": {
+    "slug": "deepmind",
+    "name": "Google DeepMind",
+    "thumbnailImageUrl": "https://storage.googleapis.com/kaggle-organizations/3823/thumbnail.png",
+    "profileUrl": "/organizations/deepmind"
+  },
+  "launched": true,
+  "createdByUserId": 1095143,
+  "license": {
+    "id": 1,
+    "name": "CC0: Public Domain",
+    "url": "https://creativecommons.org/publicdomain/zero/1.0/",
+    "agreementRequired": false
+  },
+  "hostName": "Google DeepMind",
+  "scoreTruncationNumDecimals": 5,
+  "locked": true,
+  "totalJoinedUsers": 8621,
+  "submissionSizeLimitMb": 20480,
+  "reward": {
+    "id": "USD",
+    "quantity": 150000
+  },
+  "hackathon": true
+}

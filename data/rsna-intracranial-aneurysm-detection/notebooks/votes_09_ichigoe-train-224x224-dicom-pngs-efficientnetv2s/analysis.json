@@ -1,0 +1,52 @@
+{
+  "summary": "This notebook implements a training pipeline for the RSNA Intracranial Aneurysm Detection competition using a multi-frame EfficientNetV2-S architecture. It processes 8 DICOM/PNG frames per series into a 3-channel representation (middle slice, MIP, and standard deviation projection) and integrates patient metadata (age, sex) into the classifier head. The author emphasizes modality-specific windowing, CLAHE contrast enhancement, and robust percentile normalization to handle scanner variations. A GroupKFold cross-validation strategy based on DICOM StudyInstanceUIDs ensures strict patient-level separation to prevent data leakage. The training recipe demonstrates how strategic frame sampling, strong augmentations, and a combined weighted BCE-Focal loss can improve generalization and reduce the CV-to-LB performance gap.",
+  "purpose": "training",
+  "competition_flow": "Loads CSV metadata and DICOM/PNG series data, applies modality-specific windowing and CLAHE, samples 8 frames into a 3-channel tensor, trains a metadata-augmented EfficientNetV2-S with a combined weighted BCE-Focal loss using patient-grouped cross-validation, and saves the best model checkpoint.",
+  "data_reading": [
+    "Reads train.csv, series_index_mapping.csv, and train_localizers_with_relative.csv via pandas.",
+    "Loads DICOM files using pydicom.dcmread (stopping before pixels for metadata, then reading pixel arrays) or pre-converted PNGs via cv2.imread."
+  ],
+  "data_processing": [
+    "Modality-specific DICOM windowing (CTA: 50/350, MRA: 600/1200, MRI: 40/80).",
+    "CLAHE contrast adaptation with modality-specific clip limits.",
+    "Robust 1st-99th percentile normalization to handle outliers.",
+    "Smart 8-frame sampling (skipping every other frame starting at 10% of the volume).",
+    "3-channel volume creation from middle slice, Maximum Intensity Projection, and standard deviation projection.",
+    "Strong augmentations: 15\u00b0 rotation, elastic/grid distortion, brightness/contrast, gamma, Gauss/ISO noise, blur, coarse dropout.",
+    "ImageNet mean/std normalization."
+  ],
+  "features_engineering": [
+    "Patient age and sex extracted from CSV/metadata, normalized to [0,1], and concatenated as a 2D feature vector fed into a separate MLP branch."
+  ],
+  "models": [
+    "EfficientNetV2-S (tf_efficientnetv2_s.in1k)"
+  ],
+  "frameworks_used": [
+    "pytorch",
+    "timm",
+    "albumentations",
+    "pydicom",
+    "scikit-learn",
+    "numpy",
+    "pandas"
+  ],
+  "loss_functions": [
+    "Combined Weighted BCE (aneurysm weight=3.0) and Focal Loss (gamma=2, alpha=1, weight=0.3)"
+  ],
+  "cv_strategy": "GroupKFold(n_splits=5) stratified by modality and aneurysm presence, using DICOM StudyInstanceUID for true patient-level separation",
+  "ensembling": "",
+  "insights": [
+    "True patient-level separation via DICOM metadata prevents data leakage and significantly improves CV/LB alignment.",
+    "Strategic 8-frame sampling and 3-channel projections (MIP, std) effectively capture vascular structures without processing full volumes.",
+    "Modality-specific windowing and CLAHE are critical for handling diverse scanner protocols (CTA/MRA/MRI).",
+    "Integrating patient age and sex as auxiliary features provides useful clinical context for classification."
+  ],
+  "critical_findings": [
+    "Using standard StratifiedKFold instead of patient-grouped CV causes severe data leakage and inflates CV scores artificially.",
+    "The competition metric heavily weights the average of individual location AUCs alongside the aneurysm AUC, requiring balanced performance across all 14 classes.",
+    "Class imbalance is addressed by assigning a 3.0 weight to the 'Aneurysm Present' class in the loss function."
+  ],
+  "what_did_not_work": [],
+  "source_url": "https://www.kaggle.com/code/ichigoe/train-224x224-dicom-pngs-efficientnetv2s",
+  "votes": 127
+}

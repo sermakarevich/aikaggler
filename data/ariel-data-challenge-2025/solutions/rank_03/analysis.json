@@ -1,0 +1,59 @@
+{
+  "summary": "The author achieved 3rd place by combining calibrated signal processing, phase extraction, and a CNN for feature extraction, which are then fed into an ensemble of Rational Quadratic Neural Networks. Key innovations include a custom loss weighting strategy that focuses training on worse-performing models to prevent overfitting, and a novel feature scaling function borrowed from a recent paper. The pipeline avoids complex physics modeling or advanced denoising, relying instead on robust signal calibration, chunking strategies, and deep ensembling with soft RBF/RQ clustering.",
+  "extensive_summary": "## Preprocessing & Calibration\nThe pipeline begins with standard calibration techniques provided by the competition, handling gain/offset correction, non-linearity, and pixel artifacts (dark, dead, hot). A critical addition is a time-domain outlier removal step that filters signals deviating more than $8 \\sigma$ from the mean, which alone improved the CV score by ~0.05. Minor feature engineering like squaring `Rs` was attempted but deemed unimportant.\n\n## Signal Extraction & CNN Feature Extraction\nPhase extraction relies on gradient extrema. The calibrated signal is normalized, smoothed with a moving average (k=88 for airs, k=655 for fgs1), and processed via gradient moving averages to identify transit phases. Features are derived from mean, min, max, range, and polynomial fits of these phases. To boost resolution, airs data is split into 32 frequency chunks and processed identically. Separately, a CNN processes the smoothed signal split into 92 time chunks with averaged values. The CNN uses weight sharing across layers and max pooling only, avoiding activation functions to prevent overfitting.\n\n## Ensemble of Rational Quadratic Neural Network\nFeatures from signal extraction and the CNN are combined and fed into an ensemble of 36 Rational Quadratic (RQ) Neural Networks, each containing 88 RQ clusters. Feature scaling uses a custom transformation $\\frac{x}{\\sqrt{18+x^2/9}}$. The ensemble employs deep ensembling with varied weight initializations, predicting both `pred` and `sigma` directly. Training uses the Adabelief optimizer and a cosine one-cycle learning rate schedule with square root shaping. A key innovation is the loss weighting mechanism: instead of averaging losses, the author weights the loss by `relu(losses - median(losses))`, effectively focusing gradient updates on models performing worse than the ensemble median. This evolution-inspired approach prevents overfitting and boosts CV by ~0.03+. Soft RBF/RQ clustering is used to group transit curve shapes before linear regression within clusters.",
+  "rank": 3,
+  "competition_flow": "Raw calibrated signals are cleaned via $8\\sigma$ time-domain filtering, split into frequency/time chunks for phase-based feature extraction and CNN processing, and finally combined into an ensemble of 36 Rational Quadratic Neural Networks trained with a custom median-weighted loss to produce predictions.",
+  "data_reading": [],
+  "data_processing": [
+    "Standard calibration for gain/offset, non-linearity, and pixel artifacts",
+    "Time-domain outlier removal at $8\\sigma$",
+    "Moving average smoothing (k=88 for airs, k=655 for fgs1)",
+    "Splitting airs data into 32 frequency chunks and signals into 92 time chunks for chunk-wise processing",
+    "Custom feature scaling $\\frac{x}{\\sqrt{18+x^2/9}}$"
+  ],
+  "features_engineering": [
+    "Phase-derived statistics (mean, min, max, range, min div edge, 8th-degree polynomial fits) from gradient extrema",
+    "Squaring `Rs` features",
+    "Averaged CNN features from 92 time chunks"
+  ],
+  "models": [
+    "CNN",
+    "Rational Quadratic Neural Network (RQ NN)",
+    "soft RBF/RQ"
+  ],
+  "frameworks_used": [
+    "numpy",
+    "joblib",
+    "optuna",
+    "jax",
+    "adabelief"
+  ],
+  "loss_functions": [
+    "Custom median-weighted loss focusing on worse-performing models: `w = relu(losses - median(losses))`, `loss = sum(losses * w) / sum(w)`"
+  ],
+  "cv_strategy": "Simple 80-20 train/validation split.",
+  "ensembling": "Deep ensembling of 36 Rational Quadratic Neural Networks with varied weight initializations, each containing 88 RQ clusters, predicting both mean and variance directly without sampling or quantile regression.",
+  "insights": [
+    "Focusing gradient updates on models performing worse than the ensemble median prevents overfitting and boosts validation scores.",
+    "Soft RBF/RQ clustering effectively handles diverse transit curve shapes by grouping instances before performing linear regression within clusters.",
+    "Splitting airs data into 32 frequency chunks and processing them independently significantly improves feature resolution and CV performance.",
+    "Model inference speed is negligible compared to data reading time, making efficient data loading a priority over complex architecture design."
+  ],
+  "critical_findings": [
+    "Simple $8\\sigma$ time-domain outlier removal on calibrated signals alone improved the CV score by ~0.05.",
+    "Training exclusively on models performing worse than the ensemble median (ignoring the best performers) prevents overfitting and boosts CV by ~0.03+.",
+    "Standard regularization techniques like L1/L2, dropout, and entropy-based regularization for RBF/RQ clusters failed to improve performance.",
+    "Using multiple observations for the same planet during training but discarding them during inference is a viable strategy that does not harm generalization."
+  ],
+  "what_did_not_work": [
+    "L1 and L2 regularization",
+    "Dropout",
+    "Data augmentation via random splicing of transit data",
+    "Fischer-information-like or entropy based regularisation for RBF/RQ",
+    "Full trainable Mahalanobis distance"
+  ],
+  "github_repos": [],
+  "papers": [],
+  "other_solution_refs": [],
+  "source_url": "https://www.kaggle.com/competitions/ariel-data-challenge-2025/discussion/609252"
+}
